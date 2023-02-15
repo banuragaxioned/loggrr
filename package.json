@@ -7,7 +7,9 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "studio": "prisma studio",
+    "fresh": "rm -rf node_modules && rm -rf .next && npm install && npm run dev"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",
