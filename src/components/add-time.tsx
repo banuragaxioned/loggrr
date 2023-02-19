@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react";
+import { Calculator, Calendar, Smile } from "lucide-react";
 
 import {
   Command,
@@ -19,6 +12,8 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
+import { Button } from "./ui/button";
+import { CommandCombobox } from "./select-combo";
 
 export function AddTime() {
   return (
@@ -26,7 +21,22 @@ export function AddTime() {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
+        <CommandGroup heading="Allocations">
+          <CommandItem>
+            <span>Acme Inc. / Project X / Design</span>
+            <CommandShortcut>2 h</CommandShortcut>
+          </CommandItem>
+          <CommandItem>
+            <span>Space X / Project Y / Engineering</span>
+            <CommandShortcut>30 m</CommandShortcut>
+          </CommandItem>
+          <CommandItem>
+            <span>Tesla Inc. / Model S / Crash test</span>
+            <CommandShortcut>45 m</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Recently used">
           <CommandItem>
             <Calendar className="mr-2 h-4 w-4" />
             <span>Calendar</span>
@@ -40,25 +50,14 @@ export function AddTime() {
             <span>Calculator</span>
           </CommandItem>
         </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Settings">
-          <CommandItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-            <CommandShortcut>⌘P</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Billing</span>
-            <CommandShortcut>⌘B</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-            <CommandShortcut>⌘S</CommandShortcut>
-          </CommandItem>
-        </CommandGroup>
       </CommandList>
+      <div className="flex justify-between p-2">
+        <div className="space-x-2">
+          <CommandCombobox />
+          <CommandCombobox />
+        </div>
+        <Button>Clear</Button>
+      </div>
     </Command>
   );
 }
