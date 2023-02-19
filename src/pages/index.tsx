@@ -4,12 +4,13 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "../utils/api";
+import { Layout } from "@/components/layout";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   return (
-    <>
+    <Layout>
       <Head>
         <title>Centraal</title>
         <meta
@@ -25,14 +26,13 @@ const Home: NextPage = () => {
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4 hover:bg-slate-400/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
+              className="hover:bg-slate/20 flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4  hover:bg-slate-400/20"
+              href="/dashboard"
             >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
+              <h3 className="text-2xl font-bold">Dashboard →</h3>
               <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
+                The application lives here. Right now, its only layouts and
+                static components.
               </div>
             </Link>
             <Link
@@ -48,14 +48,14 @@ const Home: NextPage = () => {
             </Link>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl ">
+            {/* <p className="text-2xl ">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
+            </p> */}
             <AuthShowcase />
           </div>
         </div>
       </main>
-    </>
+    </Layout>
   );
 };
 
@@ -72,7 +72,7 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl ">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {sessionData && <span>Logg ed in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
