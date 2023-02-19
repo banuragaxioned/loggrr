@@ -9,7 +9,6 @@ import { env } from "../env.mjs";
 import { prisma } from "./db";
 import GoogleProvider from "next-auth/providers/google";
 
-
 /**
  * Module augmentation for `next-auth` types.
  * Allows us to add custom properties to the `session` object and keep type
@@ -57,9 +56,9 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
-        }
-      }
+          response_type: "code",
+        },
+      },
     }),
     /**
      * ...add more providers here

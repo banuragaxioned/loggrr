@@ -3,13 +3,13 @@ import { Layout } from "@/components/layout";
 export default function Dashboard() {
   return (
     <Layout>
-      <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
-        <div className="flex max-w-[980px] flex-col items-start gap-2">
-          <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
+      <section>
+        <div>
+          <h1>
             Beautifully designed components <br className="hidden sm:inline" />
             built with Radix UI and Tailwind CSS.
           </h1>
-          <p className="max-w-[700px] text-lg text-slate-700 dark:text-slate-400 sm:text-xl">
+          <p>
             Accessible and customizable components that you can copy and paste
             into your apps. Free. Open Source. And Next.js 13 Ready.
           </p>

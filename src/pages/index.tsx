@@ -21,15 +21,13 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="tracking-tightsm:text-[5rem] text-5xl font-extrabold">
-            Welcome to Centraal
-          </h1>
+          <h1>Welcome to Centraal</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="hover:bg-slate/20 flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4  hover:bg-slate-400/20"
               href="/dashboard"
             >
-              <h3 className="text-2xl font-bold">Dashboard →</h3>
+              <h3>Dashboard →</h3>
               <div className="text-lg">
                 The application lives here. Right now, its only layouts and
                 static components.
@@ -72,7 +70,7 @@ const AuthShowcase: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl ">
-        {sessionData && <span>Logg ed in as {sessionData.user?.name}</span>}
+        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button

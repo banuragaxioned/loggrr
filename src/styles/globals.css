@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  section {
+    @apply container grid items-center gap-6 pt-6 pb-8 md:py-10;
+  }
   h1 {
     @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
   }
@@ -16,6 +19,6 @@
     @apply scroll-m-20 text-xl font-semibold tracking-tight;
   }
   p {
-    @apply leading-7;
+    @apply text-lg leading-7;
   }
 }
