@@ -2,12 +2,15 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
-import { Inter } from "@next/font/google";
+import { Be_Vietnam_Pro } from "@next/font/google";
 import { ThemeProvider } from "next-themes";
 
 // If loading a variable font, you don't need to specify the font weight
-const inter = Inter({ subsets: ["latin"] });
-
+const font = Be_Vietnam_Pro({
+  subsets: ["latin"],
+  variable: "--font-bevietnampro",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 import { api } from "../utils/api";
 
 import "@/styles/globals.css";
@@ -21,7 +24,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <>
       <style jsx global>{`
         html {
-          font-family: ${inter.style.fontFamily};
+          font-family: ${font.style.fontFamily};
         }
       `}</style>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
