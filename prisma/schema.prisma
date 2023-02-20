@@ -22,10 +22,40 @@ model Example {
 }
 
 model Tenant {
-    id       String     @id @default(cuid())
-    name     String
-    users    User[]
-    UserRole UserRole[]
+    id        String         @id @default(cuid())
+    name      String
+    users     User[]
+    UserRole  UserRole[]
+    Client    Client[]
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+    status    DocumentStatus @default(ACTIVE)
+    Project   Project[]
+}
+
+model Client {
+    id        String         @id @default(cuid())
+    name      String
+    tenantId  String
+    tenant    Tenant         @relation(fields: [tenantId], references: [id])
+    users     User[]
+    status    DocumentStatus @default(ACTIVE)
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+
+    @@index([tenantId])
+}
+
+model Project {
+    id        String         @id @default(cuid())
+    name      String
+    tenantId  String
+    tenant    Tenant         @relation(fields: [tenantId], references: [id])
+    status    DocumentStatus @default(ACTIVE)
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+
+    @@index([tenantId])
 }
 
 enum Role {
@@ -35,17 +65,30 @@ enum Role {
 }
 
 model UserRole {
-    id       String @id @default(cuid())
-    role     Role   @default(REGULAR)
-    userId   String
-    tenantId String
-    tenant   Tenant @relation(fields: [tenantId], references: [id])
-    User     User   @relation(fields: [userId], references: [id])
+    id        String   @id @default(cuid())
+    role      Role     @default(REGULAR)
+    userId    String
+    tenantId  String
+    tenant    Tenant   @relation(fields: [tenantId], references: [id])
+    User      User     @relation(fields: [userId], references: [id])
+    clientId  String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@unique([role, userId, tenantId])
     @@index([userId])
     @@index([tenantId])
-    @@index([userId, tenantId]) // Add an index on both fields to optimize queries involving both fields
+    @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
+}
+
+enum DocumentStatus {
+    ACTIVE
+    ARCHIVED
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
 }
 
 model User {
@@ -59,6 +102,11 @@ model User {
     tenant        Tenant?    @relation(fields: [tenantId], references: [id])
     roles         UserRole[]
     tenantId      String?
+    status        UserStatus @default(ACTIVE)
+    Client        Client?    @relation(fields: [clientId], references: [id])
+    clientId      String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
 
     @@index([tenantId])
 }
