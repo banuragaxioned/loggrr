@@ -22,40 +22,72 @@ model Example {
 }
 
 model Tenant {
-    id        String         @id @default(cuid())
+    id        String      @id @default(cuid())
     name      String
+    status    Status      @default(ACTIVE)
     users     User[]
-    UserRole  UserRole[]
-    Client    Client[]
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
-    status    DocumentStatus @default(ACTIVE)
-    Project   Project[]
+    client    Client[]
+    project   Project[]
+    milestone Milestone[]
+    task      Task[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
 }
 
 model Client {
-    id        String         @id @default(cuid())
+    id        String      @id @default(cuid())
     name      String
     tenantId  String
-    tenant    Tenant         @relation(fields: [tenantId], references: [id])
-    users     User[]
-    status    DocumentStatus @default(ACTIVE)
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
+    tenant    Tenant      @relation(fields: [tenantId], references: [id])
+    status    Status      @default(ACTIVE)
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    Project   Project[]
+    milestone Milestone[]
+    task      Task[]
 
     @@index([tenantId])
 }
 
 model Project {
-    id        String         @id @default(cuid())
+    id        String          @id @default(cuid())
     name      String
+    status    Status          @default(ACTIVE)
     tenantId  String
-    tenant    Tenant         @relation(fields: [tenantId], references: [id])
-    status    DocumentStatus @default(ACTIVE)
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
+    tenant    Tenant          @relation(fields: [tenantId], references: [id])
+    clientId  String
+    client    Client          @relation(fields: [clientId], references: [id])
+    milestone Milestone[]
+    task      Task[]
+    startdate DateTime
+    enddate   DateTime?
+    type      ProjectType     @default(FIXED)
+    billing   BillingType     @default(NON_BILLABLE)
+    interval  ProjectInterval
+    members   User[]
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
 
     @@index([tenantId])
+    @@index([clientId])
+}
+
+enum ProjectInterval {
+    TIMEBOUND
+    WEEKLY
+    MONTHLY
+    QUARTERLY
+    YEARLY
+}
+
+enum ProjectType {
+    FIXED
+    HOURLY
+}
+
+enum BillingType {
+    BILLABLE
+    NON_BILLABLE
 }
 
 enum Role {
@@ -64,14 +96,54 @@ enum Role {
     REGULAR
 }
 
+model Milestone {
+    id        String   @id @default(cuid())
+    name      String
+    budget    Float
+    status    Status   @default(ACTIVE)
+    tenantId  String
+    tenant    Tenant   @relation(fields: [tenantId], references: [id])
+    clientId  String
+    client    Client   @relation(fields: [clientId], references: [id])
+    projectId String
+    project   Project  @relation(fields: [projectId], references: [id])
+    task      Task[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([tenantId])
+    @@index([clientId])
+    @@index([projectId])
+}
+
+model Task {
+    id          String    @id @default(cuid())
+    name        String
+    status      Status    @default(ACTIVE)
+    budget      Float
+    tenantId    String
+    tenant      Tenant    @relation(fields: [tenantId], references: [id])
+    clientId    String
+    client      Client    @relation(fields: [clientId], references: [id])
+    projectId   String
+    project     Project   @relation(fields: [projectId], references: [id])
+    milestoneId String
+    milestone   Milestone @relation(fields: [milestoneId], references: [id])
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([tenantId])
+    @@index([clientId])
+    @@index([projectId])
+    @@index([milestoneId])
+}
+
 model UserRole {
     id        String   @id @default(cuid())
     role      Role     @default(REGULAR)
     userId    String
     tenantId  String
-    tenant    Tenant   @relation(fields: [tenantId], references: [id])
-    User      User     @relation(fields: [userId], references: [id])
-    clientId  String?
+    user      User     @relation(fields: [userId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -81,7 +153,7 @@ model UserRole {
     @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
 }
 
-enum DocumentStatus {
+enum Status {
     ACTIVE
     ARCHIVED
 }
@@ -97,18 +169,19 @@ model User {
     email         String?    @unique
     emailVerified DateTime?
     image         String?
+    status        UserStatus @default(ACTIVE)
     accounts      Account[]
     sessions      Session[]
     tenant        Tenant?    @relation(fields: [tenantId], references: [id])
     roles         UserRole[]
     tenantId      String?
-    status        UserStatus @default(ACTIVE)
-    Client        Client?    @relation(fields: [clientId], references: [id])
-    clientId      String?
+    project       Project?   @relation(fields: [projectId], references: [id])
+    projectId     String?
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt
 
     @@index([tenantId])
+    @@index([projectId])
 }
 
 model Session {
