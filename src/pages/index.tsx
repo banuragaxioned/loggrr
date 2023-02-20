@@ -60,6 +60,14 @@ export default Home;
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
+  const { data: tenantData } = api.example.getAll2.useQuery(
+    undefined, // no input
+    { enabled: sessionData?.user !== undefined }
+  );
+  const { data: myTenantData } = api.example.getTenants.useQuery(
+    undefined, // no input
+    { enabled: sessionData?.user !== undefined }
+  );
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
@@ -71,6 +79,22 @@ const AuthShowcase: React.FC = () => {
       <p className="text-center text-2xl ">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
+        {tenantData && (
+          <span>
+            -
+            {tenantData.map((tenant) => (
+              <span key={tenant.id}>{tenant.name}</span>
+            ))}
+          </span>
+        )}
+        {myTenantData && (
+          <span>
+            -
+            {myTenantData.map((tenant) => (
+              <span key={tenant.id}>{tenant.name}</span>
+            ))}
+          </span>
+        )}
       </p>
       <button
         className="rounded-full bg-slate-400/10 px-10 py-3 font-semibold  no-underline transition hover:bg-slate-400/20"

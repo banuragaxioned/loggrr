@@ -18,4 +18,20 @@ export const exampleRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  getAll2: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.tenant.findMany();
+  }),
+
+  //get all tenants that the current user is a member of
+  getTenants: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.tenant.findMany();
+  }),
 });
+
+export const TenantList = createTRPCRouter({
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.tenant.findMany();
+  }),
+});
+
