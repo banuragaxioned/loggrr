@@ -77,6 +77,7 @@ model Project {
 
     @@index([tenantId])
     @@index([clientId])
+    @@index([allocationId])
 }
 
 enum ProjectInterval {
