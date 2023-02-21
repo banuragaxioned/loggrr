@@ -6,8 +6,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>
@@ -45,9 +43,6 @@ const Home: NextPage = () => {
             </Link>
           </div>
           <div className="flex flex-col items-center gap-2">
-            {/* <p className="text-2xl ">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p> */}
             <AuthShowcase />
           </div>
         </div>
@@ -60,11 +55,7 @@ export default Home;
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
-  const { data: tenantData } = api.example.getAll2.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-  const { data: myTenantData } = api.example.getTenants.useQuery(
+  const { data: myTenantData } = api.example.myTenants.useQuery(
     undefined, // no input
     { enabled: sessionData?.user !== undefined }
   );
@@ -79,17 +70,10 @@ const AuthShowcase: React.FC = () => {
       <p className="text-center text-2xl ">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
-        {tenantData && (
-          <span>
-            -
-            {tenantData.map((tenant) => (
-              <span key={tenant.id}>{tenant.name}</span>
-            ))}
-          </span>
-        )}
         {myTenantData && (
           <span>
-            -
+            <br />
+            Member of:{" "}
             {myTenantData.map((tenant) => (
               <span key={tenant.id}>{tenant.name}</span>
             ))}
