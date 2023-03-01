@@ -2,7 +2,7 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
-import { Be_Vietnam_Pro } from "@next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 // If loading a variable font, you don't need to specify the font weight

@@ -1,11 +1,3 @@
-import { AddTime } from "@/components/add-time";
-import {
-  ArrowLeft,
-  Calendar,
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
 import { useSession, getSession } from "next-auth/react";
 
 export default function Dashboard() {
