@@ -21,9 +21,8 @@ export const exampleRouter = createTRPCRouter({
 
   myTenants: protectedProcedure.query(async ({ ctx }) => {
     const tenants = await ctx.prisma.tenant.findMany({
-      where: { users: { some: { id: 'cled1r2tz0000uhyg5k0p0zrg' } } },
+      where: { users: { some: { id: "cled1r2tz0000uhyg5k0p0zrg" } } },
     });
     return tenants;
   }),
-
 });
