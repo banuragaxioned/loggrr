@@ -1,7 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
 
-import type { NavItem } from "@/types/nav";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/utils/helper";
 import { Icons } from "@/components/icons";
@@ -14,6 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+export interface NavItem {
+  title: string;
+  href?: string;
+  disabled?: boolean;
+  external?: boolean;
+}
 
 interface MainNavProps {
   items?: NavItem[];

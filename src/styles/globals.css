@@ -19,4 +19,7 @@
   section {
     @apply container mx-auto grid items-center gap-6 pt-6 pb-8 md:py-10;
   }
+  .todo {
+    @apply flex w-full items-center justify-center rounded-md border border-dashed border-slate-300 text-sm dark:border-slate-600;
+  }
 }
