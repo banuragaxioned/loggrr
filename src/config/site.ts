@@ -1,5 +1,9 @@
-import type { NavItem } from "@/types/nav";
-
+export interface NavItem {
+  title: string;
+  href?: string;
+  disabled?: boolean;
+  external?: boolean;
+}
 interface SiteConfig {
   name: string;
   description: string;
