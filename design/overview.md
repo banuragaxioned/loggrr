@@ -19,20 +19,20 @@
 ├── README.md
 ├── design
 |   └── overview.md                         <- You are here
-├── prisma                                  <- Prisma ORM
+├── prisma                                  <- Prisma schema
 ├── public
 └── src
-    ├── components                          <- Components
+    ├── components                          <- UI Components
     |   ├── layout.tsx
     |   ├── navbar.tsx
-    |   └── ui                              <- Primitives
+    |   └── ui                              <- UI Primitives
     |     └── button.tsx
     |     └── command.tsx
     └── config
     └── pages                               <- See sitemap
     └── server
     |     └── api
-    |           └── router.ts               <- trpc router
+    |           └── routers                 <- trpc router
     └── styles                              <- Tailwind CSS
     └── utils
 ```
