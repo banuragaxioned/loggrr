@@ -55,7 +55,7 @@ export default Home;
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
-  const { data: myTenantData } = api.example.myTenants.useQuery(
+  const { data: myTenantData } = api.tenant.myTenants.useQuery(
     undefined, // no input
     { enabled: sessionData?.user !== undefined }
   );

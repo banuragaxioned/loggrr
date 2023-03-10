@@ -18,11 +18,4 @@ export const exampleRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
-
-  myTenants: protectedProcedure.query(async ({ ctx }) => {
-    const tenants = await ctx.prisma.tenant.findMany({
-      where: { users: { some: { id: "cled1r2tz0000uhyg5k0p0zrg" } } },
-    });
-    return tenants;
-  }),
 });
