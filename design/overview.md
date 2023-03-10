@@ -6,9 +6,9 @@
 - [trpc](https://trpc.io/) for API
 - [Prisma](https://www.prisma.io/) for database ORM
 - Authentication: [NextAuth.js](https://next-auth.js.org/) with Google OAuth
-- [PostgreSQL](https://www.postgresql.org/) for database (hosted on [Supabase](https://supabase.io/) for development)
+- [MySQL](https://www.mysql.com/) for database (hosted on [PlanetScale](https://planetscale.com/) for development)
 - [Tailwind CSS](https://tailwindcss.com/) for styling
-- [Tabler Icons](https://tabler-icons.io/) for icons
+- [Lucide](https://lucide.dev/) for icons
 - [Radix UI](https://www.radix-ui.com/) and [shadcn](https://ui.shadcn.com/) for UI components
 - [Vercel](https://vercel.com/) for hosting
 
