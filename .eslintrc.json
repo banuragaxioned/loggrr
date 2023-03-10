@@ -17,7 +17,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["tailwindcss"],
-  "extends": ["next/core-web-vitals", "prettier", "plugin:tailwindcss/recommended"],
+  "extends": ["next/core-web-vitals", "prettier"],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "@next/next/no-html-link-for-pages": "off",
