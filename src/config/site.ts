@@ -16,7 +16,7 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Centraal",
+  name: "Loggr",
   description:
     "Beautifully designed components built with Radix UI and Tailwind CSS.",
   mainNav: [

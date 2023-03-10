@@ -9,16 +9,13 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Centraal</title>
-        <meta
-          name="description"
-          content="Centraal App - Open Source Dashboard"
-        />
+        <title>Loggr</title>
+        <meta name="description" content="Loggr App - Open Source Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-full flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1>Welcome to Centraal</h1>
+          <h1>Welcome to Loggr</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="hover:bg-slate/20 flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4  hover:bg-slate-400/20"
