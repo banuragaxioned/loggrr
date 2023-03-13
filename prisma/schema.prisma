@@ -148,16 +148,19 @@ model Task {
 }
 
 model TimeEntry {
-    id        String      @id @default(cuid())
-    type      BillingType
-    time      Int
-    comments  String?
-    status    Status      @default(PUBLISHED)
-    tenantId  String
-    clientId  String
-    projectId String
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
+    id         String      @id @default(cuid())
+    type       BillingType
+    time       Int
+    comments   String?
+    tenantId   String
+    clientId   String
+    projectId  String
+    approved   Boolean     @default(false)
+    approvedBy String?
+    approvedAt DateTime?
+    status     Status      @default(PUBLISHED)
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
 
     tenant  Tenant  @relation(fields: [tenantId], references: [id])
     client  Client  @relation(fields: [clientId], references: [id])
