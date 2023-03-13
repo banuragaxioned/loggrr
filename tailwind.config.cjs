@@ -25,5 +25,6 @@ module.exports = {
       },
     },
   },
+  // @ts-ignore
   plugins: [require("tailwindcss-animate")],
 };
