@@ -16,8 +16,8 @@ export default function Projects() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <div className="todo h-14">Project List</div>
-        <div className="flex gap-4">
+        <h2>Project List</h2>
+        <div className="todo h-14">
           <Link href="/tenant/pid">Project Details</Link>
         </div>
       </section>

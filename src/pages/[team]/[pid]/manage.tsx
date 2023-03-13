@@ -1,7 +1,7 @@
 import { useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function TenantSettings() {
+export default function ManageProject() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { pid } = router.query;
@@ -15,8 +15,8 @@ export default function TenantSettings() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <h2>Settings</h2>
-        <div className="todo h-14">Settings</div>
+        <h2>Manage Projects</h2>
+        <div className="todo h-14">Manage Projects</div>
       </section>
     </div>
   );
