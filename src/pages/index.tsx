@@ -18,7 +18,7 @@ const Home: NextPage = () => {
           <h1>Welcome to Loggr</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
-              className="hover:bg-slate/20 flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4  hover:bg-slate-400/20"
+              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
               href="/dashboard"
             >
               <h3>Dashboard →</h3>
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
               </div>
             </Link>
             <Link
-              className="hover:bg-slate/20 flex max-w-xs flex-col gap-4 rounded-xl bg-slate-400/10 p-4  hover:bg-slate-400/20"
+              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
               href="https://create.t3.gg/en/introduction"
               target="_blank"
             >
@@ -72,7 +72,7 @@ const AuthShowcase: React.FC = () => {
         )}
       </p>
       <button
-        className="rounded-full bg-slate-400/10 px-10 py-3 font-semibold  no-underline transition hover:bg-slate-400/20"
+        className="rounded-full bg-zinc-400/10 px-10 py-3 font-semibold  no-underline transition hover:bg-zinc-400/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}

@@ -27,14 +27,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
           font-family: ${font.style.fontFamily};
         }
       `}</style>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <SessionProvider session={session}>
+      <SessionProvider session={session}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-          <Analytics />
-        </SessionProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+
+        <Analytics />
+      </SessionProvider>
     </>
   );
 };

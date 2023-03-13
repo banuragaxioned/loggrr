@@ -11,7 +11,7 @@
     @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
   }
   h2 {
-    @apply scroll-m-20 text-3xl font-semibold tracking-tight transition-colors dark:border-b-slate-700;
+    @apply scroll-m-20 text-3xl font-semibold tracking-tight transition-colors dark:border-b-zinc-700;
   }
   h3 {
     @apply scroll-m-20 text-2xl font-semibold tracking-tight;
@@ -20,6 +20,6 @@
     @apply container mx-auto grid items-center gap-6 pt-6 pb-8 md:py-10;
   }
   .todo {
-    @apply flex w-full items-center justify-center rounded-md border border-dashed border-slate-300 text-sm dark:border-slate-600;
+    @apply flex w-full items-center justify-center rounded-md border border-dashed border-zinc-300 text-sm dark:border-zinc-600;
   }
 }
