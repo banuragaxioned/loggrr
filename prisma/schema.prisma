@@ -15,6 +15,7 @@ datasource db {
     relationMode = "prisma"
 }
 
+// to be removed
 model Example {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
@@ -22,77 +23,74 @@ model Example {
 }
 
 model Tenant {
-    id         String       @id @default(cuid())
-    name       String
-    status     Status       @default(PUBLISHED)
+    id        String   @id @default(cuid())
+    name      String
+    status    Status   @default(PUBLISHED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     users      User[]
     client     Client[]
     project    Project[]
     milestone  Milestone[]
     task       Task[]
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
     TimeEntry  TimeEntry[]
     UserTags   UserTags[]
     Allocation Allocation[]
 }
 
 model Client {
-    id        String      @id @default(cuid())
+    id        String   @id @default(cuid())
     name      String
     tenantId  String
-    tenant    Tenant      @relation(fields: [tenantId], references: [id])
-    status    Status      @default(PUBLISHED)
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
+    status    Status   @default(PUBLISHED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
     Project   Project[]
     milestone Milestone[]
     task      Task[]
     TimeEntry TimeEntry[]
+    tenant    Tenant      @relation(fields: [tenantId], references: [id])
 
     @@index([tenantId])
 }
 
 model Project {
-    id           String          @id @default(cuid())
-    name         String
-    status       Status          @default(PUBLISHED)
-    tenantId     String
-    tenant       Tenant          @relation(fields: [tenantId], references: [id])
-    clientId     String
-    client       Client          @relation(fields: [clientId], references: [id])
-    milestone    Milestone[]
-    task         Task[]
-    startdate    DateTime
-    enddate      DateTime?
-    type         ProjectType     @default(FIXED)
-    billing      BillingType     @default(NON_BILLABLE)
-    interval     ProjectInterval
-    members      User[]
-    createdAt    DateTime        @default(now())
-    updatedAt    DateTime        @updatedAt
-    TimeEntry    TimeEntry[]
-    Allocation   Allocation?     @relation(fields: [allocationId], references: [id])
-    allocationId String?
+    id        String          @id @default(cuid())
+    name      String
+    status    Status          @default(PUBLISHED)
+    tenantId  String
+    clientId  String
+    startdate DateTime
+    enddate   DateTime?
+    billing   BillingType     @default(NON_BILLABLE)
+    interval  ProjectInterval
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+
+    members    User[]
+    milestone  Milestone[]
+    task       Task[]
+    TimeEntry  TimeEntry[]
+    Allocation Allocation[]
+    tenant     Tenant       @relation(fields: [tenantId], references: [id])
+    client     Client       @relation(fields: [clientId], references: [id])
 
     @@index([tenantId])
     @@index([clientId])
-    @@index([allocationId])
 }
 
 enum ProjectInterval {
-    TIMEBOUND
+    FIXED
     WEEKLY
     MONTHLY
     QUARTERLY
+    HALFYEARLY
     YEARLY
 }
 
-enum ProjectType {
-    FIXED
-    HOURLY
-}
-
+// might not be used
 enum BillingType {
     BILLABLE
     NON_BILLABLE
@@ -110,14 +108,16 @@ model Milestone {
     budget    Float
     status    Status   @default(PUBLISHED)
     tenantId  String
-    tenant    Tenant   @relation(fields: [tenantId], references: [id])
     clientId  String
-    client    Client   @relation(fields: [clientId], references: [id])
     projectId String
-    project   Project  @relation(fields: [projectId], references: [id])
-    task      Task[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    client  Client  @relation(fields: [clientId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
+
+    task Task[]
 
     @@index([tenantId])
     @@index([clientId])
@@ -125,20 +125,21 @@ model Milestone {
 }
 
 model Task {
-    id          String    @id @default(cuid())
+    id          String   @id @default(cuid())
     name        String
-    status      Status    @default(PUBLISHED)
+    status      Status   @default(PUBLISHED)
     budget      Int
     tenantId    String
-    tenant      Tenant    @relation(fields: [tenantId], references: [id])
     clientId    String
-    client      Client    @relation(fields: [clientId], references: [id])
     projectId   String
-    project     Project   @relation(fields: [projectId], references: [id])
     milestoneId String
-    milestone   Milestone @relation(fields: [milestoneId], references: [id])
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    tenant    Tenant    @relation(fields: [tenantId], references: [id])
+    client    Client    @relation(fields: [clientId], references: [id])
+    project   Project   @relation(fields: [projectId], references: [id])
+    milestone Milestone @relation(fields: [milestoneId], references: [id])
 
     @@index([tenantId])
     @@index([clientId])
@@ -153,13 +154,14 @@ model TimeEntry {
     comments  String?
     status    Status      @default(PUBLISHED)
     tenantId  String
-    tenant    Tenant      @relation(fields: [tenantId], references: [id])
     clientId  String
-    client    Client      @relation(fields: [clientId], references: [id])
     projectId String
-    project   Project     @relation(fields: [projectId], references: [id])
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
+
+    tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    client  Client  @relation(fields: [clientId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
     @@index([clientId])
@@ -191,20 +193,29 @@ enum UserStatus {
     INACTIVE
 }
 
+enum AllocationFrequency {
+    DAY
+    TILL_DATE
+    ONGOING
+}
+
 model Allocation {
-    id          String    @id @default(cuid())
+    id          String              @id @default(cuid())
     date        DateTime
     startdate   DateTime
     enddate     DateTime?
-    users       User[]
-    projects    Project[]
-    billable    Int       @default(0)
-    nonbillable Int       @default(0)
-    status      Status    @default(PUBLISHED)
+    frequency   AllocationFrequency @default(DAY)
+    billable    Int                 @default(0)
+    nonbillable Int                 @default(0)
     tenantId    String
-    tenant      Tenant    @relation(fields: [tenantId], references: [id])
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    status      Status              @default(PUBLISHED)
+    createdAt   DateTime            @default(now())
+    updatedAt   DateTime            @updatedAt
+
+    tenant Tenant @relation(fields: [tenantId], references: [id])
+
+    users    User[]
+    projects Project[]
 
     @@index([tenantId])
 }
@@ -213,35 +224,38 @@ model UserTags {
     id        String   @id @default(cuid())
     name      String
     tenantId  String
-    tenant    Tenant   @relation(fields: [tenantId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    User      User?    @relation(fields: [userId], references: [id])
     userId    String?
+
+    tenant Tenant @relation(fields: [tenantId], references: [id])
+    User   User?  @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([userId])
 }
 
 model User {
-    id            String      @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?     @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
-    UserTags      UserTags[]
-    status        UserStatus  @default(ACTIVE)
-    accounts      Account[]
-    sessions      Session[]
-    tenant        Tenant?     @relation(fields: [tenantId], references: [id])
-    roles         UserRole[]
     tenantId      String?
-    project       Project?    @relation(fields: [projectId], references: [id])
     projectId     String?
-    createdAt     DateTime    @default(now())
-    updatedAt     DateTime    @updatedAt
-    Allocation    Allocation? @relation(fields: [allocationId], references: [id])
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
     allocationId  String?
+    status        UserStatus @default(ACTIVE)
+
+    tenant     Tenant?     @relation(fields: [tenantId], references: [id])
+    project    Project?    @relation(fields: [projectId], references: [id])
+    allocation Allocation? @relation(fields: [allocationId], references: [id])
+
+    userTags UserTags[]
+    accounts Account[]
+    sessions Session[]
+    roles    UserRole[]
 
     @@index([tenantId])
     @@index([projectId])
