@@ -19,7 +19,7 @@ const Home: NextPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
-              href="/dashboard"
+              href="/tenant"
             >
               <h3>Dashboard →</h3>
               <div className="text-lg">

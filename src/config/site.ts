@@ -24,8 +24,8 @@ export const siteConfig: SiteConfig = {
       href: "/",
     },
     {
-      title: "Dashboard",
-      href: "/dashboard",
+      title: "Tenant",
+      href: "/tenant",
     },
   ],
   links: {
