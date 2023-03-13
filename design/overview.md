@@ -45,7 +45,7 @@ graph TD;
     domain.com--Unauthenticated--->/login;
     domain.com-->/tenantname;
     domain.com-->/profile;
-    /tenantname-->/logout;
+    domain.com-->/logout;
     /tenantname-->/settings;
     /tenantname-->/members;
     /tenantname-->/billing;

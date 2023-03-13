@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
@@ -15,6 +16,12 @@ export default function Dashboard() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section className="lg:basis-3/4">
+        <div className="flex gap-4">
+          <Link href="/tenant/settings">Settings</Link>
+          <Link href="/tenant/projects">Project List</Link>
+          <Link href="/tenant/billing">Billing</Link>
+          <Link href="/tenant/members">Members</Link>
+        </div>
         <div className="todo h-14">Calendar</div>
         <div className="todo h-20">Add Time Combobox</div>
         <span className="todo h-80">
