@@ -2,7 +2,7 @@ import { useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Projects() {
+export default function Project() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { pid } = router.query;
@@ -16,10 +16,9 @@ export default function Projects() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <h2>Project List</h2>
-        <div className="todo h-14">
-          <Link href="/tenant/pid">Project Details</Link>
-        </div>
+        <h2>Project {pid}</h2>
+        <Link href={router.asPath + "/manage"}>Manage</Link>
+        <div className="todo h-14">Project Details page</div>
       </section>
     </div>
   );

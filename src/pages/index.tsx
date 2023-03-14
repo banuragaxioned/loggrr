@@ -10,23 +10,13 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Loggr</title>
-        <meta name="description" content="Loggr App - Open Source Dashboard" />
+        <meta name="description" content="Loggr App" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-full flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1>Welcome to Loggr</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
-              href="/tenant"
-            >
-              <h3>Dashboard →</h3>
-              <div className="text-lg">
-                The application lives here. Right now, its only layouts and
-                static components.
-              </div>
-            </Link>
             <Link
               className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
               href="https://create.t3.gg/en/introduction"
@@ -39,9 +29,7 @@ const Home: NextPage = () => {
               </div>
             </Link>
           </div>
-          <div className="flex flex-col items-center gap-2">
-            <AuthShowcase />
-          </div>
+          <AuthShowcase />
         </div>
       </main>
     </>
@@ -59,18 +47,31 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl ">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {myTenantData && (
-          <span>
-            <br />
-            Member of:{" "}
-            {myTenantData.map((tenant) => (
-              <span key={tenant.id}>{tenant.name}</span>
-            ))}
-          </span>
-        )}
-      </p>
+      {myTenantData && (
+        <span>
+          <div className="container flex flex-col items-center justify-center gap-12">
+            <h2>
+              Welcome back,{" "}
+              {sessionData && <span>{sessionData.user?.name}</span>} 👋
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+              {myTenantData.map((tenant) => (
+                <Link
+                  key={tenant.id}
+                  className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
+                  href={tenant.slug}
+                >
+                  <h3>{tenant.name}</h3>
+                  <div className="text-lg">
+                    The application lives here. Right now, its only layouts and
+                    static components.
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </span>
+      )}
       <button
         className="rounded-full bg-zinc-400/10 px-10 py-3 font-semibold  no-underline transition hover:bg-zinc-400/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}

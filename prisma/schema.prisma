@@ -23,38 +23,38 @@ model Example {
 }
 
 model Tenant {
-    id        Int   @id @default(autoincrement())
-    name      String
-    status    Status   @default(PUBLISHED)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    users      User[]
+    id         Int          @id @default(autoincrement())
+    name       String
+    slug       String       @unique
+    status     Status       @default(PUBLISHED)
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    users      User[]       @relation("UserTenants")
     client     Client[]
     project    Project[]
     milestone  Milestone[]
     task       Task[]
-    TimeEntry  TimeEntry[]
-    UserTags   UserTags[]
-    Allocation Allocation[]
+    timeEntry  TimeEntry[]
+    userTags   UserTags[]
+    allocation Allocation[]
 }
 
 model Client {
-    id        Int   @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     name      String
     tenantId  Int
     status    Status   @default(PUBLISHED)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Project   Project[]
-    tenant    Tenant      @relation(fields: [tenantId], references: [id])
+    project Project[]
+    tenant  Tenant    @relation(fields: [tenantId], references: [id])
 
     @@index([tenantId])
 }
 
 model Project {
-    id        Int          @id @default(autoincrement())
+    id        Int             @id @default(autoincrement())
     name      String
     status    Status          @default(PUBLISHED)
     tenantId  Int
@@ -69,10 +69,10 @@ model Project {
 
     milestone  Milestone[]
     task       Task[]
-    TimeEntry  TimeEntry[]
-    Allocation Allocation[]
-    Tenant     Tenant       @relation(fields: [tenantId], references: [id])
-    Client     Client       @relation(fields: [clientId], references: [id])
+    timeEntry  TimeEntry[]
+    allocation Allocation[]
+    tenant     Tenant       @relation(fields: [tenantId], references: [id])
+    client     Client       @relation(fields: [clientId], references: [id])
     //TODO: add owner relation
 
     @@index([tenantId])
@@ -101,7 +101,7 @@ enum Role {
 }
 
 model Milestone {
-    id        Int   @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     tenantId  Int
     projectId Int
     name      String
@@ -114,15 +114,15 @@ model Milestone {
 
     // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
-    tenant   Tenant  @relation(fields: [tenantId], references: [id])
-    project  Project @relation(fields: [projectId], references: [id])
+    tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
 }
 
 model Task {
-    id        Int   @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     tenantId  Int
     name      String
     status    Status   @default(PUBLISHED)
@@ -139,7 +139,7 @@ model Task {
 }
 
 model TimeEntry {
-    id         Int      @id @default(autoincrement())
+    id         Int         @id @default(autoincrement())
     projectId  Int
     tenantId   Int
     type       BillingType
@@ -160,7 +160,7 @@ model TimeEntry {
 }
 
 model UserRole {
-    id        Int   @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     role      Role     @default(REGULAR)
     userId    Int
     tenantId  Int
@@ -190,20 +190,20 @@ enum AllocationFrequency {
 }
 
 model Allocation {
-    id          Int                 @id @default(autoincrement())
-    date        DateTime 
+    id          Int       @id @default(autoincrement())
+    date        DateTime
     enddate     DateTime?
-    billable    Int                 @default(0)
-    nonbillable Int                 @default(0)
+    billable    Int       @default(0)
+    nonbillable Int       @default(0)
     tenantId    Int
-    status      Status              @default(PUBLISHED)
-    createdAt   DateTime            @default(now())
-    updatedAt   DateTime            @updatedAt
-    
+    status      Status    @default(PUBLISHED)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
     // If frequency is ONGOING and no enddate then it's indefinite
     // If the frequency is ONGOING and enddate is present then it's a fixed duration
-    frequency   AllocationFrequency @default(DAY) 
-    
+    frequency AllocationFrequency @default(DAY)
+
     tenant Tenant @relation(fields: [tenantId], references: [id])
 
     users    User[]
@@ -213,7 +213,7 @@ model Allocation {
 }
 
 model UserTags {
-    id        Int   @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     name      String
     tenantId  Int
     createdAt DateTime @default(now())
@@ -221,38 +221,37 @@ model UserTags {
     userId    Int?
 
     tenant Tenant @relation(fields: [tenantId], references: [id])
-    User   User?  @relation(fields: [userId], references: [id])
+    user   User?  @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([userId])
 }
 
 model User {
-    id            Int     @id @default(autoincrement())
+    id            Int        @id @default(autoincrement())
     name          String?
     email         String?    @unique
     emailVerified DateTime?
     image         String?
-    tenantId      Int?
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt
     allocationId  Int?
     status        UserStatus @default(ACTIVE)
 
-    tenant     Tenant?     @relation(fields: [tenantId], references: [id])
     allocation Allocation? @relation(fields: [allocationId], references: [id])
 
+    tenantId Tenant[]   @relation("UserTenants")
     userTags UserTags[]
     accounts Account[]
     sessions Session[]
     roles    UserRole[]
 
-    @@index([tenantId])
+    // @@index([tenantId])
     @@index([allocationId])
 }
 
 model Session {
-    id           Int   @id @default(autoincrement())
+    id           Int      @id @default(autoincrement())
     sessionToken String   @unique
     userId       Int
     expires      DateTime
@@ -271,7 +270,7 @@ model VerificationToken {
 
 // Necessary for Next auth
 model Account {
-    id                Int  @id @default(autoincrement())
+    id                Int     @id @default(autoincrement())
     userId            Int
     type              String
     provider          String
