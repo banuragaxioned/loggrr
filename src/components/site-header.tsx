@@ -13,11 +13,7 @@ export function SiteHeader() {
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
-            <Link
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link href={siteConfig.links.help} target="_blank" rel="noreferrer">
               <div
                 className={buttonVariants({
                   size: "sm",
@@ -25,8 +21,8 @@ export function SiteHeader() {
                   className: "text-zinc-700 dark:text-zinc-400",
                 })}
               >
-                <Icons.twitter className="h-5 w-5 fill-current" />
-                <span className="sr-only">Twitter</span>
+                <Icons.help className="h-5 w-5" />
+                <span className="sr-only">Help</span>
               </div>
             </Link>
             <ThemeToggle />
