@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 export default function GlobalReports() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { pid } = router.query;
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -18,9 +17,9 @@ export default function GlobalReports() {
       <section>
         <h2>Global Reports</h2>
         <div className="flex gap-4">
-          <Link href="/tenant/reports/logged">Logged</Link>
-          <Link href="/tenant/reports/assigned">Assigned</Link>
-          <Link href="/tenant/reports/available">Available</Link>
+          <Link href={router.asPath + "/logged"}>Logged</Link>
+          <Link href={router.asPath + "/assigned"}>Assigned</Link>
+          <Link href={router.asPath + "/available"}>Available</Link>
         </div>
         <div className="todo h-14">Global Reports</div>
       </section>
