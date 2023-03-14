@@ -9,8 +9,7 @@ interface SiteConfig {
   description: string;
   mainNav: NavItem[];
   links: {
-    twitter: string;
-    docs: string;
+    help: string;
   };
 }
 
@@ -23,13 +22,8 @@ export const siteConfig: SiteConfig = {
       title: "Home",
       href: "/",
     },
-    {
-      title: "Tenant",
-      href: "/tenant",
-    },
   ],
   links: {
-    twitter: "https://twitter.com/shadcn",
-    docs: "https://ui.shadcn.com",
+    help: "mailto:loggr@axioned.com",
   },
 };
