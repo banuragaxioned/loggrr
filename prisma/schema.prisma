@@ -17,13 +17,13 @@ datasource db {
 
 // to be removed
 model Example {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Tenant {
-    id        String   @id @default(cuid())
+    id        Int   @id @default(autoincrement())
     name      String
     status    Status   @default(PUBLISHED)
     createdAt DateTime @default(now())
@@ -40,28 +40,26 @@ model Tenant {
 }
 
 model Client {
-    id        String   @id @default(cuid())
+    id        Int   @id @default(autoincrement())
     name      String
-    tenantId  String
+    tenantId  Int
     status    Status   @default(PUBLISHED)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     Project   Project[]
-    milestone Milestone[]
-    task      Task[]
-    TimeEntry TimeEntry[]
     tenant    Tenant      @relation(fields: [tenantId], references: [id])
 
     @@index([tenantId])
 }
 
 model Project {
-    id        String          @id @default(cuid())
+    id        Int          @id @default(autoincrement())
     name      String
     status    Status          @default(PUBLISHED)
-    tenantId  String
-    clientId  String
+    tenantId  Int
+    ownerId   Int
+    clientId  Int
     startdate DateTime
     enddate   DateTime?
     billing   BillingType     @default(NON_BILLABLE)
@@ -69,13 +67,13 @@ model Project {
     createdAt DateTime        @default(now())
     updatedAt DateTime        @updatedAt
 
-    members    User[]
     milestone  Milestone[]
     task       Task[]
     TimeEntry  TimeEntry[]
     Allocation Allocation[]
-    tenant     Tenant       @relation(fields: [tenantId], references: [id])
-    client     Client       @relation(fields: [clientId], references: [id])
+    Tenant     Tenant       @relation(fields: [tenantId], references: [id])
+    Client     Client       @relation(fields: [clientId], references: [id])
+    //TODO: add owner relation
 
     @@index([tenantId])
     @@index([clientId])
@@ -103,58 +101,50 @@ enum Role {
 }
 
 model Milestone {
-    id        String   @id @default(cuid())
+    id        Int   @id @default(autoincrement())
+    tenantId  Int
+    projectId Int
     name      String
     budget    Float
     status    Status   @default(PUBLISHED)
-    tenantId  String
-    clientId  String
-    projectId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    startDate DateTime
+    endDate   DateTime
 
-    tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    client  Client  @relation(fields: [clientId], references: [id])
-    project Project @relation(fields: [projectId], references: [id])
+    // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
-    task Task[]
+    tenant   Tenant  @relation(fields: [tenantId], references: [id])
+    project  Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
-    @@index([clientId])
     @@index([projectId])
 }
 
 model Task {
-    id          String   @id @default(cuid())
-    name        String
-    status      Status   @default(PUBLISHED)
-    budget      Int
-    tenantId    String
-    clientId    String
-    projectId   String
-    milestoneId String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id        Int   @id @default(autoincrement())
+    tenantId  Int
+    name      String
+    status    Status   @default(PUBLISHED)
+    budget    Int
+    projectId Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    tenant    Tenant    @relation(fields: [tenantId], references: [id])
-    client    Client    @relation(fields: [clientId], references: [id])
-    project   Project   @relation(fields: [projectId], references: [id])
-    milestone Milestone @relation(fields: [milestoneId], references: [id])
+    tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
-    @@index([clientId])
     @@index([projectId])
-    @@index([milestoneId])
 }
 
 model TimeEntry {
-    id         String      @id @default(cuid())
+    id         Int      @id @default(autoincrement())
+    projectId  Int
+    tenantId   Int
     type       BillingType
     time       Int
     comments   String?
-    tenantId   String
-    clientId   String
-    projectId  String
     approved   Boolean     @default(false)
     approvedBy String?
     approvedAt DateTime?
@@ -163,19 +153,17 @@ model TimeEntry {
     updatedAt  DateTime    @updatedAt
 
     tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    client  Client  @relation(fields: [clientId], references: [id])
     project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
-    @@index([clientId])
     @@index([projectId])
 }
 
 model UserRole {
-    id        String   @id @default(cuid())
+    id        Int   @id @default(autoincrement())
     role      Role     @default(REGULAR)
-    userId    String
-    tenantId  String
+    userId    Int
+    tenantId  Int
     user      User     @relation(fields: [userId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -198,23 +186,24 @@ enum UserStatus {
 
 enum AllocationFrequency {
     DAY
-    TILL_DATE
     ONGOING
 }
 
 model Allocation {
-    id          String              @id @default(cuid())
-    date        DateTime
-    startdate   DateTime
+    id          Int                 @id @default(autoincrement())
+    date        DateTime 
     enddate     DateTime?
-    frequency   AllocationFrequency @default(DAY)
     billable    Int                 @default(0)
     nonbillable Int                 @default(0)
-    tenantId    String
+    tenantId    Int
     status      Status              @default(PUBLISHED)
     createdAt   DateTime            @default(now())
     updatedAt   DateTime            @updatedAt
-
+    
+    // If frequency is ONGOING and no enddate then it's indefinite
+    // If the frequency is ONGOING and enddate is present then it's a fixed duration
+    frequency   AllocationFrequency @default(DAY) 
+    
     tenant Tenant @relation(fields: [tenantId], references: [id])
 
     users    User[]
@@ -224,12 +213,12 @@ model Allocation {
 }
 
 model UserTags {
-    id        String   @id @default(cuid())
+    id        Int   @id @default(autoincrement())
     name      String
-    tenantId  String
+    tenantId  Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    userId    String?
+    userId    Int?
 
     tenant Tenant @relation(fields: [tenantId], references: [id])
     User   User?  @relation(fields: [userId], references: [id])
@@ -239,20 +228,18 @@ model UserTags {
 }
 
 model User {
-    id            String     @id @default(cuid())
+    id            Int     @id @default(autoincrement())
     name          String?
     email         String?    @unique
     emailVerified DateTime?
     image         String?
-    tenantId      String?
-    projectId     String?
+    tenantId      Int?
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt
-    allocationId  String?
+    allocationId  Int?
     status        UserStatus @default(ACTIVE)
 
     tenant     Tenant?     @relation(fields: [tenantId], references: [id])
-    project    Project?    @relation(fields: [projectId], references: [id])
     allocation Allocation? @relation(fields: [allocationId], references: [id])
 
     userTags UserTags[]
@@ -261,14 +248,13 @@ model User {
     roles    UserRole[]
 
     @@index([tenantId])
-    @@index([projectId])
     @@index([allocationId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           Int   @id @default(autoincrement())
     sessionToken String   @unique
-    userId       String
+    userId       Int
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -285,8 +271,8 @@ model VerificationToken {
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
+    id                Int  @id @default(autoincrement())
+    userId            Int
     type              String
     provider          String
     providerAccountId String
