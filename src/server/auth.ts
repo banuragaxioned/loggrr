@@ -22,7 +22,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-      tenant: Object;
+      tenant: string[];
     } & DefaultSession["user"];
   }
 
@@ -50,9 +50,12 @@ export const authOptions: NextAuthOptions = {
           where: { users: { some: { id: Number(user.id) } } },
         });
 
+        // Extract the Tenant slugs from the query result and store them in an array
+        const tenantSlugs = tenantList.map((tenant) => tenant.slug);
+
         // Add the Tenant data to the session object
-        if (tenantList) {
-          session.user.tenant = tenantList;
+        if (tenantSlugs) {
+          session.user.tenant = tenantSlugs;
         }
       }
       return session;
