@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
 
         // Retrieve the Tenant data for the current user
         const tenantList = await prisma.tenant.findMany({
-          // where: { id: Number(user.id) },
           where: { users: { some: { id: Number(user.id) } } },
         });
 
