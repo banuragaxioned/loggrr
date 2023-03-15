@@ -22,6 +22,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
+      tenant: Object;
     } & DefaultSession["user"];
   }
 
@@ -39,10 +40,23 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
+    async session({ session, user }) {
       if (session.user) {
+        // Add the user ID to the session object
         session.user.id = user.id;
-        // session.user.role = user.role; <-- put other properties on the session here
+
+        // Retrieve the Tenant data for the current user
+        const tenantList = await prisma.tenant.findMany({
+          // where: { id: Number(user.id) },
+          where: { users: { some: { id: Number(user.id) } } },
+        });
+
+        // Extract the UserRole and Tenant data from the query result
+        console.log(tenantList)
+        // Add the Tenant data to the session object
+        if (tenantList) {
+          session.user.tenant = tenantList;
+        }
       }
       return session;
     },
