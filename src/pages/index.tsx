@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Loggr</title>
         <meta name="description" content="Loggr App" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <main className="flex min-h-full flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
