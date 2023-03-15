@@ -51,8 +51,6 @@ export const authOptions: NextAuthOptions = {
           where: { users: { some: { id: Number(user.id) } } },
         });
 
-        // Extract the UserRole and Tenant data from the query result
-        console.log(tenantList)
         // Add the Tenant data to the session object
         if (tenantList) {
           session.user.tenant = tenantList;
