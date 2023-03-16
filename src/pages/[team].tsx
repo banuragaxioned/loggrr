@@ -8,17 +8,18 @@ import { api } from "../utils/api";
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { data: getTenantDetailsData } = api.tenant.getTenantDetails.useQuery(
-    undefined, // no input
-    { enabled: session?.user !== undefined }
-  );
+  const { data: validateTenantAccessData } =
+    api.tenant.validateTenantAccess.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   if (
     status === "unauthenticated" ||
-    getTenantDetailsData?.slug !== router.asPath.slice(1)
+    validateTenantAccessData?.slug !== router.asPath.slice(1)
   ) {
     return <Unavailable />;
   }

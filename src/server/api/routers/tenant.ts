@@ -13,11 +13,11 @@ export const tenantRouter = createTRPCRouter({
     return tenants;
   }),
   // Get a single Tenant by slug
-  getTenantDetails: protectedProcedure.query(async ({ ctx, input }) => {
+  validateTenantAccess: protectedProcedure.query(async ({ ctx, input }) => {
     const slug = input;
     const userId = Number(ctx.session.user.id);
     const tenant = await ctx.prisma.tenant.findFirst({
-      where: { slug, users: { some: { id: userId } } },
+      where: { slug, users: { some: { id: userId } } }, // This works as an OR filter?
     });
     return tenant;
   }),

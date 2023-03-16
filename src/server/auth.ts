@@ -54,9 +54,7 @@ export const authOptions: NextAuthOptions = {
         const tenantSlugs = tenantList.map((tenant) => tenant.slug);
 
         // Add the Tenant data to the session object
-        if (tenantSlugs) {
           session.user.tenant = tenantSlugs;
-        }
       }
       return session;
     },
