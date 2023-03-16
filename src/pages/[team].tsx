@@ -5,30 +5,23 @@ import Unavailable from "@/components/unavailable";
 
 import { api } from "../utils/api";
 
-// const helloWithArgs = trpc.hello.useQuery({ text: 'client' });
-
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const currentTenant = router.query.team as string;
   const validatedData = api.tenant.validateTenantAccess.useQuery(
-    { text: router.asPath.slice(1) },
-    {
-      enabled: session?.user !== undefined,
-    }
+    { text: currentTenant },
+    { enabled: session?.user !== undefined }
   );
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
-
-  console.log("validatedData", validatedData.data);
+  console.log(router.query.team);
 
   if (
     status === "unauthenticated" ||
-    !validatedData ||
-    !validatedData.data ||
-    !validatedData.data.slug ||
-    validatedData.data.slug !== router.asPath.slice(1)
+    validatedData.data?.slug !== router.query.team
   ) {
     return <Unavailable />;
   }
