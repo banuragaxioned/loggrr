@@ -141,3 +141,6 @@ const enforceUserIsAuthorized = t.middleware(({ ctx, next }) => {
     },
   });
 });
+
+// TODO: maybe this can check for enforceUserIsAuthed as well?
+export const authorisedProcedure = t.procedure.use(enforceUserIsAuthorized);
