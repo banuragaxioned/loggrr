@@ -1,30 +1,20 @@
 import Link from "next/link";
-import { useSession, getSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import Unavailable from "@/components/unavailable";
-
-import { api } from "../utils/api";
+import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useRouter } from "next/router";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
   const router = useRouter();
-  const currentTenant = router.query.team as string;
-  const validatedData = api.tenant.validateTenantAccess.useQuery(
-    { text: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
+  const { isLoading, isInvalid } = useValidateTenantAccess();
 
-  if (status === "loading") {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
-  console.log(router.query.team);
 
-  if (
-    status === "unauthenticated" ||
-    validatedData.data?.slug !== router.query.team
-  ) {
+  if (isInvalid) {
     return <Unavailable />;
   }
+
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section className="lg:basis-3/4">
@@ -36,6 +26,7 @@ export default function Dashboard() {
           <Link href={router.asPath + "/billing"}>Billing</Link>
           <Link href={router.asPath + "/settings"}>Settings</Link>
         </div>
+        <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
         <div className="todo h-20">Add Time Combobox</div>
         <span className="todo h-80">
