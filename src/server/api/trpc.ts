@@ -124,3 +124,23 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+/**
+ * TODO: Reusable middleware that enforces the current user belongs to the
+ * tenant they are requesting data for.
+ */
+const enforceUserIsAuthorized = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  // TODO: Verify if the current user belongs to the tenant (dynamic route param) they are requesting the data from
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+// TODO: maybe this can check for enforceUserIsAuthed as well?
+export const authorisedProcedure = t.procedure.use(enforceUserIsAuthorized);

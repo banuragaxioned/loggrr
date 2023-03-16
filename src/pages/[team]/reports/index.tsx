@@ -1,16 +1,18 @@
-import { useSession, getSession } from "next-auth/react";
+import Unavailable from "@/components/unavailable";
+import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function GlobalReports() {
-  const { data: session, status } = useSession();
+  const { isLoading, isInvalid } = useValidateTenantAccess();
   const router = useRouter();
-  if (status === "loading") {
+
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
-  if (status === "unauthenticated") {
-    return <p>Access Denied</p>;
+  if (isInvalid) {
+    return <Unavailable />;
   }
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
