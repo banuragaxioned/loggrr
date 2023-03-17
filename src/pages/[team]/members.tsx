@@ -34,9 +34,9 @@ export default function Members() {
               key={member.id}
               className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
             >
-              <span className="flex place-items-center gap-4">
+              <span className="place-cent flex gap-4">
                 <Image
-                  src={member.image}
+                  src={member.image ? member.image : "/favicon.svg"}
                   alt="profile"
                   width={30}
                   height={30}
