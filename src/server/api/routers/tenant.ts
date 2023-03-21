@@ -28,17 +28,58 @@ export const tenantRouter = createTRPCRouter({
       });
       return tenant;
     }),
+
   // Get all members for a Tenant
   getTenantMembers: protectedProcedure
-    .input(z.object({ text: z.string() }))
+    .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const members = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } },
+
+      const slug = input.slug;
+      const userId = +ctx.session.user.id;
+
+      // get all members for a tenant by slug
+      const members = await ctx.prisma.tenant.findUnique({
+        where: { slug: slug },
         include: { users: true },
-        // select: { users: { select: { id: true, name: true, image: true } } },
       });
+
       return members;
+    }),
+
+  // connect user to tenant
+  connectUserToTenant: protectedProcedure
+    .input(z.object({
+      tenant: z.string(),
+      email: z.string().email()
+    }))
+    .mutation(async ({ ctx, input }) => {
+      
+      const userEmail = input.email;
+      
+      const tenant = await ctx.prisma.tenant.findUnique({ where: { slug: input.tenant } });
+
+      if (!tenant) {
+        throw new Error("Tenant not found");
+      }
+      
+      const user = await ctx.prisma.user.findUnique({
+        where: { email: userEmail },
+      });
+
+      // TODO: Invite user to tenant if not found
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const connectUser = await ctx.prisma.tenant.update({
+        where: { id: tenant.id },
+        data: {
+          users: {
+            connect: { id: user.id },
+          },
+        },
+      });
+      
+      return connectUser;
     }),
 });
