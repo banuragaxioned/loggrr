@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-
-type dataType = {
-  input: string;
-};
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const tenantRouter = createTRPCRouter({
   // Get all Tenants for the current user
@@ -34,9 +30,7 @@ export const tenantRouter = createTRPCRouter({
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
       const slug = input.slug;
-      const userId = +ctx.session.user.id;
 
-      // get all members for a tenant by slug
       const members = await ctx.prisma.tenant.findUnique({
         where: { slug: slug },
         include: { users: true },
@@ -83,18 +77,5 @@ export const tenantRouter = createTRPCRouter({
       });
 
       return connectUser;
-    }),
-
-  getTenantClients: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } },
-        include: { client: true },
-        // select: { users: { select: { id: true, name: true, image: true } } },
-      });
-      return clients;
     }),
 });

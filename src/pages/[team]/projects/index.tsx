@@ -10,7 +10,11 @@ export default function Projects() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const memberData = api.tenant.getTenantClients.useQuery(
+  const clientList = api.project.getClients.useQuery(
+    { text: currentTenant },
+    { enabled: session?.user !== undefined }
+  );
+  const projectList = api.project.getProjects.useQuery(
     { text: currentTenant },
     { enabled: session?.user !== undefined }
   );
@@ -29,8 +33,8 @@ export default function Projects() {
       <section>
         <h2>Projects</h2>
         <ul className="flex flex-col gap-4">
-          {memberData.data &&
-            memberData.data.client.map((project) => (
+          {projectList.data &&
+            projectList.data.project.map((project) => (
               <Link key={project.id} href={router.asPath + "/" + project.id}>
                 <li className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20">
                   {project.name}
@@ -40,8 +44,8 @@ export default function Projects() {
         </ul>
         <h3>Client list</h3>
         <ul className="flex flex-col gap-4">
-          {memberData.data &&
-            memberData.data.client.map((client) => (
+          {clientList.data &&
+            clientList.data.client.map((client) => (
               <li
                 key={client.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
