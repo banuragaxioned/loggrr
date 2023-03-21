@@ -15,28 +15,22 @@ datasource db {
     relationMode = "prisma"
 }
 
-// to be removed
-model Example {
+model Tenant {
     id        Int      @id @default(autoincrement())
+    name      String
+    slug      String   @unique
+    status    Status   @default(PUBLISHED)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-}
 
-model Tenant {
-    id         Int          @id @default(autoincrement())
-    name       String
-    slug       String       @unique
-    status     Status       @default(PUBLISHED)
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    users      User[]       @relation("UserTenants")
-    client     Client[]
-    project    Project[]
-    milestone  Milestone[]
-    task       Task[]
-    timeEntry  TimeEntry[]
-    userTags   UserTags[]
-    allocation Allocation[]
+    Users      User[]       @relation("UserTenants")
+    Client     Client[]
+    Project    Project[]
+    Milestone  Milestone[]
+    Task       Task[]
+    TimeEntry  TimeEntry[]
+    UserTags   UserTags[]
+    Allocation Allocation[]
 }
 
 model Client {
@@ -47,8 +41,8 @@ model Client {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    project Project[]
-    tenant  Tenant    @relation(fields: [tenantId], references: [id])
+    Project Project[]
+    Tenant  Tenant    @relation(fields: [tenantId], references: [id])
 
     @@index([tenantId])
 }
@@ -67,12 +61,12 @@ model Project {
     createdAt DateTime        @default(now())
     updatedAt DateTime        @updatedAt
 
-    milestone  Milestone[]
-    task       Task[]
-    timeEntry  TimeEntry[]
-    allocation Allocation[]
-    tenant     Tenant       @relation(fields: [tenantId], references: [id])
-    client     Client       @relation(fields: [clientId], references: [id])
+    Milestone  Milestone[]
+    Task       Task[]
+    TimeEntry  TimeEntry[]
+    Allocation Allocation[]
+    Tenant     Tenant       @relation(fields: [tenantId], references: [id])
+    Client     Client       @relation(fields: [clientId], references: [id])
     //TODO: add owner relation
 
     @@index([tenantId])
@@ -115,8 +109,8 @@ model Milestone {
 
     // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
-    tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    project Project @relation(fields: [projectId], references: [id])
+    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    Project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
@@ -132,8 +126,8 @@ model Task {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    project Project @relation(fields: [projectId], references: [id])
+    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    Project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
@@ -153,8 +147,8 @@ model TimeEntry {
     createdAt  DateTime    @default(now())
     updatedAt  DateTime    @updatedAt
 
-    tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    project Project @relation(fields: [projectId], references: [id])
+    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    Project Project @relation(fields: [projectId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
@@ -207,9 +201,9 @@ model Allocation {
     // If the frequency is ONGOING and enddate is present then it's a fixed duration
     frequency AllocationFrequency @default(DAY)
 
-    tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    project Project @relation(fields: [projectId], references: [id])
-    user    User    @relation(fields: [userId], references: [id])
+    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    Project Project @relation(fields: [projectId], references: [id])
+    User    User    @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
@@ -225,7 +219,7 @@ model UserTags {
     updatedAt DateTime @updatedAt
     users     User[]
 
-    tenant Tenant @relation(fields: [tenantId], references: [id])
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
 
     @@index([tenantId])
 }
@@ -241,11 +235,11 @@ model User {
     allocationId    Int?
     status          UserStatus @default(ACTIVE)
 
-    tenantId   Tenant[]     @relation("UserTenants")
-    userTags   UserTags[]
-    accounts   Account[]
-    sessions   Session[]
-    roles      UserRole[]
+    TenantId   Tenant[]     @relation("UserTenants")
+    UserTags   UserTags[]
+    Accounts   Account[]
+    Sessions   Session[]
+    Roles      UserRole[]
     Allocation Allocation[]
 
     @@index([allocationId])
@@ -256,7 +250,8 @@ model Session {
     sessionToken String   @unique
     userId       Int
     expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }

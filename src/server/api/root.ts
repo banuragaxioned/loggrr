@@ -1,6 +1,5 @@
 import { projectRouter } from './routers/project';
 import { createTRPCRouter } from "./trpc";
-import { exampleRouter } from "./routers/example";
 import { tenantRouter } from "./routers/tenant";
 
 /**
@@ -9,7 +8,6 @@ import { tenantRouter } from "./routers/tenant";
  * All routers added in /api/routers should be manually added here
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
   tenant: tenantRouter,
   project: projectRouter,
 });
