@@ -6,7 +6,6 @@ import { getInitials } from "@/utils/helper";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
 
 export default function Members() {
   const { data: session, status } = useSession();
@@ -16,8 +15,6 @@ export default function Members() {
     { text: currentTenant },
     { enabled: session?.user !== undefined }
   );
-  console.log(memberData.data?.users);
-
   const { isLoading, isInvalid } = useValidateTenantAccess();
 
   if (isLoading) {

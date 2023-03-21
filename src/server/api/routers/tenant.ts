@@ -41,4 +41,16 @@ export const tenantRouter = createTRPCRouter({
       });
       return members;
     }),
+  getTenantClients: protectedProcedure
+    .input(z.object({ text: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const slug = input.text;
+      const userId = Number(ctx.session.user.id);
+      const clients = await ctx.prisma.tenant.findFirst({
+        where: { slug, users: { some: { id: userId } } },
+        include: { client: true },
+        // select: { users: { select: { id: true, name: true, image: true } } },
+      });
+      return clients;
+    }),
 });
