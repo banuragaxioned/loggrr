@@ -12,10 +12,10 @@ export function getInitials(name: string): string {
   const initials = name
     .match(/(^\S\S?|\s\S)?/g)
     ?.map((v) => v.trim())
-    .join('')
+    .join("")
     .match(/(^\S|\S$)?/g)
-    ?.join('')
+    ?.join("")
     .toLocaleUpperCase();
 
-  return initials ?? '';
+  return initials ?? "";
 }

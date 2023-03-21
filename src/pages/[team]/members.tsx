@@ -32,20 +32,26 @@ export default function Members() {
       <section>
         <h2>Members</h2>
         <ul>
-          {memberData.data && memberData.data.users.map((member) => (
-            <li
-              key={member.id}
-              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
-            >
-              <span className="flex place-items-center gap-4">
-                <Avatar>
-                  <AvatarImage src={member.image ?? ""} alt={member.name ?? ""} />
-                  <AvatarFallback>{getInitials(member.name ?? 'Loggr User')}</AvatarFallback>
-                </Avatar>
-                {member.name}
-              </span>
-            </li>
-          ))}
+          {memberData.data &&
+            memberData.data.users.map((member) => (
+              <li
+                key={member.id}
+                className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
+              >
+                <span className="flex place-items-center gap-4">
+                  <Avatar>
+                    <AvatarImage
+                      src={member.image ?? ""}
+                      alt={member.name ?? ""}
+                    />
+                    <AvatarFallback>
+                      {getInitials(member.name ?? "Loggr User")}
+                    </AvatarFallback>
+                  </Avatar>
+                  {member.name}
+                </span>
+              </li>
+            ))}
         </ul>
       </section>
     </div>
