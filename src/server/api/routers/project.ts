@@ -46,4 +46,29 @@ export const projectRouter = createTRPCRouter({
       return client;
     }
   ),
+
+  // Create a new Project
+  // createProject: protectedProcedure
+  //   .input(z.object({ slug: z.string(), pname: z.string(), cid: z.number(), startdate: z.date(), interval: z.string() }))
+  //   .mutation(async ({ ctx, input }) => {
+  //     const slug = input.slug;
+  //     const clientId = input.cid;
+  //     const projectName = input.pname;
+  //     const startdate = input.startdate;
+  //     const interval = input.interval;
+  //     const project = await ctx.prisma.project.create({
+  //       data: {
+  //         name: projectName,
+  //         client: clientId,
+  //         ownerId: 1,
+  //         startdate: startdate,
+  //         interval: interval,
+  //         tenant: {
+  //           connect: { slug },
+  //         },
+  //       },
+  //     });
+  //     return project;
+  //   }
+  // ),
 });
