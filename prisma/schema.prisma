@@ -237,8 +237,8 @@ model User {
 
     TenantId   Tenant[]     @relation("UserTenants")
     UserTags   UserTags[]
-    Accounts   Account[]
-    Sessions   Session[]
+    accounts   Account[]
+    sessions   Session[]
     Roles      UserRole[]
     Allocation Allocation[]
 
@@ -251,7 +251,7 @@ model Session {
     userId       Int
     expires      DateTime
 
-    User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }

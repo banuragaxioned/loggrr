@@ -58,7 +58,7 @@ export default function Members() {
         <h2>Members</h2>
         <ul className="flex flex-col gap-4">
           {memberData.data &&
-            memberData.data.users.map((member) => (
+            memberData.data.Users.map((member) => (
               <li
                 key={member.id}
                 className="hover:bg-zinc/20 flex max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"

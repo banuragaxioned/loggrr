@@ -8,7 +8,7 @@ export const tenantRouter = createTRPCRouter({
     const userId = Number(ctx.session.user.id);
     // TODO: Need to fix the @/server/auth.ts
     const tenants = await ctx.prisma.tenant.findMany({
-      where: { users: { some: { id: userId } } },
+      where: { Users: { some: { id: userId } } },
     });
     return tenants;
   }),
@@ -20,7 +20,7 @@ export const tenantRouter = createTRPCRouter({
       const slug = input.text;
       const userId = Number(ctx.session.user.id);
       const tenant = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } }, // This works as an OR filter?
+        where: { slug, Users: { some: { id: userId } } }, // This works as an OR filter?
       });
       return tenant;
     }),
@@ -33,7 +33,7 @@ export const tenantRouter = createTRPCRouter({
 
       const members = await ctx.prisma.tenant.findUnique({
         where: { slug: slug },
-        include: { users: true },
+        include: { Users: true },
       });
 
       return members;
@@ -70,7 +70,7 @@ export const tenantRouter = createTRPCRouter({
       const connectUser = await ctx.prisma.tenant.update({
         where: { id: tenant.id },
         data: {
-          users: {
+          Users: {
             connect: { id: user.id },
           },
         },

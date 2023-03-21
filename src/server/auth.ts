@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 
         // Retrieve the Tenant data for the current user
         const tenantList = await prisma.tenant.findMany({
-          where: { users: { some: { id: Number(user.id) } } },
+          where: { Users: { some: { id: Number(user.id) } } },
         });
 
         // Extract the Tenant slugs from the query result and store them in an array
