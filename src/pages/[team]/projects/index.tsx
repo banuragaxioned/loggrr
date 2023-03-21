@@ -28,17 +28,25 @@ export default function Projects() {
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
         <h2>Projects</h2>
-        <Link href={router.asPath + "/pid"}>Project Details</Link>
-        <ul>
+        <ul className="flex flex-col gap-4">
+          {memberData.data &&
+            memberData.data.client.map((project) => (
+              <Link key={project.id} href={router.asPath + "/" + project.id}>
+                <li className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20">
+                  {project.name}
+                </li>
+              </Link>
+            ))}
+        </ul>
+        <h3>Client list</h3>
+        <ul className="flex flex-col gap-4">
           {memberData.data &&
             memberData.data.client.map((client) => (
               <li
                 key={client.id}
-                className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
+                className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                <span className="flex place-items-center gap-4">
-                  {client.name}
-                </span>
+                {client.name}
               </li>
             ))}
         </ul>

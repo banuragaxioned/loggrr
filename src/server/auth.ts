@@ -80,12 +80,12 @@ export const authOptions: NextAuthOptions = {
         port: process.env.EMAIL_SERVER_PORT,
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
       },
       from: process.env.EMAIL_FROM,
       maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
-  }),
+    }),
     /**
      * ...add more providers here
      *

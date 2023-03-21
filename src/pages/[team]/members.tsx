@@ -14,21 +14,22 @@ export default function Members() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  
+
   const memberData = api.tenant.getTenantMembers.useQuery(
     { slug: currentTenant },
     { enabled: session?.user !== undefined }
   );
-  
+
   const emailInputRef = useRef<HTMLInputElement>(null);
-  
-  const connectUserToTenantMutation =  api.tenant.connectUserToTenant.useMutation();
+
+  const connectUserToTenantMutation =
+    api.tenant.connectUserToTenant.useMutation();
   const addMemberHandler = () => {
-    
     if (emailInputRef?.current?.value === undefined) return;
-    
+
     const newMember = connectUserToTenantMutation.mutate({
-      email: emailInputRef.current.value, tenant: currentTenant
+      email: emailInputRef.current.value,
+      tenant: currentTenant,
     });
 
     return newMember;
@@ -44,10 +45,9 @@ export default function Members() {
     return <Unavailable />;
   }
   return (
-    <div className="mx-auto flex flex-col max-w-6xl px-4 lg:px-0">
-      
+    <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
       <section>
-        <div className="lg:w-2/4 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:w-2/4">
           <h2>Add members</h2>
           <Input placeholder="Email" type="text" ref={emailInputRef} />
           <Button onClick={addMemberHandler}>Add member</Button>
@@ -79,7 +79,6 @@ export default function Members() {
             ))}
         </ul>
       </section>
-      
     </div>
   );
 }
