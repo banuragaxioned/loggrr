@@ -96,21 +96,22 @@ enum BillingType {
 
 enum Role {
     OWNER
+    // ADMIN
     MANAGER
-    REGULAR
+    USER
 }
 
 model Milestone {
-    id        Int      @id @default(autoincrement())
+    id        Int       @id @default(autoincrement())
     tenantId  Int
     projectId Int
     name      String
-    budget    Float
-    status    Status   @default(PUBLISHED)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    startDate DateTime
-    endDate   DateTime
+    budget    Int       @default(0) // Storing budget in hours
+    status    Status    @default(PUBLISHED)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    startDate DateTime?
+    endDate   DateTime?
 
     // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
@@ -143,7 +144,7 @@ model TimeEntry {
     projectId  Int
     tenantId   Int
     type       BillingType
-    time       Int
+    time       Int // Storing time in minutes
     comments   String?
     approved   Boolean     @default(false)
     approvedBy String?
@@ -161,7 +162,7 @@ model TimeEntry {
 
 model UserRole {
     id        Int      @id @default(autoincrement())
-    role      Role     @default(REGULAR)
+    role      Role     @default(USER)
     userId    Int
     tenantId  Int
     user      User     @relation(fields: [userId], references: [id])
@@ -196,6 +197,8 @@ model Allocation {
     billable    Int       @default(0)
     nonbillable Int       @default(0)
     tenantId    Int
+    projectId   Int
+    userId      Int
     status      Status    @default(PUBLISHED)
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
@@ -204,12 +207,14 @@ model Allocation {
     // If the frequency is ONGOING and enddate is present then it's a fixed duration
     frequency AllocationFrequency @default(DAY)
 
-    tenant Tenant @relation(fields: [tenantId], references: [id])
-
-    users    User[]
-    projects Project[]
+    tenant  Tenant  @relation(fields: [tenantId], references: [id])
+    project Project @relation(fields: [projectId], references: [id])
+    user    User    @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
+    @@index([projectId])
+    @@index([userId])
+    @@index([tenantId, projectId, userId])
 }
 
 model UserTags {
@@ -218,35 +223,31 @@ model UserTags {
     tenantId  Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    userId    Int?
+    users     User[]
 
     tenant Tenant @relation(fields: [tenantId], references: [id])
-    user   User?  @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
-    @@index([userId])
 }
 
 model User {
-    id            Int        @id @default(autoincrement())
-    name          String?
-    email         String?    @unique
-    emailVerified DateTime?
-    image         String?
-    createdAt     DateTime   @default(now())
-    updatedAt     DateTime   @updatedAt
-    allocationId  Int?
-    status        UserStatus @default(ACTIVE)
+    id              Int        @id @default(autoincrement())
+    name            String?
+    email           String     @unique
+    emailVerifiedAt DateTime?
+    image           String?
+    createdAt       DateTime   @default(now())
+    updatedAt       DateTime   @updatedAt
+    allocationId    Int?
+    status          UserStatus @default(ACTIVE)
 
-    allocation Allocation? @relation(fields: [allocationId], references: [id])
+    tenantId   Tenant[]     @relation("UserTenants")
+    userTags   UserTags[]
+    accounts   Account[]
+    sessions   Session[]
+    roles      UserRole[]
+    Allocation Allocation[]
 
-    tenantId Tenant[]   @relation("UserTenants")
-    userTags UserTags[]
-    accounts Account[]
-    sessions Session[]
-    roles    UserRole[]
-
-    // @@index([tenantId])
     @@index([allocationId])
 }
 
