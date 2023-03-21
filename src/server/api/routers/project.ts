@@ -28,4 +28,22 @@ export const projectRouter = createTRPCRouter({
       });
       return clients;
     }),
+
+  // Create a new Client
+  createClient: protectedProcedure
+    .input(z.object({ slug: z.string(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const slug = input.slug;
+      const projectName = input.name;
+      const client = await ctx.prisma.client.create({
+        data: {
+          name: projectName,
+          tenant: {
+            connect: { slug },
+          },
+        },
+      });
+      return client;
+    }
+  ),
 });
