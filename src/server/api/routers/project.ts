@@ -10,8 +10,8 @@ export const projectRouter = createTRPCRouter({
       const slug = input.text;
       const userId = Number(ctx.session.user.id);
       const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } },
-        include: { client: true },
+        where: { slug, Users: { some: { id: userId } } },
+        include: { Client: true },
       });
       return clients;
     }),
@@ -23,8 +23,8 @@ export const projectRouter = createTRPCRouter({
       const slug = input.text;
       const userId = Number(ctx.session.user.id);
       const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } },
-        include: { project: true },
+        where: { slug, Users: { some: { id: userId } } },
+        include: { Project: true },
       });
       return clients;
     }),
@@ -38,7 +38,7 @@ export const projectRouter = createTRPCRouter({
       const client = await ctx.prisma.client.create({
         data: {
           name: projectName,
-          tenant: {
+          Tenant: {
             connect: { slug },
           },
         },

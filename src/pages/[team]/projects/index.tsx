@@ -34,7 +34,7 @@ export default function Projects() {
         <h2>Projects</h2>
         <ul className="flex flex-col gap-4">
           {projectList.data &&
-            projectList.data.project.map((project) => (
+            projectList.data.Project.map((project) => (
               <Link key={project.id} href={router.asPath + "/" + project.id}>
                 <li className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20">
                   {project.name}
@@ -45,7 +45,7 @@ export default function Projects() {
         <h3>Client list</h3>
         <ul className="flex flex-col gap-4">
           {clientList.data &&
-            clientList.data.client.map((client) => (
+            clientList.data.Client.map((client) => (
               <li
                 key={client.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
