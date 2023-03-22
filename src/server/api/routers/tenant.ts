@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-
-type dataType = {
-  input: string;
-};
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const tenantRouter = createTRPCRouter({
   // Get all Tenants for the current user
@@ -12,7 +8,7 @@ export const tenantRouter = createTRPCRouter({
     const userId = Number(ctx.session.user.id);
     // TODO: Need to fix the @/server/auth.ts
     const tenants = await ctx.prisma.tenant.findMany({
-      where: { users: { some: { id: userId } } },
+      where: { Users: { some: { id: userId } } },
     });
     return tenants;
   }),
@@ -24,7 +20,7 @@ export const tenantRouter = createTRPCRouter({
       const slug = input.text;
       const userId = Number(ctx.session.user.id);
       const tenant = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } }, // This works as an OR filter?
+        where: { slug, Users: { some: { id: userId } } }, // This works as an OR filter?
       });
       return tenant;
     }),
@@ -33,14 +29,11 @@ export const tenantRouter = createTRPCRouter({
   getTenantMembers: protectedProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
-
       const slug = input.slug;
-      const userId = +ctx.session.user.id;
 
-      // get all members for a tenant by slug
       const members = await ctx.prisma.tenant.findUnique({
         where: { slug: slug },
-        include: { users: true },
+        include: { Users: true },
       });
 
       return members;
@@ -48,15 +41,18 @@ export const tenantRouter = createTRPCRouter({
 
   // connect user to tenant
   connectUserToTenant: protectedProcedure
-    .input(z.object({
-      tenant: z.string(),
-      email: z.string().email()
-    }))
+    .input(
+      z.object({
+        tenant: z.string(),
+        email: z.string().email(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
-
       const userEmail = input.email;
 
-      const tenant = await ctx.prisma.tenant.findUnique({ where: { slug: input.tenant } });
+      const tenant = await ctx.prisma.tenant.findUnique({
+        where: { slug: input.tenant },
+      });
 
       if (!tenant) {
         throw new Error("Tenant not found");
@@ -74,25 +70,12 @@ export const tenantRouter = createTRPCRouter({
       const connectUser = await ctx.prisma.tenant.update({
         where: { id: tenant.id },
         data: {
-          users: {
+          Users: {
             connect: { id: user.id },
           },
         },
       });
 
       return connectUser;
-    }),
-
-  getTenantClients: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, users: { some: { id: userId } } },
-        include: { client: true },
-        // select: { users: { select: { id: true, name: true, image: true } } },
-      });
-      return clients;
     }),
 });

@@ -14,26 +14,30 @@ export default function Members() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  
-  const {data: memberData, refetch: refetchMembers } = api.tenant.getTenantMembers.useQuery(
-    { slug: currentTenant },
-    { enabled: session?.user !== undefined, onSuccess: (data) => console.log(data) }
-  );
-  
+
+  const { data: memberData, refetch: refetchMembers } =
+    api.tenant.getTenantMembers.useQuery(
+      { slug: currentTenant },
+      {
+        enabled: session?.user !== undefined,
+        onSuccess: (data) => console.log(data),
+      }
+    );
+
   const emailInputRef = useRef<HTMLInputElement>(null);
-  
-  const connectUserToTenantMutation =  api.tenant.connectUserToTenant.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
-      refetchMembers();
-    }
-  });
+  const connectUserToTenantMutation =
+    api.tenant.connectUserToTenant.useMutation({
+      onSuccess: (data) => {
+        console.log(data);
+        refetchMembers();
+      },
+    });
   const addMemberHandler = () => {
-    
     if (emailInputRef?.current?.value === undefined) return;
-    
+
     const newMember = connectUserToTenantMutation.mutate({
-      email: emailInputRef.current.value, tenant: currentTenant
+      email: emailInputRef.current.value,
+      tenant: currentTenant,
     });
 
     return newMember;
@@ -49,10 +53,9 @@ export default function Members() {
     return <Unavailable />;
   }
   return (
-    <div className="mx-auto flex flex-col max-w-6xl px-4 lg:px-0">
-      
+    <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
       <section>
-        <div className="lg:w-2/4 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:w-2/4">
           <h2>Add members</h2>
           <Input placeholder="Email" type="text" ref={emailInputRef} />
           <Button onClick={addMemberHandler}>Add member</Button>
@@ -62,7 +65,8 @@ export default function Members() {
       <section>
         <h2>Members</h2>
         <ul className="flex flex-col gap-4">
-          { memberData && memberData.users.map((member) => (
+          {memberData &&
+            memberData.Users.map((member) => (
               <li
                 key={member.id}
                 className="hover:bg-zinc/20 flex max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
@@ -80,10 +84,9 @@ export default function Members() {
                   {member.name}
                 </span>
               </li>
-            )) }
+            ))}
         </ul>
       </section>
-      
     </div>
   );
 }

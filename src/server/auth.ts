@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
 
         // Retrieve the Tenant data for the current user
         const tenantList = await prisma.tenant.findMany({
-          where: { users: { some: { id: Number(user.id) } } },
+          where: { Users: { some: { id: Number(user.id) } } },
         });
 
         // Extract the Tenant slugs from the query result and store them in an array
@@ -80,12 +80,12 @@ export const authOptions: NextAuthOptions = {
         port: process.env.EMAIL_SERVER_PORT,
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
       },
       from: process.env.EMAIL_FROM,
       maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
-  }),
+    }),
     /**
      * ...add more providers here
      *
