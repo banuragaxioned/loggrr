@@ -15,14 +15,19 @@ export default function Members() {
   const router = useRouter();
   const currentTenant = router.query.team as string;
   
-  const memberData = api.tenant.getTenantMembers.useQuery(
+  const {data: memberData, refetch: refetchMembers } = api.tenant.getTenantMembers.useQuery(
     { slug: currentTenant },
-    { enabled: session?.user !== undefined }
+    { enabled: session?.user !== undefined, onSuccess: (data) => console.log(data) }
   );
   
   const emailInputRef = useRef<HTMLInputElement>(null);
   
-  const connectUserToTenantMutation =  api.tenant.connectUserToTenant.useMutation();
+  const connectUserToTenantMutation =  api.tenant.connectUserToTenant.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+      refetchMembers();
+    }
+  });
   const addMemberHandler = () => {
     
     if (emailInputRef?.current?.value === undefined) return;
@@ -57,8 +62,7 @@ export default function Members() {
       <section>
         <h2>Members</h2>
         <ul className="flex flex-col gap-4">
-          {memberData.data &&
-            memberData.data.users.map((member) => (
+          { memberData && memberData.users.map((member) => (
               <li
                 key={member.id}
                 className="hover:bg-zinc/20 flex max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
@@ -76,7 +80,7 @@ export default function Members() {
                   {member.name}
                 </span>
               </li>
-            ))}
+            )) }
         </ul>
       </section>
       
