@@ -44,8 +44,7 @@ export const projectRouter = createTRPCRouter({
         },
       });
       return client;
-    }
-  ),
+    }),
 
   // Create a new Project
   // createProject: protectedProcedure

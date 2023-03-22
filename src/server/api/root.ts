@@ -1,4 +1,4 @@
-import { projectRouter } from './routers/project';
+import { projectRouter } from "./routers/project";
 import { createTRPCRouter } from "./trpc";
 import { tenantRouter } from "./routers/tenant";
 
