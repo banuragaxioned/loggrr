@@ -21,6 +21,7 @@ export default function Dashboard() {
         <div className="flex gap-4">
           <Link href={router.asPath + "/projects"}>Project List</Link>
           <Link href={router.asPath + "/members"}>Members</Link>
+          <Link href={router.asPath + "/skills"}>Skills</Link>
           <Link href={router.asPath + "/assign"}>Assign</Link>
           <Link href={router.asPath + "/reports"}>Reports</Link>
           <Link href={router.asPath + "/billing"}>Billing</Link>
