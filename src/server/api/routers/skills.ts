@@ -11,13 +11,23 @@ export const skillsRouter = createTRPCRouter({
       const userId = Number(ctx.session.user.id);
       const skills = await ctx.prisma.tenant.findFirst({
         where: { slug, Users: { some: { id: userId } } },
-        include: { SkillScore: true },
+        include: { Skill: true },
       });
       return skills;
     }),
 
   // Get all skills for a user, for the current tenant
-
+  getMySkills: protectedProcedure
+    .input(z.object({ tenant: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const slug = input.tenant;
+      const userId = Number(ctx.session.user.id);
+      const skillScores = await ctx.prisma.tenant.findFirst({
+        where: { slug, Users: { some: { id: userId } } },
+        include: { SkillScore: true, Skill: true },
+      });
+      return skillScores;
+    }),
   // Get all skills for all users, for the current tenant
 
   // Create a skill in the current tenant - least priority

@@ -4,18 +4,17 @@ import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 
 export default function Projects() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const skillList = api.skill.getAllSkills.useQuery(
-    { text: currentTenant },
+  const allSkillList = api.skill.getAllSkills.useQuery(
+    { tenant: currentTenant },
     { enabled: session?.user !== undefined }
   );
-  const mySkillList = api.project.getProjects.useQuery(
-    { text: currentTenant },
+  const mySkillList = api.skill.getMySkills.useQuery(
+    { tenant: currentTenant },
     { enabled: session?.user !== undefined }
   );
 
@@ -34,23 +33,24 @@ export default function Projects() {
         <h2>My Skills</h2>
         <ul className="flex flex-col gap-4">
           {mySkillList.data &&
-            mySkillList.data.Project.map((project) => (
-              <Link key={project.id} href={router.asPath + "/" + project.id}>
-                <li className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20">
-                  {project.name}
-                </li>
-              </Link>
-            ))}
-        </ul>
-        <h2>All Users Skills summary</h2>
-        <ul className="flex flex-col gap-4">
-          {skillList.data &&
-            skillList.data.Client.map((client) => (
+            mySkillList.data.SkillScore.map((skills) => (
               <li
-                key={client.id}
+                key={skills.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {client.name}
+                {skills.skillId} - {skills.skillLevel}
+              </li>
+            ))}
+        </ul>
+        <h3>Skill list (all)</h3>
+        <ul className="flex flex-col gap-4">
+          {allSkillList.data &&
+            allSkillList.data.Skill.map((skills) => (
+              <li
+                key={skills.id}
+                className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
+              >
+                {skills.name}
               </li>
             ))}
         </ul>
