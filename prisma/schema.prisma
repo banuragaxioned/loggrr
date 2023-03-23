@@ -31,7 +31,7 @@ model Tenant {
     TimeEntry  TimeEntry[]
     UserTags   UserTags[]
     Allocation Allocation[]
-    Skill  Skill[]
+    Skill      Skill[]
     SkillScore SkillScore[]
 }
 
@@ -236,13 +236,13 @@ enum SkillLevel {
 }
 
 model SkillScore {
-    id         Int      @id @default(autoincrement())
+    id         Int        @id @default(autoincrement())
     userId     Int
     skillId    Int
     tenantId   Int
     skillLevel SkillLevel @default(NA)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
 
     Tenant Tenant @relation(fields: [tenantId], references: [id])
     Skill  Skill  @relation(fields: [skillId], references: [id])
@@ -279,13 +279,13 @@ model User {
     skillsId        Int?
     status          UserStatus @default(ACTIVE)
 
-    TenantId    Tenant[]      @relation("UserTenants")
-    UserTags    UserTags[]
-    accounts    Account[]
-    sessions    Session[]
-    Roles       UserRole[]
-    Allocation  Allocation[]
-    SkillScore  SkillScore[]
+    TenantId   Tenant[]     @relation("UserTenants")
+    UserTags   UserTags[]
+    accounts   Account[]
+    sessions   Session[]
+    Roles      UserRole[]
+    Allocation Allocation[]
+    SkillScore SkillScore[]
 
     @@index([allocationId])
 }
