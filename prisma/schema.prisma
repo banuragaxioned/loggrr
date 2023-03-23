@@ -31,6 +31,8 @@ model Tenant {
     TimeEntry  TimeEntry[]
     UserTags   UserTags[]
     Allocation Allocation[]
+    Skills     Skills[]
+    SkillList  SkillList[]
 }
 
 model Client {
@@ -224,6 +226,32 @@ model UserTags {
     @@index([tenantId])
 }
 
+model SkillsScore {
+    id        Int      @id @default(autoincrement())
+    tenantId  Int
+    score     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId User[]
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+
+    @@index([tenantId])
+}
+
+model SkillList {
+    id        Int      @id @default(autoincrement())
+    name      String
+    tenantId  Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+
+    @@index([tenantId])
+}
+
 model User {
     id              Int        @id @default(autoincrement())
     name            String?
@@ -233,14 +261,16 @@ model User {
     createdAt       DateTime   @default(now())
     updatedAt       DateTime   @updatedAt
     allocationId    Int?
+    skillsId        Int?
     status          UserStatus @default(ACTIVE)
 
-    TenantId   Tenant[]     @relation("UserTenants")
-    UserTags   UserTags[]
-    accounts   Account[]
-    sessions   Session[]
-    Roles      UserRole[]
-    Allocation Allocation[]
+    TenantId    Tenant[]      @relation("UserTenants")
+    UserTags    UserTags[]
+    accounts    Account[]
+    sessions    Session[]
+    Roles       UserRole[]
+    Allocation  Allocation[]
+    SkillsScore SkillsScore[]
 
     @@index([allocationId])
 }
