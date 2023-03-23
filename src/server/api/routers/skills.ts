@@ -32,7 +32,6 @@ export const skillsRouter = createTRPCRouter({
     .input(z.object({ tenant: z.string() }))
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
-      const userId = Number(ctx.session.user.id);
       const skillScores = await ctx.prisma.skillScore.findMany({
         where: { Tenant: { slug: slug} },
         include: { Skill: true, User: true },

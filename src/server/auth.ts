@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         // Extract the Tenant slugs from the query result and store them in an array
-        const tenantSlugs = tenantList.map((tenant: any) => tenant.slug);
+        const tenantSlugs = tenantList.map((tenant) => tenant.slug);
 
         // Add the Tenant data to the session object
         session.user.tenant = tenantSlugs;
