@@ -16,8 +16,8 @@ export const skillsRouter = createTRPCRouter({
       return skills;
     }),
 
-  // Get all skills for a user, for the current tenant
-  getMySkills: protectedProcedure
+  // Get the skills scores for the current user, for the current tenant
+  getMySkillsScores: protectedProcedure
     .input(z.object({ tenant: z.string() }))
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
@@ -28,7 +28,18 @@ export const skillsRouter = createTRPCRouter({
       });
       return skillScores;
     }),
-  // Get all skills for all users, for the current tenant
 
+  // Get all skills for all users, for the current tenant
+  getAllSkillsScores: protectedProcedure
+    .input(z.object({ tenant: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const slug = input.tenant;
+      const userId = Number(ctx.session.user.id);
+      const skillScores = await ctx.prisma.tenant.findFirst({
+        where: { slug, Users: { some: { id: userId } } },
+        include: { SkillScore: true, Skill: true },
+      });
+      return skillScores;
+    }),
   // Create a skill in the current tenant - least priority
 });
