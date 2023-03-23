@@ -37,12 +37,12 @@ export default function Projects() {
         <h2>My Skill Scores</h2>
         <ul className="flex flex-col gap-4">
           {mySkillScores.data &&
-            mySkillScores.data.SkillScore.map((skills) => (
+            mySkillScores.data.map((skills) => (
               <li
                 key={skills.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {skills.Skill.name} - {skills.skillLevel}
+                {skills.id} - {skills.skillLevel}
               </li>
             ))}
         </ul>
