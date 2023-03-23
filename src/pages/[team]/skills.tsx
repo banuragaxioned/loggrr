@@ -37,31 +37,31 @@ export default function Projects() {
         <h2>My Skill Scores</h2>
         <ul className="flex flex-col gap-4">
           {mySkillScores.data &&
-            mySkillScores.data.map((skills) => (
+            mySkillScores.data.map((mySkills) => (
               <li
-                key={skills.id}
+                key={mySkills.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {skills.id} - {skills.skillLevel}
+                {mySkills.Skill.name} - {mySkills.skillLevel}
               </li>
             ))}
         </ul>
         <h3>All Skill Scores</h3>
         <ul className="flex flex-col gap-4">
           {allSkillScores.data &&
-            allSkillScores.data.SkillScore.map((skills) => (
+            allSkillScores.data.map((skills) => (
               <li
                 key={skills.id}
-                className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
+                className="hover:bg-zinc/20 max-w-md rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {skills.skillId} - {skills.skillLevel}
+                {skills.User.name}- {skills.Skill.name} - {skills.skillLevel}
               </li>
             ))}
         </ul>
         <h3>Skill list (all)</h3>
         <ul className="flex flex-col gap-4">
           {allSkillList.data &&
-            allSkillList.data.Skill.map((skills) => (
+            allSkillList.data.map((skills) => (
               <li
                 key={skills.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
