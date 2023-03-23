@@ -8,10 +8,8 @@ export const projectRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(async ({ ctx, input }) => {
       const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, Users: { some: { id: userId } } },
-        include: { Client: true },
+      const clients = await ctx.prisma.client.findMany({
+        where: { Tenant: { slug: slug} },
       });
       return clients;
     }),
@@ -21,12 +19,10 @@ export const projectRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(async ({ ctx, input }) => {
       const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const clients = await ctx.prisma.tenant.findFirst({
-        where: { slug, Users: { some: { id: userId } } },
-        include: { Project: true },
+      const projects = await ctx.prisma.project.findMany({
+        where: { Tenant: { slug: slug} },
       });
-      return clients;
+      return projects;
     }),
 
   // Create a new Client
