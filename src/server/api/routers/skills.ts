@@ -24,7 +24,14 @@ export const skillsRouter = createTRPCRouter({
         where: { User: { id: userId }, Tenant: { slug: slug} },
         include: { Skill: true },
       });
-      return skillScores;
+      const mappedSkills = skillScores.map((skillScore) => {
+        return {
+          id: skillScore.id,
+          skill: skillScore.Skill.name,
+          level: skillScore.skillLevel,
+        };
+      });
+      return mappedSkills;
     }),
 
   // Get all skills for all users, for the current tenant

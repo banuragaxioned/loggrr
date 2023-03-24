@@ -42,7 +42,7 @@ export default function Projects() {
                 key={mySkills.id}
                 className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {mySkills.Skill.name} - {mySkills.skillLevel}
+                {mySkills.name} - {mySkills.level}
               </li>
             ))}
         </ul>
