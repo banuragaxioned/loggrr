@@ -276,7 +276,6 @@ model User {
     createdAt       DateTime   @default(now())
     updatedAt       DateTime   @updatedAt
     allocationId    Int?
-    skillsId        Int?
     status          UserStatus @default(ACTIVE)
 
     TenantId   Tenant[]     @relation("UserTenants")
