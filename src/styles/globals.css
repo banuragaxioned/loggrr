@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  body,
-  p {
-    @apply text-base;
+  body {
+    @apply min-h-screen bg-white text-base text-zinc-900 antialiased dark:bg-zinc-900 dark:text-zinc-50;
   }
   h1 {
     @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
