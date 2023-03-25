@@ -29,7 +29,7 @@ model Tenant {
     Milestone  Milestone[]
     Task       Task[]
     TimeEntry  TimeEntry[]
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     Allocation Allocation[]
     Skill      Skill[]
     SkillScore SkillScore[]
@@ -213,7 +213,7 @@ model Allocation {
     @@index([tenantId, projectId, userId])
 }
 
-model UserTags {
+model UserGroup {
     id        Int      @id @default(autoincrement())
     name      String
     tenantId  Int
@@ -279,7 +279,7 @@ model User {
     status          UserStatus @default(ACTIVE)
 
     TenantId   Tenant[]     @relation("UserTenants")
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     accounts   Account[]
     sessions   Session[]
     Roles      UserRole[]
