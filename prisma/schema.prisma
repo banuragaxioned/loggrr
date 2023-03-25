@@ -29,7 +29,7 @@ model Tenant {
     Milestone  Milestone[]
     Task       Task[]
     TimeEntry  TimeEntry[]
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     Allocation Allocation[]
     Skill      Skill[]
     SkillScore SkillScore[]
@@ -58,7 +58,7 @@ model Project {
     clientId  Int
     startdate DateTime
     enddate   DateTime?
-    billing   BillingType     @default(NON_BILLABLE)
+    billable  Boolean         @default(false)
     interval  ProjectInterval
     createdAt DateTime        @default(now())
     updatedAt DateTime        @updatedAt
@@ -82,12 +82,6 @@ enum ProjectInterval {
     QUARTERLY
     HALFYEARLY
     YEARLY
-}
-
-// might not be used
-enum BillingType {
-    BILLABLE
-    NON_BILLABLE
 }
 
 enum Role {
@@ -136,24 +130,27 @@ model Task {
 }
 
 model TimeEntry {
-    id         Int         @id @default(autoincrement())
+    id         Int       @id @default(autoincrement())
     projectId  Int
     tenantId   Int
-    type       BillingType
+    userId     Int
+    billable   Boolean   @default(false)
     time       Int // Storing time in minutes
     comments   String?
-    approved   Boolean     @default(false)
+    approved   Boolean   @default(false)
     approvedBy String?
     approvedAt DateTime?
-    status     Status      @default(PUBLISHED)
-    createdAt  DateTime    @default(now())
-    updatedAt  DateTime    @updatedAt
+    status     Status    @default(PUBLISHED)
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
 
     Tenant  Tenant  @relation(fields: [tenantId], references: [id])
     Project Project @relation(fields: [projectId], references: [id])
+    User    User    @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
+    @@index([userId])
 }
 
 model UserRole {
@@ -213,7 +210,7 @@ model Allocation {
     @@index([tenantId, projectId, userId])
 }
 
-model UserTags {
+model UserGroup {
     id        Int      @id @default(autoincrement())
     name      String
     tenantId  Int
@@ -268,23 +265,24 @@ model Skill {
 }
 
 model User {
-    id              Int        @id @default(autoincrement())
-    name            String?
-    email           String     @unique
-    emailVerifiedAt DateTime?
-    image           String?
-    createdAt       DateTime   @default(now())
-    updatedAt       DateTime   @updatedAt
-    allocationId    Int?
-    status          UserStatus @default(ACTIVE)
+    id            Int        @id @default(autoincrement())
+    name          String?
+    email         String     @unique
+    emailVerified DateTime?
+    image         String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    allocationId  Int?
+    status        UserStatus @default(ACTIVE)
 
     TenantId   Tenant[]     @relation("UserTenants")
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     accounts   Account[]
     sessions   Session[]
     Roles      UserRole[]
     Allocation Allocation[]
     SkillScore SkillScore[]
+    TimeEntry  TimeEntry[]
 
     @@index([allocationId])
 }

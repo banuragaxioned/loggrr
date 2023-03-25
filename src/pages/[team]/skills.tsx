@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
