@@ -131,6 +131,7 @@ model Task {
 
 model TimeEntry {
     id         Int       @id @default(autoincrement())
+    date       DateTime
     projectId  Int
     tenantId   Int
     userId     Int
@@ -153,36 +154,12 @@ model TimeEntry {
     @@index([userId])
 }
 
-model UserRole {
-    id        Int      @id @default(autoincrement())
-    role      Role     @default(USER)
-    userId    Int
-    tenantId  Int
-    user      User     @relation(fields: [userId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@unique([role, userId, tenantId])
-    @@index([userId])
-    @@index([tenantId])
-    @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
-}
-
 enum Status {
     PUBLISHED
     ARCHIVED
 }
 
-enum UserStatus {
-    ACTIVE
-    INACTIVE
-}
-
-enum AllocationFrequency {
-    DAY
-    ONGOING
-}
-
+// Allocation-related
 model Allocation {
     id          Int       @id @default(autoincrement())
     date        DateTime
@@ -210,19 +187,12 @@ model Allocation {
     @@index([tenantId, projectId, userId])
 }
 
-model UserGroup {
-    id        Int      @id @default(autoincrement())
-    name      String
-    tenantId  Int
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    users     User[]
-
-    Tenant Tenant @relation(fields: [tenantId], references: [id])
-
-    @@index([tenantId])
+enum AllocationFrequency {
+    DAY
+    ONGOING
 }
 
+// Skills-related
 enum SkillLevel {
     NA
     BEGINNER
@@ -264,6 +234,42 @@ model Skill {
     @@index([tenantId])
 }
 
+// Additional User meta-data
+model UserRole {
+    id        Int      @id @default(autoincrement())
+    role      Role     @default(USER)
+    userId    Int
+    tenantId  Int
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([role, userId, tenantId])
+    @@index([userId])
+    @@index([tenantId])
+    @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
+}
+
+model UserGroup {
+    id        Int      @id @default(autoincrement())
+    name      String
+    tenantId  Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    users     User[]
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+
+    @@index([tenantId])
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    DELETED
+}
+
+// NextAuth-related
 model User {
     id            Int        @id @default(autoincrement())
     name          String?

@@ -8,7 +8,7 @@ export default function Projects() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const allSkillList = api.timeEntry.getAll.useQuery(
+  const reportData = api.report.getLogged.useQuery(
     { tenant: currentTenant },
     { enabled: session?.user !== undefined }
   );
@@ -27,17 +27,17 @@ export default function Projects() {
       <section>
         <h2>Global Logged Data</h2>
         <ul className="flex flex-col gap-4">
-          {allSkillList.data &&
-            allSkillList.data.map((timeEntry) => (
+          {reportData.data &&
+            reportData.data.map((logged) => (
               <li
-                key={timeEntry.id}
+                key={logged.id}
                 className="hover:bg-zinc/20 max-w-none rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {timeEntry.updatedAt.toLocaleDateString()}-{" "}
-                {timeEntry.Project.Client.name} - {timeEntry.Project.name} -{" "}
-                {timeEntry.time}m{" "}
-                {timeEntry.billable ? <span>🟢</span> : <span>🔴</span>} -{" "}
-                {timeEntry.comments}
+                {logged.date.toLocaleDateString()}-{logged.User.name} -{" "}
+                {logged.Project.Client.name} - {logged.Project.name} -{" "}
+                {logged.time}m{" "}
+                {logged.billable ? <span>🟢</span> : <span>🔴</span>} -{" "}
+                {logged.comments}
               </li>
             ))}
         </ul>
