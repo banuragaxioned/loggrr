@@ -2,6 +2,7 @@ import Link from "next/link";
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { useRouter } from "next/router";
+import { QuickStatsWidget } from "@/components/quickStats";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -35,9 +36,7 @@ export default function Dashboard() {
         </span>
       </section>
       <section className="hidden lg:block lg:basis-1/4">
-        <span className="todo h-full">
-          <p>Sidebar</p>
-        </span>
+        <QuickStatsWidget />
       </section>
     </div>
   );

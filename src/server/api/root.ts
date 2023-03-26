@@ -1,3 +1,4 @@
+import { statsRouter } from './routers/stats';
 import { projectRouter } from "./routers/project";
 import { createTRPCRouter } from "./trpc";
 import { tenantRouter } from "./routers/tenant";
@@ -13,7 +14,8 @@ export const appRouter = createTRPCRouter({
   tenant: tenantRouter,
   project: projectRouter,
   skill: skillsRouter,
-  report: reportRouter
+  report: reportRouter,
+  stats: statsRouter
 });
 
 // export type definition of API
