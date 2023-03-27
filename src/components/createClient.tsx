@@ -4,8 +4,7 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
-import { ErrorMessage } from '@hookform/error-message';
-
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function CreateClient() {
   const router = useRouter();
@@ -47,11 +46,16 @@ export default function CreateClient() {
         type="text"
         placeholder="Client name"
         className="peer peer-invalid:bg-pink-600"
-        {...register("client_name", { required: 'Please enter a client name', maxLength: 20 })}
+        {...register("client_name", {
+          required: "Please enter a client name",
+          maxLength: 20,
+        })}
       />
-      { errors.client_name && <p className="peer-invalid:visible text-pink-600 text-sm">
-        <ErrorMessage errors={errors} name="client_name" />
-      </p> }
+      {errors.client_name && (
+        <p className="text-sm text-pink-600 peer-invalid:visible">
+          <ErrorMessage errors={errors} name="client_name" />
+        </p>
+      )}
 
       <Button type="submit">Submit</Button>
     </form>

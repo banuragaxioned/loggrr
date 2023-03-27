@@ -9,7 +9,7 @@ export const projectRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const slug = input.text;
       const clients = await ctx.prisma.client.findMany({
-        where: { Tenant: { slug: slug} },
+        where: { Tenant: { slug: slug } },
       });
       return clients;
     }),
@@ -20,16 +20,29 @@ export const projectRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const slug = input.text;
       const projects = await ctx.prisma.project.findMany({
-        where: { Tenant: { slug: slug} },
+        where: { Tenant: { slug: slug } },
       });
       return projects;
     }),
 
   // Create a new Project
   createProject: protectedProcedure
-    .input(z.object({ slug: z.string(), name: z.string(), clientId: z.number(), startdate: z.date(),
-      interval: z.enum(["FIXED", "WEEKLY", "MONTHLY", "QUARTERLY", "HALFYEARLY", "YEARLY"])
-     }))
+    .input(
+      z.object({
+        slug: z.string(),
+        name: z.string(),
+        clientId: z.number(),
+        startdate: z.date(),
+        interval: z.enum([
+          "FIXED",
+          "WEEKLY",
+          "MONTHLY",
+          "QUARTERLY",
+          "HALFYEARLY",
+          "YEARLY",
+        ]),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const slug = input.slug;
       const clientId = input.clientId;
@@ -37,7 +50,7 @@ export const projectRouter = createTRPCRouter({
       const startdate = input.startdate;
       const interval = input.interval;
       const project = await ctx.prisma.project.create({
-        data :{
+        data: {
           name: projectName,
           startdate: startdate,
           interval: interval,
@@ -49,10 +62,9 @@ export const projectRouter = createTRPCRouter({
           },
           Owner: {
             connect: { id: +ctx.session.user.id },
-          }
-        }
+          },
+        },
       });
       return project;
-    }
-  ),
+    }),
 });

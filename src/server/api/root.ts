@@ -1,10 +1,10 @@
-import { statsRouter } from './routers/stats';
+import { statsRouter } from "./routers/stats";
 import { projectRouter } from "./routers/project";
 import { createTRPCRouter } from "./trpc";
 import { tenantRouter } from "./routers/tenant";
 import { skillsRouter } from "./routers/skills";
 import { reportRouter } from "./routers/report";
-import { clientRouter } from './routers/client';
+import { clientRouter } from "./routers/client";
 
 /**
  * This is the primary router for your server.
@@ -17,7 +17,7 @@ export const appRouter = createTRPCRouter({
   client: clientRouter,
   skill: skillsRouter,
   report: reportRouter,
-  stats: statsRouter
+  stats: statsRouter,
 });
 
 // export type definition of API

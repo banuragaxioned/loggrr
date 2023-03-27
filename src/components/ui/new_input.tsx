@@ -3,10 +3,13 @@ import * as React from "react";
 import { cn } from "@/utils/helper";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> { }
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ type, placeholder, className, maxLength, name, pattern, ...props }, ref) => {
+  (
+    { type, placeholder, className, maxLength, name, pattern, ...props },
+    ref
+  ) => {
     return (
       <input
         className={cn(
