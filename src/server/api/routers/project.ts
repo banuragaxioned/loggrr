@@ -25,45 +25,34 @@ export const projectRouter = createTRPCRouter({
       return projects;
     }),
 
-  // Create a new Client
-  createClient: protectedProcedure
-    .input(z.object({ slug: z.string(), name: z.string() }))
+  // Create a new Project
+  createProject: protectedProcedure
+    .input(z.object({ slug: z.string(), name: z.string(), clientId: z.number(), startdate: z.date(),
+      interval: z.enum(["FIXED", "WEEKLY", "MONTHLY", "QUARTERLY", "HALFYEARLY", "YEARLY"])
+     }))
     .mutation(async ({ ctx, input }) => {
       const slug = input.slug;
+      const clientId = input.clientId;
       const projectName = input.name;
-      const client = await ctx.prisma.client.create({
-        data: {
+      const startdate = input.startdate;
+      const interval = input.interval;
+      const project = await ctx.prisma.project.create({
+        data :{
           name: projectName,
+          startdate: startdate,
+          interval: interval,
+          Client: {
+            connect: { id: clientId },
+          },
           Tenant: {
             connect: { slug },
           },
-        },
+          Owner: {
+            connect: { id: +ctx.session.user.id },
+          }
+        }
       });
-      return client;
-    }),
-
-  // Create a new Project
-  // createProject: protectedProcedure
-  //   .input(z.object({ slug: z.string(), pname: z.string(), cid: z.number(), startdate: z.date(), interval: z.string() }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     const slug = input.slug;
-  //     const clientId = input.cid;
-  //     const projectName = input.pname;
-  //     const startdate = input.startdate;
-  //     const interval = input.interval;
-  //     const project = await ctx.prisma.project.create({
-  //       data: {
-  //         name: projectName,
-  //         client: clientId,
-  //         ownerId: 1,
-  //         startdate: startdate,
-  //         interval: interval,
-  //         tenant: {
-  //           connect: { slug },
-  //         },
-  //       },
-  //     });
-  //     return project;
-  //   }
-  // ),
+      return project;
+    }
+  ),
 });

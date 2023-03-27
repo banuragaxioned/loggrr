@@ -3,7 +3,6 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { useRouter } from "next/router";
 import { QuickStatsWidget } from "@/components/quickStats";
-import CreateClient from "@/components/createClient";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -29,7 +28,6 @@ export default function Dashboard() {
           <Link href={router.asPath + "/billing"}>Billing</Link>
           <Link href={router.asPath + "/settings"}>Settings</Link>
         </div>
-        <CreateClient />
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
         <div className="todo h-20">Add Time Combobox</div>

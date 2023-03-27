@@ -69,10 +69,12 @@ model Project {
     Allocation Allocation[]
     Tenant     Tenant       @relation(fields: [tenantId], references: [id])
     Client     Client       @relation(fields: [clientId], references: [id])
+    Owner      User         @relation(fields: [ownerId], references: [id])
     //TODO: add owner relation
 
     @@index([tenantId])
     @@index([clientId])
+    @@index([ownerId])
 }
 
 enum ProjectInterval {
@@ -289,6 +291,7 @@ model User {
     Allocation Allocation[]
     SkillScore SkillScore[]
     TimeEntry  TimeEntry[]
+    Project    Project[]
 
     @@index([allocationId])
 }

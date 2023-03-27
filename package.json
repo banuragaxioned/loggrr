@@ -18,6 +18,7 @@
     "ladle:preview": "npx ladle preview"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
     "@ladle/react": "^2.10.2",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.11.0",
