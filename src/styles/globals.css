@@ -21,4 +21,10 @@
   .todo {
     @apply flex w-full items-center justify-center rounded-md border border-dashed border-zinc-300 text-sm dark:border-zinc-600;
   }
+  :disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  :invalid {
+    @apply invalid:focus:ring-red-600 dark:invalid:focus:ring-red-600;
+  }
 }

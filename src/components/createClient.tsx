@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
-import { ErrorMessage } from "@hookform/error-message";
 
 export default function CreateClient() {
   const router = useRouter();
@@ -16,14 +15,12 @@ export default function CreateClient() {
     formState: { errors },
     reset,
     getValues,
-  } = useForm();
+  } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
     addClient();
     reset();
   };
-
-  console.log(`Errors: `, errors);
 
   const createClient = api.client.createClient.useMutation({
     onSuccess: (data) => {
@@ -45,17 +42,11 @@ export default function CreateClient() {
       <Input
         type="text"
         placeholder="Client name"
-        className="peer peer-invalid:bg-pink-600"
         {...register("client_name", {
           required: "Please enter a client name",
-          maxLength: 20,
+          maxLength: 15,
         })}
       />
-      {errors.client_name && (
-        <p className="text-sm text-pink-600 peer-invalid:visible">
-          <ErrorMessage errors={errors} name="client_name" />
-        </p>
-      )}
 
       <Button type="submit">Submit</Button>
     </form>
