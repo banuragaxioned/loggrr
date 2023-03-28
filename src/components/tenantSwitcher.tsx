@@ -15,6 +15,7 @@ export function TenantSwitcher() {
     { enabled: sessionData?.user !== undefined }
   );
   return (
+    // TODO: add onChange handler
     <Select>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a team" />
