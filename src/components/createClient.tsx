@@ -48,7 +48,9 @@ export default function CreateClient() {
         })}
       />
 
-      <Button type="submit">Submit</Button>
+      <Button type="submit" className="my-2">
+        Submit
+      </Button>
     </form>
   );
 }

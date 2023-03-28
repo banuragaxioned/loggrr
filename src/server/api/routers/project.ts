@@ -34,6 +34,7 @@ export const projectRouter = createTRPCRouter({
         clientId: z.number(),
         startdate: z.date(),
         enddate: z.date().optional(),
+        billable: z.boolean(),
         interval: z.enum([
           "FIXED",
           "WEEKLY",
@@ -50,12 +51,15 @@ export const projectRouter = createTRPCRouter({
       const projectName = input.name;
       const startdate = input.startdate;
       const interval = input.interval;
+      const enddate = input.enddate;
+      const billable = input.billable;
       const project = await ctx.prisma.project.create({
         data: {
           name: projectName,
           startdate: startdate,
-          enddate: startdate, //TODO: fix enddate
+          enddate: enddate,
           interval: interval,
+          billable: billable,
           Client: {
             connect: { id: clientId },
           },
@@ -63,7 +67,7 @@ export const projectRouter = createTRPCRouter({
             connect: { slug },
           },
           Owner: {
-            connect: { id: +ctx.session.user.id },
+            connect: { id: ctx.session.user.id },
           },
         },
       });

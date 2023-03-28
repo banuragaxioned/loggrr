@@ -4,16 +4,8 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
-import { ErrorMessage } from "@hookform/error-message";
 import { ProjectInterval } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function CreateProject() {
   const { data: session, status } = useSession();
@@ -58,6 +50,7 @@ export default function CreateProject() {
       enddate: getValues("enddate")
         ? new Date(getValues("enddate"))
         : undefined,
+      billable: getValues("billable"),
     });
     return newProject;
   };
@@ -70,43 +63,52 @@ export default function CreateProject() {
         {...register("project_name", { required: true })}
         maxLength={20}
       />
+      <div className="flex gap-2">
+        <select
+          required
+          {...register("interval", { required: true })}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Interval
+          </option>
+          {ProjectInterval &&
+            Object.keys(ProjectInterval).map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+        </select>
 
-      <select
-        required
-        {...register("interval", { required: true })}
-        defaultValue=""
-      >
-        <option value="" disabled>
-          Select Interval
-        </option>
-        {ProjectInterval &&
-          Object.keys(ProjectInterval).map((key) => (
-            <option key={key} value={key}>
-              {key}
-            </option>
-          ))}
-      </select>
+        <select
+          required
+          {...register("client", { required: true })}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Client
+          </option>
+          {clientList &&
+            clientList.map((client) => (
+              <option key={client.id} value={client.id}>
+                {client.name}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div className="flex gap-2">
+        <Input type="date" {...register("startdate", { required: true })} />
+        <Input type="date" {...register("enddate")} />
+      </div>
 
-      <select
-        required
-        {...register("client", { required: true })}
-        defaultValue=""
-      >
-        <option value="" disabled>
-          Select Client
-        </option>
-        {clientList &&
-          clientList.map((client) => (
-            <option key={client.id} value={client.id}>
-              {client.name}
-            </option>
-          ))}
-      </select>
+      <div className="my-2 space-x-2">
+        <label htmlFor="billable">Billable</label>
+        <input type="checkbox" {...register("billable")} className="rounded" />
+      </div>
 
-      <input type="date" {...register("startdate", { required: true })} />
-      <input type="date" {...register("enddate")} />
-
-      <Button type="submit">Submit</Button>
+      <Button type="submit" className="my-2">
+        Submit
+      </Button>
     </form>
   );
 }
