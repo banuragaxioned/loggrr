@@ -46,4 +46,19 @@ export const skillsRouter = createTRPCRouter({
       return skillScores;
     }),
   // Create a skill in the current tenant - least priority
+  createSkill: protectedProcedure
+    .input(z.object({ slug: z.string(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const slug = input.slug;
+      const skillName = input.name;
+      const newSkill = await ctx.prisma.skill.create({
+        data: {
+          name: skillName,
+          Tenant: {
+            connect: { slug },
+          },
+        },
+      });
+      return newSkill;
+    }),
 });
