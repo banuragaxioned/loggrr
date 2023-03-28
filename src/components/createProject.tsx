@@ -32,28 +32,28 @@ export default function CreateProject() {
   } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
-    // addProject();
+    addProject();
     console.log(data);
     reset();
   };
 
-  // const createProject = api.project.createProject.useMutation({
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
+  const createProject = api.project.createProject.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
 
-  // const addProject = () => {
-  //   const newProject = createProject.mutate({
-  //     name: "project 1", //getValues("project_name"),
-  //     clientId: 1,
-  //     interval: ProjectInterval.MONTHLY,
-  //     slug: "axioned", //currentTenant,
-  //     startdate: new Date(),
-  //   });
-  //   console.log(getValues("project_name"));
-  //   return newProject;
-  // };
+  const addProject = () => {
+    const newProject = createProject.mutate({
+      name: "project 1", //getValues("project_name"),
+      clientId: 1,
+      interval: ProjectInterval.MONTHLY,
+      slug: "axioned", //currentTenant,
+      startdate: new Date(),
+    });
+    console.log(getValues("project_name"));
+    return newProject;
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
