@@ -34,7 +34,7 @@ export default function Projects() {
       <section>
         <h2>Projects</h2>
         <CreateProject />
-        <ul className="flex flex-col gap-4">
+        <ul className="flex max-w-xs flex-col gap-4">
           {projectList.data &&
             projectList.data.map((project) => (
               <Link key={project.id} href={router.asPath + "/" + project.id}>

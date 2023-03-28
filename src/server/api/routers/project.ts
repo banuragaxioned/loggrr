@@ -33,6 +33,7 @@ export const projectRouter = createTRPCRouter({
         name: z.string(),
         clientId: z.number(),
         startdate: z.date(),
+        enddate: z.date().optional(),
         interval: z.enum([
           "FIXED",
           "WEEKLY",
@@ -53,6 +54,7 @@ export const projectRouter = createTRPCRouter({
         data: {
           name: projectName,
           startdate: startdate,
+          enddate: startdate, //TODO: fix enddate
           interval: interval,
           Client: {
             connect: { id: clientId },

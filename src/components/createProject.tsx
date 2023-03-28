@@ -19,10 +19,15 @@ export default function CreateProject() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const clientList = api.client.getClients.useQuery(
+
+  const { data: clientList } = api.client.getClients.useQuery(
     { text: currentTenant },
-    { enabled: session?.user !== undefined }
+    {
+      enabled: session?.user !== undefined,
+      onSuccess: (data) => console.log(data),
+    }
   );
+
   const {
     register,
     handleSubmit,
@@ -32,26 +37,28 @@ export default function CreateProject() {
   } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
-    addProject();
     console.log(data);
-    reset();
+    addProject();
   };
 
   const createProject = api.project.createProject.useMutation({
     onSuccess: (data) => {
       console.log(data);
+      reset();
     },
   });
 
   const addProject = () => {
     const newProject = createProject.mutate({
-      name: "project 1", //getValues("project_name"),
-      clientId: 1,
-      interval: ProjectInterval.MONTHLY,
-      slug: "axioned", //currentTenant,
-      startdate: new Date(),
+      name: getValues("project_name"),
+      clientId: Number(getValues("client")),
+      interval: getValues("interval"),
+      slug: currentTenant,
+      startdate: new Date(getValues("startdate")),
+      enddate: getValues("enddate")
+        ? new Date(getValues("enddate"))
+        : undefined,
     });
-    console.log(getValues("project_name"));
     return newProject;
   };
 
@@ -60,65 +67,44 @@ export default function CreateProject() {
       <Input
         type="text"
         placeholder="Enter your Project name"
-        {...register("project_name", {})}
+        {...register("project_name", { required: true })}
         maxLength={20}
-        required
       />
 
-      {/* <select {...register("interval", { required: true })}>
+      <select
+        required
+        {...register("interval", { required: true })}
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select Interval
+        </option>
         {ProjectInterval &&
           Object.keys(ProjectInterval).map((key) => (
             <option key={key} value={key}>
               {key}
             </option>
           ))}
-      </select> */}
+      </select>
 
-      <Select name="interval" required>
-        <SelectTrigger>
-          <SelectValue
-            placeholder="Select the project interval"
-            {...register("interval")}
-          />
-        </SelectTrigger>
-        <SelectContent>
-          {ProjectInterval &&
-            Object.keys(ProjectInterval).map((key) => (
-              <SelectItem key={key} value={key}>
-                {key}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
-
-      {/* <select {...register("client_name", { required: true })}>
+      <select
+        required
+        {...register("client", { required: true })}
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select Client
+        </option>
         {clientList &&
-          clientList.data?.map((client) => (
+          clientList.map((client) => (
             <option key={client.id} value={client.id}>
               {client.name}
             </option>
           ))}
-      </select> */}
+      </select>
 
-      <Select name="client_name" required>
-        <SelectTrigger>
-          <SelectValue
-            placeholder="Select the Client"
-            {...register("client_name")}
-          />
-        </SelectTrigger>
-        <SelectContent>
-          {clientList &&
-            clientList.data?.map((client) => (
-              <SelectItem key={client.id} value={client.name}>
-                {client.name}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
-
-      {/* TODO: Start date */}
-      {/* TODO: Optional: End date */}
+      <input type="date" {...register("startdate", { required: true })} />
+      <input type="date" {...register("enddate")} />
 
       <Button type="submit">Submit</Button>
     </form>
