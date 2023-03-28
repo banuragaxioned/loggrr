@@ -3,6 +3,7 @@ import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import TableUI from "@/components/ui/table";
 
 export default function Projects() {
   const { data: session, status } = useSession();
@@ -41,6 +42,7 @@ export default function Projects() {
               </li>
             ))}
         </ul>
+        <TableUI />
       </section>
     </div>
   );
