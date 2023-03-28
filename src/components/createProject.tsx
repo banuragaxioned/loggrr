@@ -16,10 +16,7 @@ export default function CreateProject() {
 
   const { data: clientList } = api.client.getClients.useQuery(
     { text: currentTenant },
-    {
-      enabled: session?.user !== undefined,
-      onSuccess: (data) => console.log(data),
-    }
+    { enabled: session?.user !== undefined }
   );
 
   const {
@@ -31,13 +28,11 @@ export default function CreateProject() {
   } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
-    console.log(data);
     addProject();
   };
 
   const createProject = api.project.createProject.useMutation({
     onSuccess: (data) => {
-      console.log(data);
       reset();
       showToast("A new Project was created", "success");
     },

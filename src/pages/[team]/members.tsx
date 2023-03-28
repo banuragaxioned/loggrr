@@ -17,17 +17,13 @@ export default function Members() {
   const { data: memberData, refetch: refetchMembers } =
     api.tenant.getTenantMembers.useQuery(
       { slug: currentTenant },
-      {
-        enabled: session?.user !== undefined,
-        onSuccess: (data) => console.log(data),
-      }
+      { enabled: session?.user !== undefined }
     );
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const connectUserToTenantMutation =
     api.tenant.connectUserToTenant.useMutation({
       onSuccess: (data) => {
-        console.log(data);
         refetchMembers();
       },
     });

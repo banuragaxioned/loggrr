@@ -21,13 +21,12 @@ export default function CreateClient() {
 
   const onSubmit = (data: any) => {
     addClient();
-    reset();
-    showToast("A new Client was created", "success");
   };
 
   const createClient = api.client.createClient.useMutation({
     onSuccess: (data) => {
-      console.log(data);
+      reset();
+      showToast("A new Client was created", "success");
     },
   });
 
@@ -36,7 +35,6 @@ export default function CreateClient() {
       name: getValues("client_name"),
       slug: currentTenant,
     });
-    console.log(getValues("client_name"));
     return newClient;
   };
 
