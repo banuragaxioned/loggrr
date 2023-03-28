@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
+import useToast from "@/hooks/useToast";
 
 export default function CreateClient() {
   const router = useRouter();
   const currentTenant = router.query.team as string;
+  const showToast = useToast();
 
   const {
     register,
@@ -20,6 +22,7 @@ export default function CreateClient() {
   const onSubmit = (data: any) => {
     addClient();
     reset();
+    showToast("A new Client was created", "success");
   };
 
   const createClient = api.client.createClient.useMutation({
@@ -47,7 +50,6 @@ export default function CreateClient() {
           maxLength: 15,
         })}
       />
-
       <Button type="submit" className="my-2">
         Submit
       </Button>

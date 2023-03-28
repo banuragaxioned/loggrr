@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
 import { ProjectInterval } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import useToast from "@/hooks/useToast";
 
 export default function CreateProject() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
+  const showToast = useToast();
 
   const { data: clientList } = api.client.getClients.useQuery(
     { text: currentTenant },
@@ -37,6 +39,7 @@ export default function CreateProject() {
     onSuccess: (data) => {
       console.log(data);
       reset();
+      showToast("A new Project was created", "success");
     },
   });
 
