@@ -1,7 +1,7 @@
 import type { GlobalProvider } from "@ladle/react";
 import React, { useEffect } from "react";
 import "tailwindcss/tailwind.css";
-import "../src/styles/globals.css";
+import "@/styles/globals.css";
 
 // Inspired by https://dev.to/sdorra/dark-mode-with-ladle-and-tailwindcss-19j9
 export const Provider: GlobalProvider = ({ children, globalState }) => {

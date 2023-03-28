@@ -11,7 +11,7 @@ const font = Be_Vietnam_Pro({
   variable: "--font-bevietnampro",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import { api } from "../utils/api";
+import { api } from "@/utils/api";
 
 import "@/styles/globals.css";
 import { Layout } from "@/components/layout";

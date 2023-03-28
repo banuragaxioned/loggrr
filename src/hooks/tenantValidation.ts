@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { api } from "../utils/api";
+import { api } from "@/utils/api";
 
 export function useValidateTenantAccess() {
   const { data: session, status } = useSession();

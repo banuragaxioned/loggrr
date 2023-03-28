@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";
-import CreateProject from "../../../components/createProject";
+import CreateProject from "@/components/createProject";
 
 export default function Projects() {
   const { data: session, status } = useSession();
