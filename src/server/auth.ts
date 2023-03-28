@@ -5,8 +5,8 @@ import {
   type DefaultSession,
 } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "../env.mjs";
-import { prisma } from "./db";
+import { env } from "@/env.mjs";
+import { prisma } from "@/server/db";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 
@@ -20,7 +20,7 @@ import EmailProvider from "next-auth/providers/email";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: string;
+      id: number;
       // ...other properties
       // role: UserRole;
       tenant: string[];
@@ -44,7 +44,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         // Add the user ID to the session object
-        session.user.id = user.id;
+        // TODO: make sure user.id is number
+        session.user.id = +user.id;
 
         // Retrieve the Tenant data for the current user
         const tenantList = await prisma.tenant.findMany({

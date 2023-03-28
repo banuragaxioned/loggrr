@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const tenantRouter = createTRPCRouter({
   // Get all Tenants for the current user

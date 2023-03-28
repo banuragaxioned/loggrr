@@ -1,5 +1,3 @@
-import { useTheme } from "next-themes";
-
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,10 +7,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function ThemeToggle() {
-  const { setTheme } = useTheme();
+export const SimpleDropdown = () => (
+  <div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Option 1</DropdownMenuItem>
+        <DropdownMenuItem>Option 2</DropdownMenuItem>
+        <DropdownMenuItem>Option 3</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
+);
 
-  return (
+export const AdvancedDropdown = () => (
+  <div>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm">
@@ -22,19 +31,19 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" forceMount>
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem>
           <Icons.sun className="mr-2 h-4 w-4" />
           <span>Light</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem>
           <Icons.moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem>
           <Icons.laptop className="mr-2 h-4 w-4" />
           <span>System</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-}
+  </div>
+);

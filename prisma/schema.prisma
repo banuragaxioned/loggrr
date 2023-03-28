@@ -29,8 +29,10 @@ model Tenant {
     Milestone  Milestone[]
     Task       Task[]
     TimeEntry  TimeEntry[]
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     Allocation Allocation[]
+    Skill      Skill[]
+    SkillScore SkillScore[]
 }
 
 model Client {
@@ -56,7 +58,7 @@ model Project {
     clientId  Int
     startdate DateTime
     enddate   DateTime?
-    billing   BillingType     @default(NON_BILLABLE)
+    billable  Boolean         @default(false)
     interval  ProjectInterval
     createdAt DateTime        @default(now())
     updatedAt DateTime        @updatedAt
@@ -67,10 +69,12 @@ model Project {
     Allocation Allocation[]
     Tenant     Tenant       @relation(fields: [tenantId], references: [id])
     Client     Client       @relation(fields: [clientId], references: [id])
+    Owner      User         @relation(fields: [ownerId], references: [id])
     //TODO: add owner relation
 
     @@index([tenantId])
     @@index([clientId])
+    @@index([ownerId])
 }
 
 enum ProjectInterval {
@@ -80,12 +84,6 @@ enum ProjectInterval {
     QUARTERLY
     HALFYEARLY
     YEARLY
-}
-
-// might not be used
-enum BillingType {
-    BILLABLE
-    NON_BILLABLE
 }
 
 enum Role {
@@ -134,39 +132,28 @@ model Task {
 }
 
 model TimeEntry {
-    id         Int         @id @default(autoincrement())
+    id         Int       @id @default(autoincrement())
+    date       DateTime
     projectId  Int
     tenantId   Int
-    type       BillingType
+    userId     Int
+    billable   Boolean   @default(false)
     time       Int // Storing time in minutes
     comments   String?
-    approved   Boolean     @default(false)
+    approved   Boolean   @default(false)
     approvedBy String?
     approvedAt DateTime?
-    status     Status      @default(PUBLISHED)
-    createdAt  DateTime    @default(now())
-    updatedAt  DateTime    @updatedAt
+    status     Status    @default(PUBLISHED)
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
 
     Tenant  Tenant  @relation(fields: [tenantId], references: [id])
     Project Project @relation(fields: [projectId], references: [id])
+    User    User    @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
-}
-
-model UserRole {
-    id        Int      @id @default(autoincrement())
-    role      Role     @default(USER)
-    userId    Int
-    tenantId  Int
-    user      User     @relation(fields: [userId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@unique([role, userId, tenantId])
     @@index([userId])
-    @@index([tenantId])
-    @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
 }
 
 enum Status {
@@ -174,16 +161,7 @@ enum Status {
     ARCHIVED
 }
 
-enum UserStatus {
-    ACTIVE
-    INACTIVE
-}
-
-enum AllocationFrequency {
-    DAY
-    ONGOING
-}
-
+// Allocation-related
 model Allocation {
     id          Int       @id @default(autoincrement())
     date        DateTime
@@ -211,7 +189,70 @@ model Allocation {
     @@index([tenantId, projectId, userId])
 }
 
-model UserTags {
+enum AllocationFrequency {
+    DAY
+    ONGOING
+}
+
+// Skills-related
+enum SkillLevel {
+    NA
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+    EXPERT
+    GOAT
+}
+
+model SkillScore {
+    id         Int        @id @default(autoincrement())
+    userId     Int
+    skillId    Int
+    tenantId   Int
+    skillLevel SkillLevel @default(NA)
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+    Skill  Skill  @relation(fields: [skillId], references: [id])
+    User   User   @relation(fields: [userId], references: [id])
+
+    @@index([tenantId])
+    @@index([skillId])
+    @@index([userId])
+}
+
+model Skill {
+    id        Int      @id @default(autoincrement())
+    name      String
+    tenantId  Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+
+    SkillScore SkillScore[]
+
+    @@index([tenantId])
+}
+
+// Additional User meta-data
+model UserRole {
+    id        Int      @id @default(autoincrement())
+    role      Role     @default(USER)
+    userId    Int
+    tenantId  Int
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([role, userId, tenantId])
+    @@index([userId])
+    @@index([tenantId])
+    @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
+}
+
+model UserGroup {
     id        Int      @id @default(autoincrement())
     name      String
     tenantId  Int
@@ -224,23 +265,33 @@ model UserTags {
     @@index([tenantId])
 }
 
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    DELETED
+}
+
+// NextAuth-related
 model User {
-    id              Int        @id @default(autoincrement())
-    name            String?
-    email           String     @unique
-    emailVerifiedAt DateTime?
-    image           String?
-    createdAt       DateTime   @default(now())
-    updatedAt       DateTime   @updatedAt
-    allocationId    Int?
-    status          UserStatus @default(ACTIVE)
+    id            Int        @id @default(autoincrement())
+    name          String?
+    email         String     @unique
+    emailVerified DateTime?
+    image         String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    allocationId  Int?
+    status        UserStatus @default(ACTIVE)
 
     TenantId   Tenant[]     @relation("UserTenants")
-    UserTags   UserTags[]
+    UserGroup  UserGroup[]
     accounts   Account[]
     sessions   Session[]
     Roles      UserRole[]
     Allocation Allocation[]
+    SkillScore SkillScore[]
+    TimeEntry  TimeEntry[]
+    Project    Project[]
 
     @@index([allocationId])
 }

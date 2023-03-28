@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  body,
-  p {
-    @apply text-base;
+  body {
+    @apply min-h-screen bg-white text-base text-zinc-900 antialiased dark:bg-zinc-900 dark:text-zinc-50;
   }
   h1 {
     @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
@@ -21,5 +20,14 @@
   }
   .todo {
     @apply flex w-full items-center justify-center rounded-md border border-dashed border-zinc-300 text-sm dark:border-zinc-600;
+  }
+  :disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  :invalid {
+    @apply invalid:focus:ring-red-600 dark:invalid:focus:ring-red-600;
+  }
+  select {
+    @apply my-2 block w-full rounded border-gray-300 pl-3 pr-10 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm;
   }
 }

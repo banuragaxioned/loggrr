@@ -1,4 +1,3 @@
-import * as React from "react";
 import Link from "next/link";
 
 import { siteConfig } from "@/config/site";
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { TenantSwitcher } from "@/components/tenantSwitcher";
 
 export interface NavItem {
   title: string;
@@ -34,6 +34,7 @@ export function MainNav({ items }: MainNavProps) {
           {siteConfig.name}
         </span>
       </Link>
+      <TenantSwitcher />
       {items?.length ? (
         <nav className="hidden gap-6 md:flex">
           {items?.map(
