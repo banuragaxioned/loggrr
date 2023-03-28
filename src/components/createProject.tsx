@@ -1,16 +1,22 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
-import { ErrorMessage } from '@hookform/error-message';
 import { ProjectInterval } from "@prisma/client";
-
+import { useSession } from "next-auth/react";
+import useToast from "@/hooks/useToast";
 
 export default function CreateProject() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
+  const showToast = useToast();
+
+  const { data: clientList } = api.client.getClients.useQuery(
+    { text: currentTenant },
+    { enabled: session?.user !== undefined }
+  );
 
   const {
     register,
@@ -18,30 +24,31 @@ export default function CreateProject() {
     formState: { errors },
     reset,
     getValues,
-  } = useForm();
+  } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
     addProject();
-    reset();
   };
-
-  console.log(`Errors: `, errors);
 
   const createProject = api.project.createProject.useMutation({
     onSuccess: (data) => {
-      console.log(data);
+      reset();
+      showToast("A new Project was created", "success");
     },
   });
 
   const addProject = () => {
     const newProject = createProject.mutate({
-      name: 'project 1', //getValues("project_name"),
-      clientId: 1,
-      interval: ProjectInterval.MONTHLY,
-      slug: 'axioned',//currentTenant,
-      startdate: new Date(),
+      name: getValues("project_name"),
+      clientId: Number(getValues("client")),
+      interval: getValues("interval"),
+      slug: currentTenant,
+      startdate: new Date(getValues("startdate")),
+      enddate: getValues("enddate")
+        ? new Date(getValues("enddate"))
+        : undefined,
+      billable: getValues("billable"),
     });
-    console.log(getValues("project_name"));
     return newProject;
   };
 
@@ -49,25 +56,56 @@ export default function CreateProject() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input
         type="text"
-        placeholder="Project name"
-        className="peer peer-invalid:bg-pink-600"
-        {...register("project_name", { required: 'This field is required', maxLength: 10 })}
+        placeholder="Enter your Project name"
+        {...register("project_name", { required: true })}
+        maxLength={20}
       />
-      { errors.project_name && <p className="peer-invalid:visible text-pink-600 text-sm">
-        <ErrorMessage errors={errors} name="project_name" />
-      </p> }
-      
-      <Input
-        type="text"
-        placeholder="Client name"
-        className="peer peer-invalid:bg-pink-600"
-        {...register("client_name", { required: 'This field is required', maxLength: 10 })}
-      />
-      { errors.client_name && <p className="peer-invalid:visible text-pink-600 text-sm">
-        <ErrorMessage errors={errors} name="client_name" />
-      </p> }
+      <div className="flex gap-2">
+        <select
+          required
+          {...register("interval", { required: true })}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Interval
+          </option>
+          {ProjectInterval &&
+            Object.keys(ProjectInterval).map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+        </select>
 
-      <Button type="submit">Submit</Button>
+        <select
+          required
+          {...register("client", { required: true })}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select Client
+          </option>
+          {clientList &&
+            clientList.map((client) => (
+              <option key={client.id} value={client.id}>
+                {client.name}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div className="flex gap-2">
+        <Input type="date" {...register("startdate", { required: true })} />
+        <Input type="date" {...register("enddate")} />
+      </div>
+
+      <div className="my-2 space-x-2">
+        <label htmlFor="billable">Billable</label>
+        <input type="checkbox" {...register("billable")} className="rounded" />
+      </div>
+
+      <Button type="submit" className="my-2">
+        Submit
+      </Button>
     </form>
   );
 }

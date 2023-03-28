@@ -17,17 +17,13 @@ export default function Members() {
   const { data: memberData, refetch: refetchMembers } =
     api.tenant.getTenantMembers.useQuery(
       { slug: currentTenant },
-      {
-        enabled: session?.user !== undefined,
-        onSuccess: (data) => console.log(data),
-      }
+      { enabled: session?.user !== undefined }
     );
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const connectUserToTenantMutation =
     api.tenant.connectUserToTenant.useMutation({
       onSuccess: (data) => {
-        console.log(data);
         refetchMembers();
       },
     });
@@ -54,7 +50,7 @@ export default function Members() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
       <section>
-        <div className="flex flex-col gap-4 lg:w-2/4">
+        <div className="flex flex-col lg:w-2/4">
           <h2>Add members</h2>
           <Input placeholder="Email" type="text" ref={emailInputRef} />
           <Button onClick={addMemberHandler}>Add member</Button>

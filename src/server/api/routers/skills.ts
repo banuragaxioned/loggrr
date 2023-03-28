@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const skillsRouter = createTRPCRouter({
   // Get all available skills for the current tenant
@@ -9,7 +9,7 @@ export const skillsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
       const skills = await ctx.prisma.skill.findMany({
-        where: { Tenant: { slug: slug} },
+        where: { Tenant: { slug: slug } },
       });
       return skills;
     }),
@@ -21,7 +21,7 @@ export const skillsRouter = createTRPCRouter({
       const slug = input.tenant;
       const userId = Number(ctx.session.user.id);
       const skillScores = await ctx.prisma.skillScore.findMany({
-        where: { User: { id: userId }, Tenant: { slug: slug} },
+        where: { User: { id: userId }, Tenant: { slug: slug } },
         include: { Skill: true },
       });
       const mappedSkills = skillScores.map((skillScore) => {
@@ -40,10 +40,25 @@ export const skillsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
       const skillScores = await ctx.prisma.skillScore.findMany({
-        where: { Tenant: { slug: slug} },
+        where: { Tenant: { slug: slug } },
         include: { Skill: true, User: true },
       });
       return skillScores;
     }),
   // Create a skill in the current tenant - least priority
+  createSkill: protectedProcedure
+    .input(z.object({ slug: z.string(), name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const slug = input.slug;
+      const skillName = input.name;
+      const newSkill = await ctx.prisma.skill.create({
+        data: {
+          name: skillName,
+          Tenant: {
+            connect: { slug },
+          },
+        },
+      });
+      return newSkill;
+    }),
 });

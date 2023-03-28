@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const clientRouter = createTRPCRouter({
   // Get all Clients for the current tenant
@@ -9,7 +9,7 @@ export const clientRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const slug = input.text;
       const clients = await ctx.prisma.client.findMany({
-        where: { Tenant: { slug: slug} },
+        where: { Tenant: { slug: slug } },
       });
       return clients;
     }),

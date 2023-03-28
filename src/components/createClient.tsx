@@ -1,15 +1,14 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
-import { ErrorMessage } from '@hookform/error-message';
-
+import useToast from "@/hooks/useToast";
 
 export default function CreateClient() {
   const router = useRouter();
   const currentTenant = router.query.team as string;
+  const showToast = useToast();
 
   const {
     register,
@@ -17,18 +16,16 @@ export default function CreateClient() {
     formState: { errors },
     reset,
     getValues,
-  } = useForm();
+  } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
     addClient();
-    reset();
   };
-
-  console.log(`Errors: `, errors);
 
   const createClient = api.client.createClient.useMutation({
     onSuccess: (data) => {
-      console.log(data);
+      reset();
+      showToast("A new Client was created", "success");
     },
   });
 
@@ -37,7 +34,6 @@ export default function CreateClient() {
       name: getValues("client_name"),
       slug: currentTenant,
     });
-    console.log(getValues("client_name"));
     return newClient;
   };
 
@@ -46,14 +42,14 @@ export default function CreateClient() {
       <Input
         type="text"
         placeholder="Client name"
-        className="peer peer-invalid:bg-pink-600"
-        {...register("client_name", { required: 'Please enter a client name', maxLength: 20 })}
+        {...register("client_name", {
+          required: "Please enter a client name",
+          maxLength: 15,
+        })}
       />
-      { errors.client_name && <p className="peer-invalid:visible text-pink-600 text-sm">
-        <ErrorMessage errors={errors} name="client_name" />
-      </p> }
-
-      <Button type="submit">Submit</Button>
+      <Button type="submit" className="my-2">
+        Submit
+      </Button>
     </form>
   );
 }

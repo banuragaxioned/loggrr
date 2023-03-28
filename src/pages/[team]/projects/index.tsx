@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";
-import CreateProject from "../../../components/createProject";
+import CreateProject from "@/components/createProject";
 
 export default function Projects() {
   const { data: session, status } = useSession();
@@ -34,7 +34,7 @@ export default function Projects() {
       <section>
         <h2>Projects</h2>
         <CreateProject />
-        <ul className="flex flex-col gap-4">
+        <ul className="flex max-w-xs flex-col gap-4">
           {projectList.data &&
             projectList.data.map((project) => (
               <Link key={project.id} href={router.asPath + "/" + project.id}>
