@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import useToast from "@/hooks/useToast";

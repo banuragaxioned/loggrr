@@ -17,8 +17,11 @@ export function useValidateTenantAccess() {
     status === "unauthenticated" ||
     validatedData.data?.slug !== router.query.team;
 
+  const slug = "currentTenant";
+
   return {
     isLoading,
     isInvalid,
+    slug,
   };
 }

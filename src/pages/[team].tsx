@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { useRouter } from "next/router";
 import { QuickStatsWidget } from "@/components/quickStats";
 

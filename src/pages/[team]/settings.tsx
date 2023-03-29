@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 
 export default function TenantSettings() {
   const { isLoading, isInvalid } = useValidateTenantAccess();
