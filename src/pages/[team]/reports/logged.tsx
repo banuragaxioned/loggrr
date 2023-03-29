@@ -43,6 +43,7 @@ export default function Projects() {
             ))}
         </ul>
         <TableUI />
+        {/* TODO: pass reportData.data, infer the column names from the response  */}
       </section>
     </div>
   );

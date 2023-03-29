@@ -1,72 +1,55 @@
+import React, { useState, useEffect } from "react";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
 
-type Person = {
-  name: string;
-  age: number;
-  visits: number;
-  status: string;
-  progress: number;
-};
+// const columnHelper = createColumnHelper<Person>();
+// TODO: This needs to generated based on the props
 
-const defaultData: Person[] = [
-  {
-    name: "tanner",
-    age: 24,
-    visits: 100,
-    status: "In Relationship",
-    progress: 50,
-  },
-  {
-    name: "tandy",
-    age: 40,
-    visits: 40,
-    status: "Single",
-    progress: 80,
-  },
-  {
-    name: "joe",
-    age: 45,
-    visits: 20,
-    status: "Complicated",
-    progress: 10,
-  },
-];
+// const columns = [
+//   columnHelper.accessor("name", {
+//     header: () => "Name",
+//     cell: (info) => info.getValue(),
+//     footer: (info) => info.column.id,
+//   }),
+//   columnHelper.accessor("age", {
+//     header: () => "Age",
+//     cell: (info) => info.renderValue(),
+//     footer: (info) => info.column.id,
+//   }),
+//   columnHelper.accessor("visits", {
+//     header: () => <span>Visits</span>,
+//     footer: (info) => info.column.id,
+//   }),
+//   columnHelper.accessor("status", {
+//     header: "Status",
+//     footer: (info) => info.column.id,
+//   }),
+//   columnHelper.accessor("progress", {
+//     header: "Profile Progress",
+//     footer: (info) => info.column.id,
+//   }),
+// ];
 
-const columnHelper = createColumnHelper<Person>();
+const TableUI = (props: any) => {
+  console.log(props);
 
-const columns = [
-  columnHelper.accessor("name", {
-    header: () => "Name",
-    cell: (info) => info.getValue(),
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("age", {
-    header: () => "Age",
-    cell: (info) => info.renderValue(),
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("visits", {
-    header: () => <span>Visits</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("progress", {
-    header: "Profile Progress",
-    footer: (info) => info.column.id,
-  }),
-];
+  const [columns, setColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [data, setData] = React.useState(() => [...props.rows]);
 
-export default function TableUI() {
-  const [data, setData] = React.useState(() => [...defaultData]);
+  useEffect(() => {
+    if (props.column && Array.isArray(props.columns) && props.columns.length) {
+      setColumns(props.columns);
+    }
+    if (props.rows && Array.isArray(props.rows) && props.rows.length) {
+      setRows(props.rows);
+    }
+  }, [props]);
+
   const rerender = React.useReducer(() => ({}), {})[1];
 
   const table = useReactTable({
@@ -76,12 +59,12 @@ export default function TableUI() {
   });
   return (
     <>
-      <table>
+      <table className="border border-slate-400">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th key={header.id} className="border border-slate-300">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -97,30 +80,16 @@ export default function TableUI() {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td key={cell.id} className="border border-slate-300">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
       </table>
     </>
   );
-}
+};
+
+export default TableUI;
