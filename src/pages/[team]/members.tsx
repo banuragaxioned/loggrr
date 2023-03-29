@@ -2,18 +2,15 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
 import { getInitials } from "@/utils/helper";
-import { useRouter } from "next/router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 
 export default function Members() {
-  const router = useRouter();
-  const currentTenant = router.query.team as string;
-
+  const { isLoading, isInvalid, slug } = useValidateTenantAccess();
   const { data: memberData, refetch: refetchMembers } =
-    api.tenant.getTenantMembers.useQuery({ slug: currentTenant });
+    api.tenant.getTenantMembers.useQuery({ slug: slug });
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const connectUserToTenantMutation =
@@ -27,13 +24,11 @@ export default function Members() {
 
     const newMember = connectUserToTenantMutation.mutate({
       email: emailInputRef.current.value,
-      tenant: currentTenant,
+      tenant: slug,
     });
 
     return newMember;
   };
-
-  const { isLoading, isInvalid } = useValidateTenantAccess();
 
   if (isLoading) {
     return <p>Loading...</p>;

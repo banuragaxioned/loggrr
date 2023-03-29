@@ -16,7 +16,7 @@ export default function GlobalReportsAssigned() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <h2>Global Logged Data</h2>
+        <h2>Global Assignment Data</h2>
         <ul className="flex flex-col gap-4">
           {reportData.data &&
             reportData.data.map((logged) => (

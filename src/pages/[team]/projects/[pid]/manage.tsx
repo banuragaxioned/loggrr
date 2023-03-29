@@ -1,19 +1,21 @@
-import { useSession, getSession } from "next-auth/react";
+import Unavailable from "@/components/unavailable";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 
 export default function ManageProject() {
-  const { data: session, status } = useSession();
-  if (status === "loading") {
+  const { isLoading, isInvalid } = useValidateTenantAccess();
+
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
-  if (status === "unauthenticated") {
-    return <p>Access Denied</p>;
+  if (isInvalid) {
+    return <Unavailable />;
   }
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <h2>Manage Projects</h2>
-        <div className="todo h-14">Manage Projects</div>
+        <h2>Manage Project</h2>
+        <div className="todo h-14">Settings</div>
       </section>
     </div>
   );
