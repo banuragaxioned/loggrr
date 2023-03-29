@@ -6,44 +6,25 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-// const columnHelper = createColumnHelper<Person>();
-// TODO: This needs to generated based on the props
-
-// const columns = [
-//   columnHelper.accessor("name", {
-//     header: () => "Name",
-//     cell: (info) => info.getValue(),
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("age", {
-//     header: () => "Age",
-//     cell: (info) => info.renderValue(),
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("visits", {
-//     header: () => <span>Visits</span>,
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("status", {
-//     header: "Status",
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("progress", {
-//     header: "Profile Progress",
-//     footer: (info) => info.column.id,
-//   }),
-// ];
-
 const TableUI = (props: any) => {
-  console.log(props);
-
   const [columns, setColumns] = useState([]);
+  const [columnHelper, setColumnHelper] = useState([]);
   const [rows, setRows] = useState([]);
-  const [data, setData] = React.useState(() => [...props.rows]);
 
   useEffect(() => {
-    if (props.column && Array.isArray(props.columns) && props.columns.length) {
+    if (props.columns && Array.isArray(props.columns) && props.columns.length) {
       setColumns(props.columns);
+
+      const columnHelperConfig = createColumnHelper();
+      const columnHelper = props.columns.map((item: any, index: number) => {
+        return columnHelperConfig.accessor(item, {
+          header: () => item.toUpperCase(),
+          cell: (info) => info.renderValue(),
+          footer: (info) => info.column.id,
+        });
+      });
+
+      setColumnHelper(columnHelper);
     }
     if (props.rows && Array.isArray(props.rows) && props.rows.length) {
       setRows(props.rows);
@@ -53,8 +34,8 @@ const TableUI = (props: any) => {
   const rerender = React.useReducer(() => ({}), {})[1];
 
   const table = useReactTable({
-    data,
-    columns,
+    data: rows,
+    columns: columnHelper,
     getCoreRowModel: getCoreRowModel(),
   });
   return (
