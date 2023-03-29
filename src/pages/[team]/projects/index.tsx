@@ -2,24 +2,16 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";
 import CreateProject from "@/components/createProject";
 import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const clientList = api.client.getClients.useQuery(
-    { text: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
-  const projectList = api.project.getProjects.useQuery(
-    { text: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
+  const clientList = api.client.getClients.useQuery({ text: currentTenant });
+  const projectList = api.project.getProjects.useQuery({ text: currentTenant });
 
   const { isLoading, isInvalid } = useValidateTenantAccess();
 

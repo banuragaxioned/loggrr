@@ -2,16 +2,11 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 export default function GlobalReportsAssigned() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const reportData = api.report.getAssigned.useQuery(
-    { tenant: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
+  const reportData = api.report.getAssigned.useQuery({ tenant: currentTenant });
 
   const { isLoading, isInvalid } = useValidateTenantAccess();
 

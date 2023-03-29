@@ -9,10 +9,7 @@ export default function Projects() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const reportData = api.report.getLogged.useQuery(
-    { tenant: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
+  const reportData = api.report.getLogged.useQuery({ tenant: currentTenant });
 
   const { isLoading, isInvalid } = useValidateTenantAccess();
 

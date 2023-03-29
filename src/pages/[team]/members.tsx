@@ -3,22 +3,17 @@ import { useValidateTenantAccess } from "@/hooks/tenantValidation";
 import { api } from "@/utils/api";
 import { getInitials } from "@/utils/helper";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 
 export default function Members() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
 
   const { data: memberData, refetch: refetchMembers } =
-    api.tenant.getTenantMembers.useQuery(
-      { slug: currentTenant },
-      { enabled: session?.user !== undefined }
-    );
+    api.tenant.getTenantMembers.useQuery({ slug: currentTenant });
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const connectUserToTenantMutation =

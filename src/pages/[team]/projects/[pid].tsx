@@ -1,6 +1,5 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/tenantValidation";
-import { useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
