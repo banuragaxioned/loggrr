@@ -46,7 +46,7 @@
     "react-hook-form": "^7.43.8",
     "react-toastify": "^9.1.2",
     "superjson": "1.12.2",
-    "tailwind-merge": "^1.10.0",
+    "tailwind-merge": "^1.11.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
