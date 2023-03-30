@@ -27,12 +27,13 @@ export const projectRouter = createTRPCRouter({
 
   // Get all Members for the current project
   getMembers: protectedProcedure
-    .input(z.object({ projectId: z.number(), slug: z.string() }))
+    .input(z.object({ projectId: z.string(), slug: z.string() }))
     .query(async ({ ctx, input }) => {
       const projectId = input.projectId;
       const slug = input.slug;
+      
       const members = await ctx.prisma.project.findMany({
-        where: { Tenant: { slug: slug }, id: projectId },
+        where: { Tenant: { slug }, id: +projectId },
         include: { Members: true, Owner: true },
       });
       return members;

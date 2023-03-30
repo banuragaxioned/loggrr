@@ -9,7 +9,7 @@ import TableUI from "@/components/ui/table";
 export default function ManageProject() {
   const { isLoading, isInvalid, slug, pid } = useValidateTenantAccess();
   const { data: memberData, refetch: refetchMembers } =
-    api.project.getMembers.useQuery({ projectId: Number(pid), slug: slug });
+    api.project.getMembers.useQuery({ projectId: pid, slug: slug });
 
   const emailInputRef = useRef<HTMLInputElement>(null);
 
@@ -47,14 +47,14 @@ export default function ManageProject() {
         <h2>Manage Project</h2>
         <div className="col-12">
           <h3 className="pb-3">Members</h3>
-          {memberData &&
+          {/* {memberData &&
             Array.isArray(memberData.Members) &&
             memberData.Members.length > 0 && (
               <TableUI
                 columns={memberData.Members[0]}
                 rows={memberData.Members}
               />
-            )}
+            )} */}
         </div>
       </section>
       <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
