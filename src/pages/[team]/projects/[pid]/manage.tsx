@@ -48,9 +48,12 @@ export default function ManageProject() {
         <div className="col-12">
           <h3 className="pb-3">Members</h3>
           {memberData &&
-            Array.isArray(memberData.Users) &&
-            memberData.Users.length > 0 && (
-              <TableUI columns={memberData.Users[0]} rows={memberData.Users} />
+            Array.isArray(memberData.Members) &&
+            memberData.Members.length > 0 && (
+              <TableUI
+                columns={memberData.Members[0]}
+                rows={memberData.Members}
+              />
             )}
         </div>
       </section>
