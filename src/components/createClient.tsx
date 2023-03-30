@@ -17,6 +17,7 @@ export default function CreateClient() {
     reset,
     getValues,
   } = useForm({ shouldUseNativeValidation: true });
+  // TODO: Update the forms to be "smart", see reference: https://react-hook-form.com/advanced-usage/#SmartFormComponent
 
   const onSubmit = (data: any) => {
     addClient();

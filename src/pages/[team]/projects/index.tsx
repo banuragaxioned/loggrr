@@ -1,24 +1,17 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";
 import CreateProject from "@/components/createProject";
+import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
-  const clientList = api.client.getClients.useQuery(
-    { text: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
-  const projectList = api.project.getProjects.useQuery(
-    { text: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
+  const clientList = api.client.getClients.useQuery({ text: currentTenant });
+  const projectList = api.project.getProjects.useQuery({ text: currentTenant });
 
   const { isLoading, isInvalid } = useValidateTenantAccess();
 
@@ -29,9 +22,44 @@ export default function Projects() {
   if (isInvalid) {
     return <Unavailable />;
   }
+  type Person = {
+    name: string;
+    age: number;
+    visits: number;
+    status: string;
+    progress: number;
+  };
+
+  const defaultDataColumns = ["name", "age", "visits", "status", "progress"];
+
+  const defaultData: Person[] = [
+    {
+      name: "tanner",
+      age: 24,
+      visits: 100,
+      status: "In Relationship",
+      progress: 50,
+    },
+    {
+      name: "tandy",
+      age: 40,
+      visits: 40,
+      status: "Single",
+      progress: 80,
+    },
+    {
+      name: "joe",
+      age: 45,
+      visits: 20,
+      status: "Complicated",
+      progress: 10,
+    },
+  ];
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
+        <TableUI rows={defaultData} columns={defaultDataColumns} />
+        {/* TODO: pass projectList, infer the column names from the response  */}
         <h2>Projects</h2>
         <CreateProject />
         <ul className="flex max-w-xs flex-col gap-4">
@@ -39,7 +67,7 @@ export default function Projects() {
             projectList.data.map((project) => (
               <Link key={project.id} href={router.asPath + "/" + project.id}>
                 <li className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20">
-                  {project.name}
+                  {project.name} - {project.status}
                 </li>
               </Link>
             ))}
@@ -58,6 +86,7 @@ export default function Projects() {
             ))}
         </ul>
       </section>
+      <section></section>
     </div>
   );
 }

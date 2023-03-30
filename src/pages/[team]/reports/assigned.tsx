@@ -1,19 +1,10 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/tenantValidation";
+import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 export default function GlobalReportsAssigned() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const currentTenant = router.query.team as string;
-  const reportData = api.report.getAssigned.useQuery(
-    { tenant: currentTenant },
-    { enabled: session?.user !== undefined }
-  );
-
-  const { isLoading, isInvalid } = useValidateTenantAccess();
+  const { isLoading, isInvalid, slug } = useValidateTenantAccess();
+  const reportData = api.report.getAssigned.useQuery({ tenant: slug });
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -25,7 +16,7 @@ export default function GlobalReportsAssigned() {
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
-        <h2>Global Logged Data</h2>
+        <h2>Global Assignment Data</h2>
         <ul className="flex flex-col gap-4">
           {reportData.data &&
             reportData.data.map((logged) => (
