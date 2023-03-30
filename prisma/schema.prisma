@@ -67,10 +67,11 @@ model Project {
     Task       Task[]
     TimeEntry  TimeEntry[]
     Allocation Allocation[]
-    Tenant     Tenant       @relation(fields: [tenantId], references: [id])
-    Client     Client       @relation(fields: [clientId], references: [id])
-    Owner      User         @relation(fields: [ownerId], references: [id])
-    //TODO: add owner relation
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+    Client Client @relation(fields: [clientId], references: [id])
+    Members    User[]       @relation("ProjectMembers")
+    Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
+
 
     @@index([tenantId])
     @@index([clientId])
@@ -283,15 +284,16 @@ model User {
     allocationId  Int?
     status        UserStatus @default(ACTIVE)
 
-    TenantId   Tenant[]     @relation("UserTenants")
-    UserGroup  UserGroup[]
-    accounts   Account[]
-    sessions   Session[]
-    Roles      UserRole[]
-    Allocation Allocation[]
-    SkillScore SkillScore[]
-    TimeEntry  TimeEntry[]
-    Project    Project[]
+    TenantId      Tenant[]     @relation("UserTenants")
+    UserGroup     UserGroup[]
+    accounts      Account[]
+    sessions      Session[]
+    Roles         UserRole[]
+    Allocation    Allocation[]
+    SkillScore    SkillScore[]
+    TimeEntry     TimeEntry[]
+    Project       Project[]    @relation("ProjectMembers")
+    OwnedProjects Project[]    @relation("UserOwnedProjects")
 
     @@index([allocationId])
 }

@@ -25,6 +25,18 @@ export const projectRouter = createTRPCRouter({
       return projects;
     }),
 
+  // Get all Members for the current project
+  getMembers: protectedProcedure
+    .input(z.object({ projectId: z.number(), slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const slug = input.slug;
+      const members = await ctx.prisma.project.findMany({
+        where: { Tenant: { slug: slug }, id: projectId },
+      });
+      return members;
+    }),
+
   // Create a new Project
   createProject: protectedProcedure
     .input(
