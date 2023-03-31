@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "@/utils/api";
+import TimeLogForm from "@/components/timelogForm";
 
 const Home: NextPage = () => {
   return (
@@ -14,6 +15,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.svg" />
       </Head>
       <main className="flex min-h-full flex-col items-center justify-center">
+        <TimeLogForm/>
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1>Welcome to Loggr</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
