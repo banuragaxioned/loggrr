@@ -7,9 +7,13 @@ import { api } from "@/utils/api";
 import TableUI from "@/components/ui/table";
 
 export default function ManageProject() {
-  const { isLoading, isInvalid, slug, pid } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug, pid } =
+    useValidateTenantAccess();
   const { data: memberData, refetch: refetchMembers } =
-    api.project.getMembers.useQuery({ projectId: pid, slug: slug });
+    api.project.getMembers.useQuery(
+      { projectId: pid, slug: slug },
+      { enabled: isReady }
+    );
 
   const emailInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,22 +43,24 @@ export default function ManageProject() {
     return <Unavailable />;
   }
 
-  console.log("Members", memberData);
-
   return (
     <div className="mx-auto max-w-6xl flex-col gap-4">
       <section>
         <h2>Manage Project</h2>
         <div className="col-12">
           <h3 className="pb-3">Members</h3>
-          {/* {memberData &&
-            Array.isArray(memberData.Members) &&
-            memberData.Members.length > 0 && (
-              <TableUI
-                columns={memberData.Members[0]}
-                rows={memberData.Members}
-              />
-            )} */}
+          <h4>Owner:</h4>
+          {memberData?.map((members) => (
+            <p key={members.Owner.id}>{members.Owner.name}</p>
+          ))}
+          <h4>All members:</h4>
+          <ul>
+            {memberData?.map((members) =>
+              members.Members.map((member) => (
+                <li key={member.id}>{member.name}</li>
+              ))
+            )}
+          </ul>
         </div>
       </section>
       <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
