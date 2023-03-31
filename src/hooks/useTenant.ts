@@ -5,9 +5,9 @@ import { api } from "@/utils/api";
 export function useValidateTenantAccess() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const currentTenant = router.query.team as string;
-  const currentProject = router.query.pid as string;
-  console.log(router.query);
+  const currentTenant = String(router.query.team);
+  const currentProject = String(router.query.pid);
+
   const validatedData = api.tenant.validateTenantAccess.useQuery(
     { text: currentTenant },
     { enabled: session?.user !== undefined }
@@ -19,12 +19,13 @@ export function useValidateTenantAccess() {
     status === "unauthenticated" ||
     validatedData.data?.slug !== router.query.team;
 
-  const slug = currentTenant;
+  const isReady = router.query !== undefined && status === "authenticated" && !isInvalid;
 
   return {
     isLoading,
     isInvalid,
-    slug,
+    isReady,
+    slug: currentTenant,
     pid: currentProject,
   };
 }
