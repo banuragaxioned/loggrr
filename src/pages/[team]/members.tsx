@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 
 export default function Members() {
-  const { isLoading, isInvalid, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
   const { data: memberData, refetch: refetchMembers } =
-    api.tenant.getTenantMembers.useQuery({ slug: slug });
+    api.tenant.getTenantMembers.useQuery({ slug: slug }, { enabled: isReady });
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const connectUserToTenantMutation =
