@@ -9,7 +9,7 @@ export const taskRouter = createTRPCRouter({
     .input(z.object({ pid: z.string() }))
     .query(async ({ ctx, input }) => {
       const projectId = +input.pid;
-      const tasks = await ctx.prisma.milestone.findMany({
+      const tasks = await ctx.prisma.task.findMany({
         where: { projectId: projectId, status: Status.PUBLISHED },
       });
       return tasks;
