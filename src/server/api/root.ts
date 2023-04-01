@@ -1,3 +1,4 @@
+import { milestoneRouter } from './routers/milestone';
 import { statsRouter } from "@/server/api/routers/stats";
 import { projectRouter } from "@/server/api/routers/project";
 import { createTRPCRouter } from "@/server/api/trpc";
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   skill: skillsRouter,
   report: reportRouter,
   stats: statsRouter,
+  milestone: milestoneRouter
 });
 
 // export type definition of API
