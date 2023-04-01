@@ -51,7 +51,7 @@ export const projectRouter = createTRPCRouter({
       });
       return member;
     }),
-  
+
   // Remove a Member from the current project
   removeMember: protectedProcedure
     .input(
@@ -59,7 +59,7 @@ export const projectRouter = createTRPCRouter({
         projectId: z.string(),
         userId: z.string(),
       })
-  )
+    )
     .mutation(async ({ ctx, input }) => {
       const projectId = input.projectId;
       const userId = +input.userId;
