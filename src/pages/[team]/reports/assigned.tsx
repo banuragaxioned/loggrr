@@ -3,8 +3,11 @@ import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
 
 export default function GlobalReportsAssigned() {
-  const { isLoading, isInvalid, slug } = useValidateTenantAccess();
-  const reportData = api.report.getAssigned.useQuery({ tenant: slug });
+  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const reportData = api.report.getAssigned.useQuery(
+    { tenant: slug },
+    { enabled: isReady }
+  );
 
   if (isLoading) {
     return <p>Loading...</p>;
