@@ -8,30 +8,45 @@ import { api } from "@/utils/api";
 export default function ManageProject() {
   const { isLoading, isInvalid, isReady, slug, pid } =
     useValidateTenantAccess();
+
   const { data: memberData, refetch: refetchMembers } =
     api.project.getMembers.useQuery(
       { projectId: pid, slug: slug },
       { enabled: isReady }
     );
 
-  const emailInputRef = useRef<HTMLInputElement>(null);
+  const userInputRef = useRef<HTMLInputElement>(null);
 
-  const connectUserToTenantMutation =
-    api.tenant.connectUserToTenant.useMutation({
-      onSuccess: (data) => {
-        refetchMembers();
-      },
-    });
+  const connectUserToProjectMutation = api.project.addMember.useMutation({
+    onSuccess: (data) => {
+      refetchMembers();
+    },
+  });
 
   const addMemberHandler = () => {
-    if (emailInputRef?.current?.value === undefined) return;
+    if (userInputRef?.current?.value === undefined) return;
 
-    const newMember = connectUserToTenantMutation.mutate({
-      email: emailInputRef.current.value,
-      tenant: slug,
+    const newMember = connectUserToProjectMutation.mutate({
+      userId: userInputRef.current.value,
+      projectId: pid,
+    });
+  };
+
+  const disconnectUserToProjectMutation = api.project.removeMember.useMutation({
+    onSuccess: (data) => {
+      refetchMembers();
+    },
+  });
+
+  const removeMemberHandler = () => {
+    if (userInputRef?.current?.value === undefined) return;
+
+    const removeMember = disconnectUserToProjectMutation.mutate({
+      userId: userInputRef.current.value,
+      projectId: pid,
     });
 
-    return newMember;
+    return removeMember;
   };
 
   if (isLoading) {
@@ -66,8 +81,15 @@ export default function ManageProject() {
         <section>
           <div className="flex flex-col lg:w-2/4">
             <h3>Add members</h3>
-            <Input placeholder="Email" type="text" ref={emailInputRef} />
-            <Button onClick={addMemberHandler}>Add member</Button>
+            <Input
+              placeholder="Enter the userID"
+              type="text"
+              ref={userInputRef}
+            />
+            <div className="my-2 flex gap-4">
+              <Button onClick={addMemberHandler}>Add member</Button>
+              <Button onClick={removeMemberHandler}>Remove member</Button>
+            </div>
           </div>
         </section>
       </div>

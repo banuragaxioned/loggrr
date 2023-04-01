@@ -30,6 +30,48 @@ export const projectRouter = createTRPCRouter({
       return members;
     }),
 
+  // Add a new Member to the current project
+  addMember: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const userId = +input.userId;
+      const member = await ctx.prisma.project.update({
+        where: { id: +projectId },
+        data: {
+          Members: {
+            connect: { id: userId },
+          },
+        },
+      });
+      return member;
+    }),
+  
+  // Remove a Member from the current project
+  removeMember: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+      })
+  )
+    .mutation(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const userId = +input.userId;
+      const member = await ctx.prisma.project.update({
+        where: { id: +projectId },
+        data: {
+          Members: { disconnect: { id: userId } },
+        },
+      });
+      return member;
+    }),
+
   // Create a new Project
   createProject: protectedProcedure
     .input(
