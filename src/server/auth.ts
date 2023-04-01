@@ -21,16 +21,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: number;
-      // ...other properties
-      // role: UserRole;
       tenants: Object[];
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -44,8 +37,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   jwt: {
-  // The maximum age of the NextAuth.js issued JWT in seconds.
-  // Defaults to `session.maxAge`.
+    // The maximum age of the NextAuth.js issued JWT in seconds. Defaults to `session.maxAge`.
     maxAge: 60 * 60 * 24 * 30,
   },
   callbacks: {
@@ -53,13 +45,28 @@ export const authOptions: NextAuthOptions = {
       if (session?.user) {
         session.user.id = Number(token.uid);
       }
+
       // Add tenant properties to the session object
-      const tenantList = await prisma.tenant.findMany({
+      const hasAccessTo = await prisma.tenant.findMany({
         where: { Users: { some: { id: Number(session.user.id) } } },
-        select: { id: true, name: true, slug: true },
-        // TODO: Add a way to get the user's role in the tenant
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          UserRole: { select: { role: true } },
+        },
       });
-      session.user.tenants = tenantList;
+
+      // Map over the hasAccessTo array and move the role a level up
+      session.user.tenants = hasAccessTo.map((tenant) => {
+        return {
+          id: tenant.id,
+          name: tenant.name,
+          slug: tenant.slug,
+          role: tenant.UserRole[0]?.role, //TODO: make this not optional, I think
+        };
+      });
+
       return session;
     },
     jwt: async ({ user, token }) => {

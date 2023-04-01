@@ -34,7 +34,8 @@ export const projectRouter = createTRPCRouter({
       const members = await ctx.prisma.project.findMany({
         where: { Tenant: { slug }, id: +projectId },
         select: {
-          Members: { select: { id: true, name: true, image: true } }, Owner: { select: { id: true, name: true, image: true } },
+          Members: { select: { id: true, name: true, image: true } },
+          Owner: { select: { id: true, name: true, image: true } },
         },
       });
       return members;

@@ -1,6 +1,4 @@
-export { default } from "next-auth/middleware"
-
-console.log("Middleware loaded")
+export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [
@@ -10,6 +8,6 @@ export const config = {
      * - _next/static (static files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|favicon.ico).*)',
+    "/((?!api|_next/static|favicon.ico).*)",
   ],
-}
+};

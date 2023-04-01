@@ -19,7 +19,8 @@ export function useValidateTenantAccess() {
     status === "unauthenticated" ||
     validatedData.data?.slug !== router.query.team;
 
-  const isReady = router.query !== undefined && status === "authenticated" && !isInvalid;
+  const isReady =
+    router.query !== undefined && status === "authenticated" && !isInvalid;
 
   return {
     isLoading,
