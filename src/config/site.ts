@@ -51,4 +51,3 @@ export const reportConfig: ReportingConfig[] = [
     path: "/available",
   },
 ];
-

@@ -8,9 +8,9 @@ export function useValidateTenantAccess() {
   const currentTenant = String(router.query.team);
   const currentProject = String(router.query.pid);
 
-  const validatedData = api.tenant.validateTenantAccess.useQuery(
-    { text: currentTenant },
-  );
+  const validatedData = api.tenant.validateTenantAccess.useQuery({
+    text: currentTenant,
+  });
 
   const isLoading = status === "loading" || validatedData.isLoading;
 
