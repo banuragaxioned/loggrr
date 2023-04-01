@@ -3,17 +3,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const projectRouter = createTRPCRouter({
-  // Get all Clients for the current tenant
-  getClients: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const clients = await ctx.prisma.client.findMany({
-        where: { Tenant: { slug: slug } },
-      });
-      return clients;
-    }),
-
   // Get all Projects for the current tenant
   getProjects: protectedProcedure
     .input(z.object({ text: z.string() }))
@@ -23,6 +12,64 @@ export const projectRouter = createTRPCRouter({
         where: { Tenant: { slug: slug } },
       });
       return projects;
+    }),
+
+  // Get all Members for the current project
+  getMembers: protectedProcedure
+    .input(z.object({ projectId: z.string(), slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const slug = input.slug;
+      const members = await ctx.prisma.project.findMany({
+        where: { Tenant: { slug }, id: +projectId },
+        select: {
+          Members: { select: { id: true, name: true, image: true } },
+          Owner: { select: { id: true, name: true, image: true } },
+        },
+      });
+      return members;
+    }),
+
+  // Add a new Member to the current project
+  addMember: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const userId = +input.userId;
+      const member = await ctx.prisma.project.update({
+        where: { id: +projectId },
+        data: {
+          Members: {
+            connect: { id: userId },
+          },
+        },
+      });
+      return member;
+    }),
+
+  // Remove a Member from the current project
+  removeMember: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const projectId = input.projectId;
+      const userId = +input.userId;
+      const member = await ctx.prisma.project.update({
+        where: { id: +projectId },
+        data: {
+          Members: { disconnect: { id: userId } },
+        },
+      });
+      return member;
     }),
 
   // Create a new Project
