@@ -3,17 +3,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const projectRouter = createTRPCRouter({
-  // Get all Clients for the current tenant
-  getClients: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const clients = await ctx.prisma.client.findMany({
-        where: { Tenant: { slug: slug } },
-      });
-      return clients;
-    }),
-
   // Get all Projects for the current tenant
   getProjects: protectedProcedure
     .input(z.object({ text: z.string() }))

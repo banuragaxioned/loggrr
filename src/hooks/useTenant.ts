@@ -3,14 +3,13 @@ import { useRouter } from "next/router";
 import { api } from "@/utils/api";
 
 export function useValidateTenantAccess() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const currentTenant = String(router.query.team);
   const currentProject = String(router.query.pid);
 
   const validatedData = api.tenant.validateTenantAccess.useQuery(
     { text: currentTenant },
-    { enabled: session?.user !== undefined }
   );
 
   const isLoading = status === "loading" || validatedData.isLoading;

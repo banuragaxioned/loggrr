@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import Unavailable from "@/components/unavailable";
 import { useRef } from "react";
 import { api } from "@/utils/api";
-import TableUI from "@/components/ui/table";
 
 export default function ManageProject() {
   const { isLoading, isInvalid, isReady, slug, pid } =
