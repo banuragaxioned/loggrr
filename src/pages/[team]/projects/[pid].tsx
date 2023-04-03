@@ -3,6 +3,7 @@ import { useValidateTenantAccess } from "@/hooks/useTenant";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "@/utils/api";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,8 @@ export default function Project() {
     { enabled: isReady }
   );
 
+  const { register, getValues, reset } = useForm();
+
   const onSubmit = (data: any) => {
     console.log(data);
     addMilestoneHandler(data);
@@ -28,15 +31,20 @@ export default function Project() {
   const newMilestoneMutation = api.milestone.addMilestone.useMutation({
     onSuccess: (data) => {
       refetchMilestones();
+      reset();
     },
   });
 
   const addMilestoneHandler = (data: any) => {
     const newMilestone = newMilestoneMutation.mutate({
-      name: data.milestone_name,
-      budget: data.budget,
-      startDate: data.startdate,
-      endDate: data.enddate,
+      name: getValues("milestone_name"),
+      budget: +getValues("budget"),
+      startdate: getValues("startdate")
+        ? new Date(getValues("startdate"))
+        : undefined,
+      enddate: getValues("enddate")
+        ? new Date(getValues("enddate"))
+        : undefined,
       slug: slug,
       pid: +pid,
     });
@@ -65,23 +73,23 @@ export default function Project() {
           <Input
             type="text"
             placeholder="Enter your milestone name"
-            name="milestone_name"
+            {...register("milestone_name")}
             maxLength={20}
             required
           />
           <Input
             type="number"
             placeholder="Enter your budget"
-            name="budget"
+            {...register("budget")}
             defaultValue={0}
           />
 
           <div className="flex gap-2">
-            <Input type="date" name="startdate" />
-            <Input type="date" name="enddate" />
+            <Input type="date" {...register("startdate")} defaultValue={""} />
+            <Input type="date" {...register("enddate")} defaultValue={""} />
           </div>
 
-          <Button type="submit" className="my-2">
+          <Button type="button" className="my-2" onClick={addMilestoneHandler}>
             Submit
           </Button>
         </form>

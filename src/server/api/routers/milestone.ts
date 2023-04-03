@@ -22,8 +22,8 @@ export const milestoneRouter = createTRPCRouter({
         pid: z.number(),
         name: z.string(),
         budget: z.number().optional(),
-        startDate: z.string().datetime().optional(),
-        endDate: z.string().datetime().optional(),
+        startdate: z.date().optional(),
+        enddate: z.date().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -34,6 +34,8 @@ export const milestoneRouter = createTRPCRouter({
           // Need to add a step to check if the name is empty, startDate exists for the milestone and project frequency is not FIXED - in this case, autogenerate the name (create a separate util for this?)
           name: input.name,
           budget: input.budget,
+          startDate: input.startdate,
+          endDate: input.enddate,
           Tenant: { connect: { slug: input.slug } },
         },
       });
