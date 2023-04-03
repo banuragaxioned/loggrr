@@ -76,23 +76,13 @@ export default function ManageProject() {
             )}
           </ul>
         </div>
+        <h3>Add members</h3>
+        <Input placeholder="Enter the userID" type="text" ref={userInputRef} />
+        <div className="my-2 flex gap-4">
+          <Button onClick={addMemberHandler}>Add member</Button>
+          <Button onClick={removeMemberHandler}>Remove member</Button>
+        </div>
       </section>
-      <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
-        <section>
-          <div className="flex flex-col lg:w-2/4">
-            <h3>Add members</h3>
-            <Input
-              placeholder="Enter the userID"
-              type="text"
-              ref={userInputRef}
-            />
-            <div className="my-2 flex gap-4">
-              <Button onClick={addMemberHandler}>Add member</Button>
-              <Button onClick={removeMemberHandler}>Remove member</Button>
-            </div>
-          </div>
-        </section>
-      </div>
     </div>
   );
 }
