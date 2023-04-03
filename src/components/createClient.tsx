@@ -10,13 +10,9 @@ export default function CreateClient() {
   const currentTenant = router.query.team as string;
   const showToast = useToast();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    getValues,
-  } = useForm({ shouldUseNativeValidation: true });
+  const { register, handleSubmit, reset, getValues } = useForm({
+    shouldUseNativeValidation: true,
+  });
   // TODO: Update the forms to be "smart", see reference: https://react-hook-form.com/advanced-usage/#SmartFormComponent
 
   const onSubmit = (data: any) => {
