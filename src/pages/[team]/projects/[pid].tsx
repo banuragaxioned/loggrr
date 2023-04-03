@@ -13,14 +13,9 @@ export default function Project() {
   const { isLoading, isInvalid, isReady, pid, slug } =
     useValidateTenantAccess();
 
-  const { data: tasksList, refetch: refetchTasks } = api.task.getTasks.useQuery(
-    { pid },
-    { enabled: isReady }
-  );
-
   const { register, getValues, reset } = useForm();
 
-  const onSubmit = (data: any) => {
+  const onMilestoneSubmit = (data: any) => {
     console.log(data);
     addMilestoneHandler(data);
   };
@@ -38,13 +33,39 @@ export default function Project() {
   const addMilestoneHandler = (data: any) => {
     const newMilestone = newMilestoneMutation.mutate({
       name: getValues("milestone_name"),
-      budget: +getValues("budget"),
+      budget: +getValues("milestone_budget"),
       startdate: getValues("startdate")
         ? new Date(getValues("startdate"))
         : undefined,
       enddate: getValues("enddate")
         ? new Date(getValues("enddate"))
         : undefined,
+      slug: slug,
+      pid: +pid,
+    });
+  };
+
+  const onTaskSubmit = (data: any) => {
+    console.log(data);
+    addTaskHandler(data);
+  };
+
+  const { data: tasksList, refetch: refetchTasks } = api.task.getTasks.useQuery(
+    { pid },
+    { enabled: isReady }
+  );
+
+  const newTaskMutation = api.task.addTask.useMutation({
+    onSuccess: (data) => {
+      refetchTasks();
+      reset();
+    },
+  });
+
+  const addTaskHandler = (data: any) => {
+    const newTask = newTaskMutation.mutate({
+      name: getValues("task_name"),
+      budget: +getValues("task_budget"),
       slug: slug,
       pid: +pid,
     });
@@ -69,7 +90,7 @@ export default function Project() {
           ))}
         </ul>
         <h4>Create a new milestone</h4>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onMilestoneSubmit}>
           <Input
             type="text"
             placeholder="Enter your milestone name"
@@ -80,7 +101,7 @@ export default function Project() {
           <Input
             type="number"
             placeholder="Enter your budget"
-            {...register("budget")}
+            {...register("milestone_budget")}
             defaultValue={0}
           />
 
@@ -100,7 +121,24 @@ export default function Project() {
           ))}
         </ul>
         <h4>Create a new task</h4>
-        <span>Form comes here</span>
+        <form onSubmit={onTaskSubmit}>
+          <Input
+            type="text"
+            placeholder="Enter your task name"
+            {...register("task_name")}
+            maxLength={20}
+            required
+          />
+          <Input
+            type="number"
+            placeholder="Enter your budget"
+            {...register("task_budget")}
+            defaultValue={0}
+          />
+          <Button type="button" className="my-2" onClick={addTaskHandler}>
+            Submit
+          </Button>
+        </form>
       </section>
     </div>
   );
