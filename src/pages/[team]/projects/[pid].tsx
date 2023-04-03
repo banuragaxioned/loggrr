@@ -6,7 +6,6 @@ import { api } from "@/utils/api";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form } from "@/components/ui/form";
 
 export default function Project() {
   const router = useRouter();
@@ -62,7 +61,7 @@ export default function Project() {
           ))}
         </ul>
         <h4>Create a new milestone</h4>
-        <Form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
           <Input
             type="text"
             placeholder="Enter your milestone name"
@@ -85,7 +84,7 @@ export default function Project() {
           <Button type="submit" className="my-2">
             Submit
           </Button>
-        </Form>
+        </form>
         <h3>Tasks</h3>
         <ul>
           {tasksList?.map((task) => (
