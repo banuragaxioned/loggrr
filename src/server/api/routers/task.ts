@@ -14,4 +14,25 @@ export const taskRouter = createTRPCRouter({
       });
       return tasks;
     }),
+  // Add a new Task for the current project
+  addTask: protectedProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        pid: z.number(),
+        name: z.string(),
+        budget: z.number().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const task = await ctx.prisma.task.create({
+        data: {
+          Tenant: { connect: { slug: input.slug } },
+          Project: { connect: { id: input.pid } },
+          name: input.name,
+          budget: input.budget,
+        },
+      });
+      return task;
+    }),
 });

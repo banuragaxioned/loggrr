@@ -21,7 +21,7 @@ export const appRouter = createTRPCRouter({
   report: reportRouter,
   stats: statsRouter,
   milestone: milestoneRouter,
-  task: taskRouter
+  task: taskRouter,
 });
 
 // export type definition of API

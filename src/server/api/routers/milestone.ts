@@ -14,4 +14,31 @@ export const milestoneRouter = createTRPCRouter({
       });
       return milestones;
     }),
+  // Create a new Milestone
+  // TODO: this is only applicable for Fixed projects - need to add a check either here or in the frontend (or both)
+  addMilestone: protectedProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        pid: z.number(),
+        name: z.string(),
+        budget: z.number().optional(),
+        startdate: z.date().optional(),
+        enddate: z.date().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const milestone = await ctx.prisma.milestone.create({
+        data: {
+          Project: { connect: { id: input.pid } },
+          // Need to add a step to check if the name is empty, startDate exists for the milestone and project frequency is not FIXED - in this case, autogenerate the name (create a separate util for this?)
+          name: input.name,
+          budget: input.budget,
+          startDate: input.startdate,
+          endDate: input.enddate,
+          Tenant: { connect: { slug: input.slug } },
+        },
+      });
+      return milestone;
+    }),
 });
