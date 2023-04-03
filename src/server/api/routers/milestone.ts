@@ -27,7 +27,6 @@ export const milestoneRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-
       const milestone = await ctx.prisma.milestone.create({
         data: {
           Project: { connect: { id: input.pid } },

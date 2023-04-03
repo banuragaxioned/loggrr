@@ -23,7 +23,7 @@ export const taskRouter = createTRPCRouter({
         name: z.string(),
         budget: z.number().optional(),
       })
-  )
+    )
     .mutation(async ({ ctx, input }) => {
       const task = await ctx.prisma.task.create({
         data: {
@@ -34,6 +34,5 @@ export const taskRouter = createTRPCRouter({
         },
       });
       return task;
-    }
-  ),
+    }),
 });
