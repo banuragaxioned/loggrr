@@ -21,7 +21,7 @@ export const milestoneRouter = createTRPCRouter({
         slug: z.string(),
         pid: z.number(),
         name: z.string(),
-        budget: z.number(),
+        budget: z.number().optional(),
         startDate: z.string().datetime().optional(),
         endDate: z.string().datetime().optional(),
       })
