@@ -1,14 +1,15 @@
 import * as React from "react";
 import { cn } from "@/utils/helper";
 import { useForm } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  register: UseFormRegister<any>;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, name, ...props }, ref) => {
-    const { register } = useForm();
-    console.log(register(name!));
+  ({ className, register, name, ...props }, ref) => {
     return (
       <input
         className={cn(
@@ -16,8 +17,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         {...register(name!)}
-        ref={ref}
         {...props}
+        ref={ref}
       />
     );
   }
