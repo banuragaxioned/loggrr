@@ -3,7 +3,6 @@ import { useValidateTenantAccess } from "@/hooks/useTenant";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "@/utils/api";
-import { get, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

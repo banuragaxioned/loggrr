@@ -4,7 +4,7 @@ import { UseFormRegister } from "react-hook-form";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  register: UseFormRegister<any>;
+  // register: UseFormRegister<any>;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
