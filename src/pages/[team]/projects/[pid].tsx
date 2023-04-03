@@ -33,12 +33,16 @@ export default function Project() {
             <li key={milestone.id}>{milestone.name}</li>
           ))}
         </ul>
+        <h4>Create a new milestone</h4>
+        <span>Form comes here</span>
         <h3>Tasks</h3>
         <ul>
           {tasksList.data?.map((task) => (
             <li key={task.id}>{task.name}</li>
           ))}
         </ul>
+        <h4>Create a new task</h4>
+        <span>Form comes here</span>
       </section>
     </div>
   );
