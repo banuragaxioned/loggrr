@@ -7,7 +7,7 @@ import {
   ChatBubbleLeftIcon
 } from "@heroicons/react/24/outline";
 
-import {Button} from "../ui/button";
+import { Button } from "../ui/button";
 
 // static data
 import { clients } from "./data";
@@ -28,9 +28,9 @@ const TimeLogForm = () => {
   const [milestoneList, setMilestoneList] = useState<any>([])
   const [taskList, setTaskList] = useState<any>([])
   const [selected, setSelected] = useState<any>([])
-  const [selectedProject, setSelectedProject] = useState<string>('')
-  const [selectedMilestone, setSelectedMilestone] = useState<string>('')
-  const [selectedTask, setSelectedTask] = useState<string>('')
+  const [selectedProject, setSelectedProject] = useState<string | undefined>()
+  const [selectedMilestone, setSelectedMilestone] = useState<string | undefined>()
+  const [selectedTask, setSelectedTask] = useState<string | undefined>()
   const [isAllDropDownSelect, setAllDropDownSelect] = useState(false)
   const [filledData, setFilledData] = useState<any>()
   const [billable, setBillable] = useState(false)
@@ -177,7 +177,7 @@ const TimeLogForm = () => {
       setFocus(false);
     }
 
-    if (selected?.projectName?.length !== 0 && selected?.milestoneName?.length !== 0 && selected?.taskName?.length !== 0 && selected) {
+    if (selected?.projectName && selected?.milestoneName && selected?.taskName && selected) {
       console.log(selected)
       setAllDropDownSelect(true)
       commentRef?.current?.focus()
@@ -202,17 +202,17 @@ const TimeLogForm = () => {
   }, [selectedProject, selectedMilestone, selectedTask])
 
   useEffect(() => {
-    if (projectErr && selectedProject.length <= 0) setProjectErr(true)
+    if (projectErr && selectedProject) setProjectErr(true)
     else setProjectErr(false)
   }, [selectedProject])
 
   useEffect(() => {
-    if (milestoneErr && selectedMilestone.length <= 0) setMilestoneErr(true)
+    if (milestoneErr && selectedMilestone) setMilestoneErr(true)
     else setMilestoneErr(false)
   }, [selectedMilestone])
 
   useEffect(() => {
-    if (taskErr && selectedTask.length <= 0) setTaskErr(true)
+    if (taskErr && selectedTask) setTaskErr(true)
     else setTaskErr(false)
   }, [selectedTask])
 
@@ -265,9 +265,9 @@ const TimeLogForm = () => {
     setCommentText('')
     setFocus(false);
     setSelected(null);
-    setSelectedMilestone('')
-    setSelectedProject('')
-    setSelectedTask('')
+    setSelectedMilestone(undefined)
+    setSelectedProject(undefined)
+    setSelectedTask(undefined)
     setTimeLogged('')
     setBillable(false)
     setActiveDropDown(undefined)
@@ -282,11 +282,11 @@ const TimeLogForm = () => {
       setTimeErr(filledData?.timeLogged.length === 0)
 
       if (canSubmit) {
-        if(timeLogged.indexOf(':') === -1) {
-          if(parseInt(timeLogged, 10) <= 12) setTimeLogged(timeLogged) 
-        }else if(timeLogged.indexOf(':') === 1)  {
-          const decimalResult = hoursToDecimal(timeLogged) 
-            if(decimalResult <= 12) setTimeLogged(decimalResult.toString())
+        if (timeLogged.indexOf(':') === -1) {
+          if (parseInt(timeLogged, 10) <= 12) setTimeLogged(timeLogged)
+        } else if (timeLogged.indexOf(':') === 1) {
+          const decimalResult = hoursToDecimal(timeLogged)
+          if (decimalResult <= 12) setTimeLogged(decimalResult.toString())
         }
         handleClearForm()
         console.log(filledData)
@@ -309,10 +309,10 @@ const TimeLogForm = () => {
     setTimeErr(time.length === 0)
     const numberPattern = new RegExp(/[^0-9.:]/);
     if (!numberPattern.test(time) && time.length < 5) {
-      if(time.indexOf(':') === -1 && time.indexOf('.') === -1) {
-        if(time.length <= 2) setTimeLogged(time) 
-      }else {
-        if(time.length <= 4) setTimeLogged(time)
+      if (time.indexOf(':') === -1 && time.indexOf('.') === -1) {
+        if (time.length <= 2) setTimeLogged(time)
+      } else {
+        if (time.length <= 4) setTimeLogged(time)
       }
     }
   }
@@ -419,21 +419,9 @@ const TimeLogForm = () => {
 
       <div className={`${isFocus ? 'border-t border-brand-light border-t-borderColor-light ' : 'border-t-0 border-borderColor-light'} flex items-center justify-between bg-info-dark py-[10px] px-5 rounded-b-xl`}>
         <div ref={dropdownRef} className="text-xs inline-flex items-center gap-x-2.5">
-          <Dropdown tabIndex={2} classname={`${projectErr ? 'ring-1 ring-danger-light border-danger-light' : ''}`} key='project-dropdown-list' active={activeDropdown} setActive={setActiveDropDown} handleSelect={(x: string) => handleSelectedProject(x)} options={projectList} name={`${selected?.projectName?.length > 0 ? selected?.projectName : "project"}`} selected={selected?.projectName?.length > 0}>
-            <FolderIcon
-              className={`w-4 h-4 ${selected?.projectName?.length && "text-brand-light"}`}
-            />
-          </Dropdown>
-          <Dropdown tabIndex={3} classname={`${milestoneErr ? 'ring-1 ring-danger-light border-danger-light' : ''}`} open={selectedProject.length > 0 && selectedMilestone.length === 0} key='project-milestone-list' active={activeDropdown} setActive={setActiveDropDown} handleSelect={(x: string) => setSelectedMilestone(x)} options={milestoneList} disable={!(selected?.projectName?.length > 0)} name={`${selected?.milestoneName?.length > 0 ? selected?.milestoneName : "milestone"}`} selected={selected?.milestoneName?.length > 0}>
-            <RocketLaunchIcon
-              className={`w-4 h-4 ${selected?.milestoneName?.length && "text-brand-light"}`}
-            />
-          </Dropdown>
-          <Dropdown tabIndex={4} classname={`${taskErr ? 'ring-1 ring-danger-light border-danger-light' : ''}`} open={selectedProject.length > 0 && selectedMilestone.length > 0 && selectedTask.length === 0} key='project-task-list' active={activeDropdown} setActive={setActiveDropDown} handleSelect={(x: string) => setSelectedTask(x)} options={taskList} disable={!(selected?.projectName?.length > 0 && selected?.milestoneName.length > 0)} name={`${selected?.taskName?.length > 0 ? selected?.taskName : "task"}`} selected={selected?.taskName?.length > 0}>
-            <QueueListIcon
-              className={`w-4 h-4 ${selected?.taskName?.length && "text-brand-light"}`}
-            />
-          </Dropdown>
+          <Dropdown tabIndex={2} group icon={<FolderIcon className={`w-4 h-4`}/>} label="Project" options={projectList} searchable onSelected={(option : string) => handleSelectedProject(option)} defaultValue={selectedProject}/>
+          <Dropdown tabIndex={3} icon={<RocketLaunchIcon className={`w-4 h-4`}/>} label="Milestone" options={milestoneList} searchable onSelected={(option : string) => setSelectedMilestone(option)} defaultValue={selectedMilestone} disable={!selectedProject} autoOpen={!!(selectedProject && !selectedMilestone)}/>
+          <Dropdown tabIndex={4} icon={<QueueListIcon className={`w-4 h-4`}/>} label="Task" options={taskList} searchable onSelected={(option : string) => setSelectedTask(option)} defaultValue={selectedTask} disable={!(selectedProject && selectedMilestone)} autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}/>
         </div>
         {canClear &&
           <Button
@@ -441,7 +429,7 @@ const TimeLogForm = () => {
             variant="destructive"
             onClick={handleTimeLogCancel}
             size="sm"
-            type="reset"
+            type="button"
             disabled={!canClear}
             className={`bg-background-light border-borderColor-light hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light`}
           >Clear</Button>}
