@@ -9,7 +9,7 @@ export const timelogRouter = createTRPCRouter({
     .input(
       z.object({
         slug: z.string(),
-        date: z.string().datetime(),
+        date: z.date(),
         projectId: z.number(),
         milestoneId: z.number(),
         taskId: z.number().optional(),
@@ -34,4 +34,36 @@ export const timelogRouter = createTRPCRouter({
       });
       return task;
     }),
+  // Get my timelogs for a date
+  getMyTimeLog: protectedProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        date: z.date(),
+      })
+  )
+    .query(async ({ ctx, input }) => {
+
+      // TODO: This feels like a really shitty way to do it, but works.
+      const selectedDate: Date = new Date(input.date)
+      selectedDate.setHours(0, 0, 0, 0);
+
+      const dateOneForward = new Date();
+      dateOneForward.setDate(dateOneForward.getDate() + 1);
+
+      const timelogs = await ctx.prisma.timeEntry.findMany({
+        where: {
+          Tenant: { slug: input.slug },
+          User: { id: ctx.session.user.id },
+          date: { lt: dateOneForward, gte: selectedDate },
+        },
+        include: {
+          Project: true,
+          Milestone: true,
+          Task: true,
+        },
+      });
+      return timelogs;
+    }
+  ),
 });

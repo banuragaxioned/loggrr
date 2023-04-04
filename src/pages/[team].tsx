@@ -7,17 +7,25 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { date } from "zod";
 
 export default function Dashboard() {
   const router = useRouter();
   const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
 
-  const { register, handleSubmit, reset, getValues } = useForm({
+  const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
   });
 
-  const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
+  const selectDate: Date = new Date();
+  selectDate.setHours(0, 0, 0, 0);
+  console.log(selectDate);
+  const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
+    { slug: slug, date: selectDate },
+    { enabled: isReady }
+  );
+  // const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
+  // const milestoneList = api.milestone.getMilestones.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
+  // const taskList = api.task.getTasks.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
 
   const onTimeEntrySubmit = (data: any) => {
     console.log(data);
@@ -25,7 +33,7 @@ export default function Dashboard() {
   };
   const addTimeEntry = api.timelog.addTimelog.useMutation({
     onSuccess: (data) => {
-      // refetchMembers();
+      refetchMyTimeLog();
     },
   });
 
@@ -84,6 +92,14 @@ export default function Dashboard() {
         </div>
         <span>
           <h3>Your time log</h3>
+          <ul>
+            {getMyTimeLog?.map((timeLog) => (
+              <li key={timeLog.id}>
+                {timeLog.Project.name}/{timeLog.Milestone.name}/{timeLog.Task?.name} - {timeLog.time}m{" "}
+                {timeLog.billable ? <span>🟢</span> : <span>🔴</span>} {timeLog.comments}
+              </li>
+            ))}
+          </ul>
         </span>
       </section>
       <section className="hidden lg:block lg:basis-1/4">
