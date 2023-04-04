@@ -1,6 +1,6 @@
 import React, { LegacyRef } from 'react'
 import clsx from 'clsx';
-import { CheckIcon } from "@heroicons/react/24/solid";
+import { CheckIcon } from "lucide-react";
 
 type Props = {
   containerStyles?: string;
@@ -9,16 +9,17 @@ type Props = {
   onChange: (checked: boolean) => void
   inputRef?: React.RefObject<HTMLInputElement | null> | null
   icon?: React.ReactElement;
+  name?: string
 }
 
-export default function Checkbox({ containerStyles, labelStyles, inputStyles, onChange, inputRef, icon = <CheckIcon className="w-6 h-6"/> } : Props) {
+export default function Toggle({ containerStyles, labelStyles, inputStyles, onChange, inputRef, icon = <CheckIcon className="w-6 h-6"/>, name = 'toggle' } : Props) {
   return (
     <div className={clsx(`flex select-none items-center justify-center relative ${containerStyles}`)}>
       <input
           tabIndex={7}
           ref={inputRef as LegacyRef<HTMLInputElement> || null}
           type="checkbox"
-          name="check"
+          name="toggle"
           id="check"
           className={`absolute [&:checked+label]:text-green-700 [&:checked+label]:border-billable-light [&:focus+label]:ring-1 [&:focus+label]:border-brand-light [&:focus+label]:ring-offset-0 [&:focus+label]:ring-brand-light ${inputStyles}`}
           onChange={(e: any) => onChange(e?.target?.checked)}

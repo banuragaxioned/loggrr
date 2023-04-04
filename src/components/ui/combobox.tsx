@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { SearchIcon } from "lucide-react"
 
 type DropdownOption = {
   groupHeading: string;
@@ -44,7 +44,7 @@ const CommandInput = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
   <div className='w-full rounded-t-[5px] flex items-center space-between'>
-    <MagnifyingGlassIcon className="basis-[15%] h-[14px] text-info-light stroke-2 shrink-0" />
+    <SearchIcon className="basis-[15%] h-[14px] text-info-light stroke-2 shrink-0" />
     <CommandPrimitive.Input
       ref={ref}
       className={`px-0 border-0 box-border rounded-t-[5px] text-[14px] placeholder:font-[14px] focus:outline-0 focus:outline-0 focus:ring-0 w-[83%] ${className}`}
