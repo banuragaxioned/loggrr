@@ -2,19 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { SearchIcon } from "lucide-react"
 
-type DropdownOption = {
+type ComboBoxOption = {
   groupHeading: string;
   group: [string]
 };
 
-type DropdownProps = {
-  options: DropdownOption[];
+type ComboBoxProps = {
+  options: ComboBoxOption[];
   searchable?: boolean
   onSelected: (group: string) => void;
   placeholder?: string;
   icon?: React.ReactElement;
   containerStyles?: React.CSSProperties;
-  dropdownStyles?: React.CSSProperties;
+  ComboBoxStyles?: React.CSSProperties;
   toggleButtonStyles?: React.CSSProperties;
   inputStyles?: React.CSSProperties;
   optionListStyles?: React.CSSProperties;
@@ -62,7 +62,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={`w-[calc(100%+2px)] py-[7px] px-[10px] border border-box border-borderColor-light max-h-[240px] overflow-y-auto dropdown-scrollbar shadow-md rounded-b-[5px] absolute top-full left-1/2 -translate-x-1/2 bg-white text-content-light transition-all duration-200 ease-out ${className}`}
+    className={`w-[calc(100%+2px)] py-[7px] px-[10px] border border-box border-borderColor-light max-h-[240px] overflow-y-auto ComboBox-scrollbar shadow-md rounded-b-[5px] absolute top-full left-1/2 -translate-x-1/2 bg-white text-content-light transition-all duration-200 ease-out ${className}`}
     {...props}
   />
 ))
@@ -108,7 +108,7 @@ const CommandItem = React.forwardRef<
 
 CommandItem.displayName = CommandPrimitive.Item.displayName
 
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelected, searchable = false, icon, placeholder = 'Search an option', containerStyles, dropdownStyles, toggleButtonStyles, inputStyles, optionListStyles, optionStyles, label, defaultValue, tabIndex, disable, autoOpen, group=false }) => {
+const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = false, icon, placeholder = 'Search an option', containerStyles, ComboBoxStyles, toggleButtonStyles, inputStyles, optionListStyles, optionStyles, label, defaultValue, tabIndex, disable, autoOpen, group=false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<string | undefined>()
@@ -162,11 +162,11 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelected, searchable = f
   return (
     <div className={`relative ${containerStyles}`}>
       <div className="w-full">
-        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-[50] ease-out capitalize flex items-end justify-center focus:outline-0 focus:outline-offset-0 py-2 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-dropdownBorder-light bg-[#fff] hover:bg-background-light text-content-light border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
+        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-[50] ease-out capitalize flex items-end justify-center focus:outline-0 focus:outline-offset-0 py-2 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-ComboBoxBorder-light bg-[#fff] hover:bg-background-light text-content-light border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
           {icon}
           <span>{selected || label}</span>
         </button>
-        {isOpen && <Command className={`${dropdownStyles}`}>
+        {isOpen && <Command className={`${ComboBoxStyles}`}>
           {searchable && <CommandInput onBlur={handleBlur} tabIndex={tabIndex} className={`${inputStyles}`} autoFocus placeholder='Search' value={searchTerm} onChangeCapture={(e: any) => setSearchTerm(e.target.value)} />}
           <CommandList>
             <CommandEmpty>
@@ -203,4 +203,4 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelected, searchable = f
   );
 };
 
-export default Dropdown;
+export default ComboBox;

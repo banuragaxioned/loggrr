@@ -1,26 +1,28 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
-import { useRouter } from "next/router";
 import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Projects() {
-  const router = useRouter();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
   const showToast = useToast();
 
-  const currentTenant = router.query.team as string;
-  const allSkillList = api.skill.getAllSkills.useQuery({
-    tenant: currentTenant,
-  });
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery({
-    tenant: currentTenant,
-  });
-  const mySkillScores = api.skill.getMySkillsScores.useQuery({
-    tenant: currentTenant,
-  });
+  const currentTenant = slug;
+  const allSkillList = api.skill.getAllSkills.useQuery(
+    { tenant: currentTenant },
+    { enabled: isReady }
+  );
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery(
+    { tenant: currentTenant },
+    { enabled: isReady }
+  );
+  const mySkillScores = api.skill.getMySkillsScores.useQuery(
+    { tenant: currentTenant },
+    { enabled: isReady }
+  );
 
   const {
     register,
@@ -48,8 +50,6 @@ export default function Projects() {
     });
     return newSkill;
   };
-
-  const { isLoading, isInvalid } = useValidateTenantAccess();
 
   if (isLoading) {
     return <p>Loading...</p>;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ComboBox from "@/components/ui/combobox";
+import React, { useState } from "react";
+import ComboBox from "../components/ui/combobox";
 import { FolderIcon } from "lucide-react"
 
 const options: any = [{

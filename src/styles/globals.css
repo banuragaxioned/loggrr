@@ -15,8 +15,11 @@
   h3 {
     @apply scroll-m-20 text-2xl font-semibold tracking-tight;
   }
+  h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
   section {
-    @apply container mx-auto grid items-center gap-6 pt-6 pb-8 md:py-4;
+    @apply container mx-auto grid items-center gap-6 pb-8 pt-6 md:py-4;
   }
   .todo {
     @apply flex w-full items-center justify-center rounded-md border border-dashed border-zinc-300 text-sm dark:border-zinc-600;

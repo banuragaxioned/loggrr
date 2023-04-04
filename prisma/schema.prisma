@@ -33,6 +33,7 @@ model Tenant {
     Allocation Allocation[]
     Skill      Skill[]
     SkillScore SkillScore[]
+    UserRole   UserRole[]
 }
 
 model Client {
@@ -69,8 +70,8 @@ model Project {
     Allocation Allocation[]
     Tenant     Tenant       @relation(fields: [tenantId], references: [id])
     Client     Client       @relation(fields: [clientId], references: [id])
-    Owner      User         @relation(fields: [ownerId], references: [id])
-    //TODO: add owner relation
+    Members    User[]       @relation("ProjectMembers")
+    Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
 
     @@index([tenantId])
     @@index([clientId])
@@ -119,7 +120,7 @@ model Task {
     tenantId  Int
     name      String
     status    Status   @default(PUBLISHED)
-    budget    Int
+    budget    Int?
     projectId Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -242,9 +243,11 @@ model UserRole {
     role      Role     @default(USER)
     userId    Int
     tenantId  Int
-    user      User     @relation(fields: [userId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    Tenant Tenant @relation(fields: [tenantId], references: [id])
+    User   User   @relation(fields: [userId], references: [id])
 
     @@unique([role, userId, tenantId])
     @@index([userId])
@@ -283,15 +286,16 @@ model User {
     allocationId  Int?
     status        UserStatus @default(ACTIVE)
 
-    TenantId   Tenant[]     @relation("UserTenants")
-    UserGroup  UserGroup[]
-    accounts   Account[]
-    sessions   Session[]
-    Roles      UserRole[]
-    Allocation Allocation[]
-    SkillScore SkillScore[]
-    TimeEntry  TimeEntry[]
-    Project    Project[]
+    TenantId      Tenant[]     @relation("UserTenants")
+    UserGroup     UserGroup[]
+    accounts      Account[]
+    sessions      Session[]
+    Roles         UserRole[]
+    Allocation    Allocation[]
+    SkillScore    SkillScore[]
+    TimeEntry     TimeEntry[]
+    Project       Project[]    @relation("ProjectMembers")
+    OwnedProjects Project[]    @relation("UserOwnedProjects")
 
     @@index([allocationId])
 }

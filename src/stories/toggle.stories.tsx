@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import Toggle from "@/components/ui/toggle";
+import React, { useState } from 'react';
+import Toggle from "../components/ui/toggle";
 import { DollarSign } from "lucide-react";
 
 export const DefualtToggle = () => {

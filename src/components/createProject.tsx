@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import useToast from "@/hooks/useToast";
 
 export default function CreateProject() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const currentTenant = router.query.team as string;
   const showToast = useToast();
@@ -18,13 +18,9 @@ export default function CreateProject() {
     { enabled: session?.user !== undefined }
   );
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    getValues,
-  } = useForm({ shouldUseNativeValidation: true });
+  const { register, handleSubmit, reset, getValues } = useForm({
+    shouldUseNativeValidation: true,
+  });
   // TODO: Update the forms to be "smart", see reference: https://react-hook-form.com/advanced-usage/#SmartFormComponent
 
   const onSubmit = (data: any) => {

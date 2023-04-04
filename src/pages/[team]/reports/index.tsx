@@ -2,6 +2,7 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { reportConfig } from "@/config/site";
 
 export default function GlobalReports() {
   const { isLoading, isInvalid } = useValidateTenantAccess();
@@ -16,14 +17,20 @@ export default function GlobalReports() {
   }
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
-      <section>
+      <section className="container flex flex-col items-center justify-center gap-12">
         <h2>Global Reports</h2>
-        <div className="flex gap-4">
-          <Link href={router.asPath + "/logged"}>Logged</Link>
-          <Link href={router.asPath + "/assigned"}>Assigned</Link>
-          <Link href={router.asPath + "/available"}>Available</Link>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+          {reportConfig.map((item, index) => (
+            <Link
+              key={index}
+              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
+              href={router.asPath + item.path}
+            >
+              <h3>{item.name}</h3>
+              <div className="text-lg">{item.description}</div>
+            </Link>
+          ))}
         </div>
-        <div className="todo h-14">Global Reports</div>
       </section>
     </div>
   );

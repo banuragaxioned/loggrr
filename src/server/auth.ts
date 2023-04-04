@@ -21,16 +21,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: number;
-      // ...other properties
-      // role: UserRole;
-      tenant: string[];
+      tenants: Object[];
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -40,27 +33,48 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    // The maximum age of the NextAuth.js issued JWT in seconds. Defaults to `session.maxAge`.
+    maxAge: 60 * 60 * 24 * 30,
+  },
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
-        // Add the user ID to the session object
-        // TODO: make sure user.id is number
-        session.user.id = +user.id;
-
-        // Retrieve the Tenant data for the current user
-        const tenantList = await prisma.tenant.findMany({
-          where: { Users: { some: { id: Number(user.id) } } },
-        });
-
-        // Extract the Tenant slugs from the query result and store them in an array
-        const tenantSlugs = tenantList.map((tenant) => tenant.slug);
-
-        // Add the Tenant data to the session object
-        session.user.tenant = tenantSlugs;
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = Number(token.uid);
       }
+
+      // Add tenant properties to the session object
+      const hasAccessTo = await prisma.tenant.findMany({
+        where: { Users: { some: { id: Number(session.user.id) } } },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          UserRole: { select: { role: true } },
+        },
+      });
+
+      // Map over the hasAccessTo array and move the role a level up
+      session.user.tenants = hasAccessTo.map((tenant) => {
+        return {
+          id: tenant.id,
+          name: tenant.name,
+          slug: tenant.slug,
+          role: tenant.UserRole[0]?.role, //TODO: make this not optional, I think
+        };
+      });
+
       return session;
     },
-    // Need to a `signIn` callback OR a verification for EmailProvider to only generate Magic links if the email already exists in the database (using Google OAuth)
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
