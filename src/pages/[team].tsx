@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { date } from "zod";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -16,11 +17,12 @@ export default function Dashboard() {
     shouldUseNativeValidation: true,
   });
 
-  const projectList = api.project.getProjects.useQuery(
-    { text: slug },
-    { enabled: isReady }
-  );
+  const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
 
+  const onTimeEntrySubmit = (data: any) => {
+    console.log(data);
+    addTimeEntryHandler(data);
+  };
   const addTimeEntry = api.timelog.addTimelog.useMutation({
     onSuccess: (data) => {
       // refetchMembers();
@@ -30,14 +32,14 @@ export default function Dashboard() {
   const addTimeEntryHandler = (data: any) => {
     console.log(data);
     const newTimeEntry = addTimeEntry.mutate({
-      date: new Date().toISOString(),
-      projectId: 1,
-      billable: true,
-      comments: "test",
-      milestoneId: 1,
-      taskId: 1,
+      date: new Date(getValues("date")),
+      projectId: +getValues("projectId"),
+      milestoneId: +getValues("milestoneId"),
+      taskId: +getValues("taskId"),
       slug: slug,
-      time: "1.5",
+      time: getValues("time"),
+      billable: getValues("billable"),
+      comments: getValues("comments"),
     });
   };
 
@@ -63,24 +65,25 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
-        <div className="todo h-20">Add Time Combobox</div>
-        <span className="todo h-80">
-          <form onSubmit={handleSubmit(addTimeEntryHandler)}>
-            <Input type="date" placeholder="date" name="date"></Input>
-            <Input type="text" placeholder="hours" name="hours"></Input>
-            <Input type="text" placeholder="projectId" name="projectId"></Input>
-            <Input type="text" placeholder="clientId" name="clientId"></Input>
-            <Input type="checkbox" placeholder="billable" name="billable" />
-            <Input type="text" placeholder="comments" name="comments" />
-            <button
-              type="submit"
-              // onClick={(e) => {
-              //   e.preventDefault();
-              // }}
-            >
+        <div className="todo">
+          <form onSubmit={onTimeEntrySubmit} className="grid grid-cols-4">
+            <Input type="date" {...register("date")} defaultValue={""} required />
+            <Input type="number" placeholder="projectId" {...register("projectId")} required />
+            <Input type="number" placeholder="milestoneId" {...register("milestoneId")} required />
+            <Input type="number" placeholder="taskId" {...register("taskId")} />
+            <Input type="text" placeholder="Hours" {...register("time")} />
+            <div className="my-2 space-x-2">
+              <label htmlFor="billable">Billable</label>
+              <input type="checkbox" {...register("billable")} className="rounded" />
+            </div>
+            <Input type="text" placeholder="What did you do?" {...register("comments")} />
+            <Button type="button" onClick={addTimeEntryHandler}>
               Submit
-            </button>
+            </Button>
           </form>
+        </div>
+        <span>
+          <h3>Your time log</h3>
         </span>
       </section>
       <section className="hidden lg:block lg:basis-1/4">
