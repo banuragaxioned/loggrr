@@ -6,6 +6,7 @@ import {
   QueueListIcon,
   ChatBubbleLeftIcon
 } from "@heroicons/react/24/outline";
+import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 
 import { Button } from "../ui/button";
 
@@ -48,7 +49,7 @@ const TimeLogForm = () => {
   const userId = 12;
   const inputRef = useRef<any>();
   const inputParentRef = useRef<HTMLDivElement>(null)
-  const checkobxRef = useRef<any>();
+  const checkobxRef = useRef<HTMLInputElement | null>(null);
   const commentRef = useRef<any>();
   const commentParentRef = useRef<HTMLDivElement>(null)
   const timeLogFormRef = useRef<any>();
@@ -218,8 +219,8 @@ const TimeLogForm = () => {
 
   useEffect(() => {
     if (filledData) {
-      setClear((filledData?.projectName?.length !== 0 || filledData?.milestoneName?.length !== 0 || filledData?.taskName?.length !== 0 || filledData?.timeLogged.length !== 0 || filledData?.comment?.length > 0) && selected)
-      setSubmit(filledData?.projectName?.length !== 0 && filledData?.milestoneName?.length !== 0 && filledData?.taskName?.length !== 0 && filledData?.timeLogged.length !== 0)
+      setClear((filledData?.projectName || filledData?.milestoneName || filledData?.taskName || filledData?.timeLogged.length !== 0 || filledData?.comment?.length > 0) && selected)
+      setSubmit(filledData?.projectName && filledData?.milestoneName && filledData?.taskName && filledData?.timeLogged.length !== 0)
     }
   }, [filledData])
 
@@ -246,7 +247,7 @@ const TimeLogForm = () => {
               return (
                 <div key={innerI}>
                   <Command.Item
-                    className="aria-selected:bg-backgroundHover-light cursor-pointer aria-selected:text-content-light w-full py-2 px-5"
+                    className="aria-selected:bg-indigo-50 aria-selected:text-slate-700 cursor-pointer w-full py-2 px-5"
                     value={`${project?.clientName} / ${project?.projectName} / ${project?.milestoneName} / ${project?.taskName}`}
                     onSelect={() => isFocus && handleProjectSelect(project)}
                   >
@@ -351,6 +352,8 @@ const TimeLogForm = () => {
     }
   }, [isFocus])
 
+  console.log(billable)
+
   return (
     <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 rounded-xl w-2/3`}>
       <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
@@ -396,7 +399,7 @@ const TimeLogForm = () => {
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
-            <Checkbox ref={checkobxRef} setBillable={setBillable} />
+            <Checkbox icon={<CurrencyDollarIcon className="w-6 h-6"/>} inputRef={checkobxRef} onChange={setBillable} />
             <Button
               variant="default"
               size="sm"
