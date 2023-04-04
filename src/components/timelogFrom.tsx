@@ -11,7 +11,7 @@ import {
 import { Button } from "./ui/button";
 
 // static data
-import { clients } from "./data";
+import { clients } from "../utils/tempData";
 
 import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
