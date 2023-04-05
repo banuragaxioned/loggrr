@@ -5,6 +5,7 @@ import { api } from "@/utils/api";
 export function useValidateTenantAccess() {
   const { status } = useSession();
   const router = useRouter();
+  const path = router.asPath
   const currentTenant = String(router.query.team);
   const currentProject = String(router.query.pid);
 
@@ -27,5 +28,6 @@ export function useValidateTenantAccess() {
     isReady,
     slug: currentTenant,
     pid: currentProject,
+    path
   };
 }
