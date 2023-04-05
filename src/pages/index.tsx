@@ -24,8 +24,7 @@ const Home: NextPage = () => {
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
               <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
+                Learn more about Create T3 App, the libraries it uses, and how to deploy it.
               </div>
             </Link>
           </div>
@@ -47,10 +46,7 @@ const AuthShowcase: React.FC = () => {
       {myTenantData && (
         <span>
           <div className="container flex flex-col items-center justify-center gap-12">
-            <h2>
-              Welcome back,{" "}
-              {sessionData && <span>{sessionData.user?.name}</span>} 👋
-            </h2>
+            <h2>Welcome back, {sessionData && <span>{sessionData.user?.name}</span>} 👋</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
               {myTenantData.map((tenant) => (
                 <Link
@@ -60,8 +56,7 @@ const AuthShowcase: React.FC = () => {
                 >
                   <h3>{tenant.name}</h3>
                   <div className="text-lg">
-                    The application lives here. Right now, its only layouts and
-                    static components.
+                    The application lives here. Right now, its only layouts and static components.
                   </div>
                 </Link>
               ))}

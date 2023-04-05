@@ -15,7 +15,7 @@ export default function Dashboard() {
     shouldUseNativeValidation: true,
   });
 
-  const selectDate = cleanDate( getValues("date") ?  new Date(getValues("date")) : new Date());
+  const selectDate = cleanDate(getValues("date") ? new Date(getValues("date")) : new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
     { slug: slug, date: selectDate },
     { enabled: isReady }

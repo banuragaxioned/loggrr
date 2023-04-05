@@ -17,10 +17,7 @@ export function QuickStatsWidget() {
         {projectInsights.data &&
           projectInsights.data.map((stats) => (
             <React.Fragment key={stats.projectId}>
-              <div
-                className="flex justify-between text-sm"
-                key={stats.projectId}
-              >
+              <div className="flex justify-between text-sm" key={stats.projectId}>
                 <p>{stats.projectName}</p>
                 <p>Total: {stats.total}m</p>
               </div>

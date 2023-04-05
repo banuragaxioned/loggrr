@@ -41,9 +41,7 @@ export default function CreateProject() {
       interval: getValues("interval"),
       slug: currentTenant,
       startdate: new Date(getValues("startdate")),
-      enddate: getValues("enddate")
-        ? new Date(getValues("enddate"))
-        : undefined,
+      enddate: getValues("enddate") ? new Date(getValues("enddate")) : undefined,
       billable: getValues("billable"),
     });
     return newProject;
@@ -58,11 +56,7 @@ export default function CreateProject() {
         maxLength={20}
       />
       <div className="flex gap-2">
-        <select
-          required
-          {...register("interval", { required: true })}
-          defaultValue=""
-        >
+        <select required {...register("interval", { required: true })} defaultValue="">
           <option value="" disabled>
             Select Interval
           </option>
@@ -74,11 +68,7 @@ export default function CreateProject() {
             ))}
         </select>
 
-        <select
-          required
-          {...register("client", { required: true })}
-          defaultValue=""
-        >
+        <select required {...register("client", { required: true })} defaultValue="">
           <option value="" disabled>
             Select Client
           </option>

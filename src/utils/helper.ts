@@ -38,32 +38,32 @@ export function getInitials(name: string): string {
 
 export const getTimeInMinutes = (logTime: string): number => {
   try {
-    const isHourMinFormat = logTime.includes(':') || /^\d+$/.test(logTime);
-    const timeArr = isHourMinFormat ? logTime.split(':') : logTime.split('.');
+    const isHourMinFormat = logTime.includes(":") || /^\d+$/.test(logTime);
+    const timeArr = isHourMinFormat ? logTime.split(":") : logTime.split(".");
 
     if (timeArr.length !== 2 || isNaN(Number(timeArr[0])) || isNaN(Number(timeArr[1]))) {
       // Invalid time format
-      throw new Error('Invalid time format. Please use the format HH:mm or H.mm');
+      throw new Error("Invalid time format. Please use the format HH:mm or H.mm");
     }
 
-    const timeFormat = isHourMinFormat ? 'HOURMIN' : 'HOURS';
+    const timeFormat = isHourMinFormat ? "HOURMIN" : "HOURS";
     let logTimeInMinutes;
 
-    if (timeFormat === 'HOURMIN') {
-      const hours = parseInt(timeArr[0] || '0', 10);
-      const minutes = parseInt(timeArr[1] || '0', 10);
-      logTimeInMinutes = (hours * 60) + minutes;
+    if (timeFormat === "HOURMIN") {
+      const hours = parseInt(timeArr[0] || "0", 10);
+      const minutes = parseInt(timeArr[1] || "0", 10);
+      logTimeInMinutes = hours * 60 + minutes;
     } else {
-      const hours = parseInt(timeArr[0] || '0', 10);
-      const minutes = parseInt(timeArr[1] || '0', 10);
+      const hours = parseInt(timeArr[0] || "0", 10);
+      const minutes = parseInt(timeArr[1] || "0", 10);
       const decimalPlaces = timeArr[1].length;
-      const decimalFraction = minutes / (10 ** decimalPlaces);
-      logTimeInMinutes = (hours * 60) + (decimalFraction * 60);
+      const decimalFraction = minutes / 10 ** decimalPlaces;
+      logTimeInMinutes = hours * 60 + decimalFraction * 60;
     }
 
     return Math.round(logTimeInMinutes);
   } catch (error) {
-    throw new Error('Invalid time format. Please use the format HH:mm or H.mm');
+    throw new Error("Invalid time format. Please use the format HH:mm or H.mm");
   }
 };
 
@@ -78,6 +78,6 @@ export const getTimeInHours = (duration: number) => {
 
 // Get date with Date format, but with 00:00:00 time
 export const cleanDate = (dateInput: Date) => {
-  const justDate = dateInput.toISOString().split('T')[0];
+  const justDate = dateInput.toISOString().split("T")[0];
   return new Date(justDate);
-}
+};

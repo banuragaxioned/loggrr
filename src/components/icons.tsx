@@ -1,12 +1,5 @@
 import type { LucideProps } from "lucide-react";
-import {
-  Laptop,
-  Moon,
-  SunMedium,
-  Clock,
-  HelpCircle,
-  type Icon as LucideIcon,
-} from "lucide-react";
+import { Laptop, Moon, SunMedium, Clock, HelpCircle, type Icon as LucideIcon } from "lucide-react";
 
 export type Icon = LucideIcon;
 

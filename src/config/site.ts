@@ -21,8 +21,7 @@ interface ReportingConfig {
 
 export const siteConfig: SiteConfig = {
   name: "Loggr",
-  description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+  description: "Beautifully designed components built with Radix UI and Tailwind CSS.",
   mainNav: [
     // {
     //   title: "Home",
