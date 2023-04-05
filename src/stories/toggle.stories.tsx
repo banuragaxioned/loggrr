@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Toggle from "../components/ui/toggle";
-import { DollarSign } from "lucide-react";
+import { Icons } from '../components/icons'
 
 export const DefualtToggle = () => {
   const [checked, setChecked] = useState(false);
@@ -10,7 +10,7 @@ export const DefualtToggle = () => {
   };
 
   return (
-      <Toggle onChange={handleCheckedChange} />
+    <Toggle onChange={handleCheckedChange} />
   );
 };
 
@@ -18,6 +18,6 @@ export const ToggleWithDynamicIcon = () => {
   const [checked, setChecked] = useState(false);
 
   return (
-      <Toggle name='billable-toggle' icon={<DollarSign className="w-6 h-6"/>} onChange={setChecked} />
+    <Toggle name='billable-toggle' icon={<Icons.dollar className="w-6 h-6" />} onChange={setChecked} />
   );
 }

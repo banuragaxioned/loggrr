@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  SearchIcon,
-  Folder,
-  Rocket,
-  List,
-  QuoteIcon, 
-  CurrencyIcon
-} from "lucide-react";
+import { Icons } from "../components/icons";
 
 import { Button } from "./ui/button";
 
@@ -17,7 +10,19 @@ import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
 import Toggle from "./ui/toggle";
 
-const TimeLogForm = () => {
+type FormData = {
+  project: string | undefined,
+  milestone: string | undefined,
+  task: string | undefined,
+  loggedHours: number | undefined,
+  isBillable: boolean,
+}
+type Props = {
+  formData: FormData | undefined,
+  handleFormData: (data:FormData) => void
+}
+
+const TimeLogForm = ({formData, handleFormData} : Props) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
@@ -272,6 +277,9 @@ const TimeLogForm = () => {
     setTimeLogged('')
     setBillable(false)
     setActiveDropDown(undefined)
+    if(!!checkobxRef.current) {
+      checkobxRef.current.checked = false
+    }
   }
 
   const handleSubmit = (e: any) => {
@@ -290,6 +298,13 @@ const TimeLogForm = () => {
           if (decimalResult <= 12) setTimeLogged(decimalResult.toString())
         }
         handleClearForm()
+        handleFormData({
+          project: selectedProject,
+          milestone: selectedMilestone,
+          task: selectedTask,
+          loggedHours: Number(timeLogged),
+          isBillable: billable
+        })
         console.log(filledData)
       }
     }
@@ -362,7 +377,7 @@ const TimeLogForm = () => {
           <div className={`${commentFocus ? 'ring-2 ring-brand-light ring-offset-0 rounded-b-sm border-white' : 'border-b-borderColor-light'} border-b flex items-center py-[7px] px-[18px] rounded-t-xl`}>
             {isAllDropDownSelect ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
-                <QuoteIcon onClick={() => setCommentFocus(true)} className="w-[18px] h-[18px] text-info-light stroke-2 shrink-0"></QuoteIcon>
+                <Icons.comment onClick={() => setCommentFocus(true)} className="w-[18px] h-[18px] text-info-light stroke-2 shrink-0"/>
                 <input
                   tabIndex={5}
                   ref={commentRef}
@@ -376,7 +391,7 @@ const TimeLogForm = () => {
               </div>
             ) : (
               <div ref={inputParentRef} className='flex items-center basis-[70%]'>
-                <SearchIcon onClick={openSearch} className="w-[18px] h-[18px] text-info-light stroke-2 shrink-0"></SearchIcon>
+                <Icons.search onClick={openSearch} className="w-[18px] h-[18px] text-info-light stroke-2 shrink-0"/>
                 <Command.Input
                   tabIndex={1}
                   ref={inputRef}
@@ -397,7 +412,7 @@ const TimeLogForm = () => {
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
-            <Toggle icon={<CurrencyIcon className="w-6 h-6"/>} inputRef={checkobxRef} onChange={setBillable} />
+            <Toggle icon={<Icons.dollar className="w-6 h-6"/>} inputRef={checkobxRef} onChange={setBillable} />
             <Button
               variant="default"
               size="sm"
@@ -420,9 +435,9 @@ const TimeLogForm = () => {
 
       <div className={`${isFocus ? 'border-t border-brand-light border-t-borderColor-light ' : 'border-t-0 border-borderColor-light'} flex items-center justify-between bg-info-dark py-[10px] px-5 rounded-b-xl`}>
         <div ref={dropdownRef} className="text-xs inline-flex items-center gap-x-2.5">
-          <Dropdown tabIndex={2} group icon={<Folder className={`w-4 h-4`}/>} label="Project" options={projectList} searchable onSelected={(option : string) => handleSelectedProject(option)} defaultValue={selectedProject}/>
-          <Dropdown tabIndex={3} icon={<Rocket className={`w-4 h-4`}/>} label="Milestone" options={milestoneList} searchable onSelected={(option : string) => setSelectedMilestone(option)} defaultValue={selectedMilestone} disable={!selectedProject} autoOpen={!!(selectedProject && !selectedMilestone)}/>
-          <Dropdown tabIndex={4} icon={<List className={`w-4 h-4`}/>} label="Task" options={taskList} searchable onSelected={(option : string) => setSelectedTask(option)} defaultValue={selectedTask} disable={!(selectedProject && selectedMilestone)} autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}/>
+          <Dropdown tabIndex={2} group icon={<Icons.project className={`w-4 h-4`}/>} label="Project" options={projectList} searchable onSelected={(option : string) => handleSelectedProject(option)} defaultValue={selectedProject}/>
+          <Dropdown tabIndex={3} icon={<Icons.milestone className={`w-4 h-4`}/>} label="Milestone" options={milestoneList} searchable onSelected={(option : string) => setSelectedMilestone(option)} defaultValue={selectedMilestone} disable={!selectedProject} autoOpen={!!(selectedProject && !selectedMilestone)}/>
+          <Dropdown tabIndex={4} icon={<Icons.task className={`w-4 h-4`}/>} label="Task" options={taskList} searchable onSelected={(option : string) => setSelectedTask(option)} defaultValue={selectedTask} disable={!(selectedProject && selectedMilestone)} autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}/>
         </div>
         {canClear &&
           <Button
