@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { cleanDate } from "@/utils/helper";
 
 export const statsRouter = createTRPCRouter({
   getQuickStats: protectedProcedure
@@ -9,7 +10,7 @@ export const statsRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
-      const today = new Date();
+      const today = cleanDate(new Date());
       const dateOneWeekAgo = new Date();
       dateOneWeekAgo.setDate(dateOneWeekAgo.getDate() - 7);
       // TODO: Right now hardcoded for last 7 days, but should be able to pass in a date range (eg: last 1/7/14/30 days)
