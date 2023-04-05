@@ -78,7 +78,6 @@ export const getTimeInHours = (duration: number) => {
 
 // Get date with Date format, but with 00:00:00 time
 export const cleanDate = (dateInput: Date) => {
-  const date = new Date(dateInput);
-  date.setHours(0, 0, 0, 0);
-  return date;
+  const justDate = dateInput.toISOString().split('T')[0];
+  return new Date(justDate);
 }

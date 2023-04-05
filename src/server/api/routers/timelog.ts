@@ -43,16 +43,19 @@ export const timelogRouter = createTRPCRouter({
       })
   )
     .query(async ({ ctx, input }) => {
-      const selectedDate = cleanDate(new Date(input.date));
+      const selectedDate = cleanDate(input.date);
+      
+      // add 1 day to selectedDate
+      const oneDayForward = new Date(selectedDate.getTime() + (24 * 60 * 60 * 1000)); 
+      const newFDClean = cleanDate(oneDayForward);
 
-      const oneDayForward = new Date(selectedDate);
-      oneDayForward.setDate(oneDayForward.getDate() + 1);
-
+      console.log(selectedDate, oneDayForward, newFDClean);
+      
       const timelogs = await ctx.prisma.timeEntry.findMany({
         where: {
           Tenant: { slug: input.slug },
           User: { id: ctx.session.user.id },
-          date: { gte: selectedDate, lte: oneDayForward },
+          date: { gte: selectedDate, lt: newFDClean },
         },
         include: {
           Project: true,
