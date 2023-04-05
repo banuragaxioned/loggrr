@@ -80,7 +80,6 @@ export const authOptions: NextAuthOptions = {
 
       // Attach timezone to the session object
       session.user.timezone = userWithTenants.timezone;
-console.log(session.user.tenants);
       return session;
     },
     jwt: async ({ user, token }) => {
