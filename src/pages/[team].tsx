@@ -1,46 +1,41 @@
 import Link from "next/link";
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
-import { useRouter } from "next/router";
 import { QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
+import { cleanDate } from "@/utils/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug, path } = useValidateTenantAccess();
 
   const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
   });
 
-  const selectDate: Date = new Date();
-  selectDate.setHours(0, 0, 0, 0);
-  console.log(selectDate);
+  const selectDate = cleanDate(new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
     { slug: slug, date: selectDate },
     { enabled: isReady }
   );
+
   // const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
   // const milestoneList = api.milestone.getMilestones.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
   // const taskList = api.task.getTasks.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
 
-  const onTimeEntrySubmit = (data: any) => {
-    console.log(data);
-    addTimeEntryHandler(data);
-  };
+  const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);
+
   const addTimeEntry = api.timelog.addTimelog.useMutation({
     onSuccess: (data) => {
       refetchMyTimeLog();
     },
   });
 
-  const addTimeEntryHandler = (data: any) => {
-    console.log(data);
-    const newTimeEntry = addTimeEntry.mutate({
-      date: new Date(getValues("date")),
+  const addTimeEntryHandler = (data: any) =>
+    addTimeEntry.mutate({
+      date: cleanDate(new Date(getValues("date"))),
       projectId: +getValues("projectId"),
       milestoneId: +getValues("milestoneId"),
       taskId: +getValues("taskId"),
@@ -49,7 +44,6 @@ export default function Dashboard() {
       billable: getValues("billable"),
       comments: getValues("comments"),
     });
-  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -63,13 +57,13 @@ export default function Dashboard() {
     <div className="mx-auto flex max-w-6xl gap-4">
       <section className="lg:basis-3/4">
         <div className="flex gap-4">
-          <Link href={router.asPath + "/projects"}>Project List</Link>
-          <Link href={router.asPath + "/members"}>Members</Link>
-          <Link href={router.asPath + "/skills"}>Skills</Link>
-          <Link href={router.asPath + "/assign"}>Assign</Link>
-          <Link href={router.asPath + "/reports"}>Reports</Link>
-          <Link href={router.asPath + "/billing"}>Billing</Link>
-          <Link href={router.asPath + "/settings"}>Settings</Link>
+          <Link href={path + "/projects"}>Project List</Link>
+          <Link href={path + "/members"}>Members</Link>
+          <Link href={path + "/skills"}>Skills</Link>
+          <Link href={path + "/assign"}>Assign</Link>
+          <Link href={path + "/reports"}>Reports</Link>
+          <Link href={path + "/billing"}>Billing</Link>
+          <Link href={path + "/settings"}>Settings</Link>
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>

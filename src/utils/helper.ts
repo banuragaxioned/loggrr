@@ -8,6 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Get initials from name
 export function getInitials(name: string): string {
   const initials = name
     .match(/(^\S\S?|\s\S)?/g)
@@ -66,6 +67,7 @@ export const getTimeInMinutes = (logTime: string): number => {
   }
 };
 
+// Get time in hours and minutes
 export const getTimeInHours = (duration: number) => {
   const hours = Math.floor(duration / 60);
   const minutes = duration % 60;
@@ -73,3 +75,10 @@ export const getTimeInHours = (duration: number) => {
   const MM = minutes < 10 ? `0${minutes}` : minutes;
   return `${HH}:${MM}`;
 };
+
+// Get date with Date format, but with 00:00:00 time
+export const cleanDate = (dateInput: Date) => {
+  const date = new Date(dateInput);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}

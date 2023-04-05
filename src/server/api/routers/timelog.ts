@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getTimeInMinutes } from "@/utils/helper";
+import { cleanDate, getTimeInMinutes } from "@/utils/helper";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
@@ -43,19 +43,16 @@ export const timelogRouter = createTRPCRouter({
       })
   )
     .query(async ({ ctx, input }) => {
+      const selectedDate = cleanDate(new Date(input.date));
 
-      // TODO: This feels like a really shitty way to do it, but works.
-      const selectedDate: Date = new Date(input.date)
-      selectedDate.setHours(0, 0, 0, 0);
-
-      const dateOneForward = new Date();
-      dateOneForward.setDate(dateOneForward.getDate() + 1);
+      const oneDayForward = new Date(selectedDate);
+      oneDayForward.setDate(oneDayForward.getDate() + 1);
 
       const timelogs = await ctx.prisma.timeEntry.findMany({
         where: {
           Tenant: { slug: input.slug },
           User: { id: ctx.session.user.id },
-          date: { lt: dateOneForward, gte: selectedDate },
+          date: { gte: selectedDate, lte: oneDayForward },
         },
         include: {
           Project: true,
