@@ -74,13 +74,13 @@ export const authOptions: NextAuthOptions = {
           name: tenant.name,
           slug: tenant.slug,
           //NOTE: Each user can only have one `role` per tenant. Even though we have many to many relation
-          role: tenant.UserRole[0].role,
+          role: tenant.UserRole.map((userRole) => userRole.role)[0],
         };
       });
 
       // Attach timezone to the session object
       session.user.timezone = userWithTenants.timezone;
-
+console.log(session.user.tenants);
       return session;
     },
     jwt: async ({ user, token }) => {
