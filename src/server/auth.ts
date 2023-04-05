@@ -1,9 +1,5 @@
 import type { GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions, type DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
@@ -23,7 +19,7 @@ declare module "next-auth" {
     user: {
       id: number;
       timezone: string;
-      tenants: { id: number, name: string, slug: string, role: Role }[];
+      tenants: { id: number; name: string; slug: string; role: Role }[];
       // tenants: Pick<Tenant, "id" | "name" | "slug" | "user.role">[];
     } & DefaultSession["user"];
   }
@@ -63,7 +59,7 @@ export const authOptions: NextAuthOptions = {
               name: true,
               UserRole: { select: { role: true } },
             },
-          }
+          },
         },
       });
 
@@ -80,7 +76,6 @@ export const authOptions: NextAuthOptions = {
 
       // Attach timezone to the session object
       session.user.timezone = userWithTenants.timezone;
-console.log(session.user.tenants);
       return session;
     },
     jwt: async ({ user, token }) => {

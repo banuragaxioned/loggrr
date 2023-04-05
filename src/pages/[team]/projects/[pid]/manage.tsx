@@ -6,14 +6,12 @@ import { useRef } from "react";
 import { api } from "@/utils/api";
 
 export default function ManageProject() {
-  const { isLoading, isInvalid, isReady, slug, pid } =
-    useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug, pid } = useValidateTenantAccess();
 
-  const { data: memberData, refetch: refetchMembers } =
-    api.project.getMembers.useQuery(
-      { projectId: pid, slug: slug },
-      { enabled: isReady }
-    );
+  const { data: memberData, refetch: refetchMembers } = api.project.getMembers.useQuery(
+    { projectId: pid, slug: slug },
+    { enabled: isReady }
+  );
 
   const userInputRef = useRef<HTMLInputElement>(null);
 
@@ -69,11 +67,7 @@ export default function ManageProject() {
           ))}
           <h4>All members:</h4>
           <ul>
-            {memberData?.map((members) =>
-              members.Members.map((member) => (
-                <li key={member.id}>{member.name}</li>
-              ))
-            )}
+            {memberData?.map((members) => members.Members.map((member) => <li key={member.id}>{member.name}</li>))}
           </ul>
         </div>
         <h3>Add members</h3>

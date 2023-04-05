@@ -43,9 +43,7 @@ const SelectContent = React.forwardRef<
       )}
       {...props}
     >
-      <SelectPrimitive.Viewport className="p-1">
-        {children}
-      </SelectPrimitive.Viewport>
+      <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ));
@@ -57,10 +55,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn(
-      "py-1.5 pl-8 pr-2 text-sm font-semibold text-slate-900 dark:text-slate-300",
-      className
-    )}
+    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold text-slate-900 dark:text-slate-300", className)}
     {...props}
   />
 ));
@@ -101,13 +96,4 @@ const SelectSeparator = React.forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
-export {
-  Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectLabel,
-  SelectItem,
-  SelectSeparator,
-};
+export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator };

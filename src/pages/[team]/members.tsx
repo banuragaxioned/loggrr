@@ -9,16 +9,17 @@ import { useRef } from "react";
 
 export default function Members() {
   const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
-  const { data: memberData, refetch: refetchMembers } =
-    api.tenant.getTenantMembers.useQuery({ slug: slug }, { enabled: isReady });
+  const { data: memberData, refetch: refetchMembers } = api.tenant.getTenantMembers.useQuery(
+    { slug: slug },
+    { enabled: isReady }
+  );
 
   const emailInputRef = useRef<HTMLInputElement>(null);
-  const connectUserToTenantMutation =
-    api.tenant.connectUserToTenant.useMutation({
-      onSuccess: (data) => {
-        refetchMembers();
-      },
-    });
+  const connectUserToTenantMutation = api.tenant.connectUserToTenant.useMutation({
+    onSuccess: (data) => {
+      refetchMembers();
+    },
+  });
   const addMemberHandler = () => {
     if (emailInputRef?.current?.value === undefined) return;
 
@@ -58,13 +59,8 @@ export default function Members() {
               >
                 <span className="flex place-items-center gap-4">
                   <Avatar>
-                    <AvatarImage
-                      src={member.image ?? ""}
-                      alt={member.name ?? ""}
-                    />
-                    <AvatarFallback>
-                      {getInitials(member.name ?? "Loggr User")}
-                    </AvatarFallback>
+                    <AvatarImage src={member.image ?? ""} alt={member.name ?? ""} />
+                    <AvatarFallback>{getInitials(member.name ?? "Loggr User")}</AvatarFallback>
                   </Avatar>
                   {member.name}
                 </span>

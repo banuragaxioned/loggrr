@@ -14,30 +14,26 @@ export const tenantRouter = createTRPCRouter({
   }),
   // Get a single Tenant by slug
   // TODO: Need to move this to the middleware? (see comment on src/server/api/trpc.ts; enforceUserIsAuthorized)
-  validateTenantAccess: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.text;
-      const userId = Number(ctx.session.user.id);
-      const tenant = await ctx.prisma.tenant.findFirst({
-        where: { slug, Users: { some: { id: userId } } }, // This works as an OR filter?
-      });
-      return tenant;
-    }),
+  validateTenantAccess: protectedProcedure.input(z.object({ text: z.string() })).query(async ({ ctx, input }) => {
+    const slug = input.text;
+    const userId = Number(ctx.session.user.id);
+    const tenant = await ctx.prisma.tenant.findFirst({
+      where: { slug, Users: { some: { id: userId } } }, // This works as an OR filter?
+    });
+    return tenant;
+  }),
 
   // Get all members for a Tenant
-  getTenantMembers: protectedProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const slug = input.slug;
+  getTenantMembers: protectedProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+    const slug = input.slug;
 
-      const members = await ctx.prisma.tenant.findUnique({
-        where: { slug: slug },
-        include: { Users: true },
-      });
+    const members = await ctx.prisma.tenant.findUnique({
+      where: { slug: slug },
+      include: { Users: true },
+    });
 
-      return members;
-    }),
+    return members;
+  }),
 
   // connect user to tenant
   connectUserToTenant: protectedProcedure

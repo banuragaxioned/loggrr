@@ -5,10 +5,7 @@ import TableUI from "@/components/ui/table";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
-  const reportData = api.report.getLogged.useQuery(
-    { tenant: slug },
-    { enabled: isReady }
-  );
+  const reportData = api.report.getLogged.useQuery({ tenant: slug }, { enabled: isReady });
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -28,10 +25,8 @@ export default function Projects() {
                 key={logged.id}
                 className="hover:bg-zinc/20 max-w-none rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {logged.date.toLocaleDateString()}-{logged.User.name} -{" "}
-                {logged.Project.Client.name} - {logged.Project.name} -{" "}
-                {logged.time}m{" "}
-                {logged.billable ? <span>🟢</span> : <span>🔴</span>} -{" "}
+                {logged.date.toLocaleDateString()}-{logged.User.name} - {logged.Project.Client.name} -{" "}
+                {logged.Project.name} - {logged.time}m {logged.billable ? <span>🟢</span> : <span>🔴</span>} -{" "}
                 {logged.comments}
               </li>
             ))}
