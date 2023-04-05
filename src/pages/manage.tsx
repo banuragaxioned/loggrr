@@ -1,16 +1,32 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
 import { api } from "@/utils/api";
 import { useForm } from "react-hook-form";
+import soft from "timezone-soft";
 
 export default function ManageProfile() {
-  const { isLoading, isInvalid, isReady } = useValidateTenantAccess();
-  const { register, getValues } = useForm({
+  const { isLoading, isInvalid } = useValidateTenantAccess();
+
+  const { data: userProfileInfo, refetch: refetchProfileInfo } = api.profile.getProfile.useQuery();
+
+  const { register, getValues, reset } = useForm({
     shouldUseNativeValidation: true,
   });
 
-  const { data: userProfileInfo, refetch: refetchProfileInfo } = api.profile.getProfile.useQuery();
+  const updateUserProfile = api.profile.updateProfile.useMutation({
+    onSuccess: (data) => {
+      refetchProfileInfo();
+      reset();
+    },
+  });
+
+  const updateProfileHandler = (data: any) =>
+    updateUserProfile.mutate({
+      name: getValues("name"),
+      timezone: soft(getValues("timezone"))[0].iana,
+    });
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -27,13 +43,14 @@ export default function ManageProfile() {
         {userProfileInfo && (
           <div>
             <p>Profile Info</p>
-            <Input {...register("name")} value={userProfileInfo.name!} required />
-            <Input value={userProfileInfo.email} disabled />
-            <select {...register("timezone")}>
-              <option value="1">1 </option>
-            </select>
-            <p>{userProfileInfo.timezone}</p>
-            <button onClick={() => refetchProfileInfo()}>Refetch Profile Info</button>
+            <form onSubmit={updateProfileHandler}>
+              <Input {...register("name")} value={userProfileInfo.name!} required />
+              <Input value={userProfileInfo.email} disabled />
+              <Input {...register("timezone")} defaultValue={userProfileInfo.timezone} required />
+              <Button type="button" onClick={updateProfileHandler}>
+                Submit
+              </Button>
+            </form>
           </div>
         )}
       </section>
