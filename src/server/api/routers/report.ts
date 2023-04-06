@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { cleanDate } from "@/utils/helper";
 
 export const reportRouter = createTRPCRouter({
   // Get all time log entries for the current tenant, with optional filters
@@ -45,7 +46,27 @@ export const reportRouter = createTRPCRouter({
           approvedAt: true,
         },
       });
-      return report;
+
+      const loggedResponse = report.map((entry) => {
+        return {
+          id: entry.id,
+          date: cleanDate(entry.date),
+          time: entry.time,
+          userId: entry.User.id,
+          user: entry.User.name,
+          projectId: entry.Project.id,
+          project: entry.Project.name,
+          clientId: entry.Project.Client.id,
+          client: entry.Project.Client.name,
+          billable: entry.billable,
+          status: entry.status,
+          comments: entry.comments,
+          approved: entry.approved,
+          approvedBy: entry.approvedBy,
+          approvedAt: entry.approvedAt,
+        };
+      });
+      return loggedResponse;
     }),
   // Get all work allocation made for the current tenant, with optional filters
   getAssigned: protectedProcedure
