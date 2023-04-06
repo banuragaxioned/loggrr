@@ -25,7 +25,7 @@ export const appRouter = createTRPCRouter({
   milestone: milestoneRouter,
   task: taskRouter,
   timelog: timelogRouter,
-  profile: profileRouter
+  profile: profileRouter,
 });
 
 // export type definition of API
