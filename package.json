@@ -15,7 +15,8 @@
     "push": "npx prisma db push",
     "ladle:serve": "npx ladle serve",
     "ladle:build": "npx ladle build",
-    "ladle:preview": "npx ladle preview"
+    "ladle:preview": "npx ladle preview",
+    "preview-email": "email dev --dir src/emails"
   },
   "dependencies": {
     "@hookform/error-message": "^2.0.1",
@@ -27,6 +28,10 @@
     "@radix-ui/react-scroll-area": "^1.0.3",
     "@radix-ui/react-select": "^1.2.1",
     "@radix-ui/react-separator": "^1.0.2",
+    "@react-email/container": "0.0.8",
+    "@react-email/html": "0.0.4",
+    "@react-email/section": "0.0.9",
+    "@react-email/text": "0.0.5",
     "@tanstack/react-query": "^4.28.0",
     "@tanstack/react-table": "^8.8.5",
     "@trpc/client": "^10.18.0",
@@ -43,6 +48,7 @@
     "nodemailer": "^6.9.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-email": "1.9.1",
     "react-hook-form": "^7.43.9",
     "react-hot-toast": "^2.4.0",
     "superjson": "1.12.2",
@@ -54,6 +60,7 @@
     "@axioned/prettier-config": "^1.0.4",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^18.15.11",
+    "@types/nodemailer": "^6.4.7",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
