@@ -368,7 +368,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   }, [isFocus])
 
   return (
-    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 rounded-xl w-2/3`}>
+    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 rounded-xl w-3/4`}>
       <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
         <Command
           label="Command Menu"
@@ -442,7 +442,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
         {canClear &&
           <Button
             tabIndex={9}
-            variant="destructive"
+            variant="outline"
             onClick={handleTimeLogCancel}
             size="sm"
             type="button"
