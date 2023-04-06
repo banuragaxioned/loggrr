@@ -44,7 +44,7 @@ export default function ManageProfile() {
           <div>
             <p>Profile Info</p>
             <form onSubmit={updateProfileHandler}>
-              <Input {...register("name")} value={userProfileInfo.name!} required />
+              <Input {...register("name")} defaultValue={userProfileInfo.name!} required />
               <Input value={userProfileInfo.email} disabled />
               <Input {...register("timezone")} defaultValue={userProfileInfo.timezone} required />
               <Button type="button" onClick={updateProfileHandler}>

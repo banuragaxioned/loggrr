@@ -25,9 +25,8 @@ export default function Projects() {
                 key={logged.id}
                 className="hover:bg-zinc/20 max-w-none rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {logged.date.toLocaleDateString()}-{logged.User.name} - {logged.Project.Client.name} -{" "}
-                {logged.Project.name} - {logged.time}m {logged.billable ? <span>🟢</span> : <span>🔴</span>} -{" "}
-                {logged.comments}
+                {logged.date.toLocaleDateString()}-{logged.user} - {logged.client} - {logged.project} - {logged.time}m{" "}
+                {logged.billable ? <span>🟢</span> : <span>🔴</span>} - {logged.comments}
               </li>
             ))}
         </ul>
