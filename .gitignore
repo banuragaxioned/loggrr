@@ -43,3 +43,6 @@ yarn-error.log*
 
 # yarn lock file
 yarn.lock
+
+## React email
+.react-email
