@@ -368,11 +368,11 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   }, [isFocus])
 
   return (
-    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 rounded-xl w-3/4`}>
+    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 mx-auto rounded-xl w-[690px]`}>
       <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
         <Command
           label="Command Menu"
-          className="relative cmdk-root:bg-background-white text-content-light"
+          className="relative text-content-light"
         >
           <div className={`${commentFocus ? 'ring-2 ring-brand-light ring-offset-0 rounded-b-sm border-white' : 'border-b-borderColor-light'} border-b flex items-center py-[7px] px-[18px] rounded-t-xl`}>
             {isAllDropDownSelect ? (
@@ -419,7 +419,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               type="submit"
               disabled={!canSubmit}
               tabIndex={canSubmit ? 8 : -1}
-              className={`disabled:opacity-50 disabled:cursor-not-allowed border-brand-light ml-[12px] disabled:hover:bg-brand-light px-[12px] py-[7px] border`}
+              className={`disabled:opacity-50 disabled:cursor-not-allowed bg-brand-light disabled:opacity-50 border-brand-light ml-[12px] disabled:hover:bg-brand-light px-[12px] py-[7px] border`}
             >Submit</Button>
           </div>
           <Command.List
@@ -447,7 +447,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
             size="sm"
             type="button"
             disabled={!canClear}
-            className={`bg-background-light border-borderColor-light hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light`}
+            className={`bg-background-light border-borderColor-light hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light px-[12px] py-[7px]`}
           >Clear</Button>}
       </div>
     </div>
