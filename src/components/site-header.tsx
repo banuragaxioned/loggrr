@@ -5,8 +5,12 @@ import { Icons } from "@/components/icons";
 import { MainNav } from "@/components/main-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { UserAccountNav } from "@/components/user-account";
 
 export function SiteHeader() {
+  const { data: sessionData } = useSession();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-b-zinc-200 bg-white px-4 dark:border-b-zinc-700 dark:bg-zinc-900">
       <div className="container mx-auto flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
@@ -26,6 +30,15 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
+            {sessionData && (
+              <UserAccountNav
+                user={{
+                  name: sessionData.user.name,
+                  image: sessionData.user.image,
+                  email: sessionData.user.email,
+                }}
+              />
+            )}
           </nav>
         </div>
       </div>

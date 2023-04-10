@@ -109,5 +109,4 @@ export const reportRouter = createTRPCRouter({
       });
       return report;
     }),
-  // TODO: Get all time log entries for the current tenant
 });
