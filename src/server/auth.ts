@@ -1,14 +1,11 @@
 import type { GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions, type DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
+import { Role } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -21,7 +18,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: number;
-      tenants: Object[];
+      timezone: string;
+      tenants: { id: number; name: string; slug: string; role: Role }[];
+      // tenants: Pick<Tenant, "id" | "name" | "slug" | "user.role">[];
     } & DefaultSession["user"];
   }
 }
@@ -47,26 +46,36 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Add tenant properties to the session object
-      const hasAccessTo = await prisma.tenant.findMany({
-        where: { Users: { some: { id: Number(session.user.id) } } },
+      const userWithTenants = await prisma.user.findUniqueOrThrow({
+        where: { id: session.user.id },
         select: {
           id: true,
           name: true,
-          slug: true,
-          UserRole: { select: { role: true } },
+          timezone: true,
+          TenantId: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+              UserRole: { select: { role: true } },
+            },
+          },
         },
       });
 
-      // Map over the hasAccessTo array and move the role a level up
-      session.user.tenants = hasAccessTo.map((tenant) => {
+      // Attach tenant with user role to the session object
+      session.user.tenants = userWithTenants.TenantId.map((tenant) => {
         return {
           id: tenant.id,
           name: tenant.name,
           slug: tenant.slug,
-          role: tenant.UserRole[0]?.role, //TODO: make this not optional, I think
+          //NOTE: Each user can only have one `role` per tenant. Even though we have many to many relation
+          role: tenant.UserRole.map((userRole) => userRole.role)[0],
         };
       });
 
+      // Attach timezone to the session object
+      session.user.timezone = userWithTenants.timezone;
       return session;
     },
     jwt: async ({ user, token }) => {
@@ -91,11 +100,11 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
         auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
         },
       },
       from: process.env.EMAIL_FROM,

@@ -5,15 +5,13 @@ import { Status } from "@prisma/client";
 
 export const milestoneRouter = createTRPCRouter({
   // Get all Milestones for the current project
-  getMilestones: protectedProcedure
-    .input(z.object({ pid: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const projectId = +input.pid;
-      const milestones = await ctx.prisma.milestone.findMany({
-        where: { projectId: projectId, status: Status.PUBLISHED },
-      });
-      return milestones;
-    }),
+  getMilestones: protectedProcedure.input(z.object({ pid: z.string() })).query(async ({ ctx, input }) => {
+    const projectId = +input.pid;
+    const milestones = await ctx.prisma.milestone.findMany({
+      where: { projectId: projectId, status: Status.PUBLISHED },
+    });
+    return milestones;
+  }),
   // Create a new Milestone
   // TODO: this is only applicable for Fixed projects - need to add a check either here or in the frontend (or both)
   addMilestone: protectedProcedure

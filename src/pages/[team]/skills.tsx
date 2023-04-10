@@ -11,18 +11,9 @@ export default function Projects() {
   const showToast = useToast();
 
   const currentTenant = slug;
-  const allSkillList = api.skill.getAllSkills.useQuery(
-    { tenant: currentTenant },
-    { enabled: isReady }
-  );
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery(
-    { tenant: currentTenant },
-    { enabled: isReady }
-  );
-  const mySkillScores = api.skill.getMySkillsScores.useQuery(
-    { tenant: currentTenant },
-    { enabled: isReady }
-  );
+  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTenant }, { enabled: isReady });
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
+  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
 
   const {
     register,

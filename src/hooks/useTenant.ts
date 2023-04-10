@@ -5,6 +5,7 @@ import { api } from "@/utils/api";
 export function useValidateTenantAccess() {
   const { status } = useSession();
   const router = useRouter();
+  const path = router.asPath;
   const currentTenant = String(router.query.team);
   const currentProject = String(router.query.pid);
 
@@ -14,12 +15,9 @@ export function useValidateTenantAccess() {
 
   const isLoading = status === "loading" || validatedData.isLoading;
 
-  const isInvalid =
-    status === "unauthenticated" ||
-    validatedData.data?.slug !== router.query.team;
+  const isInvalid = status === "unauthenticated" || validatedData.data?.slug !== router.query.team;
 
-  const isReady =
-    router.query !== undefined && status === "authenticated" && !isInvalid;
+  const isReady = router.query !== undefined && status === "authenticated" && !isInvalid;
 
   return {
     isLoading,
@@ -27,5 +25,6 @@ export function useValidateTenantAccess() {
     isReady,
     slug: currentTenant,
     pid: currentProject,
+    path,
   };
 }

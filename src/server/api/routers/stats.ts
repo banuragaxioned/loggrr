@@ -1,15 +1,14 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { cleanDate } from "@/utils/helper";
 
 export const statsRouter = createTRPCRouter({
   getQuickStats: protectedProcedure
-    .input(
-      z.object({ tenant: z.string(), date: z.string().datetime().optional() })
-    )
+    .input(z.object({ tenant: z.string(), date: z.string().datetime().optional() }))
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
-      const today = new Date();
+      const today = cleanDate(new Date());
       const dateOneWeekAgo = new Date();
       dateOneWeekAgo.setDate(dateOneWeekAgo.getDate() - 7);
       // TODO: Right now hardcoded for last 7 days, but should be able to pass in a date range (eg: last 1/7/14/30 days)
@@ -43,9 +42,7 @@ export const statsRouter = createTRPCRouter({
       };
 
       const mappedStats: MappedStat[] = quickStats.reduce((acc, curr) => {
-        const existingIndex = acc.findIndex(
-          (stat) => stat.projectId === curr.Project.id
-        );
+        const existingIndex = acc.findIndex((stat) => stat.projectId === curr.Project.id);
         if (existingIndex !== -1) {
           acc[existingIndex].total += curr.time;
         } else {

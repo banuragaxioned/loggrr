@@ -108,8 +108,9 @@ model Milestone {
 
     // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
-    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    Project Project @relation(fields: [projectId], references: [id])
+    Tenant    Tenant      @relation(fields: [tenantId], references: [id])
+    Project   Project     @relation(fields: [projectId], references: [id])
+    TimeEntry TimeEntry[]
 
     @@index([tenantId])
     @@index([projectId])
@@ -125,36 +126,43 @@ model Task {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    Project Project @relation(fields: [projectId], references: [id])
+    Tenant    Tenant      @relation(fields: [tenantId], references: [id])
+    Project   Project     @relation(fields: [projectId], references: [id])
+    TimeEntry TimeEntry[]
 
     @@index([tenantId])
     @@index([projectId])
 }
 
 model TimeEntry {
-    id         Int       @id @default(autoincrement())
-    date       DateTime
-    projectId  Int
-    tenantId   Int
-    userId     Int
-    billable   Boolean   @default(false)
-    time       Int // Storing time in minutes
-    comments   String?
-    approved   Boolean   @default(false)
-    approvedBy String?
-    approvedAt DateTime?
-    status     Status    @default(PUBLISHED)
-    createdAt  DateTime  @default(now())
-    updatedAt  DateTime  @updatedAt
+    id          Int       @id @default(autoincrement())
+    date        DateTime
+    projectId   Int
+    tenantId    Int
+    userId      Int
+    milestoneId Int
+    taskId      Int?
+    billable    Boolean   @default(false)
+    time        Int // Storing time in minutes
+    comments    String?
+    approved    Boolean   @default(false)
+    approvedBy  String?
+    approvedAt  DateTime?
+    status      Status    @default(PUBLISHED)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
 
-    Tenant  Tenant  @relation(fields: [tenantId], references: [id])
-    Project Project @relation(fields: [projectId], references: [id])
-    User    User    @relation(fields: [userId], references: [id])
+    Tenant    Tenant    @relation(fields: [tenantId], references: [id])
+    Project   Project   @relation(fields: [projectId], references: [id])
+    Task      Task?     @relation(fields: [taskId], references: [id])
+    Milestone Milestone @relation(fields: [milestoneId], references: [id])
+    User      User      @relation(fields: [userId], references: [id])
 
     @@index([tenantId])
     @@index([projectId])
     @@index([userId])
+    @@index([milestoneId])
+    @@index([taskId])
 }
 
 enum Status {
@@ -279,6 +287,7 @@ model User {
     id            Int        @id @default(autoincrement())
     name          String?
     email         String     @unique
+    timezone      String    @default("UTC")
     emailVerified DateTime?
     image         String?
     createdAt     DateTime   @default(now())
