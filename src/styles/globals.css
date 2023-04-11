@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply min-h-screen bg-white text-base text-zinc-900 antialiased dark:bg-zinc-900 dark:text-zinc-50;
+    @apply min-h-screen border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50;
   }
   h1 {
     @apply scroll-m-20 text-3xl font-extrabold tracking-tight;
@@ -20,9 +20,6 @@
   }
   .subtitle {
     @apply text-neutral-500 dark:text-neutral-400;
-  }
-  section {
-    @apply container mx-auto grid items-center gap-6 pb-8 pt-6 md:py-4;
   }
   .todo {
     @apply flex w-full items-center justify-center rounded-md border border-dashed border-zinc-300 text-sm dark:border-zinc-600;
