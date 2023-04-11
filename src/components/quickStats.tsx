@@ -11,7 +11,7 @@ export function QuickStatsWidget() {
     tenant: currentTenant,
   });
   return (
-    <ScrollArea className="h-44 w-full rounded-md border border-slate-100 dark:border-slate-700">
+    <ScrollArea className="h-44 w-full rounded-md border border-zinc-100 dark:border-zinc-700">
       <div className="p-4">
         <h4 className="mb-4 text-sm font-medium leading-none">Time Insights</h4>
         {projectInsights.data &&

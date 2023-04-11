@@ -22,7 +22,7 @@ Card.Content = function CardContent({ className, ...props }: CardContentProps) {
 interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 Card.Footer = function CardFooter({ className, ...props }: CardFooterProps) {
-  return <div className={cn("border-t bg-slate-50 px-6 py-4", className)} {...props} />;
+  return <div className={cn("border-t bg-zinc-50 px-6 py-4", className)} {...props} />;
 };
 
 interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
@@ -46,7 +46,7 @@ Card.Skeleton = function CardSeleton() {
       </Card.Header>
       <Card.Content className="h-10" />
       <Card.Footer>
-        <Skeleton className="h-8 w-[120px] bg-slate-200" />
+        <Skeleton className="h-8 w-[120px] bg-zinc-200" />
       </Card.Footer>
     </Card>
   );

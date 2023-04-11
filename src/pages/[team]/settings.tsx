@@ -25,12 +25,12 @@ export default function TenantSettings() {
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="slug">Team Name</Label>
               <Input type="team_name" id="team_name" defaultValue={slug} required />
-              <p className="text-sm text-slate-500">Keep it short and easily recognizable.</p>
+              <p className="text-sm text-zinc-500">Keep it short and easily recognizable.</p>
             </div>
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="slug">Slug</Label>
               <Input type="slug" id="slug" defaultValue={slug} disabled />
-              <p className="text-sm text-slate-500">This appears in your URL as well.</p>
+              <p className="text-sm text-zinc-500">This appears in your URL as well.</p>
             </div>
           </div>
         </DashboardShell>
