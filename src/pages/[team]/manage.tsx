@@ -5,7 +5,7 @@ import { DashboardShell } from "@/components/ui/shell";
 import Unavailable from "@/components/unavailable";
 import { useValidateTenantAccess } from "@/hooks/useTenant";
 
-export default function TenantSettings() {
+export default function ManageTeam() {
   const { isLoading, isInvalid, slug } = useValidateTenantAccess();
 
   if (isLoading) {
@@ -20,7 +20,7 @@ export default function TenantSettings() {
       <aside className="hidden w-[200px] flex-col md:flex">Sidebar </aside>
       <main className="flex w-full flex-1 flex-col overflow-hidden">
         <DashboardShell>
-          <DashboardHeader heading="Team settings" text="Manage your team and settings here" />
+          <DashboardHeader heading="Team settings" text="Manage your team and workspace" />
           <div className="grid gap-8 p-2">
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="team_name">Team Name</Label>

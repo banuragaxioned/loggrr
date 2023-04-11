@@ -63,7 +63,7 @@ export default function Dashboard() {
           <Link href={path + "/assign"}>Assign</Link>
           <Link href={path + "/reports"}>Reports</Link>
           <Link href={path + "/billing"}>Billing</Link>
-          <Link href={path + "/settings"}>Settings</Link>
+          <Link href={path + "/manage"}>Manage</Link>
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
