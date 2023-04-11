@@ -30,7 +30,7 @@ export default function ManageTeam() {
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="slug">Slug</Label>
               <div className="mt-2 flex rounded-md shadow-sm">
-                <span className="inline-flex items-center rounded-l-md border border-r-0 border-zinc-300 px-3 text-sm dark:border-zinc-700 sm:text-sm">
+                <span className="inline-flex select-none items-center rounded-l-md border border-r-0 border-zinc-300 px-3 text-sm dark:border-zinc-700 sm:text-sm">
                   loggr.com/
                 </span>
                 <Input type="slug" id="slug" defaultValue={slug} className="rounded-l-none" required />
