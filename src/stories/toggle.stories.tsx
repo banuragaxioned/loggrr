@@ -1,23 +1,54 @@
-import React, { useState } from 'react';
-import Toggle from "../components/ui/toggle";
-import { Icons } from '../components/icons'
+"use client"
 
-export const DefualtToggle = () => {
-  const [checked, setChecked] = useState(false);
+import { Italic } from "lucide-react"
 
-  const handleCheckedChange = (isChecked: boolean) => {
-    setChecked(isChecked);
-  };
+import { Toggle } from "@/components/ui/toggle"
 
+export function ToggleDemo() {
   return (
-    <Toggle onChange={handleCheckedChange} />
-  );
-};
+    <Toggle aria-label="Toggle italic">
+      <Italic className="h-4 w-4" />
+    </Toggle>
+  )
+}
 
-export const ToggleWithDynamicIcon = () => {
-  const [checked, setChecked] = useState(false);
-
+export function ToggleOutline() {
   return (
-    <Toggle name='billable-toggle' icon={<Icons.dollar className="w-6 h-6" />} onChange={setChecked} />
-  );
+    <Toggle variant="outline" aria-label="Toggle italic">
+      <Italic className="h-4 w-4" />
+    </Toggle>
+  )
+}
+
+export function ToggleWithText() {
+  return (
+    <Toggle aria-label="Toggle italic">
+      <Italic className="mr-2 h-4 w-4" />
+      Italic
+    </Toggle>
+  )
+}
+
+export function ToggleSm() {
+  return (
+    <Toggle size="sm" aria-label="Toggle italic">
+      <Italic className="h-4 w-4" />
+    </Toggle>
+  )
+}
+ 
+export function ToggleLg() {
+  return (
+    <Toggle size="lg" aria-label="Toggle italic">
+      <Italic className="h-4 w-4" />
+    </Toggle>
+  )
+}
+
+export function ToggleDisabled() {
+  return (
+    <Toggle aria-label="Toggle italic" disabled>
+      <Italic className="h-4 w-4" />
+    </Toggle>
+  )
 }

@@ -8,7 +8,8 @@ import { clients } from "../utils/tempData";
 
 import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
-import Toggle from "./ui/toggle";
+import { Toggle } from "./ui/toggle";
+import { Italic } from "lucide-react";
 
 type FormData = {
   project: string | undefined,
@@ -54,7 +55,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   const userId = 12;
   const inputRef = useRef<any>();
   const inputParentRef = useRef<HTMLDivElement>(null)
-  const checkobxRef = useRef<HTMLInputElement | null>(null);
+  const checkobxRef = useRef<HTMLButtonElement | null>(null);
   const commentRef = useRef<any>();
   const commentParentRef = useRef<HTMLDivElement>(null)
   const timeLogFormRef = useRef<any>();
@@ -278,7 +279,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
     setBillable(false)
     setActiveDropDown(undefined)
     if(!!checkobxRef.current) {
-      checkobxRef.current.checked = false
+      checkobxRef.current.dataset.state = "off"
     }
   }
 
@@ -412,7 +413,9 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
-            <Toggle icon={<Icons.dollar className="w-6 h-6"/>} inputRef={checkobxRef} onChange={setBillable} />
+            <Toggle tabIndex={7} ref={checkobxRef} variant="outline" size='sm' className="ml-3 border-borderColor-light dark:border-borderColor-dark px-1.5 data-[state=on]:text-billable-light data-[state=on]:bg-transparent hover:bg-transparent focus:ring-brand-light focus:ring-1 focus:border-brand-light focus:ring-offset-0">
+              <Icons.dollar className="h-6 w-6"/>
+            </Toggle>
             <Button
               variant="default"
               size="sm"
