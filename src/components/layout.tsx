@@ -6,9 +6,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <>
+    <div className="mx-auto flex flex-col space-y-6">
       <SiteHeader />
       <main>{children}</main>
-    </>
+    </div>
   );
 }
