@@ -54,7 +54,7 @@ module.exports = {
           "hover-dark": colors.slate[300],
         },
         ctaBorder: { light: colors.indigo[600], dark: colors.indigo[600] },
-        borderColor: { light: colors.slate[400], dark: colors.slate[300] },
+        borderColor: { light: colors.slate[400], dark: colors.zinc[700] },
         focusColor: { one: colors.blue[500], two: colors.blue[300] },
         labelBackground: { light: colors.indigo[100] },
         labelContent: { light: colors.indigo[700] },

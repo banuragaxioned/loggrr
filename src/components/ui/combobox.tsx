@@ -33,7 +33,7 @@ const Command = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive
     ref={ref}
-    className={`absolute bg-white border border-borderColor-light border-box top-[37px] rounded-t-[5px] w-[206px] ${className}`}
+    className={`absolute bg-white dark:bg-zinc-900 border dark:border-borderColor-dark border-borderColor-light border-box top-[37px] rounded-t-[5px] w-[206px] ${className}`}
     {...props}
   />
 ))
@@ -47,7 +47,7 @@ const CommandInput = React.forwardRef<
     <SearchIcon className="basis-[15%] h-[14px] text-info-light stroke-2 shrink-0" />
     <CommandPrimitive.Input
       ref={ref}
-      className={`px-0 border-0 box-border rounded-t-[5px] text-[14px] placeholder:font-[14px] focus:outline-0 focus:outline-0 focus:ring-0 w-[83%] ${className}`}
+      className={`px-0 border-0 box-border dark:bg-transparent rounded-t-[5px] text-[14px] placeholder:font-[14px] focus:outline-0 focus:outline-0 focus:ring-0 w-[83%] ${className}`}
       {...props}
     />
   </div>
@@ -62,7 +62,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={`w-[calc(100%+2px)] py-[7px] px-[10px] border border-box border-borderColor-light max-h-[240px] overflow-y-auto ComboBox-scrollbar shadow-md rounded-b-[5px] absolute top-full left-1/2 -translate-x-1/2 bg-white text-content-light transition-all duration-200 ease-out ${className}`}
+    className={`w-[calc(100%+2px)] py-[7px] px-[10px] border border-box border-borderColor-light dark:border-borderColor-dark max-h-[240px] overflow-y-auto ComboBox-scrollbar shadow-md rounded-b-[5px] absolute top-full left-1/2 -translate-x-1/2 bg-white dark:bg-transparent text-content-light transition-all duration-200 ease-out ${className}`}
     {...props}
   />
 ))
@@ -101,7 +101,7 @@ const CommandItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.Item
     ref={ref}
-    className={`aria-selected:bg-indigo-50 aria-selected:text-slate-700 cursor-pointer w-full rounded py-2 px-[14px] text-[#374151] ${className}`}
+    className={`aria-selected:bg-indigo-50 aria-selected:bg-zinc-700 aria-selected:text-slate-700 dark:aria-selected:text-zinc-900 cursor-pointer w-full rounded py-2 px-[14px] text-[#374151] ${className}`}
     {...props}
   />
 ))
@@ -162,7 +162,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = f
   return (
     <div className={`relative ${containerStyles}`}>
       <div className="w-full">
-        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-[50] ease-out capitalize flex items-end justify-center focus:outline-0 focus:outline-offset-0 py-2 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-ComboBoxBorder-light bg-[#fff] hover:bg-background-light text-content-light border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
+        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-[50] ease-out capitalize flex items-end justify-center focus:outline-0 focus:outline-offset-0 py-2 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-ComboBoxBorder-light dark:border-borderColor-dark bg-white dark:bg-zinc-800 hover:bg-background-light text-content-light dark:text-white border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
           {icon}
           <span>{selected || label}</span>
         </button>

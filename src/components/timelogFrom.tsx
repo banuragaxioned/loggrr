@@ -232,7 +232,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   const renderList = (x: any) => {
     return (
       <>
-        <span className="text-info-light">{x?.clientName}</span> /{" "}
+        <span className="text-info-light dark:text-zinc-400">{x?.clientName}</span> /{" "}
         <span>{x?.projectName}</span> / <span>{x?.milestoneName}</span> /{" "}
         <span>{x?.taskName}</span>
       </>
@@ -252,7 +252,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               return (
                 <div key={innerI}>
                   <Command.Item
-                    className="aria-selected:bg-indigo-50 aria-selected:text-slate-700 cursor-pointer w-full py-2 px-5"
+                    className="aria-selected:bg-indigo-50 dark:aria-selected:bg-zinc-700 aria-selected:text-slate-700 dark:aria-selected:text-slate-900 cursor-pointer w-full py-2 px-5"
                     value={`${project?.clientName} / ${project?.projectName} / ${project?.milestoneName} / ${project?.taskName}`}
                     onSelect={() => isFocus && handleProjectSelect(project)}
                   >
@@ -368,13 +368,13 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   }, [isFocus])
 
   return (
-    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light'} bg-white border z-[3] border-box my-5 mx-auto rounded-xl w-[690px]`}>
+    <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light dark:border-borderColor-dark'} bg-white dark:bg-transparent border z-[3] border-box my-5 mx-auto rounded-xl w-[690px]`}>
       <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
         <Command
           label="Command Menu"
           className="relative text-content-light"
         >
-          <div className={`${commentFocus ? 'ring-2 ring-brand-light ring-offset-0 rounded-b-sm border-white' : 'border-b-borderColor-light'} border-b flex items-center py-[7px] px-[18px] rounded-t-xl`}>
+          <div className={`${commentFocus ? 'ring-2 ring-brand-light ring-offset-0 rounded-b-sm border-white dark:border-transparent' : 'border-b-borderColor-light dark:border-b-borderColor-dark'} border-b flex items-center py-[7px] px-[18px] rounded-t-xl`}>
             {isAllDropDownSelect ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
                 <Icons.comment onClick={() => setCommentFocus(true)} className="w-[18px] h-[18px] text-info-light stroke-2 shrink-0"/>
@@ -408,7 +408,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               tabIndex={6}
               type="text"
               placeholder="7:30"
-              className={`${timeErr ? 'ring-danger-light ring-1 focus:ring-danger-light focus:border-danger-light border-danger-light' : 'focus:ring-brand-light focus:border-brand-light border-borderColor-light'} border w-[60px] text-center text-sm leading-none placeholder:text-disabled-light rounded-md transition-all duration-[50] ease-out select-none focus:outline-none focus:ring-1 focus:ring-offset-0`}
+              className={`${timeErr ? 'ring-danger-light ring-1 focus:ring-danger-light focus:border-danger-light border-danger-light' : 'focus:ring-brand-light focus:border-brand-light border-borderColor-light dark:border-borderColor-dark'} border dark:bg-transparent w-[60px] text-center text-sm leading-none placeholder:text-disabled-light rounded-md transition-all duration-[50] ease-out select-none focus:outline-none focus:ring-1 focus:ring-offset-0`}
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
@@ -423,7 +423,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
             >Submit</Button>
           </div>
           <Command.List
-            className={`w-[calc(100%)] ${isFocus ? 'border-brand-light' : 'border-borderColor-light'} overflow-y-auto bg-white text-content-light transition-all duration-200 ease-in overflow-y-hidden hover:overflow-y-auto ${isFocus ? 'max-h-[146px]' : 'max-h-[0]'}`}
+            className={`w-[calc(100%)] ${isFocus ? 'border-brand-light' : 'border-borderColor-light dark:border-borderColor-dark'} overflow-y-auto bg-white dark:bg-transparent text-content-light transition-all duration-200 ease-in overflow-y-hidden hover:overflow-y-auto ${isFocus ? 'max-h-[146px]' : 'max-h-[0]'}`}
           >
             <Command.Empty className="inline-flex items-center text-sm gap-2 p-[12px]">
               No results found.
@@ -433,7 +433,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
         </Command>
       </form>
 
-      <div className={`${isFocus ? 'border-t border-brand-light border-t-borderColor-light ' : 'border-t-0 border-borderColor-light'} flex items-center justify-between bg-info-dark py-[10px] px-5 rounded-b-xl`}>
+      <div className={`${isFocus ? 'border-t border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark ' : 'border-t-0 border-borderColor-light dark:border-borderColor-dark'} flex items-center justify-between bg-info-dark dark:bg-zinc-900 py-[10px] px-5 rounded-b-xl`}>
         <div ref={dropdownRef} className="text-xs inline-flex items-center gap-x-2.5">
           <Dropdown tabIndex={2} group icon={<Icons.project className={`w-4 h-4`}/>} label="Project" options={projectList} searchable onSelected={(option : string) => handleSelectedProject(option)} defaultValue={selectedProject}/>
           <Dropdown tabIndex={3} icon={<Icons.milestone className={`w-4 h-4`}/>} label="Milestone" options={milestoneList} searchable onSelected={(option : string) => setSelectedMilestone(option)} defaultValue={selectedMilestone} disable={!selectedProject} autoOpen={!!(selectedProject && !selectedMilestone)}/>
@@ -447,7 +447,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
             size="sm"
             type="button"
             disabled={!canClear}
-            className={`bg-background-light border-borderColor-light hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light px-[12px] py-[7px]`}
+            className={`bg-background-light dark:bg-transparent border-borderColor-light dark:border-borderColor-dark hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light px-[12px] py-[7px]`}
           >Clear</Button>}
       </div>
     </div>
