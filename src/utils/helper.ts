@@ -81,3 +81,7 @@ export const cleanDate = (dateInput: Date) => {
   const justDate = dateInput.toISOString().split("T")[0];
   return new Date(justDate);
 };
+
+export function absoluteUrl(path: string) {
+  return `${process.env.NEXTAUTH_URL}${path}`
+}
