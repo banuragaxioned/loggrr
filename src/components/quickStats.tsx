@@ -212,7 +212,8 @@ export function LoggedRatio() {
   const projectInsights = api.stats.getQuickStats.useQuery({
     tenant: currentTeam,
   });
-  const total = projectInsights.data?.[0].total ?? 0;
+  const totalMinutes = projectInsights.data?.[0]?.total ?? 0;
+  const total = totalMinutes / 60;
   const percentage = (total / 37.5) * 100;
   return (
     <Card className="max-w-sm">
