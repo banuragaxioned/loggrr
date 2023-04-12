@@ -1,46 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
-const TableUI = (props: any) => {
-  const [columns, setColumns] = useState([]);
-  const [columnHelper, setColumnHelper] = useState([]);
-  const [rows, setRows] = useState([]);
+type TableColumn = {
+  id: string;
+  accessor: string;
+};
+
+type TableProps = {
+  columns: TableColumn[];
+  rows: any[];
+};
+
+const TableUI = ({ columns, rows }: TableProps) => {
+  const [columnHelper, setColumnHelper] = useState<any[]>([]);
+  const [tableRows, setTableRows] = useState<any[]>([]);
 
   useEffect(() => {
-    if (props.columns && Array.isArray(props.columns) && props.columns.length) {
-      setColumns(props.columns);
-
+    if (columns && Array.isArray(columns) && columns.length) {
       const columnHelperConfig = createColumnHelper();
-      const columnHelper = props.columns.map((item: any, index: number) => {
+      const columnHelper = columns.map((item: any, index: number) => {
         return columnHelperConfig.accessor(item, {
-          header: () => item.toUpperCase(),
-          cell: (info) => info.renderValue(),
-          footer: (info) => info.column.id,
+          id: item.id,
+          header: () => item,
+          cell: (info: any) => info.renderValue(),
+          footer: (info: any) => info.column.id,
         });
       });
 
       setColumnHelper(columnHelper);
     }
-    if (props.rows && Array.isArray(props.rows) && props.rows.length) {
-      setRows(props.rows);
+    if (rows && Array.isArray(rows) && rows.length) {
+      setTableRows(rows);
     }
-  }, [props]);
-
-  const rerender = React.useReducer(() => ({}), {})[1];
+  }, [columns, rows]);
 
   const table = useReactTable({
-    data: rows,
+    data: tableRows,
     columns: columnHelper,
     getCoreRowModel: getCoreRowModel(),
   });
+
   return (
     <>
-      <table className="border border-zinc-400">
+      <table className="w-full border border-zinc-400">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border border-zinc-300">
+                <th key={header.id} className="border border-zinc-300 px-4 py-2 text-left capitalize">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
               ))}
@@ -51,7 +58,7 @@ const TableUI = (props: any) => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border border-zinc-300">
+                <td key={cell.id} className="border border-zinc-300 px-4 py-2 text-left">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
