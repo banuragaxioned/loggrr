@@ -9,7 +9,6 @@ import { clients } from "../utils/tempData";
 import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
 import { Toggle } from "./ui/toggle";
-import { Italic } from "lucide-react";
 
 type FormData = {
   project: string | undefined;
