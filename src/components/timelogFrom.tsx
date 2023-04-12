@@ -422,11 +422,11 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               type="submit"
               disabled={!canSubmit}
               tabIndex={canSubmit ? 8 : -1}
-              className={`disabled:opacity-50 disabled:cursor-not-allowed bg-brand-light disabled:opacity-50 border-brand-light ml-[12px] disabled:hover:bg-brand-light px-[12px] py-[7px] border`}
+              className={`disabled:cursor-not-allowed bg-brand-light disabled:opacity-50 border-brand-light ml-[12px] disabled:hover:bg-brand-light px-[12px] py-[7px] border`}
             >Submit</Button>
           </div>
           <Command.List
-            className={`w-[calc(100%)] ${isFocus ? 'border-brand-light' : 'border-borderColor-light dark:border-borderColor-dark'} overflow-y-auto bg-white dark:bg-transparent text-content-light transition-all duration-200 ease-in overflow-y-hidden hover:overflow-y-auto ${isFocus ? 'max-h-[146px]' : 'max-h-[0]'}`}
+            className={`w-[calc(100%)] ${isFocus ? 'border-brand-light' : 'border-borderColor-light dark:border-borderColor-dark'} bg-white dark:bg-transparent text-content-light transition-all duration-200 ease-in overflow-y-hidden hover:overflow-y-auto ${isFocus ? 'max-h-[146px]' : 'max-h-[0]'}`}
           >
             <Command.Empty className="inline-flex items-center text-sm gap-2 p-[12px]">
               No results found.
@@ -450,7 +450,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
             size="sm"
             type="button"
             disabled={!canClear}
-            className={`bg-background-light dark:bg-transparent border-borderColor-light dark:border-borderColor-dark hover:border-info-light text-content-light text-xs leading-none px-[16px] py-[8px] border focus:ring-1 focus:ring-brand-light focus:border-brand-light px-[12px] py-[7px]`}
+            className={`bg-background-light dark:bg-transparent border-borderColor-light dark:border-borderColor-dark hover:border-info-light text-content-light text-xs leading-none border focus:ring-1 focus:ring-brand-light focus:border-brand-light px-[12px] py-[7px]`}
           >Clear</Button>}
       </div>
     </div>
