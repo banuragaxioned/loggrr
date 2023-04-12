@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Italic } from "lucide-react"
+import { Italic } from "lucide-react";
 
-import { Toggle } from "@/components/ui/toggle"
+import { Toggle } from "@/components/ui/toggle";
 
 export function ToggleDemo() {
   return (
     <Toggle aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }
 
 export function ToggleOutline() {
@@ -17,7 +17,7 @@ export function ToggleOutline() {
     <Toggle variant="outline" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }
 
 export function ToggleWithText() {
@@ -26,7 +26,7 @@ export function ToggleWithText() {
       <Italic className="mr-2 h-4 w-4" />
       Italic
     </Toggle>
-  )
+  );
 }
 
 export function ToggleSm() {
@@ -34,15 +34,15 @@ export function ToggleSm() {
     <Toggle size="sm" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }
- 
+
 export function ToggleLg() {
   return (
     <Toggle size="lg" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }
 
 export function ToggleDisabled() {
@@ -50,5 +50,5 @@ export function ToggleDisabled() {
     <Toggle aria-label="Toggle italic" disabled>
       <Italic className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }
