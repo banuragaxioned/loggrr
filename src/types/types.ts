@@ -4,7 +4,7 @@ type Allocations = {
   billable: number;
   nonBillable: number;
   total: number;
-}
+};
 
 type Projects = {
   id: number;
@@ -18,7 +18,7 @@ type UserProfile = {
   name: string;
   id: number;
   avatar: string;
-}
+};
 
 type AllocationReport = {
   User: UserProfile & {
@@ -26,4 +26,4 @@ type AllocationReport = {
     totalHours: number;
     averageHours: number;
   };
-}
+};

@@ -1,7 +1,6 @@
-import { prisma } from '../db';
+import { prisma } from "../db";
 
-
-export const getMembers = (slug: string, projectId: number) =>  {
+export const getMembers = (slug: string, projectId: number) => {
   const members = prisma.project.findMany({
     where: { Tenant: { slug }, id: +projectId },
     select: {
@@ -10,5 +9,5 @@ export const getMembers = (slug: string, projectId: number) =>  {
     },
   });
 
-  return members
-}
+  return members;
+};

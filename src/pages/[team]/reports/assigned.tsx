@@ -24,8 +24,8 @@ export default function GlobalReportsAssigned() {
                 key={logged.id}
                 className="hover:bg-zinc/20 max-w-none rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
               >
-                {logged.User.name} - {logged.Project.Client.name} - {logged.Project.name} - {logged.billableTime}m (B) and{" "}
-                {logged.nonBillableTime}m (NB)
+                {logged.User.name} - {logged.Project.Client.name} - {logged.Project.name} - {logged.billableTime}m (B)
+                and {logged.nonBillableTime}m (NB)
               </li>
             ))}
         </ul>
