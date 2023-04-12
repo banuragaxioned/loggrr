@@ -35,12 +35,12 @@ const TableUI = (props: any) => {
   });
   return (
     <>
-      <table className="border border-slate-400">
+      <table className="border border-zinc-400">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border border-slate-300">
+                <th key={header.id} className="border border-zinc-300">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
               ))}
@@ -51,7 +51,7 @@ const TableUI = (props: any) => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border border-slate-300">
+                <td key={cell.id} className="border border-zinc-300">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

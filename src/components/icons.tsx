@@ -9,6 +9,7 @@ import {
   Rocket,
   List,
   MessageSquare,
+  User,
   type Icon as LucideIcon,
 } from "lucide-react";
 
@@ -27,5 +28,6 @@ export const Icons = {
   milestone: Rocket,
   task: List,
   comment: MessageSquare,
-  dollar: CurrencyDollarIcon
+  dollar: CurrencyDollarIcon,
+  user: User,
 };
