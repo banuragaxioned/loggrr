@@ -59,7 +59,6 @@ export default function Projects() {
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
         <TableUI rows={defaultData} columns={defaultDataColumns} />
-        {/* TODO: pass projectList, infer the column names from the response  */}
         <h2>Projects</h2>
         <CreateProject />
         <ul className="flex max-w-xs flex-col gap-4">
@@ -86,7 +85,6 @@ export default function Projects() {
             ))}
         </ul>
       </section>
-      <section></section>
     </div>
   );
 }

@@ -80,7 +80,6 @@ export default function Members() {
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-0">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          {/* <img className="h-10 w-10 rounded-full" src={person.image} alt="" /> */}
                           <Avatar>
                             <AvatarImage src={person.image ?? ""} alt={person.name ?? ""} />
                             <AvatarFallback>{getInitials(person.name ?? "Loggr User")}</AvatarFallback>
