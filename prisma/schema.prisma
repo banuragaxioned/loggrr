@@ -172,17 +172,17 @@ enum Status {
 
 // Allocation-related
 model Allocation {
-    id              Int       @id @default(autoincrement())
-    date            DateTime
-    enddate         DateTime?
-    billableTime    Int
-    nonBillableTime Int
-    tenantId        Int
-    projectId       Int
-    userId          Int
-    status          Status    @default(PUBLISHED)
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
+    id          Int       @id @default(autoincrement())
+    date        DateTime
+    enddate     DateTime?
+    billable    Int       @default(0)
+    nonbillable Int       @default(0)
+    tenantId    Int
+    projectId   Int
+    userId      Int
+    status      Status    @default(PUBLISHED)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
 
     // If frequency is ONGOING and no enddate then it's indefinite
     // If the frequency is ONGOING and enddate is present then it's a fixed duration
@@ -287,7 +287,7 @@ model User {
     id            Int        @id @default(autoincrement())
     name          String?
     email         String     @unique
-    timezone      String     @default("UTC")
+    timezone      String    @default("UTC")
     emailVerified DateTime?
     image         String?
     createdAt     DateTime   @default(now())

@@ -87,7 +87,7 @@ export const reportRouter = createTRPCRouter({
           Project: { clientId: input.clientId },
           userId: input.userId,
         },
-        orderBy: { User: { name: "asc" } }, // Verify this later
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           User: { select: { id: true, name: true } },
@@ -101,8 +101,8 @@ export const reportRouter = createTRPCRouter({
           date: true,
           enddate: true,
           frequency: true,
-          billableTime: true,
-          nonBillableTime: true,
+          billable: true,
+          nonbillable: true,
           status: true,
           createdAt: true,
         },
