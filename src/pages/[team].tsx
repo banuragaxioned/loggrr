@@ -21,10 +21,6 @@ export default function Dashboard() {
     { enabled: isReady }
   );
 
-  // const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
-  // const milestoneList = api.milestone.getMilestones.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
-  // const taskList = api.task.getTasks.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
-
   const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);
 
   const addTimeEntry = api.timelog.addTimelog.useMutation({
