@@ -6,8 +6,33 @@ export const projectRouter = createTRPCRouter({
   // Get all Projects for the current tenant
   getProjects: protectedProcedure.input(z.object({ text: z.string() })).query(async ({ ctx, input }) => {
     const slug = input.text;
-    const projects = await ctx.prisma.project.findMany({
+    const response = await ctx.prisma.project.findMany({
       where: { Tenant: { slug: slug } },
+      select: {
+        id: true,
+        name: true,
+        startdate: true,
+        enddate: true,
+        billable: true,
+        interval: true,
+        Client: { select: { id: true, name: true } },
+        Owner: { select: { id: true, name: true, image: true } },
+        status: true,
+      },
+    });
+
+    const projects = response.map((list) => {
+      return {
+        id: list.id,
+        name: list.name,
+        startdate: list.startdate.toLocaleDateString(),
+        enddate: list.enddate?.toLocaleDateString(),
+        billable: list.billable,
+        interval: list.interval,
+        client: list.Client.name,
+        owner: list.Owner.name,
+        status: list.status,
+      };
     });
     return projects;
   }),
