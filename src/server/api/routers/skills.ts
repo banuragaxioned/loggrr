@@ -37,9 +37,17 @@ export const skillsRouter = createTRPCRouter({
       where: { Tenant: { slug: slug } },
       include: { Skill: true, User: true },
     });
-    return skillScores;
+    const mappedScores = skillScores.map((score) => {
+      return {
+        id: score.id,
+        skill: score.Skill.name,
+        level: score.skillLevel,
+        user: score.User.name,
+      };
+    });
+    return mappedScores;
   }),
-  // Create a skill in the current tenant - least priority
+  // Create a skill in the current tenant
   createSkill: protectedProcedure
     .input(z.object({ slug: z.string(), name: z.string() }))
     .mutation(async ({ ctx, input }) => {
