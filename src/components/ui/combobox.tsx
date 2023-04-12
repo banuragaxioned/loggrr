@@ -162,7 +162,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = f
   return (
     <div className={`relative ${containerStyles}`}>
       <div className="w-full">
-        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-[50] ease-out capitalize focus:outline-0 focus:outline-offset-0 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-ComboBoxBorder-light dark:border-borderColor-dark bg-white dark:bg-zinc-800 hover:bg-background-light text-content-light dark:text-white border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
+        <button tabIndex={searchable && isOpen ? -1 : tabIndex} disabled={disable} className={`disabled:opacity-50 rounded-md transition-all duration-75 ease-out capitalize focus:outline-0 focus:outline-offset-0 px-3 text-[14px] inline-flex items-center justify-center gap-[6px] border-ComboBoxBorder-light dark:border-borderColor-dark bg-white dark:bg-zinc-800 hover:bg-background-light text-content-light dark:text-white border py-[6px] pl-[10px] pr-[11px] ${toggleButtonStyles}`} onClick={handleClick} onFocus={() => setIsOpen(true)}>
           {icon}
           <span>{selected || label}</span>
         </button>

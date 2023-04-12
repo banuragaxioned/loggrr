@@ -193,7 +193,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
       setCommentFocus(false)
       setAllDropDownSelect(false)
     }
-  }, [selected, commentRef.current]);
+  }, [selected]);
 
   useEffect(() => {
     setFilledData({
@@ -209,18 +209,15 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
   }, [selectedProject, selectedMilestone, selectedTask])
 
   useEffect(() => {
-    if (projectErr && selectedProject) setProjectErr(true)
-    else setProjectErr(false)
+    setProjectErr((prev: boolean) => prev && !!selectedProject)
   }, [selectedProject])
 
   useEffect(() => {
-    if (milestoneErr && selectedMilestone) setMilestoneErr(true)
-    else setMilestoneErr(false)
+    setMilestoneErr((prev:boolean) => prev && !!selectedMilestone)
   }, [selectedMilestone])
 
   useEffect(() => {
-    if (taskErr && selectedTask) setTaskErr(true)
-    else setTaskErr(false)
+    setTaskErr((prev: boolean) => prev && !!selectedTask)
   }, [selectedTask])
 
   useEffect(() => {
@@ -228,7 +225,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
       setClear((filledData?.projectName || filledData?.milestoneName || filledData?.taskName || filledData?.timeLogged.length !== 0 || filledData?.comment?.length > 0) && selected)
       setSubmit(filledData?.projectName && filledData?.milestoneName && filledData?.taskName && filledData?.timeLogged.length !== 0)
     }
-  }, [filledData])
+  }, [filledData, selected])
 
   const renderList = (x: any) => {
     return (
@@ -348,8 +345,12 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
 
   const handleSelectedProject = useCallback((value: string) => {
     setSelectedProject(value)
-    if (milestoneList.indexOf(selectedMilestone) === -1) setSelectedMilestone('')
-    if (taskList.indexOf(selectedTask) === -1) setSelectedTask('')
+    setSelectedMilestone((prev) => {
+      if (milestoneList.indexOf(prev) === -1) return ''
+    })
+    setSelectedTask((prev) => {
+      if (taskList.indexOf(prev) === -1) return ''
+    })
   }, [milestoneList, taskList])
 
   const openSearch = () => {
@@ -366,7 +367,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
     return () => {
       document.removeEventListener('click', handleFocus)
     }
-  }, [isFocus])
+  }, [isFocus, handleFocus])
 
   return (
     <div ref={timeLogFormRef} className={`${isFocus ? 'ring-1 ring-brand-light ring-offset-0 shadow-lg border-brand-light' : 'border-borderColor-light dark:border-borderColor-dark'} bg-white dark:bg-transparent border z-[3] border-box my-5 mx-auto rounded-xl w-[690px]`}>
@@ -409,7 +410,7 @@ const TimeLogForm = ({formData, handleFormData} : Props) => {
               tabIndex={6}
               type="text"
               placeholder="7:30"
-              className={`${timeErr ? 'ring-danger-light ring-1 focus:ring-danger-light focus:border-danger-light border-danger-light' : 'focus:ring-brand-light focus:border-brand-light border-borderColor-light dark:border-borderColor-dark'} border dark:bg-transparent w-[60px] text-center text-sm leading-none placeholder:text-disabled-light rounded-md transition-all duration-[50] ease-out select-none focus:outline-none focus:ring-1 focus:ring-offset-0`}
+              className={`${timeErr ? 'ring-danger-light ring-1 focus:ring-danger-light focus:border-danger-light border-danger-light' : 'focus:ring-brand-light focus:border-brand-light border-borderColor-light dark:border-borderColor-dark'} border dark:bg-transparent w-[60px] text-center text-sm leading-none placeholder:text-disabled-light rounded-md transition-all duration-75 ease-out select-none focus:outline-none focus:ring-1 focus:ring-offset-0`}
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
