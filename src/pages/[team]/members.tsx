@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import { getInitials } from "@/utils/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 
 export default function Members() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
-  const { data: memberData, refetch: refetchMembers } = api.tenant.getTenantMembers.useQuery(
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
+  const { data: memberData, refetch: refetchMembers } = api.tenant.getTeamMembers.useQuery(
     { slug: slug },
     { enabled: isReady }
   );

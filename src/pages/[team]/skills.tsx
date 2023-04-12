@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
   const showToast = useToast();
 
   const currentTeam = slug;

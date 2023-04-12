@@ -2,7 +2,7 @@ import { milestoneRouter } from "./routers/milestone";
 import { statsRouter } from "@/server/api/routers/stats";
 import { projectRouter } from "@/server/api/routers/project";
 import { createTRPCRouter } from "@/server/api/trpc";
-import { tenantRouter } from "@/server/api/routers/tenant";
+import { teamRouter } from "@/server/api/routers/team";
 import { skillsRouter } from "@/server/api/routers/skills";
 import { reportRouter } from "@/server/api/routers/report";
 import { clientRouter } from "@/server/api/routers/client";
@@ -16,7 +16,7 @@ import { profileRouter } from "@/server/api/routers/profile";
  * All routers added in /api/routers should be manually added here
  */
 export const appRouter = createTRPCRouter({
-  tenant: tenantRouter,
+  tenant: teamRouter,
   project: projectRouter,
   client: clientRouter,
   skill: skillsRouter,

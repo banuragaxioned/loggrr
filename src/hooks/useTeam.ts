@@ -2,14 +2,14 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { api } from "@/utils/api";
 
-export function useValidateTenantAccess() {
+export function useValidateTeamAccess() {
   const { status } = useSession();
   const router = useRouter();
   const path = router.asPath;
   const currentTeam = String(router.query.team);
   const currentProject = String(router.query.pid);
 
-  const validatedData = api.tenant.validateTenantAccess.useQuery({
+  const validatedData = api.tenant.validateTeamAccess.useQuery({
     text: currentTeam,
   });
 
