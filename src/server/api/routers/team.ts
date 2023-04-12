@@ -2,29 +2,29 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
-export const tenantRouter = createTRPCRouter({
-  // Get all Tenants for the current user
-  myTenants: protectedProcedure.query(async ({ ctx }) => {
+export const teamRouter = createTRPCRouter({
+  // Get all Teams for the current user
+  myTeams: protectedProcedure.query(async ({ ctx }) => {
     const userId = Number(ctx.session.user.id);
     // TODO: Need to fix the @/server/auth.ts
-    const tenants = await ctx.prisma.tenant.findMany({
+    const teams = await ctx.prisma.tenant.findMany({
       where: { Users: { some: { id: userId } } },
     });
-    return tenants;
+    return teams;
   }),
-  // Get a single Tenant by slug
+  // Get a single Team by slug
   // TODO: Need to move this to the middleware? (see comment on src/server/api/trpc.ts; enforceUserIsAuthorized)
-  validateTenantAccess: protectedProcedure.input(z.object({ text: z.string() })).query(async ({ ctx, input }) => {
+  validateTeamAccess: protectedProcedure.input(z.object({ text: z.string() })).query(async ({ ctx, input }) => {
     const slug = input.text;
     const userId = Number(ctx.session.user.id);
-    const tenant = await ctx.prisma.tenant.findFirst({
+    const team = await ctx.prisma.tenant.findFirst({
       where: { slug, Users: { some: { id: userId } } }, // This works as an OR filter?
     });
-    return tenant;
+    return team;
   }),
 
-  // Get all members for a Tenant
-  getTenantMembers: protectedProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+  // Get all members for a Team
+  getTeamMembers: protectedProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
     const slug = input.slug;
 
     const members = await ctx.prisma.tenant.findUnique({

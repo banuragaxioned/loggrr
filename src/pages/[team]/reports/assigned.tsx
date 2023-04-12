@@ -1,9 +1,9 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 
 export default function GlobalReportsAssigned() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
   const reportData = api.report.getAssigned.useQuery({ tenant: slug }, { enabled: isReady });
 
   if (isLoading) {

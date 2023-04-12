@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { LoggedRatio, Insights, Metrics, QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 export default function Dashboard() {
-  const { isLoading, isInvalid, isReady, slug, path } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug, path } = useValidateTeamAccess();
 
   const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
@@ -20,10 +20,6 @@ export default function Dashboard() {
     { slug: slug, date: selectDate },
     { enabled: isReady }
   );
-
-  // const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
-  // const milestoneList = api.milestone.getMilestones.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
-  // const taskList = api.task.getTasks.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
 
   const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);
 

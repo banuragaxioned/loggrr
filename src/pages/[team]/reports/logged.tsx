@@ -1,10 +1,10 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
   const reportData = api.report.getLogged.useQuery({ tenant: slug }, { enabled: isReady });
 
   if (isLoading) {
