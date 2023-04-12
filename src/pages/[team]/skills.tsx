@@ -10,10 +10,10 @@ export default function Projects() {
   const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
   const showToast = useToast();
 
-  const currentTenant = slug;
-  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
+  const currentTeam = slug;
+  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
 
   const {
     register,
@@ -37,7 +37,7 @@ export default function Projects() {
   const addSkill = () => {
     const newSkill = createSkill.mutate({
       name: getValues("skill_name"),
-      slug: currentTenant,
+      slug: currentTeam,
     });
     return newSkill;
   };

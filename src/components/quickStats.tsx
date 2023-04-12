@@ -16,15 +16,14 @@ import {
   LineChart,
   Legend,
   Flex,
-  CategoryBar,
 } from "@tremor/react";
 import { useState } from "react";
 
 export function QuickStatsWidget() {
   const router = useRouter();
-  const currentTenant = router.query.team as string;
+  const currentTeam = router.query.team as string;
   const projectInsights = api.stats.getQuickStats.useQuery({
-    tenant: currentTenant,
+    tenant: currentTeam,
   });
   return (
     <ScrollArea className="h-44 w-full rounded-md border border-zinc-100 dark:border-zinc-700">
@@ -209,9 +208,9 @@ export function Insights() {
 
 export function LoggedRatio() {
   const router = useRouter();
-  const currentTenant = router.query.team as string;
+  const currentTeam = router.query.team as string;
   const projectInsights = api.stats.getQuickStats.useQuery({
-    tenant: currentTenant,
+    tenant: currentTeam,
   });
   const total = projectInsights.data?.[0].total ?? 0;
   const percentage = (total / 37.5) * 100;

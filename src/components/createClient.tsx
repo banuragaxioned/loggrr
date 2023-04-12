@@ -7,7 +7,7 @@ import useToast from "@/hooks/useToast";
 
 export default function CreateClient() {
   const router = useRouter();
-  const currentTenant = router.query.team as string;
+  const currentTeam = router.query.team as string;
   const showToast = useToast();
 
   const { register, handleSubmit, reset, getValues } = useForm({
@@ -29,7 +29,7 @@ export default function CreateClient() {
   const addClient = () => {
     const newClient = createClient.mutate({
       name: getValues("client_name"),
-      slug: currentTenant,
+      slug: currentTeam,
     });
     return newClient;
   };

@@ -10,11 +10,11 @@ import useToast from "@/hooks/useToast";
 export default function CreateProject() {
   const { data: session } = useSession();
   const router = useRouter();
-  const currentTenant = router.query.team as string;
+  const currentTeam = router.query.team as string;
   const showToast = useToast();
 
   const { data: clientList } = api.client.getClients.useQuery(
-    { text: currentTenant },
+    { text: currentTeam },
     { enabled: session?.user !== undefined }
   );
 
@@ -39,7 +39,7 @@ export default function CreateProject() {
       name: getValues("project_name"),
       clientId: Number(getValues("client")),
       interval: getValues("interval"),
-      slug: currentTenant,
+      slug: currentTeam,
       startdate: new Date(getValues("startdate")),
       enddate: getValues("enddate") ? new Date(getValues("enddate")) : undefined,
       billable: getValues("billable"),

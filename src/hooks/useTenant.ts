@@ -6,11 +6,11 @@ export function useValidateTenantAccess() {
   const { status } = useSession();
   const router = useRouter();
   const path = router.asPath;
-  const currentTenant = String(router.query.team);
+  const currentTeam = String(router.query.team);
   const currentProject = String(router.query.pid);
 
   const validatedData = api.tenant.validateTenantAccess.useQuery({
-    text: currentTenant,
+    text: currentTeam,
   });
 
   const isLoading = status === "loading" || validatedData.isLoading;
@@ -23,7 +23,7 @@ export function useValidateTenantAccess() {
     isLoading,
     isInvalid,
     isReady,
-    slug: currentTenant,
+    slug: currentTeam,
     pid: currentProject,
     path,
   };

@@ -11,9 +11,9 @@ export default function Projects() {
   const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
 
   const router = useRouter();
-  const currentTenant = slug;
-  const clientList = api.client.getClients.useQuery({ text: currentTenant }, { enabled: isReady });
-  const projectList = api.project.getProjects.useQuery({ text: currentTenant }, { enabled: isReady });
+  const currentTeam = slug;
+  const clientList = api.client.getClients.useQuery({ text: currentTeam }, { enabled: isReady });
+  const projectList = api.project.getProjects.useQuery({ text: currentTeam }, { enabled: isReady });
 
   if (isLoading) {
     return <p>Loading...</p>;
