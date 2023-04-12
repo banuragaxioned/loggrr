@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { SearchIcon } from "lucide-react"
 
@@ -120,7 +120,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = f
     setIsOpen(false);
   }
 
-  const handleOutsideClick = (e: any) => {
+  const handleOutsideClick = useCallback((e: any) => {
     if (
       isOpen &&
       parentRef.current &&
@@ -129,7 +129,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = f
       setSearchTerm('')
       setIsOpen(false);
     }
-  };
+  }, [isOpen])
 
   const handleClick = (e:any) => {
     e.stopPropagation()
@@ -157,7 +157,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({ options, onSelected, searchable = f
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [isOpen]);
+  }, [isOpen, handleOutsideClick]);
 
   return (
     <div className={`relative ${containerStyles}`}>
