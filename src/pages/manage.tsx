@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import { useForm } from "react-hook-form";
 import soft from "timezone-soft";
 
 export default function ManageProfile() {
-  const { isLoading, isInvalid } = useValidateTenantAccess();
+  const { isLoading, isInvalid } = useValidateTeamAccess();
 
   const { data: userProfileInfo, refetch: refetchProfileInfo } = api.profile.getProfile.useQuery();
 

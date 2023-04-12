@@ -1,11 +1,11 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { reportConfig } from "@/config/site";
 
 export default function GlobalReports() {
-  const { isLoading, isInvalid } = useValidateTenantAccess();
+  const { isLoading, isInvalid } = useValidateTeamAccess();
   const router = useRouter();
 
   if (isLoading) {

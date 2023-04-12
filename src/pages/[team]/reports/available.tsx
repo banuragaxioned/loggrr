@@ -1,8 +1,8 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 
 export default function GlobalReportsAvailable() {
-  const { isLoading, isInvalid } = useValidateTenantAccess();
+  const { isLoading, isInvalid } = useValidateTeamAccess();
 
   if (isLoading) {
     return <p>Loading...</p>;

@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "@/utils/api";
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 
 export default function Project() {
   const router = useRouter();
-  const { isLoading, isInvalid, isReady, pid, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, pid, slug } = useValidateTeamAccess();
 
   const { register, getValues, reset } = useForm();
 

@@ -3,10 +3,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DashboardShell } from "@/components/ui/shell";
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 
 export default function ManageTeam() {
-  const { isLoading, isInvalid, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, slug } = useValidateTeamAccess();
 
   if (isLoading) {
     return <p>Loading...</p>;

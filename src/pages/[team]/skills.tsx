@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
   const showToast = useToast();
 
-  const currentTenant = slug;
-  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
+  const currentTeam = slug;
+  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
 
   const {
     register,
@@ -37,7 +37,7 @@ export default function Projects() {
   const addSkill = () => {
     const newSkill = createSkill.mutate({
       name: getValues("skill_name"),
-      slug: currentTenant,
+      slug: currentTeam,
     });
     return newSkill;
   };

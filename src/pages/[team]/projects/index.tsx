@@ -1,5 +1,5 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -8,12 +8,12 @@ import CreateProject from "@/components/createProject";
 import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
 
   const router = useRouter();
-  const currentTenant = slug;
-  const clientList = api.client.getClients.useQuery({ text: currentTenant }, { enabled: isReady });
-  const projectList = api.project.getProjects.useQuery({ text: currentTenant }, { enabled: isReady });
+  const currentTeam = slug;
+  const clientList = api.client.getClients.useQuery({ text: currentTeam }, { enabled: isReady });
+  const projectList = api.project.getProjects.useQuery({ text: currentTeam }, { enabled: isReady });
 
   if (isLoading) {
     return <p>Loading...</p>;
