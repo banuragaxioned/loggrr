@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
+import { User } from "lucide-react";
 
 export default function Members() {
   const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
@@ -42,14 +43,16 @@ export default function Members() {
   }
   return (
     <div className="mx-auto flex max-w-6xl flex-col px-4 lg:px-0">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h2>Members</h2>
-          <p className="mt-2 text-sm">A list of all the users in your account.</p>
-        </div>
-        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <Button type="button">Add user</Button>
-        </div>
+      {/* align vertically center */}
+      <div className="flex w-full flex-1 flex-col">
+        <DashboardShell>
+          <DashboardHeader heading="Members" text="A list of all the users in your account.">
+            <Button type="button">
+              <User className="mr-2 h-4 w-4" />
+              Add member
+            </Button>
+          </DashboardHeader>
+        </DashboardShell>
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
