@@ -1,3 +1,4 @@
+import { Status } from '@prisma/client';
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -8,7 +9,16 @@ export const teamRouter = createTRPCRouter({
     const userId = Number(ctx.session.user.id);
     // TODO: Need to fix the @/server/auth.ts
     const teams = await ctx.prisma.tenant.findMany({
-      where: { Users: { some: { id: userId } } },
+      where: {
+        Users: { some: { id: userId } },
+        status: Status.PUBLISHED,
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+        orderBy: { name: "asc" },
     });
     return teams;
   }),
@@ -29,10 +39,14 @@ export const teamRouter = createTRPCRouter({
 
     const members = await ctx.prisma.tenant.findUnique({
       where: { slug: slug },
-      include: { Users: true },
+      select: {
+        Users: {
+          orderBy: { name: "asc" },
+        },
+      },
     });
 
-    return members;
+    return members?.Users || [];
   }),
 
   // connect user to tenant

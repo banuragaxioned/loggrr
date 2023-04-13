@@ -23,7 +23,7 @@ export function useValidateTeamAccess() {
     isLoading,
     isInvalid,
     isReady,
-    slug: currentTeam,
+    currentTeam,
     pid: currentProject,
     path,
   };

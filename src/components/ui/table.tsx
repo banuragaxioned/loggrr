@@ -13,7 +13,7 @@ const TableUI = (props: any) => {
       const columnHelperConfig = createColumnHelper();
       const columnHelper = props.columns.map((item: any, index: number) => {
         return columnHelperConfig.accessor(item, {
-          header: () => item.toUpperCase(),
+          header: () => item,
           cell: (info) => info.renderValue(),
           footer: (info) => info.column.id,
         });
@@ -35,23 +35,23 @@ const TableUI = (props: any) => {
   });
   return (
     <>
-      <table className="border border-zinc-400">
+      <table className="min-w-full divide-y divide-zinc-300 dark:divide-zinc-700">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border border-zinc-300">
+                <th key={header.id} className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold capitalize sm:pl-0">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border border-zinc-300">
+                <td key={cell.id} className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-0">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

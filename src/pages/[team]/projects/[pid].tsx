@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 
 export default function Project() {
   const router = useRouter();
-  const { isLoading, isInvalid, isReady, pid, slug } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, pid, currentTeam } = useValidateTeamAccess();
 
   const { register, getValues, reset } = useForm();
 
@@ -36,7 +36,7 @@ export default function Project() {
       budget: +getValues("milestone_budget"),
       startdate: getValues("startdate") ? new Date(getValues("startdate")) : undefined,
       enddate: getValues("enddate") ? new Date(getValues("enddate")) : undefined,
-      slug: slug,
+      slug: currentTeam,
       pid: +pid,
     });
   };
@@ -58,7 +58,7 @@ export default function Project() {
     const newTask = newTaskMutation.mutate({
       name: getValues("task_name"),
       budget: +getValues("task_budget"),
-      slug: slug,
+      slug: currentTeam,
       pid: +pid,
     });
   };

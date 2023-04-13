@@ -83,5 +83,5 @@ export const cleanDate = (dateInput: Date) => {
 };
 
 export function absoluteUrl(path: string) {
-  return `${process.env.NEXTAUTH_URL}${path}`
+  return `${process.env.NEXTAUTH_URL}${path}`;
 }
