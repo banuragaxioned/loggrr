@@ -11,9 +11,9 @@ import { DashboardHeader } from "@/components/ui/header";
 import { User } from "lucide-react";
 
 export default function Members() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
   const { data: memberData, refetch: refetchMembers } = api.tenant.getTeamMembers.useQuery(
-    { slug: slug },
+    { slug: currentTeam },
     { enabled: isReady }
   );
 
@@ -28,7 +28,7 @@ export default function Members() {
 
     const newMember = connectUserToTenantMutation.mutate({
       email: emailInputRef.current.value,
-      tenant: slug,
+      tenant: currentTeam,
     });
 
     return newMember;
@@ -75,7 +75,7 @@ export default function Members() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                {memberData?.Users.map((person) => (
+                {memberData?.map((person) => (
                   <tr key={person.email}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-0">
                       <div className="flex items-center">
