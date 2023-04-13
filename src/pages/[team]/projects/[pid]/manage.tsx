@@ -6,10 +6,10 @@ import { useRef } from "react";
 import { api } from "@/utils/api";
 
 export default function ManageProject() {
-  const { isLoading, isInvalid, isReady, slug, pid } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, currentTeam, pid } = useValidateTeamAccess();
 
   const { data: memberData, refetch: refetchMembers } = api.project.getMembers.useQuery(
-    { projectId: pid, slug: slug },
+    { projectId: pid, slug: currentTeam },
     { enabled: isReady }
   );
 

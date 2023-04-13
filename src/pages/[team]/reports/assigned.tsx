@@ -3,8 +3,8 @@ import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 
 export default function GlobalReportsAssigned() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
-  const reportData = api.report.getAssigned.useQuery({ tenant: slug }, { enabled: isReady });
+  const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
+  const reportData = api.report.getAssigned.useQuery({ tenant: currentTeam }, { enabled: isReady });
 
   if (isLoading) {
     return <p>Loading...</p>;

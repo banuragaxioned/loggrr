@@ -8,12 +8,11 @@ import CreateProject from "@/components/createProject";
 import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
 
   const router = useRouter();
-  const currentTeam = slug;
   const clientList = api.client.getClients.useQuery({ text: currentTeam }, { enabled: isReady });
-  const projectList = api.project.getProjects.useQuery({ text: currentTeam }, { enabled: isReady });
+  const projectList = api.project.getProjects.useQuery({ slug: currentTeam }, { enabled: isReady });
 
   if (isLoading) {
     return <p>Loading...</p>;

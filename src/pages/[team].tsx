@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 export default function Dashboard() {
-  const { isLoading, isInvalid, isReady, slug, path } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
 
   const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   const selectDate = cleanDate(getValues("date") ? new Date(getValues("date")) : new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
-    { slug: slug, date: selectDate },
+    { slug: currentTeam, date: selectDate },
     { enabled: isReady }
   );
 
@@ -35,7 +35,7 @@ export default function Dashboard() {
       projectId: +getValues("projectId"),
       milestoneId: +getValues("milestoneId"),
       taskId: +getValues("taskId"),
-      slug: slug,
+      slug: currentTeam,
       time: getValues("time"),
       billable: getValues("billable"),
       comments: getValues("comments"),

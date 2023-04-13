@@ -4,8 +4,8 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const projectRouter = createTRPCRouter({
   // Get all Projects for the current tenant
-  getProjects: protectedProcedure.input(z.object({ text: z.string() })).query(async ({ ctx, input }) => {
-    const slug = input.text;
+  getProjects: protectedProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+    const slug = input.slug;
     const response = await ctx.prisma.project.findMany({
       where: { Tenant: { slug: slug } },
       select: {

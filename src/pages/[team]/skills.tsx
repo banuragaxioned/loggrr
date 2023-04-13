@@ -8,19 +8,13 @@ import { Button } from "@/components/ui/button";
 import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTeamAccess();
+  const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
   const showToast = useToast();
-  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: slug }, { enabled: isReady });
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: slug }, { enabled: isReady });
-  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: slug }, { enabled: isReady });
+  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    getValues,
-  } = useForm({ shouldUseNativeValidation: true });
+  const { register, handleSubmit, reset, getValues } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
     addSkill();
@@ -36,7 +30,7 @@ export default function Projects() {
   const addSkill = () => {
     const newSkill = createSkill.mutate({
       name: getValues("skill_name"),
-      slug: slug,
+      slug: currentTeam,
     });
     return newSkill;
   };
