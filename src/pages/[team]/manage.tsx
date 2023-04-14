@@ -6,7 +6,7 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 
 export default function ManageTeam() {
-  const { isLoading, isInvalid, slug } = useValidateTeamAccess();
+  const { isLoading, isInvalid, currentTeam } = useValidateTeamAccess();
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -24,7 +24,7 @@ export default function ManageTeam() {
           <div className="grid gap-8 p-2">
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="team_name">Team Name</Label>
-              <Input type="team_name" id="team_name" defaultValue={slug} required placeholder="Team Name" />
+              <Input type="team_name" id="team_name" defaultValue={currentTeam} required placeholder="Team Name" />
               <p className="text-sm text-zinc-500">Keep it short and easily recognizable.</p>
             </div>
             <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -33,7 +33,7 @@ export default function ManageTeam() {
                 <span className="inline-flex select-none items-center rounded-l-md border border-r-0 border-zinc-300 px-3 text-sm dark:border-zinc-700 sm:text-sm">
                   loggr.com/
                 </span>
-                <Input type="slug" id="slug" defaultValue={slug} className="rounded-l-none" required />
+                <Input type="slug" id="slug" defaultValue={currentTeam} className="rounded-l-none" required />
               </div>
               <p className="text-sm text-zinc-500">This appears in your URL as well.</p>
             </div>
