@@ -38,13 +38,13 @@ module.exports = {
         },
         warning: { light: colors.amber[600], dark: colors.amber[600] },
         disabled: { light: colors.slate[300], dark: colors.slate[500] },
-        dropdownBg: { 
+        dropdownBg: {
           light: colors.indigo[50],
-          hover: colors.indigo[100] 
+          hover: colors.indigo[100],
         },
         dropdownBorder: {
           light: colors.slate[300],
-          selected: colors.indigo[200]
+          selected: colors.indigo[200],
         },
         billable: {
           light: colors.green[700],
@@ -66,7 +66,7 @@ module.exports = {
         transparent: "transparent",
         white: colors.white,
         black: colors.black,
-        red: colors.red[600]
+        red: colors.red[600],
       },
       fontFamily: {
         sans: ["var(--font-font)", ...fontFamily.sans],

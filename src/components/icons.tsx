@@ -13,7 +13,7 @@ import {
   type Icon as LucideIcon,
 } from "lucide-react";
 
-import { CurrencyDollarIcon } from "@heroicons/react/24/solid"
+import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 
 export type Icon = LucideIcon;
 
