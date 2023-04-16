@@ -1,27 +1,20 @@
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/utils/api";
 import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TableUI from "@/components/ui/table";
 
 export default function Projects() {
-  const { isLoading, isInvalid, isReady, slug } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
   const showToast = useToast();
+  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
+  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTeam }, { enabled: isReady });
 
-  const currentTenant = slug;
-  const allSkillList = api.skill.getAllSkills.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const allSkillScores = api.skill.getAllSkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
-  const mySkillScores = api.skill.getMySkillsScores.useQuery({ tenant: currentTenant }, { enabled: isReady });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    getValues,
-  } = useForm({ shouldUseNativeValidation: true });
+  const { register, handleSubmit, reset, getValues } = useForm({ shouldUseNativeValidation: true });
 
   const onSubmit = (data: any) => {
     addSkill();
@@ -37,7 +30,7 @@ export default function Projects() {
   const addSkill = () => {
     const newSkill = createSkill.mutate({
       name: getValues("skill_name"),
-      slug: currentTenant,
+      slug: currentTeam,
     });
     return newSkill;
   };
@@ -49,34 +42,19 @@ export default function Projects() {
   if (isInvalid) {
     return <Unavailable />;
   }
+
+  const allSkillScoreDataColumns = ["user", "skill", "level"];
+  const mySkillsDataColumns = ["skill", "level"];
+  const skillListDataColumns = ["name"];
+
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
         <h2>My Skill Scores</h2>
-        <ul className="flex flex-col gap-4">
-          {mySkillScores.data &&
-            mySkillScores.data.map((mySkills) => (
-              <li
-                key={mySkills.id}
-                className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
-              >
-                {mySkills.skill} - {mySkills.level}
-              </li>
-            ))}
-        </ul>
-        <h3>All Skill Scores</h3>
-        <ul className="flex flex-col gap-4">
-          {allSkillScores.data &&
-            allSkillScores.data.map((skills) => (
-              <li
-                key={skills.id}
-                className="hover:bg-zinc/20 max-w-md rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
-              >
-                {skills.User.name}- {skills.Skill.name} - {skills.skillLevel}
-              </li>
-            ))}
-        </ul>
-        <h3>Skill list (all)</h3>
+        <TableUI rows={mySkillScores.data} columns={mySkillsDataColumns} />
+        <h2>All Skill Scores</h2>
+        <TableUI rows={allSkillScores.data} columns={allSkillScoreDataColumns} />
+        <h2>Skill list (all)</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             type="text"
@@ -91,15 +69,7 @@ export default function Projects() {
           </Button>
         </form>
         <ul className="flex flex-col gap-4">
-          {allSkillList.data &&
-            allSkillList.data.map((skills) => (
-              <li
-                key={skills.id}
-                className="hover:bg-zinc/20 max-w-xs rounded-xl bg-zinc-400/10 p-4 hover:bg-zinc-400/20"
-              >
-                {skills.name}
-              </li>
-            ))}
+          <TableUI rows={allSkillList.data} columns={skillListDataColumns} />
         </ul>
       </section>
     </div>

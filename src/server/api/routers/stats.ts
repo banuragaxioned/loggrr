@@ -26,14 +26,6 @@ export const statsRouter = createTRPCRouter({
           Project: { select: { id: true, name: true } },
         },
       });
-      type QuickStat = {
-        id: number;
-        Project: {
-          id: number;
-          name: string;
-        };
-        time: number;
-      };
 
       type MappedStat = {
         projectId: number;

@@ -1,4 +1,4 @@
-import { useValidateTenantAccess } from "@/hooks/useTenant";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Unavailable from "@/components/unavailable";
@@ -6,10 +6,10 @@ import { useRef } from "react";
 import { api } from "@/utils/api";
 
 export default function ManageProject() {
-  const { isLoading, isInvalid, isReady, slug, pid } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, currentTeam, pid } = useValidateTeamAccess();
 
   const { data: memberData, refetch: refetchMembers } = api.project.getMembers.useQuery(
-    { projectId: pid, slug: slug },
+    { projectId: pid, slug: currentTeam },
     { enabled: isReady }
   );
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Unavailable from "@/components/unavailable";
-import { useValidateTenantAccess } from "@/hooks/useTenant";
-import { QuickStatsWidget } from "@/components/quickStats";
+import { useValidateTeamAccess } from "@/hooks/useTeam";
+import { LoggedRatio, Insights, Metrics, QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
 import { api } from "@/utils/api";
 import { cleanDate } from "@/utils/helper";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 export default function Dashboard() {
-  const { isLoading, isInvalid, isReady, slug, path } = useValidateTenantAccess();
+  const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
 
   const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
@@ -17,13 +17,9 @@ export default function Dashboard() {
 
   const selectDate = cleanDate(getValues("date") ? new Date(getValues("date")) : new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
-    { slug: slug, date: selectDate },
+    { slug: currentTeam, date: selectDate },
     { enabled: isReady }
   );
-
-  // const projectList = api.project.getProjects.useQuery({ text: slug }, { enabled: isReady });
-  // const milestoneList = api.milestone.getMilestones.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
-  // const taskList = api.task.getTasks.useQuery({ pid: getValues("projectId") }, { enabled: isReady });
 
   const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);
 
@@ -39,7 +35,7 @@ export default function Dashboard() {
       projectId: +getValues("projectId"),
       milestoneId: +getValues("milestoneId"),
       taskId: +getValues("taskId"),
-      slug: slug,
+      slug: currentTeam,
       time: getValues("time"),
       billable: getValues("billable"),
       comments: getValues("comments"),
@@ -63,7 +59,7 @@ export default function Dashboard() {
           <Link href={path + "/assign"}>Assign</Link>
           <Link href={path + "/reports"}>Reports</Link>
           <Link href={path + "/billing"}>Billing</Link>
-          <Link href={path + "/settings"}>Settings</Link>
+          <Link href={path + "/manage"}>Manage</Link>
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
@@ -96,7 +92,10 @@ export default function Dashboard() {
           </ul>
         </span>
       </section>
-      <section className="hidden lg:block lg:basis-1/4">
+      <section className="hidden space-y-4 lg:block lg:basis-1/4">
+        <LoggedRatio />
+        <Metrics />
+        <Insights />
         <QuickStatsWidget />
       </section>
     </div>
