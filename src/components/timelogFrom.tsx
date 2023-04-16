@@ -4,7 +4,7 @@ import { Icons } from "../components/icons";
 import { Button } from "./ui/button";
 
 // static data
-import { clients } from "../utils/tempData";
+import { clients } from "../lib/tempData";
 
 import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
