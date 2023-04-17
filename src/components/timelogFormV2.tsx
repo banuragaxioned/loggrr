@@ -262,7 +262,7 @@ const TimeLogFormV2 = ({ formData, handleFormData }: Props) => {
             return (
               <div key={innerI}>
                 <Command.Item
-                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-slate-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-slate-900"
+                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
                   value={`${project?.clientName} / ${project?.projectName} / ${project?.milestoneName} / ${project?.taskName}`}
                   onSelect={() => isFocus && handleProjectSelect(project)}
                 >
