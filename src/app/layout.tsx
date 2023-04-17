@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(font.variable)}>
-      <body>
+      <body className="mx-auto min-h-screen max-w-6xl items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
         {children}
         <TailwindIndicator />
       </body>
@@ -54,20 +54,10 @@ export const metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    //   images: [
-    //     {
-    //       url: absoluteUrl("/og.jpg"),
-    //       width: 1200,
-    //       height: 630,
-    //       alt: siteConfig.name,
-    //     },
-    //   ],
-    // },
     twitter: {
       card: "summary_large_image",
       title: siteConfig.name,
       description: siteConfig.description,
-      // images: [`${siteConfig.url}/og.jpg`],
       creator: "@TeamAxioned",
     },
     icons: {
