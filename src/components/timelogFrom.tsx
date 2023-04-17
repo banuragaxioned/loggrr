@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Icons } from "../components/icons";
+import { Icons } from "@/components/icons";
 
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 // static data
 import { clients } from "../lib/tempData";

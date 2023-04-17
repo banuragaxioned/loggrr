@@ -7,7 +7,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
     "./src/stories/**/*.{js,ts,jsx,tsx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}", // <-- Add this line
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     // Path to the tremor module
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
@@ -70,7 +70,7 @@ module.exports = {
         red: colors.red[600],
       },
       fontFamily: {
-        sans: ["var(--font-bevietnampro)", ...fontFamily.sans],
+        sans: ["var(--font-font)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

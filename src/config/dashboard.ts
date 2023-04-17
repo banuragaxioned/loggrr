@@ -1,4 +1,6 @@
-export const dashboardConfig = {
+import { DashboardConfig } from "@/types"
+
+export const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
       title: "Documentation",

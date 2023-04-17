@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/helper";
+import { SidebarNavItem } from "@/types";
 
 import { Icons } from "@/components/icons";
 

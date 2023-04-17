@@ -2,12 +2,13 @@ import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 
 import "@/styles/globals.css";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { siteConfig } from "@/config/site";
 
 import { cn } from "@/lib/helper";
 
 const font = PrimaryFont({
   subsets: ["latin"],
-  variable: "--font-bevietnampro",
+  variable: "--font-font",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
@@ -29,6 +30,51 @@ export default function RootLayout({
 }
 
 export const metadata = {
-  title: "Home",
-  description: "Welcome to Next.js",
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: ["Loggr", "Time-tracking", "Productivity", "Time", "Billing"],
+  authors: [
+    {
+      name: "Axioned",
+      url: "https://axioned.com",
+    },
+  ],
+  creator: "Axioned",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    //   images: [
+    //     {
+    //       url: absoluteUrl("/og.jpg"),
+    //       width: 1200,
+    //       height: 630,
+    //       alt: siteConfig.name,
+    //     },
+    //   ],
+    // },
+    twitter: {
+      card: "summary_large_image",
+      title: siteConfig.name,
+      description: siteConfig.description,
+      // images: [`${siteConfig.url}/og.jpg`],
+      creator: "@TeamAxioned",
+    },
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon-16x16.png",
+      apple: "/apple-touch-icon.png",
+    },
+    manifest: `${siteConfig.url}/site.webmanifest`,
+  },
 };
