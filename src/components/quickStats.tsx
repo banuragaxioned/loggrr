@@ -1,5 +1,5 @@
 import * as React from "react";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { useRouter } from "next/router";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -174,14 +174,14 @@ export function Insights() {
             data={sales}
             index="date"
             categories={["today", "average"]}
-            colors={["indigo", "slate"]}
+            colors={["indigo", "zinc"]}
             showYAxis={false}
             showLegend={false}
             valueFormatter={valueFormatter}
             showAnimation={true}
           />
           <Flex justifyContent="end">
-            <Legend categories={["Today", "Peer average"]} colors={["indigo", "slate"]} className="mt-3 space-x-2" />
+            <Legend categories={["Today", "Peer average"]} colors={["indigo", "zinc"]} className="mt-3 space-x-2" />
           </Flex>
         </>
       ) : (
@@ -191,14 +191,14 @@ export function Insights() {
             data={sales}
             index="date"
             categories={["today", "lastweek"]}
-            colors={["indigo", "slate"]}
+            colors={["indigo", "zinc"]}
             showYAxis={false}
             showLegend={false}
             valueFormatter={valueFormatter}
             showAnimation={true}
           />
           <Flex justifyContent="end">
-            <Legend categories={["Today", "lastweek"]} colors={["indigo", "slate"]} className="mt-3" />
+            <Legend categories={["Today", "lastweek"]} colors={["indigo", "zinc"]} className="mt-3" />
           </Flex>
         </>
       )}

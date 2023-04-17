@@ -2,7 +2,7 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
