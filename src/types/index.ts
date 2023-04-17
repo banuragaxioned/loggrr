@@ -1,4 +1,4 @@
-type Allocations = {
+export type Allocations = {
   id: number;
   date: string;
   billable: number;
@@ -6,7 +6,7 @@ type Allocations = {
   total: number;
 };
 
-type Projects = {
+export type Projects = {
   id: number;
   name: string;
   total: number;
@@ -14,13 +14,13 @@ type Projects = {
   dates: Allocations[];
 };
 
-type UserProfile = {
+export type UserProfile = {
   name: string;
   id: number;
   avatar: string;
 };
 
-type AllocationReport = {
+export type AllocationReport = {
   User: UserProfile & {
     Projects: Projects[];
     totalHours: number;
