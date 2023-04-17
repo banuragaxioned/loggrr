@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Icons } from "./icons";
+import { Icons } from "@/components/icons";
 
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 // static data
 import { clients } from "../utils/tempData";
 
 import { Command } from "cmdk";
-import Dropdown from "./ui/combobox";
-import { Toggle } from "./ui/toggle";
+import Dropdown from "@/components/ui/combobox";
+import { Toggle } from "@/components/ui/toggle";
 
 type FormData = {
   project: string | undefined;
@@ -22,7 +22,7 @@ type Props = {
   handleFormData: (data: FormData) => void;
 };
 
-const TimeLogFormv2 = ({ formData, handleFormData }: Props) => {
+const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
@@ -547,4 +547,4 @@ const TimeLogFormv2 = ({ formData, handleFormData }: Props) => {
   );
 };
 
-export default TimeLogFormv2;
+export default TimeLogForm;
