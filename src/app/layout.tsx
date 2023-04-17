@@ -8,7 +8,7 @@ import { cn } from "@/lib/helper";
 
 const font = PrimaryFont({
   subsets: ["latin"],
-  variable: "--font-font",
+  variable: "--font-primary",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(font.variable)}>
-      <body className="mx-auto min-h-screen max-w-6xl items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
+      <body className="min-h-screen items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
         {children}
         <TailwindIndicator />
       </body>
@@ -47,24 +47,4 @@ export const metadata = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-    twitter: {
-      card: "summary_large_image",
-      title: siteConfig.name,
-      description: siteConfig.description,
-      creator: "@TeamAxioned",
-    },
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon-16x16.png",
-      apple: "/apple-touch-icon.png",
-    },
-    manifest: `${siteConfig.url}/site.webmanifest`,
-  },
 };

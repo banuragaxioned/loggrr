@@ -61,7 +61,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={`border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-[calc(100%+2px)] -translate-x-1/2 overflow-y-auto rounded-b-[5px] border border-borderColor-light bg-white px-[10px] py-[7px] text-content-light shadow-md transition-all duration-200 ease-out dark:border-borderColor-dark dark:bg-transparent ${className}`}
+    className={`border-box ComboBox-scrollbar -tranzinc-x-1/2 absolute left-1/2 top-full max-h-[240px] w-[calc(100%+2px)] overflow-y-auto rounded-b-[5px] border border-borderColor-light bg-white px-[10px] py-[7px] text-content-light shadow-md transition-all duration-200 ease-out dark:border-borderColor-dark dark:bg-transparent ${className}`}
     {...props}
   />
 ));
@@ -94,7 +94,7 @@ const CommandItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.Item
     ref={ref}
-    className={`w-full cursor-pointer rounded px-[14px] py-2 text-[#374151] aria-selected:bg-indigo-50 aria-selected:text-slate-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900 ${className}`}
+    className={`w-full cursor-pointer rounded px-[14px] py-2 text-[#374151] aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900 ${className}`}
     {...props}
   />
 ));
