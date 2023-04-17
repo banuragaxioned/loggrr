@@ -7,16 +7,7 @@ import { api } from "@/lib/api";
 import { cleanDate } from "@/lib/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import TimeLogFormV2 from "@/components/timelogFormV2";
-
-type FormData = {
-  project: string | undefined;
-  milestone: string | undefined;
-  task: string | undefined;
-  loggedHours: number | undefined;
-  isBillable: boolean;
-};
+import { TimeLogFormV2 } from "@/components/timelogFormV2";
 
 export default function Dashboard() {
   const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
@@ -24,12 +15,6 @@ export default function Dashboard() {
   const { register, getValues } = useForm({
     shouldUseNativeValidation: true,
   });
-
-  // Reafactor (START)
-
-  const [formObj, setFormObj] = useState<FormData | undefined>();
-
-  // Refactor (END)
 
   const selectDate = cleanDate(getValues("date") ? new Date(getValues("date")) : new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
@@ -96,8 +81,7 @@ export default function Dashboard() {
             </Button>
           </form>
         </div>
-        <TimeLogFormV2 formData={formObj} handleFormData={setFormObj} />
-
+        <TimeLogFormV2 />
         <span>
           <h3>Your time log</h3>
           <ul>
