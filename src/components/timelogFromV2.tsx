@@ -22,7 +22,7 @@ type Props = {
   handleFormData: (data: FormData) => void;
 };
 
-const TimeLogForm = ({ formData, handleFormData }: Props) => {
+const TimeLogFormv2 = ({ formData, handleFormData }: Props) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
