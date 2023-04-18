@@ -49,7 +49,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
           </nav>
         </div>
       </header>
-      <div>{children}</div>
+      <div className="container mx-auto w-full items-center p-4">{children}</div>
     </>
   );
 }
