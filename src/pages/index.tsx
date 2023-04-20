@@ -3,17 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { api } from "@/utils/api";
-import TimeLogFormV2 from "@/components/timelogFormV2";
+import { api } from "@/lib/api";
 import { useState } from "react";
-
-type FormData = {
-  project: string | undefined;
-  milestone: string | undefined;
-  task: string | undefined;
-  loggedHours: number | undefined;
-  isBillable: boolean;
-};
 
 const Home: NextPage = () => {
   return (
@@ -51,12 +42,6 @@ const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
   const { data: myTeamData } = api.tenant.myTeams.useQuery();
 
-  // Reafactor (START)
-
-  const [formObj, setFormObj] = useState<FormData | undefined>();
-
-  // Refactor (END)
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       {myTeamData && (
@@ -86,7 +71,6 @@ const AuthShowcase: React.FC = () => {
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
-      <TimeLogFormV2 formData={formObj} handleFormData={setFormObj} />
     </div>
   );
 };

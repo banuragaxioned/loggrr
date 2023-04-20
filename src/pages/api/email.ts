@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { render } from "@react-email/render";
 import WelcomeTemplate from "@/emails/welcomeTemplate";
-import { sendEmail } from "@/utils/email";
+import { sendEmail } from "@/lib/email";
 import VercelInviteUserEmail from "@/emails/userInvite";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

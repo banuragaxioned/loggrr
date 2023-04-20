@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 
 export function useValidateTeamAccess() {
   const { status } = useSession();

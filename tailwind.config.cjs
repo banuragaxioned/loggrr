@@ -13,11 +13,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: { light: colors.slate[50], dark: colors.slate[800] },
+        background: { light: colors.zinc[50], dark: colors.zinc[800] },
         backgroundHover: { light: colors.indigo[100] },
-        "background-alternate": { light: colors.slate[300], dark: colors.slate[600] },
-        content: { light: colors.slate[700], dark: colors.slate[50] },
-        info: { light: colors.slate[500], dark: colors.slate[100] },
+        "background-alternate": { light: colors.zinc[300], dark: colors.zinc[600] },
+        content: { light: colors.zinc[700], dark: colors.zinc[50] },
+        info: { light: colors.zinc[500], dark: colors.zinc[100] },
         brand: {
           light: colors.indigo[600],
           dark: colors.indigo[600],
@@ -37,13 +37,13 @@ module.exports = {
           "hover-dark": colors.emerald[500],
         },
         warning: { light: colors.amber[600], dark: colors.amber[600] },
-        disabled: { light: colors.slate[300], dark: colors.slate[500] },
+        disabled: { light: colors.zinc[300], dark: colors.zinc[500] },
         dropdownBg: {
           light: colors.indigo[50],
           hover: colors.indigo[100],
         },
         dropdownBorder: {
-          light: colors.slate[300],
+          light: colors.zinc[300],
           selected: colors.indigo[200],
         },
         billable: {
@@ -53,13 +53,13 @@ module.exports = {
           "hover-dark": colors.green[400],
         },
         nonbillable: {
-          light: colors.slate[300],
-          dark: colors.slate[400],
-          "hover-light": colors.slate[500],
-          "hover-dark": colors.slate[300],
+          light: colors.zinc[300],
+          dark: colors.zinc[400],
+          "hover-light": colors.zinc[500],
+          "hover-dark": colors.zinc[300],
         },
         ctaBorder: { light: colors.indigo[600], dark: colors.indigo[600] },
-        borderColor: { light: colors.slate[400], dark: colors.zinc[700] },
+        borderColor: { light: colors.zinc[400], dark: colors.zinc[700] },
         focusColor: { one: colors.blue[500], two: colors.blue[300] },
         labelBackground: { light: colors.indigo[100] },
         labelContent: { light: colors.indigo[700] },

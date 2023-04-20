@@ -3,10 +3,11 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { LoggedRatio, Insights, Metrics, QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
-import { api } from "@/utils/api";
-import { cleanDate } from "@/utils/helper";
+import { api } from "@/lib/api";
+import { cleanDate } from "@/lib/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { TimeLogFormV2 } from "@/components/timelogFormV2";
 
 export default function Dashboard() {
   const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
@@ -80,6 +81,7 @@ export default function Dashboard() {
             </Button>
           </form>
         </div>
+        <TimeLogFormV2 />
         <span>
           <h3>Your time log</h3>
           <ul>

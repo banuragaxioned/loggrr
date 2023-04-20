@@ -17,21 +17,25 @@ export const projectRouter = createTRPCRouter({
         interval: true,
         Client: { select: { id: true, name: true } },
         Owner: { select: { id: true, name: true, image: true } },
+        Members: { select: { id: true } },
         status: true,
+        Milestone: { select: { id: true, name: true } },
+        Task: { select: { id: true, name: true } },
       },
     });
 
-    const projects = response.map((list) => {
+    const projects = response.map((project) => {
       return {
-        id: list.id,
-        name: list.name,
-        startdate: list.startdate.toLocaleDateString(),
-        enddate: list.enddate?.toLocaleDateString(),
-        billable: list.billable,
-        interval: list.interval,
-        client: list.Client.name,
-        owner: list.Owner.name,
-        status: list.status,
+        id: project.id,
+        name: project.name,
+        startdate: project.startdate.toLocaleDateString(),
+        enddate: project.enddate?.toLocaleDateString(),
+        billable: project.billable,
+        interval: project.interval,
+        client: project.Client.name,
+        owner: project.Owner.name,
+        status: project.status,
+        myProject: project.Members.some((member) => member.id === ctx.session.user.id),
       };
     });
     return projects;

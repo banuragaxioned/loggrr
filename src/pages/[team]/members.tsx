@@ -1,7 +1,7 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
-import { api } from "@/utils/api";
-import { getInitials } from "@/utils/helper";
+import { api } from "@/lib/api";
+import { getInitials } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
