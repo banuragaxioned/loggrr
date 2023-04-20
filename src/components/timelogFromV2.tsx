@@ -547,4 +547,4 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
   );
 };
 
-export default TimeLogFormv2;
+export default TimeLogForm;
