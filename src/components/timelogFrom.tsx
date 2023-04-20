@@ -63,9 +63,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const [activeDropdown, setActiveDropDown] = useState<any>();
-  const [projectErr, setProjectErr] = useState<boolean>(false);
-  const [milestoneErr, setMilestoneErr] = useState<boolean>(false);
-  const [taskErr, setTaskErr] = useState<boolean>(false);
   const [timeErr, setTimeErr] = useState<boolean>(false);
 
   const userId = 12;
@@ -227,18 +224,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
   }, [selectedProject, selectedMilestone, selectedTask]);
 
   useEffect(() => {
-    setProjectErr((prev: boolean) => prev && !!selectedProject);
-  }, [selectedProject]);
-
-  useEffect(() => {
-    setMilestoneErr((prev: boolean) => prev && !!selectedMilestone);
-  }, [selectedMilestone]);
-
-  useEffect(() => {
-    setTaskErr((prev: boolean) => prev && !!selectedTask);
-  }, [selectedTask]);
-
-  useEffect(() => {
     if (filledData) {
       setClear(
         (filledData?.projectName ||
@@ -310,15 +295,10 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const handleSubmit = (e: any) => {
     if (!isFocus) {
       e.preventDefault();
-      setProjectErr(filledData?.projectName?.length === 0);
-      setMilestoneErr(filledData?.milestoneName?.length === 0);
-      setTaskErr(filledData?.taskName?.length === 0);
       setTimeErr(filledData?.timeLogged.length === 0);
 
       if (canSubmit) {
-        if (timeLogged.indexOf(":") === -1) {
-          if (parseInt(timeLogged, 10) <= 12) setTimeLogged(timeLogged);
-        } else if (timeLogged.indexOf(":") === 1) {
+       if (timeLogged.indexOf(":") === 1) {
           const decimalResult = hoursToDecimal(timeLogged);
           if (decimalResult <= 12) setTimeLogged(decimalResult.toString());
         }
@@ -337,10 +317,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
 
   const handleTimeLogCancel = () => {
     if (canClear) {
-      setTimeErr(false);
-      setProjectErr(false);
-      setMilestoneErr(false);
-      setTaskErr(false);
       handleClearForm();
     }
   };
