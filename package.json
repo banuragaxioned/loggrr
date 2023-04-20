@@ -47,7 +47,7 @@
     "class-variance-authority": "^0.5.2",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
-    "lucide-react": "^0.160.0",
+    "lucide-react": "^0.166.0",
     "next": "13.2.4",
     "next-auth": "^4.22.0",
     "next-themes": "^0.2.1",
