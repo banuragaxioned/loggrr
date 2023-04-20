@@ -80,6 +80,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     clients.forEach((client) => {
       const clientInfo = { id: client.clientId, title: client.clientName };
       client.projects.forEach((project) => {
+        const id = project.id
         const projectInfo = { id: project.id, title: project.title };
         const membersId = project?.members?.map((x) => x.id);
         project.milestone.forEach((mlt) => {
@@ -88,6 +89,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             if (task.milestoneId === mlt.id) {
               const taskInfo = { id: task.id, title: task.title };
               const projectDetails = {
+                id,
                 clientInfo,
                 projectInfo,
                 milestoneInfo,
@@ -107,13 +109,14 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     let tempRecentlyUsedArr: Array<any> = [];
     allProjects?.map((arr: any, i: number) => {
       const projectDetails = {
+        id: arr.id,
         client: arr.clientInfo,
         project: arr.projectInfo,
         milestone: arr.milestoneInfo,
         task: arr.taskInfo,
       };
 
-      if (i < 3) tempRecentlyUsedArr.push(projectDetails);
+      if (i < 3) tempRecentlyUsedArr.push({projectDetails, id: i});
 
       const isMember = arr?.membersId?.findIndex((x: any) => x === userId) !== -1;
       if (isMember) {
@@ -156,14 +159,17 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     setProjectArr([
       {
         projectType: "My Project",
-        projectList: myProject,
+        projectList: tempMyProjectList,
       },
       {
         projectType: "Org Wide Project",
-        projectList: orgProject,
+        projectList: tempOrgWideProjectList,
       },
     ]);
   }, [myProject, orgProject]);
+
+  console.log(projectArr)
+  console.log(projectList)
 
   useEffect(() => {
     clients?.map((client: any) => {
@@ -252,6 +258,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
   };
 
   const renderGroup = (arr: renderGroupProps) => {
+    console.log(arr)
     return arr?.map((x: ProjectProps, i: number) => {
       return (
         <Command.Group

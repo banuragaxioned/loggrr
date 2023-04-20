@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import TimeLogForm from "@/components/timelogFrom";
 
 type FormData = {
-  project: string | undefined;
-  milestone: string | undefined;
-  task: string | undefined;
+  projectId: number | undefined;
+  milestoneId: number | undefined;
+  taskId: number | undefined;
   loggedHours: number | undefined;
   isBillable: boolean;
+  comment: string | undefined
 };
 
 export const Timelog = () => {
