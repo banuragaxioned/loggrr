@@ -17,10 +17,10 @@ module.exports = {
         backgroundHover: { light: colors.indigo[100] },
         "background-alternate": { light: colors.slate[300], dark: colors.slate[600] },
         content: { light: colors.slate[700], dark: colors.slate[50] },
-        info: { light: colors.slate[500], dark: colors.slate[100] },
+        info: { light: colors.slate[500], dark: colors.zinc[100] },
         brand: {
           light: colors.indigo[600],
-          dark: colors.indigo[600],
+          dark: colors.zinc[100],
           "hover-light": colors.indigo[700],
           "hover-dark": colors.indigo[500],
         },
