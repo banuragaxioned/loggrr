@@ -1,4 +1,5 @@
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { Tenant } from "@prisma/client";
 
 export type Allocations = {
   id: number;
@@ -30,41 +31,52 @@ export type AllocationReport = {
   };
 };
 
-
 export type NavLink = {
-  title: string
-  href: string
-  disabled?: boolean
-  external?: boolean
-  icon?: keyof typeof Icons
-}
+  title: string;
+  href: string;
+  disabled?: boolean;
+  external?: boolean;
+  icon?: keyof typeof Icons;
+};
 
 export type DashboardConfig = {
-  mainNav: MainNavItem[]
-  sidebarTeam: SidebarNavItem[]
-  sidebarProjects: SidebarNavItem[]
-}
+  mainNav: MainNavItem[];
+  sidebarTeam: SidebarNavItem[];
+  sidebarProjects: SidebarNavItem[];
+};
 
 export type NavItem = {
-  title: string
-  href: string
-  disabled?: boolean
-}
+  title: string;
+  href: string;
+  disabled?: boolean;
+};
 
-export type MainNavItem = NavItem
+export type MainNavItem = NavItem;
 
 export type SidebarNavItem = {
-  title: string
-  disabled?: boolean
-  external?: boolean
-  icon?: keyof typeof Icons
+  title: string;
+  disabled?: boolean;
+  external?: boolean;
+  icon?: keyof typeof Icons;
 } & (
   | {
-      href: string
-      items?: never
+      href: string;
+      items?: never;
     }
   | {
-      href?: string
-      items: NavLink[]
+      href?: string;
+      items: NavLink[];
     }
-)
+);
+
+export type SubscriptionPlan = {
+  name: string;
+  description: string;
+  stripePriceId: string;
+};
+
+export type UserSubscriptionPlan = SubscriptionPlan &
+  Pick<Tenant, "stripeCustomerId" | "stripeSubscriptionId"> & {
+    stripeCurrentPeriodEnd: number;
+    isPro: boolean;
+  };

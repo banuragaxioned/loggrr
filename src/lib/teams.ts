@@ -4,10 +4,8 @@ export async function getUserTeamList() {
   const { data: myTeamData } = api.tenant.myTeams.useQuery();
 
   if (!myTeamData) {
-    throw new Error("No team data found")
+    throw new Error("No team data found");
   }
 
-  return (
-    myTeamData
-  );
+  return myTeamData;
 }
