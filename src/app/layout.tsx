@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 import "@/styles/globals.css";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { siteConfig } from "@/config/site";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import { cn } from "@/lib/helper";
 
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(font.variable)}>
       <body className="min-h-screen items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
         <TailwindIndicator />
       </body>
     </html>
