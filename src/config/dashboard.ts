@@ -36,6 +36,16 @@ export const dashboardConfig: DashboardConfig = {
   ],
   sidebarTeam: [
     {
+      title: "Clients",
+      href: "/clients",
+      icon: "post",
+    },
+    {
+      title: "Projects",
+      href: "/projects",
+      icon: "post",
+    },
+    {
       title: "Billing",
       href: "/billing",
       icon: "billing",
