@@ -24,7 +24,7 @@ export default async function DashboardPage() {
             {user?.tenants.map((team) => (
               <Link
                 className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
-                href={team.slug}
+                href={"launchpad/" + team.slug}
                 key={team.id}
               >
                 <h3>{team.name}</h3>
