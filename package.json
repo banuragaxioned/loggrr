@@ -54,7 +54,7 @@
     "nodemailer": "^6.9.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-email": "1.9.1",
+    "react-email": "1.9.3",
     "react-hook-form": "^7.43.9",
     "react-hot-toast": "^2.4.0",
     "superjson": "1.12.3",
