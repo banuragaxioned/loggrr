@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     <>
       <div className="container grid gap-12 md:grid-cols-[200px_1fr]">
         <aside className="hidden w-[200px] flex-col md:flex">
-          <DashboardNav items={dashboardConfig.sidebarNav} />
+          <DashboardNav items={dashboardConfig.sidebarTeam} />
         </aside>
         <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
       </div>

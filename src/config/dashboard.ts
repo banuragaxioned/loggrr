@@ -12,20 +12,42 @@ export const dashboardConfig: DashboardConfig = {
       disabled: true,
     },
   ],
-  sidebarNav: [
+  sidebarProjects: [
     {
-      title: "Posts",
-      href: "/dashboard",
+      title: "Milestones",
+      href: "/milestones",
       icon: "post",
     },
     {
-      title: "Billing",
-      href: "/dashboard/billing",
+      title: "Tasks",
+      href: "/tasks",
       icon: "billing",
     },
     {
+      title: "Members",
+      href: "/members",
+      icon: "user",
+    },
+    {
       title: "Settings",
-      href: "/dashboard/settings",
+      href: "/settings",
+      icon: "settings",
+    },
+  ],
+  sidebarTeam: [
+    {
+      title: "Billing",
+      href: "/billing",
+      icon: "billing",
+    },
+    {
+      title: "Profile",
+      href: "/profile",
+      icon: "user",
+    },
+    {
+      title: "Settings",
+      href: "/settings",
       icon: "settings",
     },
   ],

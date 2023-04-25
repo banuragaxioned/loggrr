@@ -41,7 +41,8 @@ export type NavLink = {
 
 export type DashboardConfig = {
   mainNav: MainNavItem[]
-  sidebarNav: SidebarNavItem[]
+  sidebarTeam: SidebarNavItem[]
+  sidebarProjects: SidebarNavItem[]
 }
 
 export type NavItem = {
