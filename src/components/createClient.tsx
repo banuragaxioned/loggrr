@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import useToast from "@/hooks/useToast";
 
 export default function CreateClient() {

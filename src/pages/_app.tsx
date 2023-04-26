@@ -9,10 +9,11 @@ import { Toaster } from "react-hot-toast";
 // If loading a variable font, you don't need to specify the font weight
 const font = Be_Vietnam_Pro({
   subsets: ["latin"],
-  variable: "--font-bevietnampro",
+  variable: "--font-primary",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import { api } from "@/utils/api";
+
+import { api } from "@/lib/api";
 
 import "@/styles/globals.css";
 import { Layout } from "@/components/layout";

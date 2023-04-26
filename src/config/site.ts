@@ -8,6 +8,7 @@ interface SiteConfig {
   name: string;
   description: string;
   mainNav: NavItem[];
+  url: string;
   links: {
     help: string;
   };
@@ -22,6 +23,7 @@ interface ReportingConfig {
 export const siteConfig: SiteConfig = {
   name: "Loggr",
   description: "Beautifully designed components built with Radix UI and Tailwind CSS.",
+  url: "https://loggr-app.vercel.app",
   mainNav: [
     // {
     //   title: "Home",

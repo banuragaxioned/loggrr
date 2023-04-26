@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Unavailable from "@/components/unavailable";
 import { useRef } from "react";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 
 export default function ManageProject() {
   const { isLoading, isInvalid, isReady, currentTeam, pid } = useValidateTeamAccess();
