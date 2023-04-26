@@ -27,3 +27,13 @@ type AllocationReport = {
     averageHours: number;
   };
 };
+
+type AllocationDates = {
+  [date: string]: {
+    id: number;
+    billableTime: number;
+    nonBillableTime: number;
+    totalHours: number;
+    updatedAt: Date;
+  }
+}
