@@ -5,8 +5,6 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 
-import { cn } from "@/lib/helper";
-
 const font = PrimaryFont({
   subsets: ["latin"],
   variable: "--font-primary",
@@ -21,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(font.variable)}>
+    <html lang="en" className={`${font.variable}`}>
       <body className="min-h-screen items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
