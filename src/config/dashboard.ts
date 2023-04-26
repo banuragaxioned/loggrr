@@ -29,8 +29,8 @@ export const dashboardConfig: DashboardConfig = {
       icon: "user",
     },
     {
-      title: "Settings",
-      href: "/settings",
+      title: "Manage",
+      href: "/manage",
       icon: "settings",
     },
   ],
