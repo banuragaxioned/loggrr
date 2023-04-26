@@ -7,11 +7,12 @@ import { api } from "@/utils/api";
 import { cleanDate } from "@/utils/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { DefaultCombobox, GroupedCombobox, SearchableCombobox } from "@/stories/combobox.stories";
 
 export default function Dashboard() {
   const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
 
-  const { register, getValues } = useForm({
+  const { register, getValues, handleSubmit } = useForm({
     shouldUseNativeValidation: true,
   });
 
@@ -21,7 +22,7 @@ export default function Dashboard() {
     { enabled: isReady }
   );
 
-  const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);
+  const onTimeEntrySubmit = (data: any) => console.log({data});
 
   const addTimeEntry = api.timelog.addTimelog.useMutation({
     onSuccess: (data) => {
@@ -63,8 +64,12 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
+        {/* <SelectList /> */}
+        <DefaultCombobox />
+        <GroupedCombobox />
+        <SearchableCombobox />
         <div className="todo">
-          <form onSubmit={onTimeEntrySubmit} className="grid grid-cols-4">
+          <form onSubmit={handleSubmit(onTimeEntrySubmit)} className="grid grid-cols-4">
             <Input type="date" {...register("date")} defaultValue={""} required />
             <Input type="number" placeholder="projectId" {...register("projectId")} required />
             <Input type="number" placeholder="milestoneId" {...register("milestoneId")} required />

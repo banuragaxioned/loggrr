@@ -1,51 +1,169 @@
 import React, { useState } from "react";
-import ComboBox from "../components/ui/combobox";
 import { FolderIcon } from "lucide-react";
+import ComboBox from "@/components/ui/combobox-2";
 
-const options: any = [
+interface ISelectedValue {
+  id: number;
+  name: string;
+  value: string;
+  count: number;
+}
+
+interface IGroupList {
+  id: number;
+  groupName: string;
+  list: ISelectedValue[];
+}
+
+const list: ISelectedValue[] = [
   {
-    group: ["Design Trends", "Design Trends 2022", "Design Trends 2023"],
-    groupHeading: "My Projects",
+    id: 1,
+    name: "My Projects",
+    value: "my_projects",
+    count: 5,
   },
   {
-    group: ["Loggr", "Gamification", "Apex"],
-    groupHeading: "Org Wide Projects",
+    id: 2,
+    name: "Active Projects",
+    value: "active_projects",
+    count: 4,
+  },
+  {
+    id: 3,
+    name: "Client Projects",
+    value: "client_projects",
+    count: 1,
+  },
+  {
+    id: 4,
+    name: "Archived Projects",
+    value: "archived_projects",
+    count: 3,
+  },
+  {
+    id: 1,
+    name: "My Projects",
+    value: "my_projects",
+    count: 5,
+  },
+  {
+    id: 2,
+    name: "Active Projects",
+    value: "active_projects",
+    count: 4,
+  },
+  {
+    id: 3,
+    name: "Client Projects",
+    value: "client_projects",
+    count: 1,
+  },
+  {
+    id: 4,
+    name: "Archived Projects",
+    value: "archived_projects",
+    count: 3,
+  },
+  {
+    id: 1,
+    name: "My Projects",
+    value: "my_projects",
+    count: 5,
+  },
+  {
+    id: 2,
+    name: "Active Projects",
+    value: "active_projects",
+    count: 4,
+  },
+  {
+    id: 3,
+    name: "Client Projects",
+    value: "client_projects",
+    count: 1,
+  },
+  {
+    id: 4,
+    name: "Archived Projects",
+    value: "archived_projects",
+    count: 3,
   },
 ];
 
-export const DefaultComboBox = () => {
-  const [selected, setSelected] = useState<string | undefined>();
-  return <ComboBox options={options} onSelected={() => setSelected(options)} label={selected || "ComboBox"} />;
-};
+export const DefaultCombobox = () => {
+  const [selected, setSelected] = useState<ISelectedValue>();
+  const [defaultList, setDefaultList] = useState<ISelectedValue[]>(list);
 
-export const GroupComboBox = () => {
-  const [selected, setSelected] = useState<string | undefined>();
-  return <ComboBox options={options} group onSelected={() => setSelected(options)} label={selected || "ComboBox"} />;
-};
+  const handleSelect = (val: string) => {
+    const selectedObj = defaultList.find((item: any) => item.value === val);
+    console.log(defaultList, { selectedObj });
+    setSelected(selectedObj);
+  };
 
-export const ComboBoxWithIcon = () => {
-  const [selected, setSelected] = useState<string | undefined>();
   return (
     <ComboBox
       icon={<FolderIcon className={`h-4 w-4`} />}
-      group
-      options={options}
-      onSelected={() => setSelected(options)}
-      label={selected || "ComboBox"}
+      options={defaultList}
+      label={selected?.name || "DefaultCombobox"}
+      selectedItem={selected?.name}
+      handleSelect={handleSelect}
     />
   );
 };
 
-export const SearchableComboBox = () => {
-  const [selected, setSelected] = useState<string | undefined>();
+const groupedlist: IGroupList[] = [
+  {
+    id: 1,
+    groupName: "Project",
+    list: list,
+  },
+  {
+    id: 2,
+    groupName: "Project 2",
+    list: list,
+  },
+];
+
+export const GroupedCombobox = () => {
+  const [selected, setSelected] = useState<ISelectedValue>();
+  const [groupList, setGroupList] = useState<IGroupList[]>(groupedlist);
+
+  const handleGroupSelect = (val: string, grpName: string) => {
+    const selectedGrp = groupList.find((group: IGroupList) => group.groupName === grpName);
+    const selectedObj = selectedGrp && selectedGrp.list.find((item: ISelectedValue) => item.value === val);
+    selectedObj && setSelected(selectedObj);
+  };
+
   return (
     <ComboBox
       icon={<FolderIcon className={`h-4 w-4`} />}
       group
+      options={groupList}
+      label={selected?.name || "GroupedCombobox"}
+      selectedItem={selected?.name}
+      handleGroupSelect={handleGroupSelect}
+    />
+  );
+};
+
+export const SearchableCombobox = () => {
+  const [selected, setSelected] = useState<ISelectedValue>();
+  const [defaultList, setDefaultList] = useState<ISelectedValue[]>(list);
+
+  const handleSelect = (val: string) => {
+    const selectedObj = defaultList.find((item: any) => item.value === val);
+    setSelected(selectedObj);
+  };
+
+  return (
+    <ComboBox
+      icon={<FolderIcon className={`h-4 w-4`} />}
       searchable
-      options={options}
-      onSelected={() => setSelected(options)}
-      label={selected || "ComboBox"}
+      options={defaultList}
+      label={selected?.name || "SearchableCombobox"}
+      placeholder={"Search..."}
+      selectedItem={selected?.name}
+      handleSelect={handleSelect}
     />
   );
 };
