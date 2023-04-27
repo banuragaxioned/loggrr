@@ -42,6 +42,38 @@ module.exports = {
           light: colors.indigo[50],
           hover: colors.indigo[100],
         },
+        muted: {
+          light: colors.slate[100],
+          dark: colors.slate[900],
+        },
+        "muted-foreground": {
+          light: colors.slate[500],
+          dark: colors.indigo[200]
+        },
+        accent: {
+          light: colors.slate[100],
+          dark: colors.slate[900],
+        },
+        "accent-foreground": {
+          light: colors.slate[900],
+          dark: colors.slate[50]
+        },
+        primary: {
+          light: colors.slate[900],
+          dark: colors.slate[50]
+        },
+        "primary-foreground": {
+          light: colors.slate[50],
+          dark: colors.slate[900]
+        },
+        popover: {
+          light: colors.white,
+          dark: colors.slate[950]
+        },
+        "popover-foreground": {
+          light: colors.slate[900],
+          dark: colors.slate[400]
+        },
         dropdownBorder: {
           light: colors.slate[300],
           selected: colors.indigo[200],
