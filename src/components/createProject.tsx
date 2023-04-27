@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { ProjectInterval } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import useToast from "@/hooks/useToast";

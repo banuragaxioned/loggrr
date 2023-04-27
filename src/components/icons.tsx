@@ -10,7 +10,11 @@ import {
   List,
   MessageSquare,
   User,
+  ArrowRight,
   type Icon as LucideIcon,
+  Settings,
+  CreditCard,
+  FileText,
 } from "lucide-react";
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
@@ -30,4 +34,8 @@ export const Icons = {
   comment: MessageSquare,
   dollar: CurrencyDollarIcon,
   user: User,
+  arrowRight: ArrowRight,
+  settings: Settings,
+  billing: CreditCard,
+  post: FileText,
 };

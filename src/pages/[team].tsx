@@ -3,8 +3,8 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { LoggedRatio, Insights, Metrics, QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
-import { api } from "@/utils/api";
-import { cleanDate } from "@/utils/helper";
+import { api } from "@/lib/api";
+import { cleanDate } from "@/lib/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 

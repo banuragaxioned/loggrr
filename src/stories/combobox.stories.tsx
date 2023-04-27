@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FolderIcon } from "lucide-react";
-import ComboBox from "@/components/ui/combobox-2";
+import ComboBox from "@/components/ui/combobox";
 
 interface ISelectedValue {
   id: number;

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import useToast from "@/hooks/useToast";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { AllocationFrequency } from "@prisma/client";
 import { useForm } from "react-hook-form";
 

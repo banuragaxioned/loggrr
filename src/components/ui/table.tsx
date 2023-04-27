@@ -1,5 +1,8 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { clients } from "@/lib/tempData";
 
 const TableUI = (props: any) => {
   const [columns, setColumns] = useState([]);
