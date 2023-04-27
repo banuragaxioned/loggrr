@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Icons } from "../components/icons";
+import { Icons } from "@/components/icons";
 
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 // static data
-import { clients } from "../utils/tempData";
+import { clients } from "../lib/tempData";
 
 import { Command } from "cmdk";
 import Dropdown from "./ui/combobox";
@@ -262,7 +262,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             return (
               <div key={innerI}>
                 <Command.Item
-                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-slate-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-slate-900"
+                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
                   value={`${project?.clientName} / ${project?.projectName} / ${project?.milestoneName} / ${project?.taskName}`}
                   onSelect={() => isFocus && handleProjectSelect(project)}
                 >

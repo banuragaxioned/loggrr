@@ -1,6 +1,6 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 
 export default function GlobalReportsAssigned() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();

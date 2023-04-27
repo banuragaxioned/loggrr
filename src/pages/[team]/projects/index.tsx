@@ -1,6 +1,6 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";

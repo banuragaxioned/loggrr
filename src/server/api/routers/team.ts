@@ -1,4 +1,4 @@
-import { Status } from '@prisma/client';
+import { Status } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -12,13 +12,13 @@ export const teamRouter = createTRPCRouter({
       where: {
         Users: { some: { id: userId } },
         status: Status.PUBLISHED,
-        },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
-        orderBy: { name: "asc" },
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+      orderBy: { name: "asc" },
     });
     return teams;
   }),

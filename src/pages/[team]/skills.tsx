@@ -1,6 +1,6 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";

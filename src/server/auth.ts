@@ -20,7 +20,6 @@ declare module "next-auth" {
       id: number;
       timezone: string;
       tenants: { id: number; name: string; slug: string; role: Role }[];
-      // tenants: Pick<Tenant, "id" | "name" | "slug" | "user.role">[];
     } & DefaultSession["user"];
   }
 }

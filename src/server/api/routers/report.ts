@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { cleanDate } from "@/utils/helper";
+import { cleanDate } from "@/lib/helper";
 
 export const reportRouter = createTRPCRouter({
   // Get all time log entries for the current tenant, with optional filters
