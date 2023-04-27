@@ -30,7 +30,7 @@ export const CalendarDatePicker = () => {
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -65,8 +65,8 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              "w-[280px] justify-start text-left font-normal",
+              !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -110,8 +110,8 @@ export const CalendarRelativeDatePicker = ({
   const currentDate = new Date()
 
   return (
-    <div className={cn("flex border border-zinc-300 w-2/3 rounded-md", className)}>
-      <div className={cn("flex basis-2/3 items-center text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
+    <div className={cn("flex border border-zinc-300 rounded-md w-3/4", className)}>
+      <div className={cn("flex basis-2/3 items-center text-left font-normal py-2 px-4", !date && "text-muted-foreground-light dark:text-muted-foreground-dark")}>
         <CalendarIcon className="mr-2 h-4 w-4" />
         {date?.from ? (
           date.to ? (
@@ -132,10 +132,10 @@ export const CalendarRelativeDatePicker = ({
             setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })
           }
         >
-          <SelectTrigger className='border-0 border-l w-full rounded-none focus:rounded-md'>
-            <SelectValue placeholder="Select" className='basis-3/4'/>
+          <SelectTrigger className='border-0 border-l w-full rounded-l-none focus:rounded-md'>
+            <SelectValue placeholder="Select" className='basis-3/4' />
           </SelectTrigger>
-          <SelectContent position='popper' sticky='always' hideWhenDetached>
+          <SelectContent position='popper' sticky='always' hideWhenDetached className='top-[2px]'>
             <SelectItem value="7">Last 7 days</SelectItem>
             <SelectItem value="30">Last 30 days</SelectItem>
             <SelectItem value={differenceInDays(currentDate, startOfMonth(currentDate)).toString()}>Month to Date</SelectItem>
@@ -156,8 +156,8 @@ export function CalendarDatePickerWithPresets() {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            "w-[300px] justify-start text-left font-normal",
+            !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
