@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 import { clients } from "../utils/tempData";
 
 import { Command } from "cmdk";
-import Dropdown from "./ui/combobox";
+import Dropdown from "./ui/command";
 import { Toggle } from "./ui/toggle";
 
 type FormData = {
