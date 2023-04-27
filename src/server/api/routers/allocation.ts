@@ -41,7 +41,8 @@ export const allocationRouter = createTRPCRouter({
       });
       return client;
     }),
-
+  
+  // get all project allocations
   getAllocations: protectedProcedure
     .input(
       z.object({
@@ -50,43 +51,6 @@ export const allocationRouter = createTRPCRouter({
         endDate: z.date(),
         page: z.number(),
         pageSize: z.number(),
-        projectId: z.number().optional(),
-        clientId: z.number().optional(),
-        userId: z.number().optional(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      if (input.startDate > input.endDate) {
-        throw new Error("Start date must be before end date");
-      }
-
-      const clients = await ctx.prisma.allocation.findMany({
-        orderBy: { User: { name: "desc" } },
-        where: {
-          Tenant: { slug: input.team },
-          date: { gte: input.startDate, lte: input.endDate },
-          projectId: input.projectId,
-          Project: { clientId: input.clientId },
-          userId: input.userId,
-        },
-        skip: (input.page - 1) * input.pageSize,
-        take: input.pageSize,
-      });
-
-      return clients;
-    }),
-  
-  fetchAllocations: protectedProcedure
-    .input(
-      z.object({
-        team: z.string(),
-        startDate: z.date(),
-        endDate: z.date(),
-        page: z.number(),
-        pageSize: z.number(),
-        projectId: z.number().optional(),
-        clientId: z.number().optional(),
-        userId: z.number().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -150,7 +114,6 @@ export const allocationRouter = createTRPCRouter({
   
             let allocationStartDate = allocation.date;
             const allocationEndDate = allocation.endDate;
-  
             
             const billableTime = allocation.billableTime || 0;
             const nonBillableTime = allocation.nonBillableTime || 0;
@@ -233,7 +196,7 @@ export const allocationRouter = createTRPCRouter({
             projectId: project.id,
             projectName: project.name,
             totalHours: projectTotalHours,
-            projectDates: allocations,
+            allocationDates: allocations,
           };
         });
   
@@ -248,6 +211,160 @@ export const allocationRouter = createTRPCRouter({
           averageHours: averageHours,
           topRowDates: topRowDates,
           projects: projectsData,
+        };
+      });
+      
+      return finalData;
+    }),
+  
+  // get project allocations
+  getProjectAllocations: protectedProcedure
+    .input(
+      z.object({
+        team: z.string(),
+        startDate: z.date(),
+        endDate: z.date(),
+        page: z.number(),
+        pageSize: z.number(),
+        projectId: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      if (input.startDate > input.endDate) {
+        throw new Error("Start date must be before end date");
+      }
+
+      const projects = await ctx.prisma.project.findMany({
+        where: {
+          id: input.projectId,
+          Tenant: { slug: input.team },
+        },
+        include: {
+          Members: {
+            skip: (input.page - 1) * input.pageSize,
+            take: input.pageSize,
+            include: {
+              Allocation: {
+                where: {
+                  OR: [
+                    {
+                      date: {
+                        gte: input.startDate,
+                        lte: input.endDate,
+                      },
+                    },
+                    {
+                      endDate: {
+                        gte: input.startDate,
+                        lte: input.endDate,
+                      }
+                    },
+                    {
+                      AND: [
+                        {
+                          date: {
+                            lte: input.startDate,
+                          }
+                        },
+                        {
+                          endDate: {
+                            gte: input.endDate,
+                          }
+                        }
+                      ]
+                    },
+                  ],
+                },
+              },
+            }
+          },
+          Client: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
+        },
+      });
+
+      const finalData = projects.map(project => {
+        return {
+          clientName: project.Client.name,
+          projectId: project.id,
+          projectName: project.name,
+          users: project.Members.map(user => {
+            // allocatons dates
+            const allocations = user.Allocation.reduce((accumulator, allocation) => {
+    
+              let allocationStartDate = allocation.date;
+              const allocationEndDate = allocation.endDate;
+              
+              const billableTime = allocation.billableTime || 0;
+              const nonBillableTime = allocation.nonBillableTime || 0;
+              
+              // allocationEndDate is not exist
+              if (!allocationEndDate) {
+                
+                // change date string format to YYYY-MM-DD
+                const date = allocationStartDate.toISOString().split('T')[0];
+                const isAllocationDateExist = accumulator[date];
+                
+                // stop further execution, if allocation date is exist or 
+                // exist allocation updateAt date is latest date as compare to new allocation date
+                const existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt = isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
+                if (isAllocationDateExist || existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt) {
+                  return accumulator;
+                }
+    
+                accumulator[date] = {
+                  id: allocation.id,
+                  billableTime: billableTime,
+                  nonBillableTime: nonBillableTime,
+                  totalHours: billableTime + nonBillableTime,
+                  updatedAt: allocation.updatedAt,
+                };
+    
+                return accumulator;
+              }
+    
+              // iterate if allocationStartDate is less than or equal to endDate and allocationDate 
+              while (allocationStartDate <= input.endDate && allocationStartDate <= allocationEndDate) {
+    
+                // change date string format to YYYY-MM-DD
+                const date = allocationStartDate.toISOString().split('T')[0]; 
+                
+                accumulator[date] = {
+                  id: allocation.id,
+                  billableTime: billableTime,
+                  nonBillableTime: nonBillableTime,
+                  totalHours: billableTime + nonBillableTime,
+                  updatedAt: allocation.updatedAt,
+                };
+    
+                // increase one day 
+                allocationStartDate = dayjs(allocationStartDate).add(1, 'day').toDate();
+    
+              }
+    
+              return accumulator;
+            }, {} as AllocationDates);
+            
+            // calculate allocations totalHours
+            const totalHours = Object.keys(allocations).reduce((accumulator, allocationKey) => {
+              return accumulator + allocations[allocationKey].totalHours;
+            }, 0);
+
+            // calculate average hours
+            const averageHours = totalHours / Object.keys(allocations).length; 
+            
+            return {
+              userId: user.id,
+              username: user.name,
+              averageHours: averageHours,
+              totalAllocationsHours: totalHours,
+              allocations: allocations,
+            };
+          }),
         };
       });
       
