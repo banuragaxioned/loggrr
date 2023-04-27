@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { AllocationFrequency } from "@prisma/client";
+import { AllocationDates } from "@/types"
 import dayjs from "dayjs";
 
 export const allocationRouter = createTRPCRouter({
