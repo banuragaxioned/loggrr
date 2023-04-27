@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./combobox";
+import { ChevronDown } from "lucide-react";
 
 type ComboBoxProps = {
   icon?: React.ReactElement;
@@ -55,12 +56,13 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             role="combobox"
             tabIndex={searchable && isOpen ? -1 : tabIndex}
             disabled={disable}
-            className={`border-ComboBoxBorder-light inline-flex max-w-[200px] items-center justify-center gap-[6px] rounded-md border bg-white px-3 py-[6px] pl-[10px] pr-[11px] text-[14px] capitalize text-content-light transition-all duration-75 ease-out hover:bg-background-light focus:outline-0 focus:outline-offset-0 disabled:opacity-50 dark:border-borderColor-dark dark:bg-zinc-800 dark:text-white ${toggleButtonStyles}`}
+            className={`border-ComboBoxBorder-light inline-flex w-[200px] items-center justify-start gap-[6px] rounded-md border bg-white px-3 py-[6px] pl-[10px] pr-[11px] text-[14px] capitalize text-content-light transition-all duration-75 ease-out hover:bg-background-light focus:outline-0 focus:outline-offset-0 disabled:opacity-50 dark:border-borderColor-dark dark:bg-zinc-800 dark:text-white ${toggleButtonStyles}`}
           >
             {icon}
             <span className="inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
               {selectedItem || label}
             </span>
+            <ChevronDown className="h-4 w-4 ml-auto" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="max-w-[250px] bg-white p-0" align="start" side="bottom" sideOffset={-30}>
@@ -76,7 +78,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   onChangeCapture={(e: any) => setSearchTerm(e.target.value)}
                 />
               )}
-              <CommandList className="locale-dropdown">
+              <CommandList className="locale-dropdown !p-0">
                 <CommandEmpty>No results found.</CommandEmpty>
                 {options.length > 0 &&
                   (group
@@ -85,8 +87,8 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                         return (
                           <CommandGroup
                             key={group.id}
-                            className={`${optionListStyles}`}
-                            heading={groupName ? groupName : ""}
+                            className={`px-0 ${optionListStyles}`}
+                            heading={groupName ? <div className="px-[14px]">{groupName}</div> : ""}
                           >
                             {group?.list?.length > 0 &&
                               group?.list.map((item: any, innerI: any) => {

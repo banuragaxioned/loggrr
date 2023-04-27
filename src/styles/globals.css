@@ -39,7 +39,7 @@
   .locale-dropdown {
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.6) #f9f9f9;
+    /* scrollbar-color: rgba(0, 0, 0, 0.6) #f9f9f9; */
     transition: all 1s ease;
   }
   
@@ -47,9 +47,9 @@
     @apply w-[14px];
   }
   .locale-dropdown::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-[#fff];
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-[#fff] dark:bg-[#333];
   }
   .locale-dropdown::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-[#f9f9f9] bg-[#94A3B8];
+    @apply border-4 border-solid rounded-[14px] border-[#f9f9f9] dark:border-[#333] bg-[#94A3B8] dark:bg-[#f9f9f9];
   }
 }

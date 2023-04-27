@@ -7,7 +7,6 @@ import { api } from "@/utils/api";
 import { cleanDate } from "@/utils/helper";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { DefaultCombobox, GroupedCombobox, SearchableCombobox } from "@/stories/combobox.stories";
 
 export default function Dashboard() {
   const { isLoading, isInvalid, isReady, currentTeam, path } = useValidateTeamAccess();
@@ -64,10 +63,6 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-4"></div>
         <div className="todo h-14">Calendar</div>
-        {/* <SelectList /> */}
-        <DefaultCombobox />
-        <GroupedCombobox />
-        <SearchableCombobox />
         <div className="todo">
           <form onSubmit={handleSubmit(onTimeEntrySubmit)} className="grid grid-cols-4">
             <Input type="date" {...register("date")} defaultValue={""} required />
