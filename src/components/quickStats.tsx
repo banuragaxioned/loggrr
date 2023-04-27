@@ -1,5 +1,5 @@
 import * as React from "react";
-import { api } from "@/utils/api";
+import { api } from "@/lib/api";
 import { useRouter } from "next/router";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";

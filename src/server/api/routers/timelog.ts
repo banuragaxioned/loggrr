@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { cleanDate, getTimeInMinutes } from "@/utils/helper";
+import { cleanDate, getTimeInMinutes } from "@/lib/helper";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
