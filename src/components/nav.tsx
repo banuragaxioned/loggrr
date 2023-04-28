@@ -24,7 +24,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
         const Icon = Icons[item.icon || "arrowRight"];
         return (
           item.href && (
-            <Link key={index} href={item.disabled ? "/" : item.href}>
+            <Link key={index} href={item.disabled ? "/" : path + item.href}>
               <span
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-600",

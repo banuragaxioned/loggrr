@@ -13,7 +13,7 @@ export const getMembers = async (slug: string, projectId: number) => {
   return members;
 };
 
-export const getProjects = async (slug: string) => {
+export async function getProjects(slug: string) {
   const projects = await db.project.findMany({
     where: { Tenant: { slug } },
     select: {
@@ -33,7 +33,7 @@ export const getProjects = async (slug: string) => {
   return projects;
 };
 
-export const getClients = async (slug: string) => {
+export async function getClients(slug: string) {
   const projects = await db.project.findMany({
     where: { Tenant: { slug } },
     select: {
