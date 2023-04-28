@@ -178,7 +178,7 @@ enum Status {
 model Allocation {
   id              Int       @id @default(autoincrement())
   date            DateTime
-  endDate         DateTime?
+  enddate         DateTime?
   billableTime    Int
   nonBillableTime Int
   tenantId        Int

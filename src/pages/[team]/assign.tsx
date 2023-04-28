@@ -32,7 +32,7 @@ export default function GlobalAssign() {
       userId: Number(getValues("user")),
       frequency: getValues("frequency"),
       date: new Date(getValues("date")),
-      endDate: getValues("enddate") ? new Date(getValues("enddate")) : undefined,
+      enddate: getValues("enddate") ? new Date(getValues("enddate")) : undefined,
       slug: currentTeam,
       billableTime: Number(getValues("billable_time")),
       nonBillableTime: Number(getValues("nonbillable_time")),

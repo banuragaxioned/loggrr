@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant } from "@prisma/client";
+import { Tenant, User, Project, Allocation } from "@prisma/client";
 
 export type Allocations = {
   id: number;
@@ -86,7 +86,7 @@ export type AllocationDates = {
     id: number;
     billableTime: number;
     nonBillableTime: number;
-    totalHours: number;
+    totalTime: number;
     updatedAt: Date;
   }
-}
+};
