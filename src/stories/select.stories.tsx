@@ -6,6 +6,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectItemText,
   SelectLabel,
   SelectTrigger,
   SelectValue,
@@ -20,10 +21,10 @@ export function DefaultSelect() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="axioned">Axioned</SelectItem>
-            <SelectItem value="cfm">CFM</SelectItem>
-            <SelectItem value="culture15">Culture 15</SelectItem>
-            <SelectItem value="shutterstock">Shutterstock</SelectItem>
+            <SelectItem value="axioned"> <SelectItemText value="">Axioned</SelectItemText></SelectItem>
+            <SelectItem value="cfm"><SelectItemText value="">CFM</SelectItemText></SelectItem>
+            <SelectItem value="culture15"><SelectItemText value="">Culture 15</SelectItemText></SelectItem>
+            <SelectItem value="shutterstock"><SelectItemText value="">Shutterstock</SelectItemText></SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -41,40 +42,40 @@ export function SelectWithItemIcon() {
         <SelectContent>
           <SelectGroup>
             <SelectItem value="axioned">
-              <div className="flex items-center gap-2">
+              <SelectItemText value="" className="flex items-center gap-2">
                 <Avatar className="w-6 h-6">
                   <AvatarImage src="https://placekitten.com/100/100" />
                   <AvatarFallback>AB</AvatarFallback>
                 </Avatar>
                 <span>Anurag Basu</span>
-              </div>
+              </SelectItemText>
             </SelectItem>
             <SelectItem value="cfm">
-              <div className="flex items-center gap-2">
+              <SelectItemText value="" className="flex items-center gap-2">
                 <Avatar className="w-6 h-6">
                   <AvatarImage src="https://placekitten.com/100/100" />
                   <AvatarFallback>KA</AvatarFallback>
                 </Avatar>
                 <span>Kashif Ali</span>
-              </div>
+              </SelectItemText>
             </SelectItem>
             <SelectItem value="culture15">
-              <div className="flex items-center gap-2">
+              <SelectItemText value="" className="flex items-center gap-2">
                 <Avatar className="w-6 h-6">
                   <AvatarImage src="https://placekitten.com/100/100" />
                   <AvatarFallback>SD</AvatarFallback>
                 </Avatar>
                 <span>Shubham Dawkhar</span>
-              </div>
+              </SelectItemText>
             </SelectItem>
             <SelectItem value="shutterstock">
-              <div className="flex items-center gap-2">
+              <SelectItemText value="" className="flex items-center gap-2">
                 <Avatar className="w-6 h-6">
                   <AvatarImage src="https://placekitten.com/100/100" />
                   <AvatarFallback>VY</AvatarFallback>
                 </Avatar>
                 <span>Vipin Yadav</span>
-              </div>
+              </SelectItemText>
             </SelectItem>
           </SelectGroup>
         </SelectContent>
@@ -82,3 +83,45 @@ export function SelectWithItemIcon() {
     </div>
   )
 }
+
+export function SelectWithCount() {
+  return (
+    <div>
+      <Select open={true}>
+        <SelectTrigger className="w-[240px]">
+          <SelectValue placeholder="Select Project Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="axioned">
+              <SelectItemText value="" className="flex items-center gap-2">
+                <span>My Projects</span>
+                <span>(5)</span>
+              </SelectItemText>
+            </SelectItem>
+            <SelectItem value="cfm">
+              <SelectItemText className="flex justify- items-center gap-2" value={""}>
+                <span>Active Projects</span>
+                <span className="ml-auto">(3)</span>
+              </SelectItemText>
+            </SelectItem>
+            <SelectItem value="culture15">
+              <SelectItemText value="" className="flex items-center gap-2">
+                <span>Client Projects</span>
+                <span>(4)</span>
+              </SelectItemText>
+            </SelectItem>
+            <SelectItem value="shutterstock">
+              <SelectItemText value="" className="flex items-center gap-2">
+                <span>Archive Projects</span>
+                <span>(6)</span>
+              </SelectItemText>
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+

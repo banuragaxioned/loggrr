@@ -89,10 +89,21 @@ const SelectItem = React.forwardRef<
       </SelectPrimitive.ItemIndicator>
     </span>
 
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    {children}
   </SelectPrimitive.Item>
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
+
+const SelectItemText = React.forwardRef<
+React.ElementRef<typeof SelectPrimitive.Item>,
+React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({className, children, ...props}, ref) => (
+  <SelectPrimitive.ItemText ref={ref} className={className} {...props}>
+    {children}
+  </SelectPrimitive.ItemText>
+))
+
+SelectItemText.displayName = SelectPrimitive.ItemText.displayName
 
 const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
@@ -114,5 +125,6 @@ export {
   SelectContent,
   SelectLabel,
   SelectItem,
+  SelectItemText,
   SelectSeparator,
 }
