@@ -116,40 +116,154 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     ]);
   }, [allProjects]);
 
-  useEffect(() => {
-    const tempMyProjectList: any = [];
-    const tempOrgWideProjectList: any = [];
+  // const updateProjectLists = useCallback(() => {
+  //   const tempMyProjectList: any = [];
+  //   const tempOrgWideProjectList: any = [];
+  
+  //   myProject.map((project: any, i: number) => {
+  //     const data = {
+  //       id: i,
+  //       name: project.projectName,
+  //       value: project.projectName,
+  //     }
+  //     tempMyProjectList.push(data);
+  //   });
+  
+  //   orgProject.map((project: any, i: number) => {
+  //     const data = {
+  //       id: i,
+  //       name: project.projectName,
+  //       value: project.projectName,
+  //     }
+  //     tempOrgWideProjectList.push(data);
+  //   });
+  
+  //   setProjectList([
+  //     {
+  //       groupName: "My Projects",
+  //       list: tempMyProjectList,
+  //     },
+  //     {
+  //       groupName: "Org Wide Projects",
+  //       list: tempOrgWideProjectList,
+  //     },
+  //   ]);
+  
+  //   setProjectArr([
+  //     {
+  //       projectType: "My Project",
+  //       projectList: myProject,
+  //     },
+  //     {
+  //       projectType: "Org Wide Project",
+  //       projectList: orgProject,
+  //     },
+  //   ]);
+  // }, [myProject, orgProject]);
 
-    myProject.map((project: any) => {
-      !tempMyProjectList.includes(project.projectName) && tempMyProjectList.push(project.projectName);
+  // const updateMyProjectList = useCallback(() => {
+  //   const tempMyProjectList: any = [];
+
+  //   myProject.map((project: any, i: number) => {
+  //     const data = {
+  //       id: i,
+  //       name: project.projectName,
+  //       value: project.projectName,
+  //     }
+  //     tempMyProjectList.push(data);
+  //   });
+
+  //   setProjectList((prev : any) => [...prev,
+  //     {
+  //       groupName: "My Projects",
+  //       list: tempMyProjectList,
+  //     }
+  //   ]);
+
+  //   setProjectArr((prev : any) => [...prev, {
+  //     projectType: "My Project",
+  //     projectList: myProject,
+  //   }])
+
+  // }, [myProject]) 
+
+  // const updateOrgProjectList = useCallback(() => {
+  //   const tempOrgWideProjectList: any = [];
+
+  //   orgProject.map((project: any, i: number) => {
+  //     const data = {
+  //       id: i,
+  //       name: project.projectName,
+  //       value: project.projectName,
+  //     }
+  //     tempOrgWideProjectList.push(data);
+  //   });
+
+  //   setProjectList((prev : any) => [...prev,
+  //     {
+  //       groupName: "Org Wide Projects",
+  //       list: tempOrgWideProjectList,
+  //     }
+  //   ]);
+
+  //   setProjectArr((prev : any) => [...prev, {
+  //     projectType: "Org Wide Projects",
+  //     projectList: orgProject,
+  //   }])
+  // }, [orgProject]) 
+  
+  // useEffect(() => {
+  //   updateMyProjectList();
+  //   updateOrgProjectList();
+  // }, [updateMyProjectList, updateOrgProjectList]);
+
+  // update projectArr whenever myProject or orgProject changes
+useEffect(() => {
+  setProjectArr([
+    {
+      projectType: "My Project",
+      projectList: myProject,
+    },
+    {
+      projectType: "Org Wide Project",
+      projectList: orgProject,
+    },
+  ]);
+}, [myProject, orgProject]);
+
+// update projectList whenever projectArr changes
+useEffect(() => {
+  const tempMyProjectList: any = [];
+  const tempOrgWideProjectList: any = [];
+
+  projectArr.forEach((projectType: any) => {
+    projectType.projectList.forEach((project: any, i: number) => {
+      const data = {
+        id: i,
+        name: project.projectName,
+        value: project.projectName,
+      }
+      if (projectType.projectType === "My Project") {
+        !tempMyProjectList.includes(data) && tempMyProjectList.push(data);
+      } else if (projectType.projectType === "Org Wide Project") {
+        !tempOrgWideProjectList.includes(data) && tempOrgWideProjectList.push(data);
+      }
     });
+  });
 
-    orgProject.map((project: any) => {
-      !tempOrgWideProjectList.includes(project.projectName) && tempOrgWideProjectList.push(project.projectName);
-    });
+  setProjectList([
+    {
+      groupName: "My Projects",
+      list: tempMyProjectList,
+    },
+    {
+      groupName: "Org Wide Projects",
+      list: tempOrgWideProjectList,
+    },
+  ]);
+}, [projectArr]);
 
-    setProjectList([
-      {
-        groupHeading: "My Projects",
-        group: tempMyProjectList,
-      },
-      {
-        groupHeading: "Org Wide Projects",
-        group: tempOrgWideProjectList,
-      },
-    ]);
-
-    setProjectArr([
-      {
-        projectType: "My Project",
-        projectList: myProject,
-      },
-      {
-        projectType: "Org Wide Project",
-        projectList: orgProject,
-      },
-    ]);
-  }, [myProject, orgProject]);
+  
 
   useEffect(() => {
     clients?.map((client: any) => {
@@ -392,6 +506,8 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       document.removeEventListener("click", handleFocus);
     };
   }, [isFocus, handleFocus]);
+
+  console.log(projectList)
 
   return (
     <div
