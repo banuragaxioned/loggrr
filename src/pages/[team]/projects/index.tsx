@@ -6,6 +6,7 @@ import Link from "next/link";
 import CreateClient from "@/components/createClient";
 import CreateProject from "@/components/createProject";
 import TableUI from "@/components/ui/table";
+import { EProjectTable } from "enums/project";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -29,9 +30,10 @@ export default function Projects() {
     progress: number;
   };
 
-  const projectDataColumns = ["name", "client", "startdate", "enddate", "owner", "status"];
-  const clientDataColumns = ["name", "status"];
+  const projectDataColumns = [EProjectTable.name, EProjectTable.client, EProjectTable.status,EProjectTable.owner, EProjectTable.archive];
 
+  const clientDataColumns = ["name", "status"];
+  console.log({projectList})
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
