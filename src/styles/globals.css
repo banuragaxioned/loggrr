@@ -30,4 +30,20 @@
   select {
     @apply my-2 block w-full rounded border-gray-300 pl-3 pr-10 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm;
   }
+  .scrollbar {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    /* scrollbar-color: rgba(0, 0, 0, 0.6) #f9f9f9; */
+    transition: all 1s ease;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    @apply w-[14px];
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-[#fff] dark:bg-[#333];
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply border-4 border-solid rounded-[14px] border-[#f9f9f9] dark:border-[#333] bg-[#94A3B8] dark:bg-[#f9f9f9];
+  }
 }
