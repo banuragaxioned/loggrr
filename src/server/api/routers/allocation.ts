@@ -44,7 +44,7 @@ export const allocationRouter = createTRPCRouter({
       return client;
     }),
   
-  // get all project allocations
+  // get project allocations
   getAllocations: protectedProcedure
     .input(
       z.object({
@@ -95,6 +95,40 @@ export const allocationRouter = createTRPCRouter({
       const chunkIndex = input.page - 1;
       const cursorId = allUserIdChunk[chunkIndex][0].id; /* first user id */
 
+      
+      const allocationQuery = {
+        where: {
+          OR: [
+            {
+              date: {
+                gte: input.startDate,
+                lte: input.endDate,
+              },
+            },
+            {
+              enddate: {
+                gte: input.startDate,
+                lte: input.endDate,
+              },
+            },
+            {
+              AND: [
+                {
+                  date: {
+                    lte: input.startDate,
+                  }
+                },
+                {
+                  enddate: {
+                    gte: input.endDate,
+                  }
+                }
+              ],
+            },
+          ],
+        },
+      };
+
       let finalData;
 
       // project allocations
@@ -111,38 +145,7 @@ export const allocationRouter = createTRPCRouter({
               take: input.pageSize,
               cursor: { id: cursorId },
               include: {
-                Allocation: {
-                  where: {
-                    OR: [
-                      {
-                        date: {
-                          gte: input.startDate,
-                          lte: input.endDate,
-                        },
-                      },
-                      {
-                        enddate: {
-                          gte: input.startDate,
-                          lte: input.endDate,
-                        }
-                      },
-                      {
-                        AND: [
-                          {
-                            date: {
-                              lte: input.startDate,
-                            }
-                          },
-                          {
-                            enddate: {
-                              gte: input.endDate,
-                            }
-                          }
-                        ]
-                      },
-                    ],
-                  },
-                },
+                Allocation: allocationQuery,
               }
             },
             Client: {
@@ -196,38 +199,7 @@ export const allocationRouter = createTRPCRouter({
           include: {
             Project: {
               include: {
-                Allocation: {
-                  where: {
-                    OR: [
-                      {
-                        date: {
-                          gte: input.startDate,
-                          lte: input.endDate,
-                        },
-                      },
-                      {
-                        enddate: {
-                          gte: input.startDate,
-                          lte: input.endDate,
-                        }
-                      },
-                      {
-                        AND: [
-                          {
-                            date: {
-                              lte: input.startDate,
-                            }
-                          },
-                          {
-                            enddate: {
-                              gte: input.endDate,
-                            }
-                          }
-                        ]
-                      },
-                    ],
-                  },
-                },
+                Allocation: allocationQuery,
               }
             },
           },
