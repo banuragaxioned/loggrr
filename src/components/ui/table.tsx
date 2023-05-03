@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { clients } from "@/lib/tempData";
-import { Avatar } from "./avatar";
-import { AvatarImage } from "./avatar";
-import { AvatarFallback } from "./avatar";
-import { getInitials } from "@/lib/helper";
 import { Archive } from "lucide-react";
+
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { getInitials } from "@/lib/helper";
 import { EProjectTable } from "enums/project";
 
 const TableUI = (props: any) => {
