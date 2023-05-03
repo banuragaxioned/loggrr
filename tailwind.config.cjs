@@ -14,11 +14,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: { light: colors.zinc[50], dark: colors.zinc[800] },
+        background: { light: colors.slate[50], dark: colors.zinc[800] },
         backgroundHover: { light: colors.indigo[100] },
         "background-alternate": { light: colors.zinc[300], dark: colors.zinc[600] },
         content: { light: colors.zinc[700], dark: colors.zinc[50] },
-        info: { light: colors.zinc[500], dark: colors.zinc[100] },
+        info: { light: colors.slate[500], dark: colors.zinc[100] },
         brand: {
           light: colors.indigo[600],
           dark: colors.indigo[600],
