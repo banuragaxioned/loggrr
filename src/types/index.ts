@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant } from "@prisma/client";
+import { Tenant, User, Project, Allocation } from "@prisma/client";
 
 export type Allocations = {
   id: number;
@@ -80,3 +80,13 @@ export type UserSubscriptionPlan = SubscriptionPlan &
     stripeCurrentPeriodEnd: number;
     isPro: boolean;
   };
+
+export type AllocationDates = {
+  [date: string]: {
+    id: number;
+    billableTime: number;
+    nonBillableTime: number;
+    totalTime: number;
+    updatedAt: Date;
+  }
+};
