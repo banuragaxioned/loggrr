@@ -106,7 +106,8 @@ const TableUI = (props: any) => {
                   Axioned
                 </th>
               </tr> */}
-              <tr key={row.id} className="group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-950">
+              {/* added dark mode style here for now as on ladle it text was dark */}
+              <tr key={row.id} className="group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-950 dark:text-slate-100">
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td key={cell.id} className={`${tdWidth(cell.column.id)} whitespace-nowrap py-2 text-sm`}>
