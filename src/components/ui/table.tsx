@@ -97,15 +97,15 @@ const TableUI = (props: any) => {
         <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
           {table.getRowModel().rows.map((row) => (
             <>
-              <tr className="bg-slate-100">
+              {/* <tr className="bg-slate-100">
                 <th
                   colSpan={Object.keys(EProjectTable).length}
                   className="py-2 pl-12 text-left text-sm font-semibold text-slate-900"
                 >
                   Axioned
                 </th>
-              </tr>
-              <tr key={row.id} className="group cursor-pointer hover:bg-slate-50">
+              </tr> */}
+              <tr key={row.id} className="group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-950">
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td key={cell.id} className={`${tdWidth(cell.column.id)} whitespace-nowrap py-2 text-sm`}>
