@@ -31,9 +31,8 @@ export default function Projects() {
   };
 
   const projectDataColumns = [EProjectTable.name, EProjectTable.client, EProjectTable.status,EProjectTable.owner, EProjectTable.archive];
-
   const clientDataColumns = ["name", "status"];
-  console.log({projectList})
+  
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>

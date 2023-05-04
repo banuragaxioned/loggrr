@@ -97,6 +97,7 @@ const TableUI = (props: any) => {
         <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
           {table.getRowModel().rows.map((row) => (
             <>
+              {/* TODO: commented style for additional client row */}
               {/* <tr className="bg-slate-100">
                 <th
                   colSpan={Object.keys(EProjectTable).length}
