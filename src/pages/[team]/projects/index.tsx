@@ -35,7 +35,7 @@ export default function Projects() {
   
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
-      <section>
+      <section className="w-full">
         <h2>Projects</h2>
         <CreateProject />
         <TableUI rows={projectList.data} columns={projectDataColumns} />

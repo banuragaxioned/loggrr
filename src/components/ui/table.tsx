@@ -76,8 +76,8 @@ const TableUI = (props: any) => {
   };
 
   return (
-    <div className="mb-3 w-full rounded-xl border border-slate-300">
-      <table className="w-full min-w-[1000px] divide-y divide-zinc-300 dark:divide-zinc-700">
+    <div className="mx-auto mb-3 overflow-auto rounded-xl border border-slate-300">
+      <table className="w-full divide-y divide-zinc-300 dark:divide-zinc-700">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
