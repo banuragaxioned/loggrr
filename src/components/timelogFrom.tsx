@@ -127,7 +127,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     orgProject.map((project: any) => {
       !tempOrgWideProjectList.includes(project.projectName) && tempOrgWideProjectList.push(project.projectName);
     });
-
+  
     setProjectList([
       {
         groupHeading: "My Projects",
@@ -139,17 +139,17 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       },
     ]);
 
-    setProjectArr([
-      {
-        projectType: "My Project",
-        projectList: myProject,
-      },
-      {
-        projectType: "Org Wide Project",
-        projectList: orgProject,
-      },
-    ]);
-  }, [myProject, orgProject]);
+  setProjectArr([
+    {
+      projectType: "My Project",
+      projectList: myProject,
+    },
+    {
+      projectType: "Org Wide Project",
+      projectList: orgProject,
+    },
+  ]);
+}, [myProject, orgProject]);
 
   useEffect(() => {
     clients?.map((client: any) => {
