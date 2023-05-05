@@ -61,7 +61,7 @@ export const allocationRouter = createTRPCRouter({
         throw new Error("Start date must be before end date");
       }
 
-      const isProjectExist = await ctx.prisma.project.findUnique({ 
+      const isProjectExist = input.projectId && await ctx.prisma.project.findUnique({ 
         where: { id: input.projectId },
       });
 
