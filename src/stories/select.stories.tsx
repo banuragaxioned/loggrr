@@ -19,7 +19,7 @@ export function DefaultSelect() {
           <SelectValue placeholder="Select Client" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
+          <SelectGroup className="p-[5px]">
             <SelectItem value="axioned"> <SelectItemText value="">Axioned</SelectItemText></SelectItem>
             <SelectItem value="cfm"><SelectItemText value="">CFM</SelectItemText></SelectItem>
             <SelectItem value="culture15"><SelectItemText value="">Culture 15</SelectItemText></SelectItem>
@@ -39,7 +39,7 @@ export function SelectWithItemIcon() {
           <SelectValue placeholder="Select Project Lead" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
+          <SelectGroup className="p-[5px]">
             <SelectItem value="axioned">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
@@ -99,7 +99,7 @@ export function SelectWithCount() {
           <SelectValue placeholder="Select Project Type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>
+          <SelectGroup className="p-[5px]">
             <SelectItem value="my projects">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center justify-between gap-2 w-full">
