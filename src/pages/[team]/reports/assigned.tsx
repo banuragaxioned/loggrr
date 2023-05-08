@@ -16,28 +16,35 @@ export default function GlobalReportsAssigned() {
 
   const reportData = api.report.getAssigned.useQuery({ tenant: currentTeam }, { enabled: isReady });
   const projectData = api.project.getProjects.useQuery({ slug: currentTeam }, { enabled: isReady });
+
+  const params = {
+    team: currentTeam,
+    startDate: startDateInput,
+    endDate: endDateInput,
+    page: pageNoInput || 1,
+    pageSize: pageLimit || 10,
+    ...(projectId ? { projectId: projectId } : {}), /* add projectId if exist */
+  };
   
+  const { data: getAllocationsData, refetch: getAllocationsRefetch } = api.allocation.getAllocations.useQuery(params, { enabled: isReady });
+
+  let isError = false;
 
   const handleAllocationSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const params = {
-      team: currentTeam,
-      startDate: startDateInput,
-      endDate: endDateInput,
-      page: pageNoInput || 1,
-      pageSize: pageLimit || 10,
-      ...(projectId ? { projectId: projectId } : {}), /* add projectId if exist */
-    };
-
-    const { data } = api.allocation.getAllocations.useQuery(params, { enabled: isReady });
-
-    if (!data) {
-      return <p>Error...</p>
+    getAllocationsRefetch();
+    if (!getAllocationsData) {
+      isError = !isError;
+      return;
     }
 
-    setAllocationData(data);
+    setAllocationData(getAllocationsData);
   };
+
+  if (isError) {
+    return <p>Error...</p>
+  }
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -46,6 +53,7 @@ export default function GlobalReportsAssigned() {
   if (isInvalid) {
     return <Unavailable />;
   }
+  
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
@@ -67,19 +75,19 @@ export default function GlobalReportsAssigned() {
         <form className="my-5" onSubmit={handleAllocationSubmit}>
           <div className="inline">
             <label htmlFor="startDate" className="text-gray-700 text-m font-bold mb-2 mr-2">Start Date</label>
-            <input id="startDate" className="rounded-md py-1" value={startDateInput.toISOString()} onChange={(e) => setStartDateInput(new Date(e.target.value))} type="date" placeholder="Start Date" autoComplete="off" />
+            <input id="startDate" className="rounded-md py-1" value={startDateInput.toISOString().split('T')[0]} onChange={(e) => setStartDateInput(new Date(e.target.value))} type="date" placeholder="Start Date" autoComplete="off" />
           </div>
 
           <div className="inline ml-5">
             <label htmlFor="endDate" className="text-gray-700 text-m font-bold mb-2 mr-2">End Date</label>
-            <input id="endDate" className="rounded-md py-1" value={endDateInput.toISOString()} onChange={(e) => setEndDateInput(new Date(e.target.value))} type="date" placeholder="End Date" autoComplete="off" />
+            <input id="endDate" className="rounded-md py-1" value={endDateInput.toISOString().split('T')[0]} onChange={(e) => setEndDateInput(new Date(e.target.value))} type="date" placeholder="End Date" autoComplete="off" />
           </div>
 
           <div>
             <label htmlFor="project-list" className="text-gray-700 text-m font-bold mb-2 mr-2">Project</label>
             <select id="project-list" onChange={(e) => setProjectIdInput(Number(e.target.value))}>
               <option key={0} value={0}>Select</option>
-              {projectData.data?.map((project) => <option key={project.id}>{project.name}</option>)}
+              {projectData.data?.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
             </select>
           </div>
 
@@ -138,7 +146,7 @@ export default function GlobalReportsAssigned() {
               Total hours: {user.totalTime/60} <br />
               TopRowDates: 
               <ul className="ml-10 text-gray-600">
-                {Object.keys(user.topRowDates)?.map((allocationDate) => (
+                {user.topRowDates && Object.keys(user.topRowDates)?.map((allocationDate) => (
                   <li key={allocationDate}>
                     Billable time: {user.topRowDates[allocationDate].billableTime/60 || 0} <br />
                     Non billable time: {user.topRowDates[allocationDate].nonBillableTime/60 || 0} <br />
