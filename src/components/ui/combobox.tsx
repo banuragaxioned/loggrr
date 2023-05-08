@@ -95,7 +95,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                               <CommandItem
                                 key={item.id}
                                 value={item.value}
-                                className="w-full cursor-pointer rounded px-[18px] py-2 text-text-color aria-selected:bg-hover"
+                                className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] text-text-color aria-selected:bg-hover"
                                 onSelect={(val: string) => {
                                   handleGroupSelect && handleGroupSelect(val, groupName);
                                   setIsOpen(false);
@@ -117,7 +117,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                           handleSelect && handleSelect(val);
                           setIsOpen(false);
                         }}
-                        className="w-full cursor-pointer rounded px-[14px] py-2 text-text-color aria-selected:bg-hover"
+                        className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] text-text-color aria-selected:bg-hover"
                       >
                         {item.name}
                       </CommandItem>
