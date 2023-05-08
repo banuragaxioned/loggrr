@@ -65,9 +65,9 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-[#fff] dark:bg-[#333];
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-element-bg;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-[#f9f9f9] dark:border-[#333] bg-[#94A3B8] dark:bg-[#f9f9f9];
+    @apply border-4 border-solid rounded-[14px] border-element-bg bg-text-color;
   }
 }
