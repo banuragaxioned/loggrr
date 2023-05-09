@@ -96,7 +96,7 @@ export default function GlobalReportsAssigned() {
           <div>
             <label htmlFor="project-list" className="text-gray-700 text-m font-bold mb-2 mr-2">Project</label>
             <select id="project-list" onChange={(e) => setProjectIdInput(Number(e.target.value))}>
-              <option key={0} value={0}>Select</option>
+              <option key={0} value={0}>Global</option>
               {projectData.data?.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
             </select>
           </div>
@@ -118,6 +118,7 @@ export default function GlobalReportsAssigned() {
 
         <h3 className="my-5">Report</h3>
         <ul className="font-bold text-grey-700">
+          <li className="text-blue-600">{projectAllocationData.length ? 'Project allocation' : 'Global allocation'}</li>
 
           {/* project allocation */}
           {!!projectAllocationData.length && projectAllocationData.map(data => (
@@ -135,6 +136,7 @@ export default function GlobalReportsAssigned() {
                     <ul className="ml-10 font-normal">
                       {Object.keys(user.allocations)?.map(allocationDate => (
                         <li key={allocationDate}>
+                          Date: {allocationDate} <br />
                           Billable time: {user.allocations[allocationDate].billableTime/60 || 0} <br />
                           Non billable time: {user.allocations[allocationDate].nonBillableTime/60 || 0} <br />
                           Total time: {user.allocations[allocationDate].totalTime/60 || 0} <br />
@@ -161,6 +163,7 @@ export default function GlobalReportsAssigned() {
               <ul className="ml-10 text-gray-600">
                 {user.topRowDates && Object.keys(user.topRowDates)?.map((allocationDate) => (
                   <li key={allocationDate}>
+                    Date: {allocationDate} <br />
                     Billable time: {user.topRowDates[allocationDate].billableTime/60 || 0} <br />
                     Non billable time: {user.topRowDates[allocationDate].nonBillableTime/60 || 0} <br />
                     Total time: {user.topRowDates[allocationDate].totalTime/60 || 0} <br />
@@ -178,6 +181,7 @@ export default function GlobalReportsAssigned() {
                     <ul className="ml-10 text-gray-600">
                       {Object.keys(project.allocationDates)?.map((allocationDate) => (
                         <li key={allocationDate}>
+                          Date: {allocationDate} <br />
                           Billable time: {project.allocationDates[allocationDate].billableTime/60 || 0} <br />
                           Non billable time: {project.allocationDates[allocationDate].nonBillableTime/60 || 0} <br />
                           Total time: {project.allocationDates[allocationDate].totalTime/60 || 0} <br />
