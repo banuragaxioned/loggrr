@@ -93,8 +93,7 @@ export const allocationRouter = createTRPCRouter({
 
       // page has been adjusted according to the array index
       const chunkIndex = input.page - 1;
-      const cursorId = allUserIdChunk[chunkIndex][0].id; /* first user id */
-
+      const cursorId = allUserIdChunk.length && allUserIdChunk[chunkIndex][0].id; /* first user id */
       
       const allocationQuery = {
         where: {

@@ -35,6 +35,9 @@ export default function GlobalReportsAssigned() {
   const handleAllocationSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    projectAllocationData.length = 0;
+    globalAllocationData.length = 0;
+
     getAllocationsRefetch(); /* refetch getAllocation useQuery */
     
     if (!getAllocationsData) {
