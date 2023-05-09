@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { Allocation, AllocationFrequency } from "@prisma/client";
-import { AllocationDates } from "@/types"
+import { AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types"
 import { splitIntoChunk } from "@/utils/utils";
 
 export const allocationRouter = createTRPCRouter({
@@ -129,7 +129,7 @@ export const allocationRouter = createTRPCRouter({
         },
       };
 
-      let finalData;
+      let finalData: ProjectAllocation[] | GlobalAllocation[];
 
       // project allocations
       if (input.projectId) {
@@ -159,6 +159,7 @@ export const allocationRouter = createTRPCRouter({
   
         finalData = projects.map(project => {
           return {
+            globalView: false,
             clientName: project.Client.name,
             projectId: project.id,
             projectName: project.name,
@@ -252,6 +253,7 @@ export const allocationRouter = createTRPCRouter({
           const averageHours = parseFloat((grandTotalHours / Object.keys(topRowDates).length).toFixed(2)) || 0;
       
           return {
+            globalView: true,
             userId: user.id,
             username: user.name,
             userAvatar: user.image,

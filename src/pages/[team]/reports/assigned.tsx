@@ -2,6 +2,7 @@ import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/lib/api";
 import { FormEvent, useState } from "react";
+import { GlobalAllocation, ProjectAllocation } from "@/types";
 
 export default function GlobalReportsAssigned() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -12,7 +13,8 @@ export default function GlobalReportsAssigned() {
   const [pageLimit, setPageLimitInput] = useState(10);
   const [projectId, setProjectIdInput] = useState(0);
 
-  const [allocationData, setAllocationData] = useState([]);
+  const [projectAllocationData, setProjectAllocationData] = useState<ProjectAllocation[]>([]);
+  const [globalAllocationData, setGlobalAllocationData] = useState<GlobalAllocation[]>([]);
 
   const reportData = api.report.getAssigned.useQuery({ tenant: currentTeam }, { enabled: isReady });
   const projectData = api.project.getProjects.useQuery({ slug: currentTeam }, { enabled: isReady });
@@ -33,13 +35,18 @@ export default function GlobalReportsAssigned() {
   const handleAllocationSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    getAllocationsRefetch();
+    getAllocationsRefetch(); /* refetch getAllocation useQuery */
+    
     if (!getAllocationsData) {
       isError = !isError;
       return;
     }
 
-    setAllocationData(getAllocationsData);
+    if (getAllocationsData[0].globalView) {
+      setGlobalAllocationData(getAllocationsData as GlobalAllocation[]);
+    } else {
+      setProjectAllocationData(getAllocationsData as ProjectAllocation[]);
+    }
   };
 
   if (isError) {
@@ -108,7 +115,9 @@ export default function GlobalReportsAssigned() {
 
         <h3 className="my-5">Report</h3>
         <ul className="font-bold text-grey-700">
-          {projectId && allocationData?.map(data => (
+
+          {/* project allocation */}
+          {!!projectAllocationData.length && projectAllocationData.map(data => (
             <li key={data.projectId}>
               Client name: {data.clientName} <br />
               project name: {data.projectName} <br />
@@ -116,7 +125,7 @@ export default function GlobalReportsAssigned() {
                 {data.users?.map(user => (
                   <li key={user.userId}>
                     User name: {user.username} <br />
-                    User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar} alt="avatar" /> <br />
+                    User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar || ''} alt="avatar" /> <br />
                     Average hours: {user.averageHours/60 || 0} <br />
                     Total allocations hours: {user.totalAllocationsHours/60 || 0} <br />
                     Allocations: 
@@ -138,10 +147,11 @@ export default function GlobalReportsAssigned() {
             </li>
           ))}
           
-          {!projectId && allocationData?.map(user => ( /* if projectId not exist */
+          {/* global allocation */}
+          {!!globalAllocationData.length && globalAllocationData.map(user => (
             <li key={user.userId}>
               User name: {user.username} <br />
-              User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar} alt="avatar" /> <br />
+              User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar || ''} alt="avatar" /> <br />
               Average hours: {user.averageHours/60} <br />
               Total hours: {user.totalTime/60} <br />
               TopRowDates: 
