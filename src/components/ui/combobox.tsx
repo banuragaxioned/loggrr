@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, SearchIcon } from "lucide-react";
 
 type ComboBoxProps = {
   icon?: React.ReactElement;
@@ -68,17 +68,20 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         <PopoverContent side="bottom" align="start" alignOffset={-4} className="max-w-[230px] bg-element-bg p-0 transition-all ease-in border-0">
           <Command className={`${searchable ? 'border' : 'border-0'} border-box rounded-t-[5px] border-border-color`}>
             {searchable && (
-              <CommandInput
-                tabIndex={tabIndex}
-                className={`border-none border-border-color box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-element-bg placeholder:text-placeholder placeholder:font-[14px] focus:outline-0 focus:ring-0`}
-                autoFocus
-                placeholder={placeholder ?? "Search here..."}
-                value={searchTerm}
-                onChangeCapture={(e: any) => setSearchTerm(e.target.value)}
-              />
+              <div className="space-between flex w-full items-center rounded-t-[5px]">
+                <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2 text-text-color" />
+                <CommandInput
+                  tabIndex={tabIndex}
+                  className={`border-none border-border-color box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-element-bg placeholder:text-placeholder placeholder:font-[14px] focus:outline-0 focus:ring-0`}
+                  autoFocus
+                  placeholder={placeholder ?? "Search here..."}
+                  value={searchTerm}
+                  onChangeCapture={(e: any) => setSearchTerm(e.target.value)}
+                />
+              </div>
             )}
             <CommandList className={`border border-border-color ${searchable ? 'border-t-0' : 'rounded-t-[5px]'} scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-element-bg px-[5px] py-[8px] text-text-color shadow-md transition-all duration-200 ease-out`}>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty className="px-[14px] py-2 text-[14px] text-text-color">No results found.</CommandEmpty>
               {options.length > 0 &&
                 (group
                   ? options?.map((group: any) => {
