@@ -43,7 +43,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="axioned">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-6 h-6">
+                  <Avatar className="w-6 h-6 border-2 border-border-color">
                     <AvatarImage src="https://placekitten.com/100/100" />
                     <AvatarFallback>AB</AvatarFallback>
                   </Avatar>
@@ -54,7 +54,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="cfm">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-6 h-6">
+                  <Avatar className="w-6 h-6 border-2 border-border-color">
                     <AvatarImage src="https://placekitten.com/100/100" />
                     <AvatarFallback>KA</AvatarFallback>
                   </Avatar>
@@ -65,7 +65,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="culture15">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-6 h-6">
+                  <Avatar className="w-6 h-6 border-2 border-border-color">
                     <AvatarImage src="https://placekitten.com/100/100" />
                     <AvatarFallback>SD</AvatarFallback>
                   </Avatar>
@@ -76,7 +76,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="shutterstock">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-6 h-6">
+                  <Avatar className="w-6 h-6 border-2 border-border-color">
                     <AvatarImage src="https://placekitten.com/100/100" />
                     <AvatarFallback>VY</AvatarFallback>
                   </Avatar>
