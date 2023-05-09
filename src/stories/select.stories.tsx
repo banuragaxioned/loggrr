@@ -45,7 +45,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="axioned">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01em] border-border-color">
+                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>AB</AvatarFallback>
                   </Avatar>
@@ -56,7 +56,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="cfm">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01em] border-border-color">
+                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>KA</AvatarFallback>
                   </Avatar>
@@ -67,7 +67,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="culture15">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01em] border-border-color">
+                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>SD</AvatarFallback>
                   </Avatar>
@@ -78,7 +78,7 @@ export function SelectWithItemIcon() {
             <SelectItem value="shutterstock">
               <SelectItemText asChild value="my projects">
                 <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01em] border-border-color">
+                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>VY</AvatarFallback>
                   </Avatar>
