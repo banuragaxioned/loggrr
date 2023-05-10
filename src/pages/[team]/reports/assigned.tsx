@@ -133,17 +133,23 @@ export default function GlobalReportsAssigned() {
                     Average hours: {user.averageHours/60 || 0} <br />
                     Total allocations hours: {user.totalAllocationsHours/60 || 0} <br />
                     Allocations: 
-                    <ul className="ml-10 font-normal">
-                      {Object.keys(user.allocations)?.map(allocationDate => (
-                        <li key={allocationDate}>
-                          Date: {allocationDate} <br />
-                          Billable time: {user.allocations[allocationDate].billableTime/60 || 0} <br />
-                          Non billable time: {user.allocations[allocationDate].nonBillableTime/60 || 0} <br />
-                          Total time: {user.allocations[allocationDate].totalTime/60 || 0} <br />
+                    <table className="ml-10 font-normal">
+                      <tr>
+                        <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Date</th>
+                        <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Billable time</th>
+                        <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Non billable time</th>
+                        <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Total time</th>
+                      </tr>
+                      {Object.keys(user.allocations)?.map((allocationDate) => (
+                        <tr key={allocationDate}>
+                          <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{allocationDate}</td>
+                          <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.allocations[allocationDate].billableTime/60 || 0}</td>
+                          <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.allocations[allocationDate].nonBillableTime/60 || 0}</td>
+                          <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.allocations[allocationDate].totalTime/60 || 0}</td>
                           <br />
-                        </li>
+                        </tr>
                       ))}
-                    </ul>
+                    </table>
                     <br />
                   </li>
                 ))}
@@ -159,40 +165,52 @@ export default function GlobalReportsAssigned() {
               User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar || ''} alt="avatar" /> <br />
               Average hours: {user.averageHours/60} <br />
               Total hours: {user.totalTime/60} <br />
-              TopRowDates: 
-              <ul className="ml-10 text-gray-600">
-                {user.topRowDates && Object.keys(user.topRowDates)?.map((allocationDate) => (
-                  <li key={allocationDate}>
-                    Date: {allocationDate} <br />
-                    Billable time: {user.topRowDates[allocationDate].billableTime/60 || 0} <br />
-                    Non billable time: {user.topRowDates[allocationDate].nonBillableTime/60 || 0} <br />
-                    Total time: {user.topRowDates[allocationDate].totalTime/60 || 0} <br />
-                    <br />
-                  </li>
-                ))}
-              </ul>
+              TopRowDates:
+                <table className="ml-10 text-gray-600">
+                  <tr>
+                    <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Date</th>
+                    <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Billable time</th>
+                    <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Non billable time</th>
+                    <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Total time</th>
+                  </tr>
+                  {user.topRowDates && Object.keys(user.topRowDates)?.map((allocationDate) => (
+                    <tr key={allocationDate}>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{allocationDate}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].billableTime/60 || 0}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].nonBillableTime/60 || 0}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].totalTime/60 || 0}</td>
+                      <br />
+                    </tr>
+                  ))}
+                </table>
               Projects:
-              <ul className="ml-10 text-gray-600">
-                {user.projects?.map((project) => (
-                  <li key={project.projectId}>
-                    Project name: {project.projectName} <br />
-                    Total time: {project.totalTime/60 || 0} <br />
-                    Allocation Date: 
-                    <ul className="ml-10 text-gray-600">
-                      {Object.keys(project.allocationDates)?.map((allocationDate) => (
-                        <li key={allocationDate}>
-                          Date: {allocationDate} <br />
-                          Billable time: {project.allocationDates[allocationDate].billableTime/60 || 0} <br />
-                          Non billable time: {project.allocationDates[allocationDate].nonBillableTime/60 || 0} <br />
-                          Total time: {project.allocationDates[allocationDate].totalTime/60 || 0} <br />
-                          <br />
-                        </li>
-                      ))}
-                    </ul>
-                    <br />
-                  </li>
-                ))}
-              </ul> 
+                <ul className="ml-10 text-gray-600">
+                  {user.projects?.map((project) => (
+                    <li key={project.projectId}>
+                      Project name: {project.projectName} <br />
+                      Total time: {project.totalTime/60 || 0} <br />
+                      Allocation Date:
+                      <table className="ml-10 text-gray-600">
+                        <tr>
+                          <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Date</th>
+                          <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Billable time</th>
+                          <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Non billable time</th>
+                          <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Total time</th>
+                        </tr>
+                        {Object.keys(project.allocationDates)?.map((allocationDate) => (
+                          <tr key={allocationDate}>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{allocationDate}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].billableTime/60 || 0}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].nonBillableTime/60 || 0}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].totalTime/60 || 0}</td>
+                            <br />
+                          </tr>
+                        ))}
+                      </table>
+                      <br />
+                    </li>
+                  ))}
+                </ul> 
               <br />
             </li>
           ))}

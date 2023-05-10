@@ -212,8 +212,11 @@ export const allocationRouter = createTRPCRouter({
       
           const projectsData = user.Project.map(project => {
       
+            const userAllocation = project.Allocation.filter(allocation => allocation.userId === user.id)
+            
             // project allocatons dates
-            const allocations = createAllocationDates(project.Allocation, input.endDate);
+            const allocations = createAllocationDates(userAllocation, input.endDate);
+            
       
             // calculate projects totalTime from allocations data
             const projectTotalTime = calculateAllocationTotalTime(allocations);
