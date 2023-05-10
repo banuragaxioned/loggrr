@@ -60,7 +60,6 @@ export function SelectWithItemIcon() {
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>KA</AvatarFallback>
                   </Avatar>
-                  <span>Kashif Ali</span>
                 </div>
               </SelectItemText>
             </SelectItem>
