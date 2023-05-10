@@ -6,12 +6,6 @@ import { ChevronDown, SearchIcon } from "lucide-react";
 
 type ComboBoxProps = {
   icon?: React.ReactElement;
-  containerStyles?: React.CSSProperties;
-  ComboBoxStyles?: React.CSSProperties;
-  toggleButtonStyles?: React.CSSProperties;
-  inputStyles?: string;
-  optionListStyles?: React.CSSProperties;
-  optionStyles?: any
   options: any[];
   searchable?: boolean;
   label: string;
@@ -27,12 +21,6 @@ type ComboBoxProps = {
 const ComboBox: React.FC<ComboBoxProps> = ({
   icon,
   placeholder,
-  containerStyles,
-  ComboBoxStyles,
-  toggleButtonStyles,
-  inputStyles,
-  optionListStyles,
-  optionStyles,
   options,
   searchable = false,
   label,
@@ -47,7 +35,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`relative ${containerStyles}`}>
+    <div className={`relative`}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -65,7 +53,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             <ChevronDown className="h-4 w-4 ml-auto" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent side="bottom" align="start" alignOffset={-4} className="max-w-[230px] bg-element-bg p-0 transition-all ease-in border-0">
+        <PopoverContent side="bottom" align="start" className="max-w-[230px] bg-element-bg p-0 transition-all ease-in border-0">
           <Command className={`${searchable ? 'border' : 'border-0'} border-box rounded-t-[5px] border-border-color`}>
             {searchable && (
               <div className="space-between flex w-full items-center rounded-t-[5px]">
