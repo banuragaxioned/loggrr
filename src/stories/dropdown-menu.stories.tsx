@@ -10,7 +10,11 @@ import {
 export const SimpleDropdown = () => (
   <div>
     <DropdownMenu>
-      <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="primary">
+          Menu
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Option 1</DropdownMenuItem>
         <DropdownMenuItem>Option 2</DropdownMenuItem>
