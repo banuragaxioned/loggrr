@@ -60,7 +60,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                 <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2 text-text-color" />
                 <CommandInput
                   tabIndex={tabIndex}
-                  className={`border-none border-border-color box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-element-bg placeholder:text-placeholder placeholder:font-[14px] focus:outline-0 focus:ring-0`}
+                  className={`border-none text-text-color border-border-color box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-element-bg placeholder:text-placeholder placeholder:font-[14px] focus:outline-0 focus:ring-0`}
                   autoFocus
                   placeholder={placeholder ?? "Search here..."}
                   value={searchTerm}
