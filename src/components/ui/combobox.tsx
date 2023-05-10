@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
@@ -33,6 +33,10 @@ const ComboBox: React.FC<ComboBoxProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if(!isOpen) setSearchTerm('')
+  }, [isOpen])
 
   return (
     <div className={`relative`}>
