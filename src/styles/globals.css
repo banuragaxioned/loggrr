@@ -26,6 +26,7 @@
     --secondary: 243 75% 59%;
     --secondary-foreground: 0 0% 100%;
     --secondary-ring: 243 74% 59%;
+    --secondary-hover: 234 89% 74%;
  
     --accent: 0 0% 98%;
     --accent-foreground: 240 10% 4%;
@@ -50,24 +51,25 @@
     --foreground: 0 0% 100%;
  
     --muted: 240 10% 4%;
-    --muted-foreground: 0 0 100%;
+    --muted-foreground: 0 0% 100%;
  
     --popover: 240 10% 4%;
-    --popover-foreground: 0 0 100%;
+    --popover-foreground: 0 0% 100%;
  
     --card: 240 10% 4%;
-    --card-foreground: 0 0 100%;
+    --card-foreground: 0 0% 100%;
  
     --border: 240 5% 26%;
     --input: 240 5% 26%;
  
     --primary: 240 10% 4%;
-    --primary-foreground: 0 0 100%;
+    --primary-foreground: 0 0% 100%;
     --primary-ring: 240 5% 84%;
  
-    --secondary: 240 6% 10%;
+    --secondary: 243 75% 59%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-ring: 240 5% 84%;
+    --secondary-ring: 243 74% 59%;
+    --secondary-hover: 234 89% 74%;
 
     --accent: 240 5% 26%;
     --accent-foreground: 0 0% 100%;
@@ -78,7 +80,7 @@
     --destructive-hover: 0 84% 63%;
 
     --success: 161 92% 25%;
-    --success-foreground: 0 0 100%;
+    --success-foreground: 0 0% 100%;
     --success-ring: 142 71% 45%;
     --success-hover: 160 84% 34%;
  
@@ -127,9 +129,9 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-element-bg;
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-popover;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-element-bg bg-text-color;
+    @apply border-4 border-solid rounded-[14px] border-popover bg-popover-foreground;
   }
 }
