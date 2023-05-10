@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/helper";
 
@@ -38,7 +38,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative top-2 z-[100] min-w-[8rem] overflow-hidden rounded-md border border-border-color bg-element-bg text-text-color shadow-md animate-in fade-in-80",
+        "relative z-[100] min-w-[8rem] overflow-hidden rounded-md border border-border-color bg-element-bg text-text-color shadow-md animate-in fade-in-80",
         position === "popper" && "translate-y-1",
         className
       )}
