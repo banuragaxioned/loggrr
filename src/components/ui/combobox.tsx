@@ -1,223 +1,127 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Command as CommandPrimitive } from "cmdk";
-import { SearchIcon } from "lucide-react";
-
-type ComboBoxOption = {
-  groupHeading: string;
-  group: [string];
-};
+import { useState, useEffect } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Button } from "./button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
+import { ChevronDown, SearchIcon } from "lucide-react";
 
 type ComboBoxProps = {
-  options: ComboBoxOption[];
-  searchable?: boolean;
-  onSelected: (group: string) => void;
-  placeholder?: string;
   icon?: React.ReactElement;
-  containerStyles?: React.CSSProperties;
-  ComboBoxStyles?: React.CSSProperties;
-  toggleButtonStyles?: React.CSSProperties;
-  inputStyles?: React.CSSProperties;
-  optionListStyles?: React.CSSProperties;
-  optionStyles?: React.CSSProperties;
+  options: any[];
+  searchable?: boolean;
   label: string;
-  defaultValue?: string;
   tabIndex?: number;
   disable?: boolean;
-  autoOpen?: boolean;
   group?: boolean;
+  selectedItem: string | undefined;
+  handleGroupSelect?: (item: string, groupName: string) => void | undefined;
+  handleSelect?: (item: string) => void;
+  placeholder?: string;
 };
 
-const Command = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive
-    ref={ref}
-    className={`border-box absolute top-[37px] w-[206px] rounded-t-[5px] border border-borderColor-light bg-white dark:border-borderColor-dark dark:bg-zinc-900 ${className}`}
-    {...props}
-  />
-));
-Command.displayName = CommandPrimitive.displayName;
-
-const CommandInput = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
-  <div className="space-between flex w-full items-center rounded-t-[5px]">
-    <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2 text-info-light" />
-    <CommandPrimitive.Input
-      ref={ref}
-      className={`box-border w-[83%] rounded-t-[5px] border-0 px-0 text-[14px] placeholder:font-[14px] focus:outline-0 focus:ring-0 dark:bg-transparent ${className}`}
-      {...props}
-    />
-  </div>
-));
-
-CommandInput.displayName = CommandPrimitive.Input.displayName;
-
-const CommandList = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.List
-    ref={ref}
-    className={`border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-[calc(100%+2px)] -translate-x-1/2 overflow-y-auto rounded-b-[5px] border border-borderColor-light bg-white px-[10px] py-[7px] text-content-light shadow-md transition-all duration-200 ease-out dark:border-borderColor-dark dark:bg-transparent ${className}`}
-    {...props}
-  />
-));
-
-CommandList.displayName = CommandPrimitive.List.displayName;
-
-const CommandEmpty = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Empty>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
->((props, ref) => <CommandPrimitive.Empty ref={ref} className="inline-flex items-center gap-2 text-sm" {...props} />);
-
-CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
-
-const CommandGroup = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Group>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.Group
-    ref={ref}
-    className={`select-none text-sm text-[#6B7280] [&_[cmdk-group-heading]]:px-[2px] [&_[cmdk-group-heading]]:py-2 ${className}`}
-    {...props}
-  />
-));
-
-CommandGroup.displayName = CommandPrimitive.Group.displayName;
-
-const CommandItem = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.Item
-    ref={ref}
-    className={`w-full cursor-pointer rounded px-[14px] py-2 text-[#374151] aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900 ${className}`}
-    {...props}
-  />
-));
-
-CommandItem.displayName = CommandPrimitive.Item.displayName;
-
 const ComboBox: React.FC<ComboBoxProps> = ({
-  options,
-  onSelected,
-  searchable = false,
   icon,
-  placeholder = "Search an option",
-  containerStyles,
-  ComboBoxStyles,
-  toggleButtonStyles,
-  inputStyles,
-  optionListStyles,
-  optionStyles,
+  placeholder,
+  options,
+  searchable = false,
   label,
-  defaultValue,
   tabIndex,
   disable,
-  autoOpen,
   group = false,
+  selectedItem,
+  handleSelect,
+  handleGroupSelect,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<string | undefined>();
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  function handleSelect(option: string) {
-    onSelected(option);
-    setSelected(option);
-    setIsOpen(false);
-  }
-
-  const handleOutsideClick = useCallback(
-    (e: any) => {
-      if (isOpen && parentRef.current && !parentRef.current.contains(e.target)) {
-        setSearchTerm("");
-        setIsOpen(false);
-      }
-    },
-    [isOpen]
-  );
-
-  const handleClick = (e: any) => {
-    e.stopPropagation();
-    setIsOpen(true);
-  };
-
-  const handleBlur = () => {
-    setTimeout(() => {
-      setIsOpen(false);
-      setSearchTerm("");
-    }, 200);
-  };
 
   useEffect(() => {
-    setSelected(defaultValue);
-  }, [defaultValue]);
-
-  useEffect(() => {
-    if (autoOpen !== undefined) setIsOpen(autoOpen);
-  }, [autoOpen]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [isOpen, handleOutsideClick]);
+    if(!isOpen) setSearchTerm('')
+  }, [isOpen])
 
   return (
-    <div className={`relative ${containerStyles}`}>
-      <div className="w-full">
-        <button
-          tabIndex={searchable && isOpen ? -1 : tabIndex}
-          disabled={disable}
-          className={`border-ComboBoxBorder-light inline-flex items-center justify-center gap-[6px] rounded-md border bg-white px-3 py-[6px] pl-[10px] pr-[11px] text-[14px] capitalize text-content-light transition-all duration-75 ease-out hover:bg-background-light focus:outline-0 focus:outline-offset-0 disabled:opacity-50 dark:border-borderColor-dark dark:bg-zinc-800 dark:text-white ${toggleButtonStyles}`}
-          onClick={handleClick}
-          onFocus={() => setIsOpen(true)}
-        >
-          {icon}
-          <span>{selected || label}</span>
-        </button>
-        {isOpen && (
-          <Command className={`${ComboBoxStyles}`}>
+    <div className={`relative`}>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            title={selectedItem}
+            variant="outline"
+            role="combobox"
+            tabIndex={searchable && isOpen ? -1 : tabIndex}
+            disabled={disable}
+            className={`border-border-color border inline-flex w-[200px] items-center justify-start gap-[6px] rounded-md bg-element-bg px-3 py-[6px] pl-[10px] pr-[11px] text-[14px] capitalize text-text-color transition-all duration-75 ease-out hover:bg-hover focus:outline-0 focus:outline-offset-0 disabled:opacity-50`}
+          >
+            {icon}
+            <span className="inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+              {selectedItem || label}
+            </span>
+            <ChevronDown className="h-4 w-4 ml-auto" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent side="bottom" align="start" className="max-w-[230px] bg-element-bg p-0 transition-all ease-in border-0">
+          <Command className={`${searchable ? 'border' : 'border-0'} border-box rounded-t-[5px] border-border-color`}>
             {searchable && (
-              <CommandInput
-                onBlur={handleBlur}
-                tabIndex={tabIndex}
-                className={`${inputStyles}`}
-                autoFocus
-                placeholder="Search"
-                value={searchTerm}
-                onChangeCapture={(e: any) => setSearchTerm(e.target.value)}
-              />
+              <div className="space-between flex w-full items-center rounded-t-[5px]">
+                <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2 text-text-color" />
+                <CommandInput
+                  tabIndex={tabIndex}
+                  className={`border-none text-text-color border-border-color box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-element-bg placeholder:text-placeholder placeholder:font-[14px] focus:outline-0 focus:ring-0`}
+                  autoFocus
+                  placeholder={placeholder ?? "Search here..."}
+                  value={searchTerm}
+                  onChangeCapture={(e: any) => setSearchTerm(e.target.value)}
+                />
+              </div>
             )}
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              {options?.map((x: any, i: any) => {
-                return (
-                  <React.Fragment key={i}>
-                    <CommandGroup className={`${optionListStyles}`} heading={group ? x.groupHeading : ""}>
-                      {x.group.map((project: any, innerI: any) => {
-                        return (
-                          <div key={innerI}>
-                            <CommandItem value={project} onSelect={handleSelect} className={`${optionStyles}`}>
-                              {project}
-                            </CommandItem>
-                          </div>
-                        );
-                      })}
-                    </CommandGroup>
-                  </React.Fragment>
-                );
-              })}
+            <CommandList className={`border border-border-color ${searchable ? 'border-t-0' : 'rounded-t-[5px]'} scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-element-bg px-[5px] py-[8px] text-text-color shadow-md transition-all duration-200 ease-out`}>
+              <CommandEmpty className="px-[14px] py-2 text-[14px] text-text-color">No results found.</CommandEmpty>
+              {options.length > 0 &&
+                (group
+                  ? options?.map((group: any) => {
+                    const groupName = group.groupName;
+                    return (
+                      <CommandGroup
+                        key={group.id}
+                        className={`px-0 select-none text-sm text-text-color [&_[cmdk-group-heading]]:px-[2px] [&_[cmdk-group-heading]]:py-2`}
+                        heading={groupName ? <div className="px-[7px] tracking-wide">{groupName}</div> : ""}
+                      >
+                        {group?.list?.length > 0 &&
+                          group?.list.map((item: any, innerI: any) => {
+                            return (
+                              <CommandItem
+                                key={item.id}
+                                value={item.value}
+                                className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] text-text-color aria-selected:bg-hover"
+                                onSelect={(val: string) => {
+                                  handleGroupSelect && handleGroupSelect(val, groupName);
+                                  setIsOpen(false);
+                                }}
+                              >
+                                {item.name}
+                              </CommandItem>
+                            );
+                          })}
+                      </CommandGroup>
+                    );
+                  })
+                  : options?.map((item: any) => {
+                    return (
+                      <CommandItem
+                        key={item.id}
+                        value={item.value}
+                        onSelect={(val: string) => {
+                          handleSelect && handleSelect(val);
+                          setIsOpen(false);
+                        }}
+                        className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] text-text-color aria-selected:bg-hover"
+                      >
+                        {item.name}
+                      </CommandItem>
+                    );
+                  }))}
             </CommandList>
           </Command>
-        )}
-      </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
