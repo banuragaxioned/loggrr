@@ -4,25 +4,87 @@
 
 @layer base {
   :root {
-    --main-bg: 248 250 252;
-    --element-bg: 255 255 255;
-    --secondary-element-bg: 241 245 249;
-    --border-color: 148 163 184;
-    --text-placeholder: 101 117 139;
-    --text-color: 52 66 86;
-    --brand: 79 70 229;
-    --hover: 240 243 255;
-  }
+    --background: 0 0% 98%;;
+    --foreground: 240 10% 4%;
+ 
+    --muted: 0 0% 98%;
+    --muted-foreground: 240, 10%, 4%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+ 
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+ 
+    --border: 240 5% 84%;
+    --input: 240 5% 84%;
+ 
+    --primary: 0 0% 100%;
+    --primary-foreground: 240 10% 4%;
+    --primary-ring: 243 74% 59%;
+ 
+    --secondary: 243 75% 59%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-ring: 243 74% 59%;
+ 
+    --accent: 0 0% 98%;
+    --accent-foreground: 240 10% 4%;
 
+    --destructive: 0 75% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-ring: 0 100% 50%;
+    --destructive-hover: 0 84% 63%;
+
+    --success: 161 92% 25%;
+    --success-foreground: 0 0 100%;
+    --success-ring: 142 71% 45%;
+    --success-hover: 160 84% 34%;
+ 
+    --ring: 243 74% 59%;
+ 
+    --radius: 0.5rem;
+  }
+ 
   .dark {
-    --main-bg: 9 9 11;
-    --element-bg: 9 9 11;
-    --secondary-element-bg: 17 24 39;
-    --border-color: 63 63 70;
-    --text-placeholder: 244 244 245;
-    --text-color: 255 255 255;
-    --brand: 79 70 229;
-    --hover: 63 63 70;
+    --background: 240 10% 4%;
+    --foreground: 0 0% 100%;
+ 
+    --muted: 240 10% 4%;
+    --muted-foreground: 0 0 100%;
+ 
+    --popover: 240 10% 4%;
+    --popover-foreground: 0 0 100%;
+ 
+    --card: 240 10% 4%;
+    --card-foreground: 0 0 100%;
+ 
+    --border: 240 5% 26%;
+    --input: 240 5% 26%;
+ 
+    --primary: 240 10% 4%;
+    --primary-foreground: 0 0 100%;
+    --primary-ring: 240 5% 84%;
+ 
+    --secondary: 240 6% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-ring: 240 5% 84%;
+
+    --accent: 240 5% 26%;
+    --accent-foreground: 0 0% 100%;
+ 
+    --destructive: 0 75% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-ring: 0 100% 50%;
+    --destructive-hover: 0 84% 63%;
+
+    --success: 161 92% 25%;
+    --success-foreground: 0 0 100%;
+    --success-ring: 142 71% 45%;
+    --success-hover: 160 84% 34%;
+ 
+    --ring: 240 5% 84%;
+ 
+    --radius: 0.5rem;
   }
 }
 
