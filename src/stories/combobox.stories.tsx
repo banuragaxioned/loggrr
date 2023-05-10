@@ -71,7 +71,7 @@ export const DefaultCombobox = () => {
   const [defaultList, setDefaultList] = useState<ISelectedValue[]>(list);
 
   const handleSelect = (val: string) => {
-    const selectedObj = defaultList.find((item: any) => item.value === val);
+    const selectedObj = defaultList.find((item: any) => item.value.toLowerCase() === val);
     console.log(defaultList, { selectedObj });
     setSelected(selectedObj);
   };
@@ -119,7 +119,7 @@ export const GroupedCombobox = () => {
 
   const handleGroupSelect = (val: string, grpName: string) => {
     const selectedGrp = groupList.find((group: IGroupList) => group.groupName === grpName);
-    const selectedObj = selectedGrp && selectedGrp.list.find((item: ISelectedValue) => item.value === val);
+    const selectedObj = selectedGrp && selectedGrp.list.find((item: ISelectedValue) => item.value.toLowerCase() === val);
     selectedObj && setSelected(selectedObj);
   };
 
@@ -140,7 +140,7 @@ export const SearchableCombobox = () => {
   const [defaultList, setDefaultList] = useState<ISelectedValue[]>(list);
 
   const handleSelect = (val: string) => {
-    const selectedObj = defaultList.find((item: any) => item.value === val);
+    const selectedObj = defaultList.find((item: any) => item.value.toLowerCase() === val);
     setSelected(selectedObj);
   };
 
