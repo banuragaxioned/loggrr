@@ -15,7 +15,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectItemText,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -30,7 +32,7 @@ export const CalendarDatePicker = () => {
           variant="primary"
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
+            !date && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -66,7 +68,7 @@ export function CalendarDateRangePicker({
             variant="primary"
             className={cn(
               "w-[280px] justify-start text-left font-normal",
-              !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
+              !date && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -157,7 +159,7 @@ export function CalendarDatePickerWithPresets() {
           variant="primary"
           className={cn(
             "w-[300px] justify-start text-left font-normal",
-            !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
+            !date && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -174,13 +176,29 @@ export function CalendarDatePickerWithPresets() {
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent position="popper">
-            <SelectItem value="0">Today</SelectItem>
-            <SelectItem value="1">Tomorrow</SelectItem>
-            <SelectItem value="3">In 3 days</SelectItem>
-            <SelectItem value="7">In a week</SelectItem>
+            <SelectGroup>
+              <SelectItem value="0">
+                <SelectItemText value={''}>
+                  Today
+                </SelectItemText>
+              </SelectItem>
+              <SelectItem value="1">
+                <SelectItemText value={''}>
+                  Tomorrow
+                </SelectItemText></SelectItem>
+              <SelectItem value="3">
+                <SelectItemText value={''}>
+                  In 3 days
+                </SelectItemText>
+              </SelectItem>
+              <SelectItem value="7">
+                <SelectItemText value={''}>
+                  In a week
+                </SelectItemText></SelectItem>
+            </SelectGroup>
           </SelectContent>
         </Select>
-        <div className="rounded-md border">
+        <div className="rounded-md border border-border">
           <Calendar mode="single" selected={date} onSelect={setDate} />
         </div>
       </PopoverContent>
