@@ -14,6 +14,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+<<<<<<< HEAD
         background: { light: colors.zinc[50], dark: colors.zinc[800] },
         backgroundHover: { light: colors.indigo[100] },
         "background-alternate": { light: colors.zinc[300], dark: colors.zinc[600] },
@@ -100,6 +101,16 @@ module.exports = {
         white: colors.white,
         black: colors.black,
         red: colors.red[600],
+=======
+        "main-bg": 'rgb(var(--main-bg) / 1)',
+        "element-bg": 'rgb(var(--element-bg) / 1)',
+        "secondary-element-bg": 'rgb(var(--secondary-element-bg) / 1)',
+        "border-color": 'rgb(var(--border-color) / 1)',
+        "text-placeholder": 'rgb(var(--text-placeholder) / 1)',
+        "text-color": 'rgb(var(--text-color) / 1)',
+        brand: 'rgb(var(--brand) / 1)',
+        hover: 'rgb(var(--hover) / 1)',
+>>>>>>> main
       },
       fontFamily: {
         sans: ["var(--font-primary)", ...fontFamily.sans],
