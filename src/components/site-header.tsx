@@ -20,7 +20,7 @@ export function SiteHeader() {
             <div
               className={buttonVariants({
                 size: "sm",
-                variant: "ghost",
+                variant: "primary",
                 className: "text-zinc-700 dark:text-zinc-400",
               })}
             >

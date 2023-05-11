@@ -21,7 +21,7 @@ function Calendar({
       className={cn("p-3", className)}
       classNames={{
         day: cn(
-          buttonVariants({ variant: "ghost" }),
+          buttonVariants({ variant: "primary" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100 focus:ring-accent-foreground-light dark:focus:ring-accent-foreground-dark"
         ),
         day_selected:
@@ -38,7 +38,7 @@ function Calendar({
         caption_label: "text-sm font-medium",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
-          buttonVariants({ variant: "outline" }),
+          buttonVariants({ variant: "primary" }),
           "h-7 w-7 p-0 opacity-50 hover:opacity-100 ring-0" 
         ),
         nav_button_previous: "absolute left-1",

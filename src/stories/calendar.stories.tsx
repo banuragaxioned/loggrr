@@ -27,7 +27,7 @@ export const CalendarDatePicker = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="primary"
           className={cn(
             "w-[280px] justify-start text-left font-normal",
             !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
@@ -63,7 +63,7 @@ export function CalendarDateRangePicker({
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={"outline"}
+            variant="primary"
             className={cn(
               "w-[280px] justify-start text-left font-normal",
               !date && "text-muted-foreground-light dark:text-muted-foreground-dark"
@@ -154,7 +154,7 @@ export function CalendarDatePickerWithPresets() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="primary"
           className={cn(
             "w-[300px] justify-start text-left font-normal",
             !date && "text-muted-foreground-light dark:text-muted-foreground-dark"

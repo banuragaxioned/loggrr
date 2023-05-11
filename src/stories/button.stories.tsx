@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Mail, Loader2 } from "lucide-react";
 
-export const DefaultButton = () => (
+export const PrimaryButton = () => (
   <div>
-    <Button variant="outline">Button</Button>
+    <Button variant="primary">Primary</Button>
+  </div>
+);
+
+export const SecondaryButton = () => (
+  <div>
+    <Button variant="secondary">Secondary</Button>
   </div>
 );
 
@@ -13,29 +19,35 @@ export const DestructiveButton = () => (
   </div>
 );
 
-export const OutlineButton = () => (
+export const SuccessButton = () => (
   <div>
-    <Button variant="outline">Outline</Button>
+    <Button variant="success">Success</Button>
   </div>
 );
 
-export const SubtleButton = () => (
-  <div>
-    <Button variant="subtle">Subtle</Button>
-  </div>
-);
+// export const OutlineButton = () => (
+//   <div>
+//     <Button variant="outline">Outline</Button>
+//   </div>
+// );
 
-export const GhostButton = () => (
-  <div>
-    <Button variant="ghost">Ghost</Button>
-  </div>
-);
+// export const SubtleButton = () => (
+//   <div>
+//     <Button variant="subtle">Subtle</Button>
+//   </div>
+// );
 
-export const LinkButton = () => (
-  <div>
-    <Button variant="link">Link</Button>
-  </div>
-);
+// export const GhostButton = () => (
+//   <div>
+//     <Button variant="ghost">Ghost</Button>
+//   </div>
+// );
+
+// export const LinkButton = () => (
+//   <div>
+//     <Button variant="link">Link</Button>
+//   </div>
+// );
 
 export const WithIconButton = () => (
   <div>
