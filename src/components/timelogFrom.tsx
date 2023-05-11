@@ -465,7 +465,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               <Icons.dollar className="h-6 w-6" />
             </Toggle>
             <Button
-              variant="default"
+              variant="secondary"
               size="sm"
               type="submit"
               disabled={!canSubmit}
@@ -566,7 +566,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
         {canClear && (
           <Button
             tabIndex={9}
-            variant="outline"
+            variant="primary"
             onClick={handleTimeLogCancel}
             size="sm"
             type="button"
