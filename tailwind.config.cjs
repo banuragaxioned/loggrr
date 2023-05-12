@@ -30,6 +30,10 @@ module.exports = {
           ring: "hsl(var(--secondary-ring))",
           hover: "hsl(var(--secondary-hover))"
         },
+        tertiary: {
+          DEFAULT: "hsl(var(--tertiary))",
+          foreground: "hsl(var(--tertiary-foreground))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
