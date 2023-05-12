@@ -15,7 +15,7 @@ export const SimpleDropdown = () => (
           Menu
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent side="bottom" align="start">
         <DropdownMenuItem>Option 1</DropdownMenuItem>
         <DropdownMenuItem>Option 2</DropdownMenuItem>
         <DropdownMenuItem>Option 3</DropdownMenuItem>
@@ -34,7 +34,7 @@ export const AdvancedDropdown = () => (
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" forceMount>
+      <DropdownMenuContent forceMount side="bottom" align="start">
         <DropdownMenuItem>
           <Icons.sun className="mr-2 h-4 w-4" />
           <span>Light</span>
