@@ -22,7 +22,7 @@ export function DefaultSelect() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup className="p-[5px]">
-            <SelectItem value="axioned"> <SelectItemText value="">Axioned</SelectItemText></SelectItem>
+            <SelectItem value="axioned"><SelectItemText value="">Axioned</SelectItemText></SelectItem>
             <SelectItem value="cfm"><SelectItemText value="">CFM</SelectItemText></SelectItem>
             <SelectItem value="culture15"><SelectItemText value="">Culture 15</SelectItemText></SelectItem>
             <SelectItem value="shutterstock"><SelectItemText value="">Shutterstock</SelectItemText></SelectItem>

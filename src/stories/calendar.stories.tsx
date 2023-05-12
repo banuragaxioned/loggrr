@@ -112,8 +112,8 @@ export const CalendarRelativeDatePicker = ({
   const currentDate = new Date()
 
   return (
-    <div className={cn("flex border border-zinc-300 rounded-md w-3/4", className)}>
-      <div className={cn("flex basis-2/3 items-center text-left font-normal py-2 px-4", !date && "text-muted-foreground-light dark:text-muted-foreground-dark")}>
+    <div className={cn("flex border border-border rounded-md w-3/4 bg-popover", className)}>
+      <div className={cn("flex basis-2/3 items-center text-popover-foreground text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
         <CalendarIcon className="mr-2 h-4 w-4" />
         {date?.from ? (
           date.to ? (
@@ -129,19 +129,15 @@ export const CalendarRelativeDatePicker = ({
         )}
       </div>
       <div className='basis-1/3'>
-        <Select
-          onValueChange={(value) =>
-            setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })
-          }
-        >
-          <SelectTrigger className='border-0 border-l w-full rounded-l-none focus:rounded-md'>
+        <Select onValueChange={(value) =>setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })}>
+          <SelectTrigger className='border-0 border-l border-border w-full bg-popover text-popover-foreground rounded-l-none focus:rounded-md'>
             <SelectValue placeholder="Select" className='basis-3/4' />
           </SelectTrigger>
-          <SelectContent position='popper' sticky='always' hideWhenDetached className='top-[2px]'>
-            <SelectItem value="7">Last 7 days</SelectItem>
-            <SelectItem value="30">Last 30 days</SelectItem>
-            <SelectItem value={differenceInDays(currentDate, startOfMonth(currentDate)).toString()}>Month to Date</SelectItem>
-            <SelectItem value={differenceInDays(currentDate, startOfYear(currentDate)).toString()}>Year to Date</SelectItem>
+          <SelectContent position='popper' sticky='always' hideWhenDetached>
+            <SelectItem value="7"><SelectItemText value={""}>Last 7 days</SelectItemText></SelectItem>
+            <SelectItem value="30"><SelectItemText value={""}>Last 30 days</SelectItemText></SelectItem>
+            <SelectItem value={differenceInDays(currentDate, startOfMonth(currentDate)).toString()}><SelectItemText value={""}>Month to Date</SelectItemText></SelectItem>
+            <SelectItem value={differenceInDays(currentDate, startOfYear(currentDate)).toString()}><SelectItemText value={""}>Year to Date</SelectItemText></SelectItem>
           </SelectContent>
         </Select>
       </div>
