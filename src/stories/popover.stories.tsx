@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
@@ -7,7 +8,7 @@ import {
 export const PopOver = () => {
   return (
     <Popover>
-      <PopoverTrigger>Open</PopoverTrigger>
+      <PopoverTrigger><Button variant="primary">Open</Button></PopoverTrigger>
       <PopoverContent>Place content for the popover here.</PopoverContent>
     </Popover>
 

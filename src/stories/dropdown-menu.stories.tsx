@@ -10,7 +10,11 @@ import {
 export const SimpleDropdown = () => (
   <div>
     <DropdownMenu>
-      <DropdownMenuTrigger>Menu</DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
+        <Button variant="primary">
+          Menu
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Option 1</DropdownMenuItem>
         <DropdownMenuItem>Option 2</DropdownMenuItem>
@@ -24,9 +28,9 @@ export const AdvancedDropdown = () => (
   <div>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <Icons.sun className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:-rotate-90 dark:scale-0 dark:text-zinc-400 dark:hover:text-zinc-100" />
-          <Icons.moon className="absolute rotate-90 scale-0 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
+        <Button variant="primary" size="sm">
+          <Icons.sun className="rotate-0 scale-100 transition-all text-popover-foreground hover:accent hover:text-accent-foreground dark:-rotate-90 dark:scale-0" />
+          <Icons.moon className="absolute rotate-90 scale-0 transition-all text-popover-foreground hover:accent hover:text-accent-foreground dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

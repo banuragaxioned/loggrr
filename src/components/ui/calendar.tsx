@@ -22,15 +22,15 @@ function Calendar({
       classNames={{
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 focus:ring-accent-foreground-light dark:focus:ring-accent-foreground-dark"
+          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 focus:ring-0"
         ),
         day_selected:
-          "bg-primary-light dark:bg-primary-dark text-primary-foreground-light dark:text-primary-foreground-dark hover:bg-primary-light dark:hover:bg-primary-dark hover:text-primary-foreground-light dark:hover:text-primary-foreground-dark focus:bg-primary-light dark:focus:bg-primary-dark focus:text-primary-foreground-light dark:focus:text-primary-foreground-dark",
-        day_today: "bg-accent-light dark:bg-accent-dark text-accent-foreground dark:text-accent-foreground-dark",
-        day_outside: "text-muted-foreground-light dark:text-muted-foreground-dark opacity-50",
-        day_disabled: "text-muted-foreground-light dark:text-muted-foreground-dark opacity-50",
+          "bg-tertiary text-tertiary-foreground hover:bg-tertiary hover:text-tertiary-foreground focus:ring-0 focus:outline-0 focus:bg-tertiary focus:text-tertiary-foreground",
+        day_today: "bg-accent text-accent-foreground",
+        day_outside: "text-muted-foreground opacity-50",
+        day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-accent-light dark:aria-selected:bg-accent-dark rounded-0 aria-selected:text-accent-foreground-light dark:aria-selected:text-accent-foreground-dark",
+          "aria-selected:bg-accent rounded-0 aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -38,17 +38,17 @@ function Calendar({
         caption_label: "text-sm font-medium",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
-          buttonVariants({ variant: "outline" }),
-          "h-7 w-7 p-0 opacity-50 hover:opacity-100 ring-0" 
+          buttonVariants({ variant: "ghost" }),
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 ring-0" 
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
-          "text-muted-foreground-light dark:text-muted-foreground-dark rounded-md w-9 font-normal text-[0.8rem]",
+          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
-        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent-light dark:[&:has([aria-selected])]:bg-accent-dark first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         ...classNames,
       }}
       components={{

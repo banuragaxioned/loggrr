@@ -14,7 +14,7 @@ export default function Unavailable() {
           <Link href="/help" rel="noreferrer" className={buttonVariants({ size: "lg" })}>
             Contact
           </Link>
-          <Link rel="noreferrer" href="/" className={buttonVariants({ variant: "outline", size: "lg" })}>
+          <Link rel="noreferrer" href="/" className={buttonVariants({ variant: "primary", size: "lg" })}>
             Back to home
           </Link>
         </div>
