@@ -60,7 +60,7 @@ export function CalendarDateRangePicker({
   })
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid gap-2")}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -109,11 +109,13 @@ export const CalendarRelativeDatePicker = ({
     to: new Date(),
   })
 
+  const [isOpen, setOpen] = useState(false)
+
   const currentDate = new Date()
 
   return (
-    <div className={cn("flex border border-border rounded-md w-3/4 bg-popover", className)}>
-      <div className={cn("flex basis-2/3 items-center text-popover-foreground text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
+    <div className={cn("flex border border-border rounded-md w-[564px] bg-popover", isOpen && "ring-ring ring-2")}>
+      <div className={cn("flex items-center text-popover-foreground text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
         <CalendarIcon className="mr-2 h-4 w-4" />
         {date?.from ? (
           date.to ? (
@@ -128,9 +130,9 @@ export const CalendarRelativeDatePicker = ({
           <span>Pick a date</span>
         )}
       </div>
-      <div className='basis-1/3'>
-        <Select onValueChange={(value) =>setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })}>
-          <SelectTrigger className='border-0 border-l border-border w-full bg-popover text-popover-foreground rounded-l-none focus:rounded-md'>
+      <div className='grow'>
+        <Select onValueChange={(value) => setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })}>
+          <SelectTrigger onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} className='group border-0 border-l border-border focus:border-l w-full bg-popover text-popover-foreground rounded-l-none focus:ring-0'>
             <SelectValue placeholder="Select" className='basis-3/4' />
           </SelectTrigger>
           <SelectContent position='popper' sticky='always' hideWhenDetached>
