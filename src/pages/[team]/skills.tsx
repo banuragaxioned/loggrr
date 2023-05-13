@@ -5,7 +5,6 @@ import useToast from "@/hooks/useToast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import TableUI from "@/components/ui/table";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -51,9 +50,9 @@ export default function Projects() {
     <div className="mx-auto flex max-w-6xl gap-4">
       <section>
         <h2>My Skill Scores</h2>
-        <TableUI rows={mySkillScores.data} columns={mySkillsDataColumns} />
+        {/* <TableUI rows={mySkillScores.data} columns={mySkillsDataColumns} /> */}
         <h2>All Skill Scores</h2>
-        <TableUI rows={allSkillScores.data} columns={allSkillScoreDataColumns} />
+        {/* <TableUI rows={allSkillScores.data} columns={allSkillScoreDataColumns} /> */}
         <h2>Skill list (all)</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
@@ -69,7 +68,7 @@ export default function Projects() {
           </Button>
         </form>
         <ul className="flex flex-col gap-4">
-          <TableUI rows={allSkillList.data} columns={skillListDataColumns} />
+          {/* <TableUI rows={allSkillList.data} columns={skillListDataColumns} /> */}
         </ul>
       </section>
     </div>

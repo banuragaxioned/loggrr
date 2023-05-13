@@ -11,12 +11,14 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground border border-border",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary-hover focus:ring-secondary-ring",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive-hover focus:ring-destructive-ring",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive-hover focus:ring-destructive-ring",
         success: "bg-success text-success-foreground hover:bg-success-hover focus:ring-success-ring",
-        // outline: "bg-transparent border border-zinc-200 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100",
-        // subtle: "bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100",
-        ghost: "hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent focus:ring-transparent focus:outline-0",
-        // link: "bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-zinc-950 dark:text-zinc-100 hover:bg-transparent dark:hover:bg-transparent",
+        outline: "bg-transparent border border-border hover:bg-zinc-100 dark:text-zinc-100",
+        subtle: "bg-muted text-muted-foreground hover:bg-zinc-200",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent focus:ring-transparent focus:outline-0",
+        link: "bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-zinc-950 dark:text-zinc-100 hover:bg-transparent dark:hover:bg-transparent",
       },
       size: {
         default: "h-10 py-2 px-4",
