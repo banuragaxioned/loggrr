@@ -135,9 +135,9 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-muted;
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-popover;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-muted bg-muted-foreground;
+    @apply border-4 border-solid rounded-[14px] border-popover bg-muted-foreground;
   }
 }
