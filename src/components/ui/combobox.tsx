@@ -82,7 +82,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                       <CommandGroup
                         key={group.id}
                         className={`px-0 select-none text-sm [&_[cmdk-group-heading]]:px-[2px] [&_[cmdk-group-heading]]:py-2`}
-                        heading={groupName ? <div className="px-[7px] tracking-wide">{groupName}</div> : ""}
+                        heading={groupName ? <div className="px-[7px] tracking-wider font-medium text-muted-foreground">{groupName}</div> : ""}
                       >
                         {group?.list?.length > 0 &&
                           group?.list.map((item: any, innerI: any) => {

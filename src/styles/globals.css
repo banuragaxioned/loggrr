@@ -8,7 +8,7 @@
     --foreground: 240 10% 4%;
  
     --muted: 0 0% 98%;
-    --muted-foreground: 240, 10%, 4%;
+    --muted-foreground: 215 16% 47%;
  
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 4%;
@@ -25,8 +25,8 @@
  
     --secondary: 243 75% 59%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-ring: 243 74% 59%;
-    --secondary-hover: 234 89% 74%;
+    --secondary-ring: 234 89% 74%;
+    --secondary-hover: 239 84% 67%;
 
     --tertiary: 240 10% 4%;
     --tertiary-foreground: 0 0% 98%;
@@ -34,15 +34,15 @@
     --accent: 226 100% 97%;
     --accent-foreground: 240 10% 4%;
 
-    --destructive: 0 75% 51%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-ring: 0 100% 50%;
+    --destructive-ring: 0 91% 71%;
     --destructive-hover: 0 84% 63%;
 
-    --success: 161 92% 25%;
-    --success-foreground: 0 0 100%;
+    --success: 160 84% 34%;
+    --success-foreground: 0 0% 100%;
     --success-ring: 142 71% 45%;
-    --success-hover: 160 84% 34%;
+    --success-hover: 160 84% 39%;
  
     --ring: 243 74% 59%;
  
@@ -71,8 +71,8 @@
  
     --secondary: 243 75% 59%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-ring: 243 74% 59%;
-    --secondary-hover: 234 89% 74%;
+    --secondary-ring: 234 89% 74%;
+    --secondary-hover: 239 84% 67%;
 
     --tertiary: 0 0% 98%;
     --tertiary-foreground: 240 10% 4%;
@@ -80,9 +80,9 @@
     --accent: 240 5% 26%;
     --accent-foreground: 0 0% 100%;
  
-    --destructive: 0 75% 51%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-ring: 0 100% 50%;
+    --destructive-ring: 0 91% 71%;
     --destructive-hover: 0 84% 63%;
 
     --success: 161 92% 25%;
@@ -135,9 +135,9 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-popover;
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-muted;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-popover bg-popover-foreground;
+    @apply border-4 border-solid rounded-[14px] border-muted bg-muted-foreground;
   }
 }

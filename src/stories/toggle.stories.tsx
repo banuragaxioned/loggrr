@@ -6,14 +6,6 @@ import { Toggle } from "@/components/ui/toggle";
 
 export function ToggleDemo() {
   return (
-    <Toggle aria-label="Toggle italic">
-      <Italic className="h-4 w-4" />
-    </Toggle>
-  );
-}
-
-export function ToggleOutline() {
-  return (
     <Toggle variant="outline" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
@@ -22,7 +14,7 @@ export function ToggleOutline() {
 
 export function ToggleWithText() {
   return (
-    <Toggle aria-label="Toggle italic">
+    <Toggle variant="outline" aria-label="Toggle italic">
       <Italic className="mr-2 h-4 w-4" />
       Italic
     </Toggle>
@@ -31,7 +23,7 @@ export function ToggleWithText() {
 
 export function ToggleSm() {
   return (
-    <Toggle size="sm" aria-label="Toggle italic">
+    <Toggle variant="outline" size="sm" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
   );
@@ -39,7 +31,7 @@ export function ToggleSm() {
 
 export function ToggleLg() {
   return (
-    <Toggle size="lg" aria-label="Toggle italic">
+    <Toggle variant="outline" size="lg" aria-label="Toggle italic">
       <Italic className="h-4 w-4" />
     </Toggle>
   );
@@ -47,7 +39,7 @@ export function ToggleLg() {
 
 export function ToggleDisabled() {
   return (
-    <Toggle aria-label="Toggle italic" disabled>
+    <Toggle variant="outline" aria-label="Toggle italic" disabled>
       <Italic className="h-4 w-4" />
     </Toggle>
   );
