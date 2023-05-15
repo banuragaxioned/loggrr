@@ -128,10 +128,10 @@ export default function GlobalReportsAssigned() {
               Users: <ul className="ml-10 text-gray-600">
                 {data.users?.map(user => (
                   <li key={user.userId}>
-                    User name: {user.username} <br />
-                    User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar || ''} alt="avatar" /> <br />
-                    Average hours: {user.averageHours/60 || 0} <br />
-                    Total allocations hours: {user.totalAllocationsHours/60 || 0} <br />
+                    User name: {user.userName} <br />
+                    User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar} alt="avatar" /> <br />
+                    Average hours: {user.averageTime/60 || 0} <br />
+                    Total allocations hours: {user.totalTime/60 || 0} <br />
                     Allocations: 
                     <table className="ml-10 font-normal">
                       <tr>
@@ -161,9 +161,9 @@ export default function GlobalReportsAssigned() {
           {/* global allocation */}
           {!!globalAllocationData.length && globalAllocationData.map(user => (
             <li key={user.userId}>
-              User name: {user.username} <br />
-              User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar || ''} alt="avatar" /> <br />
-              Average hours: {user.averageHours/60} <br />
+              User name: {user.userName} <br />
+              User avatar: <img className="inline ml-2 h-5 rounded-full" src={user.userAvatar} alt="avatar" /> <br />
+              Average hours: {user.averageTime/60} <br />
               Total hours: {user.totalTime/60} <br />
               TopRowDates:
                 <table className="ml-10 text-gray-600">
@@ -173,12 +173,12 @@ export default function GlobalReportsAssigned() {
                     <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Non billable time</th>
                     <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Total time</th>
                   </tr>
-                  {user.topRowDates && Object.keys(user.topRowDates)?.map((allocationDate) => (
+                  {user.cumulativeProjectDates && Object.keys(user.cumulativeProjectDates)?.map((allocationDate) => (
                     <tr key={allocationDate}>
                       <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{allocationDate}</td>
-                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].billableTime/60 || 0}</td>
-                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].nonBillableTime/60 || 0}</td>
-                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.topRowDates[allocationDate].totalTime/60 || 0}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.cumulativeProjectDates[allocationDate].billableTime/60 || 0}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.cumulativeProjectDates[allocationDate].nonBillableTime/60 || 0}</td>
+                      <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{user.cumulativeProjectDates[allocationDate].totalTime/60 || 0}</td>
                       <br />
                     </tr>
                   ))}
@@ -197,12 +197,12 @@ export default function GlobalReportsAssigned() {
                           <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Non billable time</th>
                           <th style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>Total time</th>
                         </tr>
-                        {Object.keys(project.allocationDates)?.map((allocationDate) => (
+                        {Object.keys(project.allocations)?.map((allocationDate) => (
                           <tr key={allocationDate}>
                             <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{allocationDate}</td>
-                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].billableTime/60 || 0}</td>
-                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].nonBillableTime/60 || 0}</td>
-                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocationDates[allocationDate].totalTime/60 || 0}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocations[allocationDate].billableTime/60 || 0}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocations[allocationDate].nonBillableTime/60 || 0}</td>
+                            <td style={{border: "1px solid black", borderCollapse: "collapse", padding: "0 10px"}}>{project.allocations[allocationDate].totalTime/60 || 0}</td>
                             <br />
                           </tr>
                         ))}

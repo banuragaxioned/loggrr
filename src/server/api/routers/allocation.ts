@@ -171,14 +171,14 @@ export const allocationRouter = createTRPCRouter({
               const totalTime = calculateAllocationTotalTime(allocations);
       
               // calculate average time
-              const averageHours = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
+              const averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
       
               return {
                 userId: user.id,
-                username: user.name,
-                userAvatar: user.image,
-                averageHours: averageHours,
-                totalAllocationsHours: totalTime,
+                userName: user.name,
+                userAvatar: user.image || `${process.env.BASE_URL}/avatar.png`,
+                averageTime: averageTime,
+                totalTime: totalTime,
                 allocations: allocations,
               };
             }),
@@ -208,7 +208,7 @@ export const allocationRouter = createTRPCRouter({
         finalData = users.map(user => {
 
           let grandTotalHours = 0;
-          const topRowDates: AllocationDates = {};
+          const cumulativeProjectDates: AllocationDates = {};
       
           const projectsData = user.Project.map(project => {
       
@@ -221,14 +221,14 @@ export const allocationRouter = createTRPCRouter({
             // calculate projects totalTime from allocations data
             const projectTotalTime = calculateAllocationTotalTime(allocations);
       
-            // create and add hours in topRowDates allocations
+            // create and add hours in cumulativeProjectDates allocations
             for (const [allocationKey, allocation] of Object.entries(allocations)) {
       
-              const isAllocationDateExist = topRowDates[allocationKey];
+              const isAllocationDateExist = cumulativeProjectDates[allocationKey];
       
               // create allocation, if allocation date not exist
               if (!isAllocationDateExist) {
-                topRowDates[allocationKey] = { ...allocation };
+                cumulativeProjectDates[allocationKey] = { ...allocation };
                 grandTotalHours += allocation.totalTime; /* calculate all totalTime */
       
                 // stop further execution
@@ -236,9 +236,9 @@ export const allocationRouter = createTRPCRouter({
               }
       
               // if allocation date exist add hours 
-              topRowDates[allocationKey].billableTime += allocation.billableTime;
-              topRowDates[allocationKey].nonBillableTime += allocation.nonBillableTime;
-              topRowDates[allocationKey].totalTime += allocation.totalTime;
+              cumulativeProjectDates[allocationKey].billableTime += allocation.billableTime;
+              cumulativeProjectDates[allocationKey].nonBillableTime += allocation.nonBillableTime;
+              cumulativeProjectDates[allocationKey].totalTime += allocation.totalTime;
       
               grandTotalHours += allocation.totalTime; /* calculate all totalTime */
             };
@@ -247,21 +247,21 @@ export const allocationRouter = createTRPCRouter({
               projectId: project.id,
               projectName: project.name,
               totalTime: projectTotalTime,
-              allocationDates: allocations,
+              allocations: allocations,
             };
           });
       
           // calculate average hours
-          const averageHours = parseFloat((grandTotalHours / Object.keys(topRowDates).length).toFixed(2)) || 0;
+          const averageHours = parseFloat((grandTotalHours / Object.keys(cumulativeProjectDates).length).toFixed(2)) || 0;
       
           return {
             globalView: true,
             userId: user.id,
-            username: user.name,
-            userAvatar: user.image,
+            userName: user.name,
+            userAvatar: user.image || `${process.env.BASE_URL}/avatar.png`,
             totalTime: grandTotalHours,
-            averageHours: averageHours,
-            topRowDates: topRowDates,
+            averageTime: averageHours,
+            cumulativeProjectDates: cumulativeProjectDates,
             projects: projectsData,
           };
         });

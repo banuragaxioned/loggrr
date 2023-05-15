@@ -98,10 +98,10 @@ export type ProjectAllocation = {
   projectName: string;
   users: {
     userId: number;
-    username: string | null;
-    userAvatar: string | null;
-    averageHours: number;
-    totalAllocationsHours: number;
+    userName: string | null;
+    userAvatar: string;
+    averageTime: number;
+    totalTime: number;
     allocations: AllocationDates;
   }[];
 };
@@ -109,15 +109,15 @@ export type ProjectAllocation = {
 export type GlobalAllocation = {
   globalView: boolean,
   userId: number;
-  username: string | null;
-  userAvatar: string | null;
+  userName: string | null;
+  userAvatar: string;
   totalTime: number;
-  averageHours: number;
-  topRowDates: AllocationDates;
+  averageTime: number;
+  cumulativeProjectDates: AllocationDates;
   projects: {
     projectId: number;
     projectName: string;
     totalTime: number;
-    allocationDates: AllocationDates;
+    allocations: AllocationDates;
   }[];
 };
