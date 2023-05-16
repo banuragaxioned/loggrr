@@ -28,21 +28,14 @@
     --secondary-ring: 234 89% 74%;
     --secondary-hover: 239 84% 67%;
 
-    --tertiary: 240 10% 4%;
-    --tertiary-foreground: 0 0% 98%;
- 
-    --accent: 226 100% 97%;
-    --accent-foreground: 240 10% 4%;
+    --accent: 240 10% 4%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-ring: 0 91% 71%;
-    --destructive-hover: 0 84% 63%;
 
     --success: 160 84% 34%;
     --success-foreground: 0 0% 100%;
-    --success-ring: 142 71% 45%;
-    --success-hover: 160 84% 39%;
  
     --ring: 243 74% 59%;
  
@@ -68,27 +61,15 @@
     --primary: 240 10% 4%;
     --primary-foreground: 0 0% 100%;
     --primary-ring: 240 5% 84%;
- 
-    --secondary: 243 75% 59%;
-    --secondary-foreground: 0 0% 100%;
-    --secondary-ring: 234 89% 74%;
-    --secondary-hover: 239 84% 67%;
 
-    --tertiary: 0 0% 98%;
-    --tertiary-foreground: 240 10% 4%;
-
-    --accent: 240 5% 26%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 98%;
+    --accent-foreground: 240 10% 4%;
  
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-ring: 0 91% 71%;
-    --destructive-hover: 0 84% 63%;
 
     --success: 161 92% 25%;
     --success-foreground: 0 0% 100%;
-    --success-ring: 142 71% 45%;
-    --success-hover: 160 84% 34%;
  
     --ring: 240 5% 84%;
  
