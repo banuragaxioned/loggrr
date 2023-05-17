@@ -4,29 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;;
+    --background: 0 0% 100%;;
     --foreground: 240 10% 4%;
  
     --muted: 0 0% 98%;
     --muted-foreground: 215 16% 47%;
  
-    --popover: 0 0% 100%;
+    /* --popover: 0 0% 100%;
     --popover-foreground: 240 10% 4%;
  
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    --card-foreground: 240 10% 4%; */
  
     --border: 240 5% 84%;
     --input: 240 5% 84%;
  
     --primary: 0 0% 100%;
     --primary-foreground: 240 10% 4%;
-    --primary-ring: 243 74% 59%;
  
     --secondary: 243 75% 59%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-ring: 234 89% 74%;
-    --secondary-hover: 239 84% 67%;
 
     --accent: 240 10% 4%;
     --accent-foreground: 0 0% 98%;
@@ -36,6 +33,9 @@
 
     --success: 160 84% 34%;
     --success-foreground: 0 0% 100%;
+
+    --hover: 226 100% 97%;
+    --hover-foreground: 240 10% 4%;
  
     --ring: 243 74% 59%;
  
@@ -49,18 +49,17 @@
     --muted: 240 10% 4%;
     --muted-foreground: 0 0% 100%;
  
-    --popover: 240 10% 4%;
+    /* --popover: 240 10% 4%;
     --popover-foreground: 0 0% 100%;
  
     --card: 240 10% 4%;
-    --card-foreground: 0 0% 100%;
+    --card-foreground: 0 0% 100%; */
  
     --border: 240 5% 26%;
     --input: 240 5% 26%;
  
     --primary: 240 10% 4%;
     --primary-foreground: 0 0% 100%;
-    --primary-ring: 240 5% 84%;
 
     --accent: 0 0% 98%;
     --accent-foreground: 240 10% 4%;
@@ -78,6 +77,9 @@
 }
 
 @layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
   h1 {
     @apply scroll-m-20 text-3xl font-extrabold tracking-tight;
   }
@@ -116,9 +118,9 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-tr-[4px] rounded-br-[4px] bg-popover;
+    @apply rounded-tr-[4px] rounded-br-[4px] bg-background;
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply border-4 border-solid rounded-[14px] border-popover bg-muted-foreground;
+    @apply border-4 border-solid rounded-[14px] border-background bg-muted-foreground;
   }
 }

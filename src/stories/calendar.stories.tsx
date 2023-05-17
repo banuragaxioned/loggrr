@@ -114,8 +114,8 @@ export const CalendarRelativeDatePicker = ({
   const currentDate = new Date()
 
   return (
-    <div className={cn("flex border border-border rounded-md w-[564px] bg-popover", isOpen && "ring-ring ring-2")}>
-      <div className={cn("flex items-center text-popover-foreground text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
+    <div className={cn("flex border border-border rounded-md w-[564px] bg-background", isOpen && "ring-ring ring-2")}>
+      <div className={cn("flex items-center text-foreground text-left font-normal py-2 px-4", !date && "text-muted-foreground")}>
         <CalendarIcon className="mr-2 h-4 w-4" />
         {date?.from ? (
           date.to ? (
@@ -132,7 +132,7 @@ export const CalendarRelativeDatePicker = ({
       </div>
       <div className='grow'>
         <Select onValueChange={(value) => setDate({ from: addDays(currentDate, -(parseInt(value))), to: currentDate })}>
-          <SelectTrigger onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} className='group border-0 border-l border-border focus:border-l w-full bg-popover text-popover-foreground rounded-l-none focus:ring-0'>
+          <SelectTrigger onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} className='group border-0 border-l border-border focus:border-l w-full bg-background text-foreground rounded-l-none focus:ring-0'>
             <SelectValue placeholder="Select" className='basis-3/4' />
           </SelectTrigger>
           <SelectContent position='popper' sticky='always' hideWhenDetached>

@@ -57,14 +57,14 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             <ChevronDown className="h-4 w-4 ml-auto" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent side="bottom" align="start" className="max-w-[230px] bg-popover text-popover-foreground p-0 transition-all ease-in border-0">
+        <PopoverContent side="bottom" align="start" className="max-w-[230px] bg-background text-foreground p-0 transition-all ease-in border-0">
           <Command className={`${searchable ? 'border' : 'border-0'} border-box rounded-t-[5px] border-border`}>
             {searchable && (
               <div className="space-between flex w-full items-center rounded-t-[5px]">
                 <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
                 <CommandInput
                   tabIndex={tabIndex}
-                  className={`border-none text-popover-foregroun border-border box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-popover placeholder:opacity-75 placeholder:font-[14px] focus:outline-0 focus:ring-0`}
+                  className={`border-none text-foreground border-border box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-background placeholder:opacity-75 placeholder:font-[14px] focus:outline-0 focus:ring-0`}
                   autoFocus
                   placeholder={placeholder ?? "Search here..."}
                   value={searchTerm}
@@ -72,7 +72,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                 />
               </div>
             )}
-            <CommandList className={`border border-border ${searchable ? 'border-t-0' : 'rounded-t-[5px]'} scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}>
+            <CommandList className={`border border-border ${searchable ? 'border-t-0' : 'rounded-t-[5px]'} scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-background px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}>
               <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
               {options.length > 0 &&
                 (group
@@ -90,7 +90,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                               <CommandItem
                                 key={item.id}
                                 value={item.value}
-                                className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-accent"
+                                className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-hover"
                                 onSelect={(val: string) => {
                                   handleGroupSelect && handleGroupSelect(val, groupName);
                                   setIsOpen(false);
@@ -112,7 +112,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                           handleSelect && handleSelect(val);
                           setIsOpen(false);
                         }}
-                        className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] aria-selected:bg-accent"
+                        className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] aria-selected:bg-hover"
                       >
                         {item.name}
                       </CommandItem>
