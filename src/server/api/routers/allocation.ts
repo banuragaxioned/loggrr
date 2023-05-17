@@ -260,7 +260,7 @@ export const allocationRouter = createTRPCRouter({
             globalView: true,
             userId: user.id,
             userName: user.name,
-            userAvatar: user.image || `${process.env.BASE_URL}/avatar.png`,
+            userAvatar: user.image || `${process.env.NEXTAUTH_URL}/avatar.png`,
             totalTime: grandTotalHours,
             averageTime: averageHours,
             cumulativeProjectDates: cumulativeProjectDates,
