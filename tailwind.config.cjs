@@ -22,13 +22,13 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          ring: "hsl(var(--primary-ring))"
+          ring: "hsl(var(--primary-ring))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
           ring: "hsl(var(--secondary-ring))",
-          hover: "hsl(var(--secondary-hover))"
+          hover: "hsl(var(--secondary-hover))",
         },
         tertiary: {
           DEFAULT: "hsl(var(--tertiary))",

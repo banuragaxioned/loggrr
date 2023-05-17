@@ -1,13 +1,3 @@
-// Source: https://ui.shadcn.com/docs/installation#add-a-cn-helper
-
-import type { ClassValue } from "clsx";
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 // Get initials from name
 export function getInitials(name: string): string {
   const initials = name
@@ -82,6 +72,15 @@ export const cleanDate = (dateInput: Date) => {
   return new Date(justDate);
 };
 
-export function absoluteUrl(path: string) {
-  return `${process.env.NEXTAUTH_URL}${path}`;
+// split array into smaller chunks.
+export const splitIntoChunk = (array: { id: number }[], size: number) => {
+  const chunkedData = [];
+
+  let index = 0;
+  while (index < array.length) {
+    chunkedData.push(array.slice(index, size + index));
+    index += size;
+  }
+
+  return chunkedData;
 }

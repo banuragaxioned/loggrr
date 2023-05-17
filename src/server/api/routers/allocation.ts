@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { Allocation, AllocationFrequency } from "@prisma/client";
 import { AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types"
-import { splitIntoChunk } from "@/lib/utils";
+import { splitIntoChunk } from "@/lib/helper";
 
 export const allocationRouter = createTRPCRouter({
   // Create a new time Allocation

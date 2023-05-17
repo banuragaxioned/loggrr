@@ -1,12 +1,7 @@
-import { Plus, DeleteIcon, Trash } from "lucide-react"
+import { Plus, Trash } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function Add() {
   return (
@@ -23,7 +18,7 @@ export function Add() {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  )
+  );
 }
 
 export function Delete() {
@@ -41,5 +36,5 @@ export function Delete() {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  )
+  );
 }

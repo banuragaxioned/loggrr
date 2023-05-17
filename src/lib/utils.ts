@@ -1,12 +1,9 @@
-// split array into smaller chunks.
-export const splitIntoChunk = (array: { id: number }[], size: number) => {
-  const chunkedData = [];
+// Source: https://ui.shadcn.com/docs/installation#add-a-cn-helper
 
-  let index = 0;
-  while (index < array.length) {
-    chunkedData.push(array.slice(index, size + index));
-    index += size;
-  }
+import type { ClassValue } from "clsx";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-  return chunkedData;
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
