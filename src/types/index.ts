@@ -88,11 +88,11 @@ export type AllocationDates = {
     nonBillableTime: number;
     totalTime: number;
     updatedAt: Date;
-  }
+  };
 };
 
 export type ProjectAllocation = {
-  globalView: boolean,
+  globalView: boolean;
   clientName: string;
   projectId: number;
   projectName: string;
@@ -107,7 +107,7 @@ export type ProjectAllocation = {
 };
 
 export type GlobalAllocation = {
-  globalView: boolean,
+  globalView: boolean;
   userId: number;
   userName: string | null;
   userAvatar: string;

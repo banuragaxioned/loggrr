@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -9,9 +9,9 @@ import {
   SelectItemText,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
-import AvatarImg from '../../public/avatar.png'
+import AvatarImg from "../../public/avatar.png";
 
 export function DefaultSelect() {
   return (
@@ -22,15 +22,23 @@ export function DefaultSelect() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup className="p-[5px]">
-            <SelectItem value="axioned"><SelectItemText value="">Axioned</SelectItemText></SelectItem>
-            <SelectItem value="cfm"><SelectItemText value="">CFM</SelectItemText></SelectItem>
-            <SelectItem value="culture15"><SelectItemText value="">Culture 15</SelectItemText></SelectItem>
-            <SelectItem value="shutterstock"><SelectItemText value="">Shutterstock</SelectItemText></SelectItem>
+            <SelectItem value="axioned">
+              <SelectItemText value="">Axioned</SelectItemText>
+            </SelectItem>
+            <SelectItem value="cfm">
+              <SelectItemText value="">CFM</SelectItemText>
+            </SelectItem>
+            <SelectItem value="culture15">
+              <SelectItemText value="">Culture 15</SelectItemText>
+            </SelectItem>
+            <SelectItem value="shutterstock">
+              <SelectItemText value="">Shutterstock</SelectItemText>
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }
 
 export function SelectWithItemIcon() {
@@ -44,8 +52,8 @@ export function SelectWithItemIcon() {
           <SelectGroup className="p-[5px]">
             <SelectItem value="axioned">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
+                <div className="flex w-full items-center gap-2">
+                  <Avatar className="border-border-color h-7 w-7 border-[0.01rem]">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>AB</AvatarFallback>
                   </Avatar>
@@ -55,8 +63,8 @@ export function SelectWithItemIcon() {
             </SelectItem>
             <SelectItem value="cfm">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
+                <div className="flex w-full items-center gap-2">
+                  <Avatar className="border-border-color h-7 w-7 border-[0.01rem]">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>KA</AvatarFallback>
                   </Avatar>
@@ -66,8 +74,8 @@ export function SelectWithItemIcon() {
             </SelectItem>
             <SelectItem value="culture15">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
+                <div className="flex w-full items-center gap-2">
+                  <Avatar className="border-border-color h-7 w-7 border-[0.01rem]">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>SD</AvatarFallback>
                   </Avatar>
@@ -77,8 +85,8 @@ export function SelectWithItemIcon() {
             </SelectItem>
             <SelectItem value="shutterstock">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center gap-2 w-full">
-                  <Avatar className="w-7 h-7 border-[0.01rem] border-border-color">
+                <div className="flex w-full items-center gap-2">
+                  <Avatar className="border-border-color h-7 w-7 border-[0.01rem]">
                     <AvatarImage src={`${AvatarImg}`} />
                     <AvatarFallback>VY</AvatarFallback>
                   </Avatar>
@@ -90,7 +98,7 @@ export function SelectWithItemIcon() {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }
 
 export function SelectWithCount() {
@@ -104,7 +112,7 @@ export function SelectWithCount() {
           <SelectGroup className="p-[5px]">
             <SelectItem value="my projects">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center justify-between gap-2 w-full">
+                <div className="flex w-full items-center justify-between gap-2">
                   <span>My Projects</span>
                   <span>(5)</span>
                 </div>
@@ -112,7 +120,7 @@ export function SelectWithCount() {
             </SelectItem>
             <SelectItem value="active projects">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center justify-between gap-2 w-full">
+                <div className="flex w-full items-center justify-between gap-2">
                   <span>Active Projects</span>
                   <span className="ml-auto">(3)</span>
                 </div>
@@ -120,7 +128,7 @@ export function SelectWithCount() {
             </SelectItem>
             <SelectItem value="client projects">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center justify-between gap-2 w-full">
+                <div className="flex w-full items-center justify-between gap-2">
                   <span>Client Projects</span>
                   <span>(4)</span>
                 </div>
@@ -128,7 +136,7 @@ export function SelectWithCount() {
             </SelectItem>
             <SelectItem value="archive projects">
               <SelectItemText asChild value="my projects">
-                <div className="flex items-center justify-between gap-2 w-full">
+                <div className="flex w-full items-center justify-between gap-2">
                   <span>Archive Projects</span>
                   <span>(8)</span>
                 </div>
@@ -138,7 +146,5 @@ export function SelectWithCount() {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }
-
-

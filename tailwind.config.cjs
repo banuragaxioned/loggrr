@@ -4,13 +4,7 @@ const colors = require("tailwindcss/colors");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./src/stories/**/*.{js,ts,jsx,tsx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    // Path to the tremor module
-    "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./src/stories/**/*.{js,ts,jsx,tsx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
@@ -22,29 +16,18 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          ring: "hsl(var(--primary-ring))"
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          ring: "hsl(var(--secondary-ring))",
-          hover: "hsl(var(--secondary-hover))"
-        },
-        tertiary: {
-          DEFAULT: "hsl(var(--tertiary))",
-          foreground: "hsl(var(--tertiary-foreground))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
-          ring: "hsl(var(--destructive-ring))",
-          hover: "hsl(var(--destructive-hover))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
-          ring: "hsl(var(--success-ring))",
-          hover: "hsl(var(--success-hover))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
