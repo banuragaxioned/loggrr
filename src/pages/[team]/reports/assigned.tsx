@@ -187,6 +187,7 @@ export default function GlobalReportsAssigned() {
                 <ul className="ml-10 text-gray-600">
                   {user.projects?.map((project) => (
                     <li key={project.projectId}>
+                      Client name: {project.clientName} <br />
                       Project name: {project.projectName} <br />
                       Total time: {project.totalTime/60 || 0} <br />
                       Allocation Date:

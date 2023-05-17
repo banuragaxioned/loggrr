@@ -200,6 +200,7 @@ export const allocationRouter = createTRPCRouter({
             Project: {
               include: {
                 Allocation: allocationQuery,
+                Client: true,
               }
             },
           },
@@ -244,6 +245,7 @@ export const allocationRouter = createTRPCRouter({
             };
       
             return {
+              clientName: project.Client.name,
               projectId: project.id,
               projectName: project.name,
               totalTime: projectTotalTime,

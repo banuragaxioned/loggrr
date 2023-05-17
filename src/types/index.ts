@@ -115,6 +115,7 @@ export type GlobalAllocation = {
   averageTime: number;
   cumulativeProjectDates: AllocationDates;
   projects: {
+    clientName: string;
     projectId: number;
     projectName: string;
     totalTime: number;
