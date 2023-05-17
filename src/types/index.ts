@@ -90,3 +90,35 @@ export type AllocationDates = {
     updatedAt: Date;
   }
 };
+
+export type ProjectAllocation = {
+  globalView: boolean,
+  clientName: string;
+  projectId: number;
+  projectName: string;
+  users: {
+    userId: number;
+    userName: string | null;
+    userAvatar: string;
+    averageTime: number;
+    totalTime: number;
+    allocations: AllocationDates;
+  }[];
+};
+
+export type GlobalAllocation = {
+  globalView: boolean,
+  userId: number;
+  userName: string | null;
+  userAvatar: string;
+  totalTime: number;
+  averageTime: number;
+  cumulativeProjectDates: AllocationDates;
+  projects: {
+    clientName: string;
+    projectId: number;
+    projectName: string;
+    totalTime: number;
+    allocations: AllocationDates;
+  }[];
+};
