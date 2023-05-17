@@ -3,6 +3,7 @@ import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/lib/api";
 import { FormEvent, useState } from "react";
 import { GlobalAllocation, ProjectAllocation } from "@/types";
+import Image from "next/image";
 
 export default function GlobalReportsAssigned() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -181,8 +182,11 @@ export default function GlobalReportsAssigned() {
                   {data.users?.map((user) => (
                     <li key={user.userId}>
                       User name: {user.userName} <br />
-                      User avatar: <img
-                        className="ml-2 inline h-5 rounded-full"
+                      User avatar:{" "}
+                      <Image
+                        width={20}
+                        height={20}
+                        className="ml-2 inline rounded-full"
                         src={user.userAvatar}
                         alt="avatar"
                       />{" "}
@@ -236,7 +240,15 @@ export default function GlobalReportsAssigned() {
             globalAllocationData.map((user) => (
               <li key={user.userId}>
                 User name: {user.userName} <br />
-                User avatar: <img className="ml-2 inline h-5 rounded-full" src={user.userAvatar} alt="avatar" /> <br />
+                User avatar:{" "}
+                <Image
+                  width={20}
+                  height={20}
+                  className="ml-2 inline rounded-full"
+                  src={user.userAvatar}
+                  alt="avatar"
+                />{" "}
+                <br />
                 Average hours: {user.averageTime / 60} <br />
                 Total hours: {user.totalTime / 60} <br />
                 TopRowDates:
