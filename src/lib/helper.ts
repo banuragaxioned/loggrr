@@ -83,4 +83,4 @@ export const splitIntoChunk = (array: { id: number }[], size: number) => {
   }
 
   return chunkedData;
-}
+};

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { Allocation, AllocationFrequency } from "@prisma/client";
-import { AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types"
+import { AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types";
 import { splitIntoChunk } from "@/lib/helper";
 
 export const allocationRouter = createTRPCRouter({
@@ -61,18 +61,20 @@ export const allocationRouter = createTRPCRouter({
         throw new Error("Start date must be before end date");
       }
 
-      const isProjectExist = input.projectId && await ctx.prisma.project.findUnique({
-        where: { id: input.projectId },
-      });
+      const isProjectExist =
+        input.projectId &&
+        (await ctx.prisma.project.findUnique({
+          where: { id: input.projectId },
+        }));
 
       if (input.projectId && !isProjectExist) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
 
       // filter out users based on projectId
       const projectFilter = {
         Project: {
-          some: { id: input.projectId }
+          some: { id: input.projectId },
         },
       };
 
@@ -80,9 +82,9 @@ export const allocationRouter = createTRPCRouter({
       const allUserIds = await ctx.prisma.user.findMany({
         where: {
           TenantId: { some: { slug: input.team } },
-          ...((input.projectId) ? projectFilter : {}), /* get users based on project, if projectId exist */
+          ...(input.projectId ? projectFilter : {}) /* get users based on project, if projectId exist */,
         },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
         select: {
           id: true,
         },
@@ -115,13 +117,13 @@ export const allocationRouter = createTRPCRouter({
                 {
                   date: {
                     lte: input.startDate,
-                  }
+                  },
                 },
                 {
                   enddate: {
                     gte: input.endDate,
-                  }
-                }
+                  },
+                },
               ],
             },
           ],
@@ -132,7 +134,6 @@ export const allocationRouter = createTRPCRouter({
 
       // project allocations
       if (input.projectId) {
-
         const projects = await ctx.prisma.project.findMany({
           where: {
             id: input.projectId,
@@ -140,30 +141,29 @@ export const allocationRouter = createTRPCRouter({
           },
           include: {
             Members: {
-              orderBy: { name: 'asc' },
+              orderBy: { name: "asc" },
               take: input.pageSize,
               cursor: { id: cursorId },
               include: {
                 Allocation: allocationQuery,
-              }
+              },
             },
             Client: {
               select: {
                 id: true,
                 name: true,
-              }
-            }
+              },
+            },
           },
         });
 
-        finalData = projects.map(project => {
+        finalData = projects.map((project) => {
           return {
             globalView: false,
             clientName: project.Client.name,
             projectId: project.id,
             projectName: project.name,
-            users: project.Members.map(user => {
-
+            users: project.Members.map((user) => {
               // user allocatons dates
               const allocations = createAllocationDates(user.Allocation, input.endDate);
 
@@ -184,47 +184,43 @@ export const allocationRouter = createTRPCRouter({
             }),
           };
         });
-
-      } else { // all projects allocations
+      } else {
+        // all projects allocations
 
         const users = await ctx.prisma.user.findMany({
-          orderBy: { name: 'asc' },
+          orderBy: { name: "asc" },
           take: input.pageSize,
           cursor: { id: cursorId },
           where: {
             TenantId: {
-              some: { slug: input.team }
-            }
+              some: { slug: input.team },
+            },
           },
           include: {
             Project: {
               include: {
                 Allocation: allocationQuery,
                 Client: true,
-              }
+              },
             },
           },
         });
 
-        finalData = users.map(user => {
-
+        finalData = users.map((user) => {
           let grandTotalHours = 0;
           const cumulativeProjectDates: AllocationDates = {};
 
-          const projectsData = user.Project.map(project => {
-
-            const userAllocation = project.Allocation.filter(allocation => allocation.userId === user.id)
+          const projectsData = user.Project.map((project) => {
+            const userAllocation = project.Allocation.filter((allocation) => allocation.userId === user.id);
 
             // project allocatons dates
             const allocations = createAllocationDates(userAllocation, input.endDate);
-
 
             // calculate projects totalTime from allocations data
             const projectTotalTime = calculateAllocationTotalTime(allocations);
 
             // create and add hours in cumulativeProjectDates allocations
             for (const [allocationKey, allocation] of Object.entries(allocations)) {
-
               const isAllocationDateExist = cumulativeProjectDates[allocationKey];
 
               // create allocation, if allocation date not exist
@@ -242,7 +238,7 @@ export const allocationRouter = createTRPCRouter({
               cumulativeProjectDates[allocationKey].totalTime += allocation.totalTime;
 
               grandTotalHours += allocation.totalTime; /* calculate all totalTime */
-            };
+            }
 
             return {
               clientName: project.Client.name,
@@ -254,7 +250,8 @@ export const allocationRouter = createTRPCRouter({
           });
 
           // calculate average hours
-          const averageHours = parseFloat((grandTotalHours / Object.keys(cumulativeProjectDates).length).toFixed(2)) || 0;
+          const averageHours =
+            parseFloat((grandTotalHours / Object.keys(cumulativeProjectDates).length).toFixed(2)) || 0;
 
           return {
             globalView: true,
@@ -274,7 +271,6 @@ export const allocationRouter = createTRPCRouter({
 });
 
 function calculateAllocationTotalTime(allocations: AllocationDates) {
-
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
     return accumulator + allocations[allocationKey].totalTime;
   }, 0);
@@ -283,7 +279,6 @@ function calculateAllocationTotalTime(allocations: AllocationDates) {
 // create allocation object for each date
 function createAllocationDates(allocationData: Allocation[], endDate: Date) {
   return allocationData.reduce((accumulator, allocation) => {
-
     let allocationStartDate = allocation.date;
     const allocationEndDate = allocation.enddate;
 
@@ -292,14 +287,14 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
 
     // allocationEndDate is not exist
     if (!allocationEndDate) {
-
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split('T')[0];
+      const date = allocationStartDate.toISOString().split("T")[0];
       const isAllocationDateExist = accumulator[date];
 
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
-      const existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt = isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
+      const existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt =
+        isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
       if (isAllocationDateExist || existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt) {
         return accumulator;
       }
@@ -317,9 +312,8 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
 
     // iterate if allocationStartDate is less than or equal to endDate and allocationDate
     while (allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) {
-
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split('T')[0];
+      const date = allocationStartDate.toISOString().split("T")[0];
 
       accumulator[date] = {
         id: allocation.id,
@@ -330,11 +324,9 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
       };
 
       // increase one day
-      allocationStartDate = dayjs(allocationStartDate).add(1, 'day').toDate();
-
+      allocationStartDate = dayjs(allocationStartDate).add(1, "day").toDate();
     }
 
     return accumulator;
   }, {} as AllocationDates);
 }
-

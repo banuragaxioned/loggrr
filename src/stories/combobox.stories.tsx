@@ -109,7 +109,7 @@ const groupedlist: IGroupList[] = [
         value: "test_option",
         count: 3,
       },
-    ]
+    ],
   },
 ];
 
@@ -119,7 +119,8 @@ export const GroupedCombobox = () => {
 
   const handleGroupSelect = (val: string, grpName: string) => {
     const selectedGrp = groupList.find((group: IGroupList) => group.groupName === grpName);
-    const selectedObj = selectedGrp && selectedGrp.list.find((item: ISelectedValue) => item.value.toLowerCase() === val);
+    const selectedObj =
+      selectedGrp && selectedGrp.list.find((item: ISelectedValue) => item.value.toLowerCase() === val);
     selectedObj && setSelected(selectedObj);
   };
 

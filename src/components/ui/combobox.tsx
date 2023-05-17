@@ -35,8 +35,8 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if(!isOpen) setSearchTerm('')
-  }, [isOpen])
+    if (!isOpen) setSearchTerm("");
+  }, [isOpen]);
 
   return (
     <div className={`relative`}>
@@ -51,20 +51,24 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             className={`flex justify-between`}
           >
             {icon}
-            <span className="inline-block max-w-[200px] mx-[6px] overflow-hidden text-ellipsis whitespace-nowrap">
+            <span className="mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
               {selectedItem || label}
             </span>
-            <ChevronDown className="h-4 w-4 ml-auto" />
+            <ChevronDown className="ml-auto h-4 w-4" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent side="bottom" align="start" className="max-w-[230px] bg-popover text-popover-foreground p-0 transition-all ease-in border-0">
-          <Command className={`${searchable ? 'border' : 'border-0'} border-box rounded-t-[5px] border-border`}>
+        <PopoverContent
+          side="bottom"
+          align="start"
+          className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
+        >
+          <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
             {searchable && (
               <div className="space-between flex w-full items-center rounded-t-[5px]">
                 <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
                 <CommandInput
                   tabIndex={tabIndex}
-                  className={`border-none text-popover-foregroun border-border box-border rounded-t-[5px] border-0 px-0 text-[14px] bg-popover placeholder:opacity-75 placeholder:font-[14px] focus:outline-0 focus:ring-0`}
+                  className={`text-popover-foregroun box-border rounded-t-[5px] border-0 border-none border-border bg-popover px-0 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
                   autoFocus
                   placeholder={placeholder ?? "Search here..."}
                   value={searchTerm}
@@ -72,52 +76,56 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                 />
               </div>
             )}
-            <CommandList className={`border border-border ${searchable ? 'border-t-0' : 'rounded-t-[5px]'} scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}>
+            <CommandList
+              className={`border border-border ${
+                searchable ? "border-t-0" : "rounded-t-[5px]"
+              } scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
+            >
               <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
               {options.length > 0 &&
                 (group
                   ? options?.map((group: any) => {
-                    const groupName = group.groupName;
-                    return (
-                      <CommandGroup
-                        key={group.id}
-                        className={`px-0 select-none text-sm [&_[cmdk-group-heading]]:px-[2px] [&_[cmdk-group-heading]]:py-2`}
-                        heading={groupName ? <div className="px-[7px] tracking-wide">{groupName}</div> : ""}
-                      >
-                        {group?.list?.length > 0 &&
-                          group?.list.map((item: any, innerI: any) => {
-                            return (
-                              <CommandItem
-                                key={item.id}
-                                value={item.value}
-                                className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-accent"
-                                onSelect={(val: string) => {
-                                  handleGroupSelect && handleGroupSelect(val, groupName);
-                                  setIsOpen(false);
-                                }}
-                              >
-                                {item.name}
-                              </CommandItem>
-                            );
-                          })}
-                      </CommandGroup>
-                    );
-                  })
+                      const groupName = group.groupName;
+                      return (
+                        <CommandGroup
+                          key={group.id}
+                          className={`select-none px-0 text-sm [&_[cmdk-group-heading]]:px-[2px] [&_[cmdk-group-heading]]:py-2`}
+                          heading={groupName ? <div className="px-[7px] tracking-wide">{groupName}</div> : ""}
+                        >
+                          {group?.list?.length > 0 &&
+                            group?.list.map((item: any, innerI: any) => {
+                              return (
+                                <CommandItem
+                                  key={item.id}
+                                  value={item.value}
+                                  className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-accent"
+                                  onSelect={(val: string) => {
+                                    handleGroupSelect && handleGroupSelect(val, groupName);
+                                    setIsOpen(false);
+                                  }}
+                                >
+                                  {item.name}
+                                </CommandItem>
+                              );
+                            })}
+                        </CommandGroup>
+                      );
+                    })
                   : options?.map((item: any) => {
-                    return (
-                      <CommandItem
-                        key={item.id}
-                        value={item.value}
-                        onSelect={(val: string) => {
-                          handleSelect && handleSelect(val);
-                          setIsOpen(false);
-                        }}
-                        className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] aria-selected:bg-accent"
-                      >
-                        {item.name}
-                      </CommandItem>
-                    );
-                  }))}
+                      return (
+                        <CommandItem
+                          key={item.id}
+                          value={item.value}
+                          onSelect={(val: string) => {
+                            handleSelect && handleSelect(val);
+                            setIsOpen(false);
+                          }}
+                          className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] aria-selected:bg-accent"
+                        >
+                          {item.name}
+                        </CommandItem>
+                      );
+                    }))}
             </CommandList>
           </Command>
         </PopoverContent>

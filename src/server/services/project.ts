@@ -31,7 +31,7 @@ export async function getProjects(slug: string) {
   });
 
   return projects;
-};
+}
 
 export async function getClients(slug: string) {
   const projects = await db.project.findMany({
@@ -47,4 +47,4 @@ export async function getClients(slug: string) {
   });
 
   return projects;
-};
+}
