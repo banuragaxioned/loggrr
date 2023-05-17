@@ -61,4 +61,26 @@ export const dashboardConfig: DashboardConfig = {
       icon: "settings",
     },
   ],
+  sidebarSkills: [
+    {
+      title: "Summary",
+      href: "/profile",
+      icon: "user",
+    },
+    {
+      title: "Explore",
+      href: "/projects",
+      icon: "post",
+    },
+    {
+      title: "Report",
+      href: "/billing",
+      icon: "billing",
+    },
+    {
+      title: "Settings",
+      href: "/settings",
+      icon: "settings",
+    },
+  ],
 };

@@ -43,6 +43,7 @@ export type DashboardConfig = {
   mainNav: MainNavItem[];
   sidebarTeam: SidebarNavItem[];
   sidebarProjects: SidebarNavItem[];
+  sidebarSkills: SidebarNavItem[];
 };
 
 export type NavItem = {
