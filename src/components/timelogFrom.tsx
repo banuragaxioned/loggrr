@@ -127,7 +127,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     orgProject.map((project: any) => {
       !tempOrgWideProjectList.includes(project.projectName) && tempOrgWideProjectList.push(project.projectName);
     });
-  
+
     setProjectList([
       {
         groupHeading: "My Projects",
@@ -139,17 +139,17 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       },
     ]);
 
-  setProjectArr([
-    {
-      projectType: "My Project",
-      projectList: myProject,
-    },
-    {
-      projectType: "Org Wide Project",
-      projectList: orgProject,
-    },
-  ]);
-}, [myProject, orgProject]);
+    setProjectArr([
+      {
+        projectType: "My Project",
+        projectList: myProject,
+      },
+      {
+        projectType: "Org Wide Project",
+        projectList: orgProject,
+      },
+    ]);
+  }, [myProject, orgProject]);
 
   useEffect(() => {
     clients?.map((client: any) => {
@@ -398,16 +398,16 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       ref={timeLogFormRef}
       className={`${
         isFocus
-          ? "border-brand-light shadow-lg ring-1 ring-brand-light ring-offset-0"
+          ? "border-brand-light ring-brand-light shadow-lg ring-1 ring-offset-0"
           : "border-borderColor-light dark:border-borderColor-dark"
       } border-box z-[3] mx-auto my-5 w-[690px] rounded-xl border bg-white dark:bg-transparent`}
     >
       <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
-        <Command label="Command Menu" className="relative text-content-light">
+        <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
               commentFocus
-                ? "rounded-b-sm border-white ring-2 ring-brand-light ring-offset-0 dark:border-transparent"
+                ? "ring-brand-light rounded-b-sm border-white ring-2 ring-offset-0 dark:border-transparent"
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
             } flex items-center rounded-t-xl border-b px-[18px] py-[7px]`}
           >
@@ -415,12 +415,12 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
                 <Icons.comment
                   onClick={() => setCommentFocus(true)}
-                  className="h-[18px] w-[18px] shrink-0 stroke-2 text-info-light"
+                  className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
                 />
                 <input
                   tabIndex={5}
                   ref={commentRef}
-                  className="w-full select-none border-0 bg-transparent px-2 text-sm placeholder:text-info-light focus:outline-0 focus:ring-0 peer-focus:bg-background-dark"
+                  className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
                   value={commentText}
                   onChange={(e: any) => setCommentText(e.target.value)}
@@ -430,11 +430,11 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               </div>
             ) : (
               <div ref={inputParentRef} className="flex basis-[70%] items-center">
-                <Icons.search onClick={openSearch} className="h-[18px] w-[18px] shrink-0 stroke-2 text-info-light" />
+                <Icons.search onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
                 <Command.Input
                   tabIndex={1}
                   ref={inputRef}
-                  className="w-full select-none border-0 bg-transparent px-2 text-sm placeholder:text-info-light focus:outline-0 focus:ring-0 peer-focus:bg-background-dark"
+                  className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Select or start typing"
                   onFocus={() => setFocus(true)}
                   onClick={(e) => e.stopPropagation()}
@@ -449,9 +449,9 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               placeholder="7:30"
               className={`${
                 timeErr
-                  ? "border-danger-light ring-1 ring-danger-light focus:border-danger-light focus:ring-danger-light"
+                  ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light ring-1"
                   : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
-              } w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out placeholder:text-disabled-light focus:outline-none focus:ring-1 focus:ring-offset-0 dark:bg-transparent`}
+              } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none focus:ring-1 focus:ring-offset-0 dark:bg-transparent`}
               value={timeLogged}
               onChangeCapture={handleLoggedTimeInput}
             />
@@ -460,7 +460,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               ref={checkobxRef}
               variant="outline"
               size="sm"
-              className="ml-3 border-borderColor-light px-1.5 hover:bg-transparent focus:border-brand-light focus:ring-1 focus:ring-brand-light focus:ring-offset-0 data-[state=on]:bg-transparent data-[state=on]:text-billable-light dark:border-borderColor-dark"
+              className="border-borderColor-light focus:border-brand-light focus:ring-brand-light data-[state=on]:text-billable-light dark:border-borderColor-dark ml-3 px-1.5 hover:bg-transparent focus:ring-1 focus:ring-offset-0 data-[state=on]:bg-transparent"
             >
               <Icons.dollar className="h-6 w-6" />
             </Toggle>
@@ -470,7 +470,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               type="submit"
               disabled={!canSubmit}
               tabIndex={canSubmit ? 8 : -1}
-              className={`ml-[12px] border border-brand-light bg-brand-light px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-brand-light`}
+              className={`border-brand-light bg-brand-light disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Submit
             </Button>
@@ -478,7 +478,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
           <Command.List
             className={`w-[calc(100%)] ${
               isFocus ? "border-brand-light" : "border-borderColor-light dark:border-borderColor-dark"
-            } overflow-y-hidden bg-white text-content-light transition-all duration-200 ease-in hover:overflow-y-auto dark:bg-transparent ${
+            } text-content-light overflow-y-hidden bg-white transition-all duration-200 ease-in hover:overflow-y-auto dark:bg-transparent ${
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
@@ -491,9 +491,9 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       <div
         className={`${
           isFocus
-            ? "border-t border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark "
-            : "border-t-0 border-borderColor-light dark:border-borderColor-dark"
-        } flex items-center justify-between rounded-b-xl bg-info-dark px-5 py-[10px] dark:bg-zinc-900`}
+            ? "border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark border-t "
+            : "border-borderColor-light dark:border-borderColor-dark border-t-0"
+        } bg-info-dark flex items-center justify-between rounded-b-xl px-5 py-[10px] dark:bg-zinc-900`}
       >
         <div ref={dropdownRef} className="inline-flex items-center gap-x-2.5 text-xs">
           <ComboBox
@@ -528,7 +528,8 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             disable={!selectedProject}
             // autoOpen={!!(selectedProject && !selectedMilestone)}
           />
-          {/* <Dropdown
+          {
+            /* <Dropdown
             tabIndex={3}
             icon={<Icons.milestone className={`h-4 w-4`} />}
             label="Milestone"
@@ -539,18 +540,18 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             disable={!selectedProject}
             autoOpen={!!(selectedProject && !selectedMilestone)}
           />*/
-          <ComboBox
-            tabIndex={4}
-            searchable
-            icon={<Icons.task className={`h-4 w-4`} />}
-            options={taskList}
-            label={selectedTask || "Task"}
-            selectedItem={selectedTask}
-            handleSelect={(option: string) => setSelectedTask(option)}
-            disable={!(selectedProject && selectedMilestone)}
-            // autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}
-          />
-          /*
+            <ComboBox
+              tabIndex={4}
+              searchable
+              icon={<Icons.task className={`h-4 w-4`} />}
+              options={taskList}
+              label={selectedTask || "Task"}
+              selectedItem={selectedTask}
+              handleSelect={(option: string) => setSelectedTask(option)}
+              disable={!(selectedProject && selectedMilestone)}
+              // autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}
+            />
+            /*
           <Dropdown
             tabIndex={4}
             icon={<Icons.task className={`h-4 w-4`} />}
@@ -561,7 +562,8 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             defaultValue={selectedTask}
             disable={!(selectedProject && selectedMilestone)}
             autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}
-          /> */}
+          /> */
+          }
         </div>
         {canClear && (
           <Button
@@ -571,7 +573,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             size="sm"
             type="button"
             disabled={!canClear}
-            className={`border border-borderColor-light bg-background-light px-[12px] py-[7px] text-xs leading-none text-content-light hover:border-info-light focus:border-brand-light focus:ring-1 focus:ring-brand-light dark:border-borderColor-dark dark:bg-transparent`}
+            className={`border-borderColor-light bg-background-light text-content-light hover:border-info-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark border px-[12px] py-[7px] text-xs leading-none focus:ring-1 dark:bg-transparent`}
           >
             Clear
           </Button>

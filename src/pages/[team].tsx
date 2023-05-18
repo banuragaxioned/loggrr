@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
-import { LoggedRatio, Insights, Metrics, QuickStatsWidget } from "@/components/quickStats";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { cleanDate } from "@/lib/helper";
@@ -92,12 +91,7 @@ export default function Dashboard() {
           </ul>
         </span>
       </section>
-      <section className="hidden space-y-4 lg:block lg:basis-1/4">
-        <LoggedRatio />
-        <Metrics />
-        <Insights />
-        <QuickStatsWidget />
-      </section>
+      <section className="hidden space-y-4 lg:block lg:basis-1/4">Coming Soon</section>
     </div>
   );
 }
