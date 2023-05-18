@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const projects = [
   {
@@ -45,29 +45,52 @@ const projects = [
   },
 ];
 
-export function TableDemo() {
+export function DefaultTable() {
   return (
-    <div className="w-full overflow-auto rounded-xl border border-border shadow-md">
-      <Table>
-        <TableHeader className="rounded-xl bg-inherit font-medium">
-          <TableRow>
-            <TableHead className="w-[40%]">Project</TableHead>
-            <TableHead className="w-[15%] text-center">Budget</TableHead>
-            <TableHead className="w-[15%] text-center">Logged</TableHead>
-            <TableHead className="w-[30%]">Project Leads</TableHead>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Project</TableHead>
+          <TableHead className="text-center">Budget</TableHead>
+          <TableHead className=" text-center">Logged</TableHead>
+          <TableHead>Project Leads</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {projects.map((project) => (
+          <TableRow key={project.id}>
+            <TableCell className="font-medium">{project.title}</TableCell>
+            <TableCell className="text-center">{project.budget}</TableCell>
+            <TableCell className="text-center">{project.logged}</TableCell>
+            <TableCell>{project.projectLead}</TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody className="bg-inherit">
-          {projects.map((project) => (
-            <TableRow key={project.id}>
-              <TableCell className="font-medium">{project.title}</TableCell>
-              <TableCell className="text-center">{project.budget}</TableCell>
-              <TableCell className="text-center">{project.logged}</TableCell>
-              <TableCell>{project.projectLead}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
+export function Tablev2() {
+  return (
+    <Table>
+      <TableHeader className="rounded-xl bg-inherit font-medium">
+        <TableRow className="[&>*]:px-14">
+          <TableHead className="w-[40%]">Project</TableHead>
+          <TableHead className="w-[15%] text-center">Budget</TableHead>
+          <TableHead className="w-[15%] text-center">Logged</TableHead>
+          <TableHead className="w-[30%]">Project Leads</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody className="bg-inherit">
+        {projects.map((project) => (
+          <TableRow key={project.id} className="[&>*]:px-14">
+            <TableCell className="font-medium">{project.title}</TableCell>
+            <TableCell className="text-center">{project.budget}</TableCell>
+            <TableCell className="text-center">{project.logged}</TableCell>
+            <TableCell>{project.projectLead}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
