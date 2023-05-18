@@ -1,12 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const projects = [
   {
@@ -51,13 +43,13 @@ const projects = [
     logged: "209",
     projectLead: "Sameer",
   },
-]
+];
 
 export function TableDemo() {
   return (
-    <div className="border border-border rounded-[12px] shadow-md w-full overflow-auto">
+    <div className="w-full overflow-auto rounded-xl border border-border shadow-md">
       <Table>
-        <TableHeader className="bg-inherit rounded-[12px] font-medium">
+        <TableHeader className="rounded-xl bg-inherit font-medium">
           <TableRow>
             <TableHead className="w-[40%]">Project</TableHead>
             <TableHead className="w-[15%] text-center">Budget</TableHead>
@@ -77,5 +69,5 @@ export function TableDemo() {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
