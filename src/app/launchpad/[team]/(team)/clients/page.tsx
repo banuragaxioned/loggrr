@@ -1,4 +1,4 @@
-import TableUI from "@/components/ui/table";
+// import TableUI from "@/components/ui/table";
 import { getClients } from "@/server/services/project";
 
 export default async function Page({ params }: { params: { team: string } }) {
@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: { team: string } }) {
   return (
     <>
       <h3>Client List</h3>
-      <TableUI rows={clientList} columns={projectDataColumns} />
+      {/* <TableUI rows={clientList} columns={projectDataColumns} /> */}
     </>
   );
 }
