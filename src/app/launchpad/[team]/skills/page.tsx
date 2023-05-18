@@ -30,7 +30,7 @@ async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
   return flatResponse;
 }
 
-export default async function SkillsSummary({ params }: { params: { team: string } }) {
+export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
   const user = await getCurrentUser();
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login");
@@ -41,13 +41,6 @@ export default async function SkillsSummary({ params }: { params: { team: string
   return (
     <>
       <h3>My Skills</h3>
-      {/* <ul>
-        {skills.map((skill) => (
-          <li key={skill.id}>
-            {skill.name} - {skill.level}
-          </li>
-        ))}
-      </ul> */}
       <Table>
         <TableHeader>
           <TableRow>
