@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import CreateClient from "@/components/createClient";
 import CreateProject from "@/components/createProject";
-import TableUI from "@/components/ui/table";
+// import TableUI from "@/components/ui/table";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -37,7 +37,7 @@ export default function Projects() {
       <section>
         <h2>Projects</h2>
         <CreateProject />
-        <TableUI rows={projectList.data} columns={projectDataColumns} />
+        {/* <TableUI rows={projectList.data} columns={projectDataColumns} /> */}
         <ul className="flex max-w-xs flex-col gap-4">
           {projectList.data &&
             projectList.data.map((project) => (
@@ -50,7 +50,7 @@ export default function Projects() {
         </ul>
         <h3>Client list</h3>
         <CreateClient />
-        <TableUI rows={clientList.data} columns={clientDataColumns} />
+        {/* <TableUI rows={clientList.data} columns={clientDataColumns} /> */}
       </section>
     </div>
   );
