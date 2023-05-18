@@ -1,7 +1,7 @@
 import Unavailable from "@/components/unavailable";
 import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/lib/api";
-import TableUI from "@/components/ui/table";
+// import TableUI from "@/components/ui/table";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();
@@ -30,7 +30,7 @@ export default function Projects() {
               </li>
             ))}
         </ul>
-        <TableUI />
+        {/* <TableUI /> */}
         {/* TODO: pass reportData.data, infer the column names from the response  */}
       </section>
     </div>

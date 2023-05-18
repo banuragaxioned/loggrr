@@ -43,6 +43,7 @@ export type DashboardConfig = {
   mainNav: MainNavItem[];
   sidebarTeam: SidebarNavItem[];
   sidebarProjects: SidebarNavItem[];
+  sidebarSkills: SidebarNavItem[];
 };
 
 export type NavItem = {
@@ -88,5 +89,37 @@ export type AllocationDates = {
     nonBillableTime: number;
     totalTime: number;
     updatedAt: Date;
-  }
+  };
+};
+
+export type ProjectAllocation = {
+  globalView: boolean;
+  clientName: string;
+  projectId: number;
+  projectName: string;
+  users: {
+    userId: number;
+    userName: string | null;
+    userAvatar: string;
+    averageTime: number;
+    totalTime: number;
+    allocations: AllocationDates;
+  }[];
+};
+
+export type GlobalAllocation = {
+  globalView: boolean;
+  userId: number;
+  userName: string | null;
+  userAvatar: string;
+  totalTime: number;
+  averageTime: number;
+  cumulativeProjectDates: AllocationDates;
+  projects: {
+    clientName: string;
+    projectId: number;
+    projectName: string;
+    totalTime: number;
+    allocations: AllocationDates;
+  }[];
 };
