@@ -27,8 +27,8 @@ export const AdvancedDropdown = () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="primary" size="sm">
-          <Icons.sun className="hover:accent rotate-0 scale-100 text-popover-foreground transition-all hover:text-accent-foreground dark:-rotate-90 dark:scale-0" />
-          <Icons.moon className="hover:accent absolute rotate-90 scale-0 text-popover-foreground transition-all hover:text-accent-foreground dark:rotate-0 dark:scale-100" />
+          <Icons.sun className="hover:hover rotate-0 scale-100 text-popover-foreground transition-all hover:text-hover-foreground dark:-rotate-90 dark:scale-0" />
+          <Icons.moon className="hover:hover absolute rotate-90 scale-0 text-popover-foreground transition-all hover:text-hover-foreground dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

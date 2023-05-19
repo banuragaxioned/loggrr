@@ -17,11 +17,11 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
       classNames={{
         day: cn(buttonVariants({ variant: "ghost" }), "h-9 w-9 p-0 font-normal aria-selected:opacity-100 focus:ring-0"),
         day_selected:
-          "bg-tertiary text-tertiary-foreground hover:bg-tertiary hover:text-tertiary-foreground focus:ring-0 focus:outline-0 focus:bg-tertiary focus:text-tertiary-foreground",
-        day_today: "bg-accent text-accent-foreground",
+          "bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:ring-0 focus:outline-0 focus:bg-accent focus:text-accent-foreground",
+        day_today: "bg-hover text-hover-foreground",
         day_outside: "text-muted-foreground opacity-50",
         day_disabled: "text-muted-foreground opacity-50",
-        day_range_middle: "aria-selected:bg-accent rounded-0 aria-selected:text-accent-foreground",
+        day_range_middle: "aria-selected:bg-hover rounded-0 aria-selected:text-hover-foreground",
         day_hidden: "invisible",
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -38,7 +38,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         head_row: "flex",
         head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
-        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-hover first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         ...classNames,
       }}
       components={{
