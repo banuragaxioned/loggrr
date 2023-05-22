@@ -5,15 +5,6 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@/components/analytics";
-import snippet from "@segment/snippet";
-
-const contents = snippet.max({
-  host: "cdn.segment.com",
-  apiKey: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY,
-  page: {
-    name: "Website",
-  },
-});
 
 const font = PrimaryFont({
   subsets: ["latin"],
