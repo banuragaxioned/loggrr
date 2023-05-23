@@ -207,24 +207,14 @@ enum AllocationFrequency {
   ONGOING
 }
 
-// Skills-related
-enum SkillLevel {
-  NA
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-  EXPERT
-  GOAT
-}
-
 model SkillScore {
-  id         Int        @id @default(autoincrement())
-  userId     Int
-  skillId    Int
-  tenantId   Int
-  skillLevel SkillLevel @default(NA)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  skillId   Int
+  tenantId  Int
+  level     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   Tenant Tenant @relation(fields: [tenantId], references: [id])
   Skill  Skill  @relation(fields: [skillId], references: [id])

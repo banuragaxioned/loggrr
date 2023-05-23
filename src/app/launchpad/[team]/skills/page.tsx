@@ -15,7 +15,7 @@ async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
           name: true,
         },
       },
-      skillLevel: true,
+      level: true,
     },
   });
 
@@ -23,7 +23,7 @@ async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
     return {
       id: skill.id,
       name: skill.Skill.name,
-      level: skill.skillLevel,
+      level: skill.level,
     };
   });
 
