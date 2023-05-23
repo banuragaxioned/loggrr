@@ -63,6 +63,15 @@ export function FancyBox() {
     inputRef?.current?.focus();
   };
 
+  const createFramework = (name: string) => {
+    const newFramework = {
+      value: name.toLowerCase(),
+      label: name,
+      color: "#ffffff",
+    };
+    setFrameworks((prev) => [...prev, newFramework]);
+    setSelectedValues((prev) => [...prev, newFramework]);
+  };
 
   const onComboboxOpenChange = (value: boolean) => {
     inputRef.current?.blur();
@@ -120,6 +129,10 @@ export function FancyBox() {
                   </CommandItem>
                 );
               })}
+               <CommandItemCreate
+                onSelect={() => createFramework(inputValue)}
+                {...{ inputValue, frameworks }}
+              />
             </CommandGroup>
           </Command>
         </PopoverContent>
@@ -127,3 +140,34 @@ export function FancyBox() {
     </div>
   );
 }
+
+
+const CommandItemCreate = ({
+  inputValue,
+  frameworks,
+  onSelect,
+}: {
+  inputValue: string;
+  frameworks: Framework[];
+  onSelect: () => void;
+}) => {
+  const hasNoFramework = !frameworks
+    .map(({ value }) => value)
+    .includes(`${inputValue.toLowerCase()}`);
+
+  const render = inputValue !== "" && hasNoFramework;
+
+  if (!render) return null;
+
+  // BUG: whenever a space is appended, the Create-Button will not be shown.
+  return (
+    <CommandItem
+      key={`${inputValue}`}
+      value={`${inputValue}`}
+      className="w-full cursor-pointer px-2 pt-2 pb-1 text-xs text-muted-foreground aria-selected:bg-hover"
+      onSelect={onSelect}
+    >
+      Create new label &quot;{inputValue}&quot;
+    </CommandItem>
+  );
+};
