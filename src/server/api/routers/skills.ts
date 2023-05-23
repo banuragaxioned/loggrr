@@ -24,7 +24,7 @@ export const skillsRouter = createTRPCRouter({
       return {
         id: skillScore.id,
         skill: skillScore.Skill.name,
-        level: skillScore.skillLevel,
+        level: skillScore.level,
       };
     });
     return mappedSkills;
@@ -41,7 +41,7 @@ export const skillsRouter = createTRPCRouter({
       return {
         id: score.id,
         skill: score.Skill.name,
-        level: score.skillLevel,
+        level: score.level,
         user: score.User.name,
       };
     });
