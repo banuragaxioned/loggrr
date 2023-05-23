@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -17,38 +18,32 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type Framework = Record<"value" | "label" | "color", string>;
+type Framework = Record<"value" | "label", string>;
 
 const FRAMEWORKS = [
   {
     value: "next.js",
     label: "Next.js",
-    color: "#ef4444",
   },
   {
     value: "sveltekit",
     label: "SvelteKit",
-    color: "#eab308",
   },
   {
     value: "nuxt.js",
     label: "Nuxt.js",
-    color: "#22c55e",
   },
   {
     value: "remix",
     label: "Remix",
-    color: "#06b6d4",
   },
   {
     value: "astro",
     label: "Astro",
-    color: "#3b82f6",
   },
   {
     value: "wordpress",
     label: "WordPress",
-    color: "#8b5cf6",
   },
 ]satisfies Framework[];
 
@@ -68,10 +63,9 @@ export function FancyBox() {
     inputRef?.current?.focus();
   };
 
-  console.log(selectedValues)
 
   const onComboboxOpenChange = (value: boolean) => {
-    inputRef.current?.blur(); // HACK: otherwise, would scroll automatically to the bottom of page
+    inputRef.current?.blur();
     setOpenCombobox(value);
   };
 
@@ -88,7 +82,7 @@ export function FancyBox() {
             <span className="truncate">
               {selectedValues.length === 0 && "Select labels"}
               {selectedValues.length === 1 && selectedValues[0].label}
-              {selectedValues.length > 1 && `${selectedValues[0].label}, + ${selectedValues.length - 1}`}
+              {selectedValues.length > 1 && `${selectedValues[0].label} + ${selectedValues.length - 1} more`}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -105,6 +99,7 @@ export function FancyBox() {
                 className={`text-popover-foreground border-0 box-border rounded-t-sm bg-popover px-0 text-sm placeholder:text-sm placeholder:opacity-75 focus:outline-0 focus:ring-0 overflow-hidden`}
               />
             </div>
+            <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
             <CommandGroup className="scrollbar ComboBox-scrollbar max-h-[145px] overflow-auto select-none px-0 text-sm">
               {frameworks.map((framework) => {
                 const isActive = selectedValues.includes(framework);
@@ -122,10 +117,6 @@ export function FancyBox() {
                       )}
                     />
                     <div className="flex-1">{framework.label}</div>
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: framework.color }}
-                    />
                   </CommandItem>
                 );
               })}
@@ -136,34 +127,3 @@ export function FancyBox() {
     </div>
   );
 }
-
-const CommandItemCreate = ({
-  inputValue,
-  frameworks,
-  onSelect,
-}: {
-  inputValue: string;
-  frameworks: Framework[];
-  onSelect: () => void;
-}) => {
-  const hasNoFramework = !frameworks
-    .map(({ value }) => value)
-    .includes(`${inputValue.toLowerCase()}`);
-
-  const render = inputValue !== "" && hasNoFramework;
-
-  if (!render) return null;
-
-  // BUG: whenever a space is appended, the Create-Button will not be shown.
-  return (
-    <CommandItem
-      key={`${inputValue}`}
-      value={`${inputValue}`}
-      className="text-xs text-muted-foreground"
-      onSelect={onSelect}
-    >
-      <div className={cn("mr-2 h-4 w-4")} />
-      Create new label &quot;{inputValue}&quot;
-    </CommandItem>
-  );
-};
