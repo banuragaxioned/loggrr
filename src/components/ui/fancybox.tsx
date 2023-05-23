@@ -1,7 +1,5 @@
-"use client";
-
 import * as React from "react";
-import { Check, ChevronsUpDown, SearchIcon } from "lucide-react";
+import { Check, ChevronsUpDown, List, SearchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,58 +17,36 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type Framework = Record<"value" | "label", string>;
+type List = Record<"value" | "label", string>;
 
-const FRAMEWORKS = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "wordpress",
-    label: "WordPress",
-  },
-]satisfies Framework[];
+interface FancyBoxProps {
+  options: List[],
+  selectedValues: List[],
+  setSelectedValues: React.Dispatch<React.SetStateAction<List[]>>
+}
 
-export function FancyBox() {
+export function FancyBox({options, selectedValues, setSelectedValues}: FancyBoxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [frameworks, setFrameworks] = React.useState<Framework[]>(FRAMEWORKS);
+  const [list, setList] = React.useState<List[]>(options);
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([]);
 
-  const toggleFramework = (framework: Framework) => {
-    setSelectedValues((currentFrameworks) =>
-      !currentFrameworks.includes(framework)
-        ? [...currentFrameworks, framework]
-        : currentFrameworks.filter((l) => l.value !== framework.value)
+  const toggleList = (list: List) => {
+    setSelectedValues((prev) =>
+      !prev.includes(list)
+        ? [...prev, list]
+        : prev.filter((l) => l.value !== list.value)
     );
     inputRef?.current?.focus();
   };
 
-  const createFramework = (name: string) => {
-    const newFramework = {
+  const createListItem = (name: string) => {
+    const newList = {
       value: name.toLowerCase(),
       label: name,
     };
-    setFrameworks((prev) => [...prev, newFramework]);
-    setSelectedValues((prev) => [...prev, newFramework]);
+    setList((prev) => [...prev, newList]);
+    setSelectedValues((prev) => [...prev, newList]);
   };
 
   const onComboboxOpenChange = (value: boolean) => {
@@ -106,7 +82,7 @@ export function FancyBox() {
               <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
               <CommandInput
                 ref={inputRef}
-                placeholder="Search framework..."
+                placeholder="Search list..."
                 value={inputValue}
                 onValueChange={setInputValue}
                 className={`text-popover-foreground border-0 box-border rounded-t-sm bg-popover px-0 text-sm leading-6 placeholder:leading-6 placeholder:text-sm placeholder:opacity-75 focus:outline-0 focus:ring-0 overflow-hidden`}
@@ -117,14 +93,14 @@ export function FancyBox() {
             >
             <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
             <CommandGroup className="scrollbar ComboBox-scrollbar overflow-auto select-none px-0 text-sm">
-              {frameworks.map((framework) => {
-                const isActive = selectedValues.includes(framework);
+              {list.map((list) => {
+                const isActive = selectedValues.includes(list);
                 return (
                   <CommandItem
-                    key={framework.value}
-                    value={framework.value}
-                    onSelect={() => toggleFramework(framework)}
-                    className="w-full flex justify-between cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-hover"
+                    key={list.value}
+                    value={list.value}
+                    onSelect={() => toggleList(list)}
+                    className="w-full flex justify-between cursor-pointer rounded px-[18px] py-2 text-sm aria-selected:bg-hover"
                   >
                     <Check
                       className={cn(
@@ -132,13 +108,13 @@ export function FancyBox() {
                         isActive ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    <div className="flex-1">{framework.label}</div>
+                    <div className="flex-1">{list.label}</div>
                   </CommandItem>
                 );
               })}
                <CommandItemCreate
-                onSelect={() => createFramework(inputValue)}
-                {...{ inputValue, frameworks }}
+                onSelect={() => createListItem(inputValue)}
+                {...{ inputValue, list }}
               />
             </CommandGroup>
             </CommandList>
@@ -152,18 +128,18 @@ export function FancyBox() {
 
 const CommandItemCreate = ({
   inputValue,
-  frameworks,
+  list,
   onSelect,
 }: {
   inputValue: string;
-  frameworks: Framework[];
+  list: List[];
   onSelect: () => void;
 }) => {
-  const hasNoFramework = !frameworks
+  const hasNoList = !list
     .map(({ value }) => value)
     .includes(`${inputValue.toLowerCase()}`);
 
-  const render = inputValue !== "" && hasNoFramework;
+  const render = inputValue !== "" && hasNoList;
 
   if (!render) return null;
 
@@ -172,7 +148,7 @@ const CommandItemCreate = ({
     <CommandItem
       key={`${inputValue}`}
       value={`${inputValue}`}
-      className="w-full cursor-pointer px-[18px] py-2 text-xs text-muted-foreground aria-selected:bg-hover rounded-md"
+      className="w-full cursor-pointer px-[18px] py-2 text-sm text-muted-foreground aria-selected:bg-hover rounded-md"
       onSelect={onSelect}
     >
       Create new label &quot;{inputValue}&quot;
