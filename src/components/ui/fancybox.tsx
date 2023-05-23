@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -96,20 +97,27 @@ export function FancyBox() {
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command loop className="border border-box rounded-t-sm border-border">
-            <div className="space-between flex w-full items-center rounded-t-sm border-b border-border">
+        <PopoverContent
+          side="bottom"
+          align="start"
+          className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
+        >
+          <Command loop className="border border-box rounded-t-md border-border">
+            <div className="space-between flex w-full items-center rounded-t-md">
               <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
               <CommandInput
                 ref={inputRef}
                 placeholder="Search framework..."
                 value={inputValue}
                 onValueChange={setInputValue}
-                className={`text-popover-foreground border-0 box-border rounded-t-sm bg-popover px-0 text-sm placeholder:text-sm placeholder:opacity-75 focus:outline-0 focus:ring-0 overflow-hidden`}
+                className={`text-popover-foreground border-0 box-border rounded-t-sm bg-popover px-0 text-sm leading-6 placeholder:leading-6 placeholder:text-sm placeholder:opacity-75 focus:outline-0 focus:ring-0 overflow-hidden`}
               />
             </div>
+            <CommandList
+              className={`border-x border-b border-border scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
+            >
             <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
-            <CommandGroup className="scrollbar ComboBox-scrollbar max-h-[145px] overflow-auto select-none px-0 text-sm">
+            <CommandGroup className="scrollbar ComboBox-scrollbar overflow-auto select-none px-0 text-sm">
               {frameworks.map((framework) => {
                 const isActive = selectedValues.includes(framework);
                 return (
@@ -134,6 +142,7 @@ export function FancyBox() {
                 {...{ inputValue, frameworks }}
               />
             </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
@@ -164,7 +173,7 @@ const CommandItemCreate = ({
     <CommandItem
       key={`${inputValue}`}
       value={`${inputValue}`}
-      className="w-full cursor-pointer px-2 pt-2 pb-1 text-xs text-muted-foreground aria-selected:bg-hover"
+      className="w-full cursor-pointer px-[18px] py-2 text-xs text-muted-foreground aria-selected:bg-hover rounded-md"
       onSelect={onSelect}
     >
       Create new label &quot;{inputValue}&quot;
