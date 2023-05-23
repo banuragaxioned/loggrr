@@ -68,7 +68,6 @@ export function FancyBox() {
     const newFramework = {
       value: name.toLowerCase(),
       label: name,
-      color: "#ffffff",
     };
     setFrameworks((prev) => [...prev, newFramework]);
     setSelectedValues((prev) => [...prev, newFramework]);
