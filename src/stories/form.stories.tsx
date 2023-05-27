@@ -1,43 +1,42 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { Toggle } from "@/components/ui/toggle"
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
-  projectName: z.string().min(6, {
-    message: "Username must be at least 6 characters.",
-  }).max(12, {
-    message: "Username must be less than 12 characters.",
-  }),
-  milestoneName: z.string().min(6, {
-    message: "Username must be at least 6 characters.",
-  }).max(12, {
-    message: "Username must be less than 12 characters.",
-  }),
-  taskName: z.string().min(6, {
-    message: "Username must be at least 6 characters.",
-  }).max(12, {
-    message: "Username must be less than 12 characters.",
-  }),
+  projectName: z
+    .string()
+    .min(6, {
+      message: "Username must be at least 6 characters.",
+    })
+    .max(12, {
+      message: "Username must be less than 12 characters.",
+    }),
+  milestoneName: z
+    .string()
+    .min(6, {
+      message: "Username must be at least 6 characters.",
+    })
+    .max(12, {
+      message: "Username must be less than 12 characters.",
+    }),
+  taskName: z
+    .string()
+    .min(6, {
+      message: "Username must be at least 6 characters.",
+    })
+    .max(12, {
+      message: "Username must be less than 12 characters.",
+    }),
   time: z.number().min(1, {
-    message: "Hour should be greater than 1"
+    message: "Hour should be greater than 1",
   }),
-})
+});
 
 export function TimeLogForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,10 +47,12 @@ export function TimeLogForm() {
       taskName: "",
       time: undefined,
     },
-  })
- 
+  });
+
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) { console.log(values) }
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+  }
 
   return (
     <Form {...form}>
@@ -108,8 +109,10 @@ export function TimeLogForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" variant="secondary" className="mt-4">Submit</Button>
+        <Button type="submit" variant="secondary" className="mt-4">
+          Submit
+        </Button>
       </form>
     </Form>
-  )
+  );
 }
