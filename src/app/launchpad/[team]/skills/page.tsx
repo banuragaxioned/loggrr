@@ -4,6 +4,8 @@ import { authOptions } from "@/server/auth";
 import { Tenant, User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
 
 async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
   const response = await db.skillScore.findMany({
@@ -39,8 +41,11 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
   console.log(skills);
 
   return (
-    <>
-      <h3>My Skills</h3>
+    <DashboardShell>
+      <DashboardHeader
+        heading="My Skills"
+        text="This is a summary of your skills that you have been assessed on."
+      ></DashboardHeader>
       <Table>
         <TableHeader>
           <TableRow>
@@ -57,6 +62,6 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
           ))}
         </TableBody>
       </Table>
-    </>
+    </DashboardShell>
   );
 }
