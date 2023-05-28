@@ -34,7 +34,7 @@ export async function getProjects(slug: string) {
 }
 
 export async function getClients(slug: string) {
-  const projects = await db.project.findMany({
+  const clients = await db.client.findMany({
     where: { Tenant: { slug } },
     select: {
       id: true,
@@ -46,5 +46,5 @@ export async function getClients(slug: string) {
     },
   });
 
-  return projects;
+  return clients;
 }
