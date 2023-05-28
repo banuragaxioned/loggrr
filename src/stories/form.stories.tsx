@@ -45,7 +45,7 @@ export function TimeLogForm() {
       projectName: "",
       milestoneName: "",
       taskName: "",
-      time: undefined,
+      time: 0,
     },
   });
 
@@ -103,7 +103,7 @@ export function TimeLogForm() {
             <FormItem className="col-span-2">
               <FormLabel>Hours</FormLabel>
               <FormControl className="mt-2">
-                <Input placeholder="Hours" {...field} />
+                <Input type="number" placeholder="Hours" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
