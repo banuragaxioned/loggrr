@@ -3,7 +3,6 @@ import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/lib/api";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import CreateClient from "@/components/createClient";
 import CreateProject from "@/components/createProject";
 // import TableUI from "@/components/ui/table";
 
@@ -49,7 +48,6 @@ export default function Projects() {
             ))}
         </ul>
         <h3>Client list</h3>
-        <CreateClient />
         {/* <TableUI rows={clientList.data} columns={clientDataColumns} /> */}
       </section>
     </div>
