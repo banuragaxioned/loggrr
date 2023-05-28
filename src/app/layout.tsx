@@ -5,6 +5,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@/components/analytics";
+import { Toaster } from "react-hot-toast";
 
 const font = PrimaryFont({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
         <TailwindIndicator />
+        <Toaster />
       </body>
     </html>
   );
