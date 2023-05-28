@@ -3,40 +3,25 @@ import { Check, ChevronsUpDown, List, SearchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type List = Record<"value" | "label", string>;
 
 interface FancyBoxProps {
-  options: List[],
-  selectedValues: List[],
-  setSelectedValues: React.Dispatch<React.SetStateAction<List[]>>
+  options: List[];
+  selectedValues: List[];
+  setSelectedValues: React.Dispatch<React.SetStateAction<List[]>>;
 }
 
-export function FancyBox({options, selectedValues, setSelectedValues}: FancyBoxProps) {
+export function FancyBox({ options, selectedValues, setSelectedValues }: FancyBoxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [list, setList] = React.useState<List[]>(options);
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
 
   const toggleList = (list: List) => {
-    setSelectedValues((prev) =>
-      !prev.includes(list)
-        ? [...prev, list]
-        : prev.filter((l) => l.value !== list.value)
-    );
+    setSelectedValues((prev) => (!prev.includes(list) ? [...prev, list] : prev.filter((l) => l.value !== list.value)));
     inputRef?.current?.focus();
   };
 
@@ -77,7 +62,7 @@ export function FancyBox({options, selectedValues, setSelectedValues}: FancyBoxP
           align="start"
           className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
         >
-          <Command loop className="border border-box rounded-t-md border-border">
+          <Command loop className="border-box rounded-t-md border border-border">
             <div className="space-between flex w-full items-center rounded-t-md">
               <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
               <CommandInput
@@ -85,38 +70,30 @@ export function FancyBox({options, selectedValues, setSelectedValues}: FancyBoxP
                 placeholder="Search list..."
                 value={inputValue}
                 onValueChange={setInputValue}
-                className={`text-popover-foreground border-0 box-border rounded-t-sm bg-popover px-0 text-sm leading-6 placeholder:leading-6 placeholder:text-sm placeholder:opacity-75 focus:outline-0 focus:ring-0 overflow-hidden`}
+                className={`box-border overflow-hidden rounded-t-sm border-0 bg-popover px-0 text-sm leading-6 text-popover-foreground placeholder:text-sm placeholder:leading-6 placeholder:opacity-75 focus:outline-0 focus:ring-0`}
               />
             </div>
             <CommandList
-              className={`border-x border-b border-border scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
+              className={`scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] border-x border-b border-border bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
             >
-            <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
-            <CommandGroup className="scrollbar ComboBox-scrollbar overflow-auto select-none px-0 text-sm">
-              {list.map((list) => {
-                const isActive = selectedValues.includes(list);
-                return (
-                  <CommandItem
-                    key={list.value}
-                    value={list.value}
-                    onSelect={() => toggleList(list)}
-                    className="w-full flex justify-between cursor-pointer rounded px-[18px] py-2 text-sm aria-selected:bg-hover"
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        isActive ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    <div className="flex-1">{list.label}</div>
-                  </CommandItem>
-                );
-              })}
-               <CommandItemCreate
-                onSelect={() => createListItem(inputValue)}
-                {...{ inputValue, list }}
-              />
-            </CommandGroup>
+              <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
+              <CommandGroup className="scrollbar ComboBox-scrollbar select-none overflow-auto px-0 text-sm">
+                {list.map((list) => {
+                  const isActive = selectedValues.includes(list);
+                  return (
+                    <CommandItem
+                      key={list.value}
+                      value={list.value}
+                      onSelect={() => toggleList(list)}
+                      className="flex w-full cursor-pointer justify-between rounded px-[18px] py-2 text-sm aria-selected:bg-hover"
+                    >
+                      <Check className={cn("mr-2 h-4 w-4", isActive ? "opacity-100" : "opacity-0")} />
+                      <div className="flex-1">{list.label}</div>
+                    </CommandItem>
+                  );
+                })}
+                <CommandItemCreate onSelect={() => createListItem(inputValue)} {...{ inputValue, list }} />
+              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
@@ -124,7 +101,6 @@ export function FancyBox({options, selectedValues, setSelectedValues}: FancyBoxP
     </div>
   );
 }
-
 
 const CommandItemCreate = ({
   inputValue,
@@ -135,9 +111,7 @@ const CommandItemCreate = ({
   list: List[];
   onSelect: () => void;
 }) => {
-  const hasNoList = !list
-    .map(({ value }) => value)
-    .includes(`${inputValue.toLowerCase()}`);
+  const hasNoList = !list.map(({ value }) => value).includes(`${inputValue.toLowerCase()}`);
 
   const render = inputValue !== "" && hasNoList;
 
@@ -148,7 +122,7 @@ const CommandItemCreate = ({
     <CommandItem
       key={`${inputValue}`}
       value={`${inputValue}`}
-      className="w-full cursor-pointer px-[18px] py-2 text-sm text-muted-foreground aria-selected:bg-hover rounded-md"
+      className="w-full cursor-pointer rounded-md px-[18px] py-2 text-sm text-muted-foreground aria-selected:bg-hover"
       onSelect={onSelect}
     >
       Create new label &quot;{inputValue}&quot;
