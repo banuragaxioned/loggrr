@@ -1,14 +1,39 @@
-// import TableUI from "@/components/ui/table";
 import { getProjects } from "@/server/services/project";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { type Tenant } from "@prisma/client";
 
-export default async function Page({ params }: { params: { team: string } }) {
+export default async function Projects({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
-  const projectList = await getProjects(team);
-  const projectDataColumns = ["name", "Client.name", "Owner.name", "status"];
+  const clientList = await getProjects(team);
   return (
-    <>
-      <h3>Project List</h3>
-      {/* <TableUI rows={projectList} columns={projectDataColumns} /> */}
-    </>
+    <DashboardShell>
+      <DashboardHeader heading="Projects" text="This is all your projects">
+        {/* TODO: Add Project Form here */}
+      </DashboardHeader>
+      {/* TODO: Update to Advanced Table, with sort (all), select columns to display */}
+      {/* TODO: Clicking on the row should take you to the project details page */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Client</TableHead>
+            <TableHead>Owner</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {clientList.map((project) => (
+            <TableRow key={project.id}>
+              <TableCell key={project.id}>{project.name}</TableCell>
+              <TableCell key={project.id}>{project.Client.name}</TableCell>
+              <TableCell key={project.id}>{project.Owner.name}</TableCell>
+              <TableCell key={project.id}>{project.status}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </DashboardShell>
   );
 }

@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { type Tenant } from "@prisma/client";
 import { NewClientForm } from "@/components/clientForm";
 
-export default async function Page({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function Clients({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
   const clientList = await getClients(team);
   return (
