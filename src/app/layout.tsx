@@ -1,4 +1,5 @@
 import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
+import localFont from "next/font/local";
 
 import "@/styles/globals.css";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
@@ -6,7 +7,13 @@ import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 import PHProvider, { Analytics } from "@/components/analytics";
 import { Toaster } from "react-hot-toast";
-import { PostHogProvider } from "posthog-js/react";
+import { cn } from "@/lib/utils";
+
+// Font files can be colocated inside of `pages`
+const fontHeading = localFont({
+  src: "../assets/fonts/CalSans-SemiBold.woff2",
+  variable: "--font-heading",
+});
 
 const font = PrimaryFont({
   subsets: ["latin"],
@@ -22,8 +29,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${font.variable}`}>
-      <body className="min-h-screen items-center border-zinc-300 bg-white text-base text-zinc-950 antialiased dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50">
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={cn(
+          "min-h-screen items-center border-border bg-background font-sans text-base text-foreground text-zinc-950 antialiased",
+          font.variable,
+          fontHeading.variable
+        )}
+      >
         <PHProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
