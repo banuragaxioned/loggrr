@@ -64,22 +64,22 @@ export const dashboardConfig: DashboardConfig = {
   sidebarSkills: [
     {
       title: "Summary",
-      href: "/profile",
+      href: "/skills/summary",
       icon: "user",
     },
     {
       title: "Explore",
-      href: "/projects",
+      href: "/skills/explore",
       icon: "post",
     },
     {
       title: "Report",
-      href: "/billing",
+      href: "/skills/report",
       icon: "billing",
     },
     {
       title: "Settings",
-      href: "/settings",
+      href: "/skills/settings",
       icon: "settings",
     },
   ],

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SidebarNavItem } from "@/types";
+import { useParams } from "next/navigation";
 
 import { Icons } from "@/components/icons";
 
@@ -13,6 +14,9 @@ interface DashboardNavProps {
 
 export function DashboardNav({ items }: DashboardNavProps) {
   const path = usePathname();
+  const params = useParams();
+  const slug = params?.team;
+  console.log(params);
 
   if (!items?.length) {
     return null;
@@ -21,10 +25,10 @@ export function DashboardNav({ items }: DashboardNavProps) {
   return (
     <nav className="grid items-start gap-2">
       {items.map((item, index) => {
-        const Icon = Icons[item.icon || "arrowRight"];
+        const Icon = Icons[item.icon ?? "arrowRight"];
         return (
           item.href && (
-            <Link key={index} href={item.disabled ? "/" : path + item.href}>
+            <Link key={index} href={item.disabled ? "/" : "/launchpad/" + slug + item.href}>
               <span
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-600",
