@@ -37,7 +37,6 @@ export function NewClientForm({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const response = await fetch("/api/team/client", {
       method: "POST",
       headers: {

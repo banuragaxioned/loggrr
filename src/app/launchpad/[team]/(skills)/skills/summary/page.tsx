@@ -38,7 +38,6 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
     redirect(authOptions?.pages?.signIn || "/login");
   }
   const skills = await getUserSkills(user.id, params.team);
-  console.log(skills);
 
   return (
     <DashboardShell>
