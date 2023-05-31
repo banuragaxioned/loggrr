@@ -1,5 +1,7 @@
+import { DashboardShell } from "@/components/ui/shell";
 import { Logged, columns } from "./columns";
 import { DataTable } from "./data-table";
+import { DashboardHeader } from "@/components/ui/header";
 
 async function getData(): Promise<Logged[]> {
   // Fetch data from your API here.
@@ -32,8 +34,13 @@ export default async function DemoPage() {
   const data = await getData();
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
-    </div>
+    <>
+      <DashboardShell>
+        <DashboardHeader heading="Assignments" text="This is a summary current assignments"></DashboardHeader>
+        <div className="container mx-auto">
+          <DataTable columns={columns} data={data} />
+        </div>
+      </DashboardShell>
+    </>
   );
 }
