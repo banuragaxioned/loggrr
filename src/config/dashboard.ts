@@ -83,4 +83,26 @@ export const dashboardConfig: DashboardConfig = {
       icon: "settings",
     },
   ],
+  sidebarReports: [
+    {
+      title: "Summary",
+      href: "/reports/summary",
+      icon: "user",
+    },
+    {
+      title: "Assigned",
+      href: "/reports/assigned",
+      icon: "post",
+    },
+    {
+      title: "Logged",
+      href: "/reports/logged",
+      icon: "settings",
+    },
+    {
+      title: "Available",
+      href: "/reports/available",
+      icon: "billing",
+    },
+  ],
 };

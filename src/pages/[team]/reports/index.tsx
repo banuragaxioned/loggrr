@@ -15,6 +15,7 @@ export default function GlobalReports() {
   if (isInvalid) {
     return <Unavailable />;
   }
+
   return (
     <div className="mx-auto flex max-w-6xl gap-4">
       <section className="container flex flex-col items-center justify-center gap-12">

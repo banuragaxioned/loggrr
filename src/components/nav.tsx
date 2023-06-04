@@ -16,7 +16,6 @@ export function DashboardNav({ items }: DashboardNavProps) {
   const path = usePathname();
   const params = useParams();
   const slug = params?.team;
-  console.log(params);
 
   if (!items?.length) {
     return null;

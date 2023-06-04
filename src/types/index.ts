@@ -44,6 +44,7 @@ export type DashboardConfig = {
   sidebarTeam: SidebarNavItem[];
   sidebarProjects: SidebarNavItem[];
   sidebarSkills: SidebarNavItem[];
+  sidebarReports: SidebarNavItem[];
 };
 
 export type NavItem = {
