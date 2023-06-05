@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { Archive, ArrowUpDown, TrashIcon } from "lucide-react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -74,6 +74,22 @@ export const columns: ColumnDef<Assignment>[] = [
           Non-billable
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const assignment = row.original
+      return (
+        <div className="flex gap-3">
+          <Button className="bg-inherit border-0 p-0">
+            <TrashIcon height={18} width={18} />
+          </Button>
+          <Button className="bg-inherit border-0 p-0">
+            <Archive height={18} width={18} />
+          </Button>
+        </div>
       );
     },
   },
