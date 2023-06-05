@@ -88,3 +88,37 @@ export async function getAssignments(slug: string) {
 
   return flattenedAssignments;
 }
+
+export async function getSummary(slug: string) {
+  const timeEntries = await db.timeEntry.findMany({
+    where: { Tenant: { slug } },
+    select: {
+      id: true,
+      date: true,
+      time: true,
+      Project: { select: { id: true, name: true } },
+      User: { select: { id: true, name: true, image: true } },
+      status: true,
+    },
+    orderBy: {
+      User: {
+        name: "asc",
+      },
+    },
+  });
+
+  // flatten Project and User assignments array
+  const flattenedTimeEntries = timeEntries.map((timeEntry) => ({
+    id: timeEntry.id,
+    date: timeEntry.date,
+    time: timeEntry.time,
+    projectId: timeEntry.Project.id,
+    projectName: timeEntry.Project.name,
+    userId: timeEntry.User.id,
+    userName: timeEntry.User.name,
+    userImage: timeEntry.User.image,
+    status: timeEntry.status,
+  }));
+
+  return flattenedTimeEntries;
+}
