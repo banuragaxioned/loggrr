@@ -13,6 +13,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
+import { FancyBox,List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -51,7 +53,17 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility
     },
   });
-
+  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
+  let filterData = data.map((obj:any)=>{
+    return {label:obj.projectName,value:obj.projectName}
+  });
+  filterData = filterData.filter((obj:any,i)=>{
+    const repeated = filterData.slice(i+1,filterData.length-1).find((item:any)=>item?.label === obj.label);
+    if(!repeated) {
+      return obj;
+    }
+  })
+  console.log(filterData)
   return (
     <div>
       <div className="flex items-center py-2">
@@ -61,6 +73,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
+       <div className="ml-auto">
+       <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} />
+       </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
