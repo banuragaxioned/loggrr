@@ -58,12 +58,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     return {label:obj.projectName,value:obj.projectName}
   });
   filterData = filterData.filter((obj:any,i)=>{
-    const repeated = filterData.slice(i+1,filterData.length-1).find((item:any)=>item?.label === obj.label);
+    const repeated = filterData.slice(i+1,filterData.length).find((item:any)=>item?.label === obj.label);
     if(!repeated) {
       return obj;
     }
   })
-  console.log(filterData)
+
   return (
     <div>
       <div className="flex items-center py-2">
