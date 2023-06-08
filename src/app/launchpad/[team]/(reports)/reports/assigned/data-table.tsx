@@ -62,8 +62,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     if(!repeated) {
       return obj;
     }
-  })
+  });
 
+  const filterMatcher = (rowObj:any)=> selectedValues.find((obj)=>obj.value === rowObj.original.projectName);
   return (
     <div>
       <div className="flex items-center py-2">
@@ -120,6 +121,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
+              filterMatcher(row) &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="px-8" key={cell.id}>
