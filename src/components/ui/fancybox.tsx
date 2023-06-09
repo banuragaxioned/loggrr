@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-type List = Record<"value" | "label", string>;
+export type List = Record<"value" | "label", string>;
 
 interface FancyBoxProps {
   options: List[];

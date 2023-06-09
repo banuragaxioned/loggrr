@@ -22,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
-import { FancyBox,List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -34,7 +33,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
   const table = useReactTable({
     data,
@@ -52,18 +51,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility
     },
   });
-  let filterData = data.map((obj:any)=>{
-    return {label:obj.projectName,value:obj.projectName}
-  });
-  filterData = filterData.filter((obj:any,i)=>{
-    const repeated = filterData.slice(i+1,filterData.length).find((item:any)=>item?.label === obj.label);
-    if(!repeated) {
-      return obj;
-    }
-  });
-  
-  const filterMatcher = (rowObj:any)=> selectedValues.find((obj)=>obj.value === rowObj.original.projectName);
-  const [selectedValues, setSelectedValues] = React.useState<List[]>(filterData);
 
   return (
     <div>
@@ -74,9 +61,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
-       <div className="ml-auto">
-       <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} />
-       </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -89,14 +73,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               .filter((column) => column.getCanHide())
               .map((column) => {
                 return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
+                  column.id !== "actions" && (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
                 );
               })}
           </DropdownMenuContent>
@@ -117,9 +103,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length && selectedValues.length > 0 ? (
+          {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              filterMatcher(row) &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="px-8" key={cell.id}>
