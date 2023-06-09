@@ -53,7 +53,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility
     },
   });
-  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
   let filterData = data.map((obj:any)=>{
     return {label:obj.projectName,value:obj.projectName}
   });
@@ -63,8 +62,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       return obj;
     }
   });
-
+  
   const filterMatcher = (rowObj:any)=> selectedValues.find((obj)=>obj.value === rowObj.original.projectName);
+  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
   return (
     <div>
       <div className="flex items-center py-2">
@@ -119,7 +119,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows?.length && selectedValues.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               filterMatcher(row) &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
