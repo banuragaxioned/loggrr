@@ -55,6 +55,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   let filterData = data.map((obj:any)=>{
     return {label:obj.projectName,value:obj.projectName}
   });
+
   filterData = filterData.filter((obj:any,i)=>{
     const repeated = filterData.slice(i+1,filterData.length).find((item:any)=>item?.label === obj.label);
     if(!repeated) {
@@ -63,7 +64,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   });
   
   const filterMatcher = (rowObj:any)=> selectedValues.find((obj)=>obj.value === rowObj.original.projectName);
-  const [selectedValues, setSelectedValues] = React.useState<List[]>(filterData);
+  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
 
   return (
     <div>
@@ -117,9 +118,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length && selectedValues.length > 0 ? (
+          {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              filterMatcher(row) &&
+              (filterMatcher(row) || selectedValues.length === 0) &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="px-8" key={cell.id}>
