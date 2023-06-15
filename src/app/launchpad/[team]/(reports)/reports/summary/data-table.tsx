@@ -58,6 +58,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       <div className="flex items-center py-2 border-2 border-slate-200">
       <div className="ml-auto">
        {/* <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} /> */}
+        {/* <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} /> */}
+         {/* <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} /> */}
        </div>
       </div>
       <Table>
@@ -80,7 +82,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 { row.getVisibleCells().map((cell:any) => {
                   return (
-                    <TableCell className={`px-8 ${cell.row.original?.lead ? "":"font-bold"}`} key={cell.id}>
+                    <TableCell className={`px-8 ${cell.row.original?.lead ? "":"font-bold bg-slate-100"}`} key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   )  
