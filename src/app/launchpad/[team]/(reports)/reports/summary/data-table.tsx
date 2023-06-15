@@ -21,7 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input";
+import { FancyBox,List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -33,7 +33,8 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
 
   const table = useReactTable({
     data,
@@ -54,39 +55,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex items-center py-2">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  column.id !== "actions" && (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center py-2 border-2 border-slate-200">
+      <div className="ml-auto">
+       {/* <FancyBox options={filterData} selectedValues={selectedValues} setSelectedValues={setSelectedValues} /> */}
+       </div>
       </div>
       <Table>
         <TableHeader>
@@ -104,13 +76,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row,i) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="px-8" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                { row.getVisibleCells().map((cell:any) => {
+                  return (
+                    <TableCell className={`px-8 ${cell.row.original?.lead ? "":"font-bold"}`} key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  )  
+                })}
               </TableRow>
             ))
           ) : (
