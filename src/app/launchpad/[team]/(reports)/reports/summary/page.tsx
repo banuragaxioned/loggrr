@@ -8,7 +8,7 @@ import { Tenant } from "@prisma/client";
 export default async function Page({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
   const data = await getSummary(team);
-  console.log(data[0].Milestone)
+  console.log(data[0])
   return (
     <DashboardShell>
     <DashboardHeader heading="Project list"></DashboardHeader>
