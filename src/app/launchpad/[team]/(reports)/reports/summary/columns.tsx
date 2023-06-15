@@ -2,52 +2,67 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown, TrashIcon } from "lucide-react";
+import { Archive, ArrowUpDown } from "lucide-react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
+type Project =  {
+  id:number,
+  name:string,
+  budget:number,
+  logged:number,
+  lead:string,
+  leadImage:string
+}
+
 type Summary = {
-  id: number;
-  date: Date;
-  projectId: number;
-  projectName: string;
-  time: number,
-  userId: number;
-  userName?: string | null;
-  userImage?: string | null;
-  status: string;
+  id: number,
+  name: string,
+  projects:Project[]|null,
+  lead:string|null,
+  leadImage:string|null,
+  budget:number|null,
+  logged:number|null
 };
 
 export const columns: ColumnDef<Summary>[] = [
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Name
+        <Button variant="link" className="text-slate-500" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+         Project
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "projectName",
+    accessorKey: "budget",
     header: ({ column }) => {
       return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Project Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+          Budget
         </Button>
       );
     },
   },
   {
-    accessorKey: "time",
+    accessorKey: "logged",
     header: ({ column }) => {
       return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Time
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+          Logged
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "lead",
+    header: ({ column }) => {
+      return (
+        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+          Project Leads
         </Button>
       );
     },
@@ -55,8 +70,10 @@ export const columns: ColumnDef<Summary>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const assignment = row.original;
+      const lead = row.original.lead;
+
       return (
+        lead &&
         <div className="flex gap-3">
           <Button className="border-0 bg-inherit p-0">
             <Archive height={18} width={18} />

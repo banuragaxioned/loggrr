@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,7 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input";
+import { FancyBox,List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -33,7 +34,28 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [selectedProjects, setSelectedProjects] = React.useState<List[]>([]);
+  const [selectedClient, setSelectedClient] = React.useState<List[]>([]);
+  const [selectedLead, setSelectedLead] = React.useState<List[]>([]);
+
+  const dataFormator = (arr:never[],key:string,option?:null|string)=>{
+    return arr.map((obj:any)=>option ? !obj.lead && {label:obj[key],value:obj[key]} : obj.lead && {label:obj[key],value:obj[key]});
+  } 
+
+  const dataFilter = (arr:[]|any,key:string,option?:null|string)=> {
+    const formatedArr =  dataFormator(arr,key,option);
+    const processedData = formatedArr.filter((obj:any,i:number)=>{
+      const repeated =  formatedArr.slice(i+1,arr.length).find((item:any)=>item?.label === obj?.label);
+      if(!repeated && obj?.label) {
+        return obj;
+      }
+    });
+    return processedData;
+  }
+  
+  const filterMatcher = (rowObj:any)=> selectedProjects.find((obj)=>obj.value === rowObj.original.name) || (selectedClient.length && selectedClient.find((obj)=>obj.value === rowObj.original.name)) || 
+ ( selectedLead.length && selectedLead.find((obj)=>obj.value === rowObj.original.lead));
 
   const table = useReactTable({
     data,
@@ -54,44 +76,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex items-center py-2">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
+      <div className="flex items-center py-2 border-2 border-slate-200 mb-3 p-[15px] rounded-lg gap-x-3">
+       <FancyBox options={dataFilter(data,"name")} selectedValues={selectedProjects} setSelectedValues={setSelectedProjects} />
+        <FancyBox options={dataFilter(data,"name","client")} selectedValues={selectedClient} setSelectedValues={setSelectedClient} />
+         <FancyBox options={dataFilter(data,"lead")} selectedValues={selectedLead} setSelectedValues={setSelectedLead} />
+         <Button variant="outline" className="ml-auto">
+          <FolderPlus className="mr-2 h-4 w-4"/>
+              New Project
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  column.id !== "actions" && (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -104,13 +101,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row,i) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="px-8" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                { row.getVisibleCells().map((cell:any) => {
+                  return (
+                   ( filterMatcher(cell.row) || !selectedProjects.length) &&
+                    <TableCell className={`px-8 ${cell.row.original?.lead ? "":"font-bold bg-slate-100"}`} key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  )  
+                })}
               </TableRow>
             ))
           ) : (

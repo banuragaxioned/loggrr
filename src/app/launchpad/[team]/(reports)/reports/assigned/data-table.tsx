@@ -120,7 +120,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              (filterMatcher(row) || selectedValues.length === 0) &&
+              (filterMatcher(row) || !selectedValues.length) &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="px-8" key={cell.id}>
