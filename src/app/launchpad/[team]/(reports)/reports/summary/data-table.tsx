@@ -66,17 +66,17 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   };
 
   const filterMatcher = (rowObj: any, index: number) => {
+    let check = false,flag=false;
     const projectName = rowObj.original.name;
     const lead = rowObj.original.name;
-    const flag =
-      !rowObj.original.lead &&
-      ((selectedProjects.length && projectsNotEmpty("name", rowObj.original.name, selectedProjects, index)) ||
-        (selectedLead.length && projectsNotEmpty("name", rowObj.original.lead, selectedLead, index)) ||
-        (selectedClient.length && projectsNotEmpty("name", rowObj.original.name, selectedClient, index)));
-
-    return ((selectedProjects.length && selectedProjects.find((obj) => obj.value === rowObj.original.name)) 
-    )
-    || flag;
+    const selectedReference = [selectedProjects.length && selectedProjects, selectedClient.length && selectedClient, selectedLead.length && selectedLead];
+    selectedReference.map((item,i)=>{
+      if(item) {
+        flag = !rowObj.original.lead &&  projectsNotEmpty(i===2?"lead":"name", i === 2 ?rowObj.original.lead :rowObj.original.name, item, index);
+        check = item.find((obj) => obj.value === (i===2 ? rowObj.original.lead :rowObj.original.name)) !== undefined
+      }
+    })
+    return check || flag;
   };
 
   const table = useReactTable({
