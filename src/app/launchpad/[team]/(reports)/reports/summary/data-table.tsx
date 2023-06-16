@@ -16,13 +16,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { FancyBox,List } from "@/components/ui/fancybox";
+import { FancyBox, List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -39,23 +33,51 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [selectedClient, setSelectedClient] = React.useState<List[]>([]);
   const [selectedLead, setSelectedLead] = React.useState<List[]>([]);
 
-  const dataFormator = (arr:never[],key:string,option?:null|string)=>{
-    return arr.map((obj:any)=>option ? !obj.lead && {label:obj[key],value:obj[key]} : obj.lead && {label:obj[key],value:obj[key]});
-  } 
+  const dataFormator = (arr: never[], key: string, option?: null | string) => {
+    return arr.map((obj: any) =>
+      option ? !obj.lead && { label: obj[key], value: obj[key] } : obj.lead && { label: obj[key], value: obj[key] }
+    );
+  };
 
-  const dataFilter = (arr:[]|any,key:string,option?:null|string)=> {
-    const formatedArr =  dataFormator(arr,key,option);
-    const processedData = formatedArr.filter((obj:any,i:number)=>{
-      const repeated =  formatedArr.slice(i+1,arr.length).find((item:any)=>item?.label === obj?.label);
-      if(!repeated && obj?.label) {
+  const dataFilter = (arr: [] | any, key: string, option?: null | string) => {
+    const formatedArr = dataFormator(arr, key, option);
+    const processedData = formatedArr.filter((obj: any, i: number) => {
+      const repeated = formatedArr.slice(i + 1, arr.length).find((item: any) => item?.label === obj?.label);
+      if (!repeated && obj?.label) {
         return obj;
       }
     });
     return processedData;
-  }
-  
-  const filterMatcher = (rowObj:any)=> selectedProjects.find((obj)=>obj.value === rowObj.original.name) || (selectedClient.length && selectedClient.find((obj)=>obj.value === rowObj.original.name)) || 
- ( selectedLead.length && selectedLead.find((obj)=>obj.value === rowObj.original.lead));
+  };
+
+  const projectsNotEmpty = (key: string, value: string, selected: List[], i: number) => {
+    let newClientStarted = false,
+      flag = false;
+    const searchArray = data.slice(i, data.length);
+
+    searchArray.map((obj: any) => {
+      obj.lead && selected.find((item) => obj[key] === item.value) && !newClientStarted
+        ? (flag = true)
+        : !obj.lead && obj[key] !== value
+        ? (newClientStarted = true)
+        : null;
+    });
+    return flag;
+  };
+
+  const filterMatcher = (rowObj: any, index: number) => {
+    const projectName = rowObj.original.name;
+    const lead = rowObj.original.name;
+    const flag =
+      !rowObj.original.lead &&
+      ((selectedProjects.length && projectsNotEmpty("name", rowObj.original.name, selectedProjects, index)) ||
+        (selectedLead.length && projectsNotEmpty("name", rowObj.original.lead, selectedLead, index)) ||
+        (selectedClient.length && projectsNotEmpty("name", rowObj.original.name, selectedClient, index)));
+
+    return ((selectedProjects.length && selectedProjects.find((obj) => obj.value === rowObj.original.name)) 
+    )
+    || flag;
+  };
 
   const table = useReactTable({
     data,
@@ -70,20 +92,32 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     state: {
       sorting,
       columnFilters,
-      columnVisibility
+      columnVisibility,
     },
   });
 
   return (
     <div>
-      <div className="flex items-center py-2 border-2 border-slate-200 mb-3 p-[15px] rounded-lg gap-x-3">
-       <FancyBox options={dataFilter(data,"name")} selectedValues={selectedProjects} setSelectedValues={setSelectedProjects} />
-        <FancyBox options={dataFilter(data,"name","client")} selectedValues={selectedClient} setSelectedValues={setSelectedClient} />
-         <FancyBox options={dataFilter(data,"lead")} selectedValues={selectedLead} setSelectedValues={setSelectedLead} />
-         <Button variant="outline" className="ml-auto">
-          <FolderPlus className="mr-2 h-4 w-4"/>
-              New Project
-            </Button>
+      <div className="mb-3 flex items-center gap-x-3 rounded-lg border-2 border-slate-200 p-[15px] py-2">
+        <FancyBox
+          options={dataFilter(data, "name")}
+          selectedValues={selectedProjects}
+          setSelectedValues={setSelectedProjects}
+        />
+        <FancyBox
+          options={dataFilter(data, "name", "client")}
+          selectedValues={selectedClient}
+          setSelectedValues={setSelectedClient}
+        />
+        <FancyBox
+          options={dataFilter(data, "lead")}
+          selectedValues={selectedLead}
+          setSelectedValues={setSelectedLead}
+        />
+        <Button variant="outline" className="ml-auto">
+          <FolderPlus className="mr-2 h-4 w-4" />
+          New Project
+        </Button>
       </div>
       <Table>
         <TableHeader>
@@ -101,15 +135,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row,i) => (
+            table.getRowModel().rows.map((row, i) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                { row.getVisibleCells().map((cell:any) => {
+                {row.getVisibleCells().map((cell: any) => {
                   return (
-                   ( filterMatcher(cell.row) || !selectedProjects.length) &&
-                    <TableCell className={`px-8 ${cell.row.original?.lead ? "":"font-bold bg-slate-100"}`} key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  )  
+                    (filterMatcher(cell.row, i) || !selectedProjects.length) && (
+                      <TableCell
+                        className={`px-8 ${cell.row.original?.lead ? "" : "h-[69px] bg-slate-100 font-bold"}`}
+                        key={cell.id}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    )
+                  );
                 })}
               </TableRow>
             ))
