@@ -58,28 +58,40 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     const searchArray = data.slice(i, data.length);
 
     searchArray.map((obj: any) => {
-      obj.lead && selected.find((item) => obj[key] === item.value) && !newClientStarted
+      key === "lead" && obj.lead && selectedProjects.length
+        ? selected.find((item) => obj[key] === item.value) &&
+          !newClientStarted &&
+          selectedProjects.find((item) => obj.name === item.value)
+        : obj.lead && selected.find((item) => obj[key] === item.value) && !newClientStarted
         ? (flag = true)
         : !obj.lead && obj.name !== value
-          ? (newClientStarted = true)
-          : null;
+        ? (newClientStarted = true)
+        : null;
     });
     return flag;
   };
 
-
   const filterMatcher = (rowObj: any, index: number) => {
-    let check = true, flag = true;
+    let check = true,
+      flag = true;
     const projectName = rowObj.original.name;
     const lead = rowObj.original.lead;
     const client = rowObj.original.client;
-    const selectedReference = [selectedProjects.length && selectedProjects, selectedClient.length && selectedClient, selectedLead.length && selectedLead];
+    const selectedReference = [
+      selectedProjects.length && selectedProjects,
+      selectedClient.length && selectedClient,
+      selectedLead.length && selectedLead,
+    ];
     selectedReference.map((item, i) => {
       if (item) {
-        flag = flag && !rowObj.original.lead && projectsNotEmpty(i === 2 ? "lead" : i === 1 ? "client" : "name", projectName, item, index);
-        check = check && item.find((obj) => obj.value === (i === 2 ? lead : i === 1 ? client : projectName)) !== undefined
+        flag =
+          flag &&
+          !rowObj.original.lead &&
+          projectsNotEmpty(i === 2 ? "lead" : i === 1 ? "client" : "name", projectName, item, index);
+        check =
+          check && item.find((obj) => obj.value === (i === 2 ? lead : i === 1 ? client : projectName)) !== undefined;
       }
-    })
+    });
     return check || flag;
   };
 
@@ -141,30 +153,27 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, i) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell: any,j:number) => {
+                {row.getVisibleCells().map((cell: any, j: number) => {
                   return (
-                    (filterMatcher(cell.row, i) || (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
+                    (filterMatcher(cell.row, i) ||
+                      (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
                       <TableCell
                         className={`px-8 ${cell.row.original?.lead ? "" : "h-[69px] bg-slate-100 font-bold"}`}
                         key={cell.id}
                       >
-                        {
-                          j=== 1 && cell.row.original?.lead && 
-                          <Hourglass height={18} width={18} className="inline mr-2 my-auto"/>
-                        }
-                        {
-                          j=== 3 && cell.row.original?.lead && 
+                        {j === 1 && cell.row.original?.lead && (
+                          <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
+                        )}
+                        {j === 3 && cell.row.original?.lead && (
                           <Image
-                          src={ cell.row.original.leadImage}
-                          alt={ cell.row.original.lead}
-                          width={18}
-                          height={18}
-                          className="inline-block mr-2"
+                            src={cell.row.original.leadImage}
+                            alt={cell.row.original.lead}
+                            width={18}
+                            height={18}
+                            className="mr-2 inline-block"
                           />
-                        }
-                        {
-
-                        }
+                        )}
+                        {}
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     )
