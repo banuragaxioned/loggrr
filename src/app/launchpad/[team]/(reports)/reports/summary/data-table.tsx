@@ -1,4 +1,6 @@
 "use client";
+import { Hourglass } from "lucide-react";
+import Image from "next/image";
 
 import {
   ColumnDef,
@@ -139,13 +141,30 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, i) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell: any) => {
+                {row.getVisibleCells().map((cell: any,j:number) => {
                   return (
                     (filterMatcher(cell.row, i) || (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
                       <TableCell
                         className={`px-8 ${cell.row.original?.lead ? "" : "h-[69px] bg-slate-100 font-bold"}`}
                         key={cell.id}
                       >
+                        {
+                          j=== 1 && cell.row.original?.lead && 
+                          <Hourglass height={18} width={18} className="inline mr-2 my-auto"/>
+                        }
+                        {
+                          j=== 3 && cell.row.original?.lead && 
+                          <Image
+                          src={ cell.row.original.leadImage}
+                          alt={ cell.row.original.lead}
+                          width={18}
+                          height={18}
+                          className="inline-block mr-2"
+                          />
+                        }
+                        {
+
+                        }
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     )
