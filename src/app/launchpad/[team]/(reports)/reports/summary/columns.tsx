@@ -30,9 +30,8 @@ export const columns: ColumnDef<Summary>[] = [
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button variant="link" className="text-slate-500" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button variant="link" className="text-slate-500">
          Project
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },

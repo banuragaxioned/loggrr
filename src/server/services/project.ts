@@ -33,27 +33,6 @@ export async function getProjects(slug: string) {
   return projects;
 }
 
-export async function getSummary(slug: string) {
-  const summary = await db.project.findMany({
-    where: { Tenant: { slug } },
-    select: {
-      id: true,
-      name: true,
-      Client: { select: { id: true, name: true } },
-      Owner: { select: { id: true, name: true, image: true } },
-      Milestone:{select:{id:true,projectId:true,budget:true}},
-      TimeEntry:{select:{id:true,time:true,projectId:true}},
-    },
-    orderBy: {
-      Client: {
-        name: "asc",
-      },
-    },
-  });
-
-  return summary;
-}
-
 export async function getProjectSummary(slug: string) {
   const summary = await db.client.findMany({
     where: { Tenant: { slug } },

@@ -58,22 +58,24 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     searchArray.map((obj: any) => {
       obj.lead && selected.find((item) => obj[key] === item.value) && !newClientStarted
         ? (flag = true)
-        : !obj.lead && obj[key] !== value
-        ? (newClientStarted = true)
-        : null;
+        : !obj.lead && obj.name !== value
+          ? (newClientStarted = true)
+          : null;
     });
     return flag;
   };
 
+
   const filterMatcher = (rowObj: any, index: number) => {
-    let check = false,flag=false;
+    let check = true, flag = true;
     const projectName = rowObj.original.name;
-    const lead = rowObj.original.name;
+    const lead = rowObj.original.lead;
+    const client = rowObj.original.client;
     const selectedReference = [selectedProjects.length && selectedProjects, selectedClient.length && selectedClient, selectedLead.length && selectedLead];
-    selectedReference.map((item,i)=>{
-      if(item) {
-        flag = !rowObj.original.lead &&  projectsNotEmpty(i===2?"lead":"name", i === 2 ?rowObj.original.lead :rowObj.original.name, item, index);
-        check = item.find((obj) => obj.value === (i===2 ? rowObj.original.lead :rowObj.original.name)) !== undefined
+    selectedReference.map((item, i) => {
+      if (item) {
+        flag = flag && !rowObj.original.lead && projectsNotEmpty(i === 2 ? "lead" : i === 1 ? "client" : "name", projectName, item, index);
+        check = check && item.find((obj) => obj.value === (i === 2 ? lead : i === 1 ? client : projectName)) !== undefined
       }
     })
     return check || flag;
@@ -139,7 +141,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell: any) => {
                   return (
-                    (filterMatcher(cell.row, i) || !selectedProjects.length) && (
+                    (filterMatcher(cell.row, i) || (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
                       <TableCell
                         className={`px-8 ${cell.row.original?.lead ? "" : "h-[69px] bg-slate-100 font-bold"}`}
                         key={cell.id}
