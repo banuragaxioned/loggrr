@@ -34,27 +34,34 @@ export async function getProjects(slug: string) {
 }
 
 export async function getProjectSummary(slug: string) {
-  const summary = await db.client.findMany({
+  const summary = await db.project.findMany({
     where: { Tenant: { slug } },
     select: {
       id: true,
       name: true,
-      Project:{
-        select:{
-          id:true,
-          name:true,
-          Owner:{select:{id:true,name:true,image:true}},
-          Milestone:{select:{id:true,budget:true,projectId:true}},
-          TimeEntry:{select:{id:true,time:true,projectId:true}}
-        }
-      }
+      billable: true,
+      Client: { select: { id: true, name: true } },
+      Owner: { select: { id: true, name: true, image: true } },
+      Milestone: { select: { id: true, budget: true, projectId: true } },
+      TimeEntry: { select: { id: true, time: true, projectId: true } },
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  return summary;
+  const flattenedSummary = summary.map((project) => ({
+    id: project.id,
+    name: project.name,
+    billable: project.billable,
+    client: project.Client.name,
+    lead: project.Owner.name,
+    leadAvatar: project.Owner.image,
+    budget: project.Milestone.length ? project.Milestone.filter((item) => item.projectId === project.id)[0].budget : 0,
+    logged: project.TimeEntry.length ? project.TimeEntry.filter((item) => item.projectId === project.id)[0].time : 0,
+  }));
+
+  return flattenedSummary;
 }
 
 export async function getClients(slug: string) {

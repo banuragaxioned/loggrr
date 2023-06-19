@@ -3,35 +3,23 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown } from "lucide-react";
+import { Summary } from "@/types";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-type Project =  {
-  id:number,
-  name:string,
-  budget:number,
-  logged:number,
-  lead:string,
-  leadImage:string
-}
-
-type Summary = {
-  id: number,
-  name: string,
-  projects:Project[]|null,
-  lead:string|null,
-  leadImage:string|null,
-  budget:number|null,
-  logged:number|null
-};
 
 export const columns: ColumnDef<Summary>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button variant="link" className="text-slate-500">
-         Project
+        <Button
+          variant="link"
+          className="text-slate-500"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Project
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -40,8 +28,13 @@ export const columns: ColumnDef<Summary>[] = [
     accessorKey: "budget",
     header: ({ column }) => {
       return (
-        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+        <Button
+          variant="link"
+          className="cursor-default text-slate-500 hover:no-underline"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Budget
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -50,8 +43,13 @@ export const columns: ColumnDef<Summary>[] = [
     accessorKey: "logged",
     header: ({ column }) => {
       return (
-        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+        <Button
+          variant="link"
+          className="cursor-default text-slate-500 hover:no-underline"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Logged
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -60,8 +58,13 @@ export const columns: ColumnDef<Summary>[] = [
     accessorKey: "lead",
     header: ({ column }) => {
       return (
-        <Button variant="link" className="hover:no-underline text-slate-500 cursor-default">
+        <Button
+          variant="link"
+          className="cursor-default text-slate-500 hover:no-underline"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Project Leads
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -72,12 +75,13 @@ export const columns: ColumnDef<Summary>[] = [
       const lead = row.original.lead;
 
       return (
-        lead &&
-        <div className="flex gap-3">
-          <Button className="border-0 bg-inherit p-0">
-            <Archive height={18} width={18} />
-          </Button>
-        </div>
+        lead && (
+          <div className="flex gap-3">
+            <Button className="border-0 bg-inherit p-0">
+              <Archive height={18} width={18} />
+            </Button>
+          </div>
+        )
       );
     },
   },

@@ -3,23 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown } from "lucide-react";
+import { Assignment } from "@/types";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-type Assignment = {
-  id: number;
-  date: Date;
-  endate?: Date | null;
-  billableTime?: number;
-  nonBillableTime?: number;
-  projectId: number;
-  projectName: string;
-  userId: number;
-  userName?: string | null;
-  userImage?: string | null;
-  frequency: string;
-  status: string;
-};
 
 export const columns: ColumnDef<Assignment>[] = [
   {

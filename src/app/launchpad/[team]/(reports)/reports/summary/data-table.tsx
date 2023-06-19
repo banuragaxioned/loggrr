@@ -1,6 +1,6 @@
 "use client";
 import { Hourglass } from "lucide-react";
-import Image from "next/image";
+import { UserAvatar } from "@/components/user-avatar";
 
 import {
   ColumnDef,
@@ -35,14 +35,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [selectedClient, setSelectedClient] = React.useState<List[]>([]);
   const [selectedLead, setSelectedLead] = React.useState<List[]>([]);
 
-  const dataFormator = (arr: never[], key: string, option?: null | string) => {
+  const dataFormator = (arr: never[], key: string) => {
     return arr.map((obj: any) =>
-      option ? !obj.lead && { label: obj[key], value: obj[key] } : obj.lead && { label: obj[key], value: obj[key] }
+      obj.lead && { label: obj[key], value: obj[key] }
     );
   };
 
-  const dataFilter = (arr: [] | any, key: string, option?: null | string) => {
-    const formatedArr = dataFormator(arr, key, option);
+  const dataFilter = (arr: [] | any, key: string) => {
+    const formatedArr = dataFormator(arr, key);
     const processedData = formatedArr.filter((obj: any, i: number) => {
       const repeated = formatedArr.slice(i + 1, arr.length).find((item: any) => item?.label === obj?.label);
       if (!repeated && obj?.label) {
@@ -52,28 +52,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     return processedData;
   };
 
-  const projectsNotEmpty = (key: string, value: string, selected: List[], i: number) => {
-    let newClientStarted = false,
-      flag = false;
-    const searchArray = data.slice(i, data.length);
-
-    searchArray.map((obj: any) => {
-      key === "lead" && obj.lead && selectedProjects.length
-        ? selected.find((item) => obj[key] === item.value) &&
-          !newClientStarted &&
-          selectedProjects.find((item) => obj.name === item.value)
-        : obj.lead && selected.find((item) => obj[key] === item.value) && !newClientStarted
-        ? (flag = true)
-        : !obj.lead && obj.name !== value
-        ? (newClientStarted = true)
-        : null;
-    });
-    return flag;
-  };
-
   const filterMatcher = (rowObj: any, index: number) => {
-    let check = true,
-      flag = true;
+    let check = true;
     const projectName = rowObj.original.name;
     const lead = rowObj.original.lead;
     const client = rowObj.original.client;
@@ -84,15 +64,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     ];
     selectedReference.map((item, i) => {
       if (item) {
-        flag =
-          flag &&
-          !rowObj.original.lead &&
-          projectsNotEmpty(i === 2 ? "lead" : i === 1 ? "client" : "name", projectName, item, index);
         check =
           check && item.find((obj) => obj.value === (i === 2 ? lead : i === 1 ? client : projectName)) !== undefined;
       }
     });
-    return check || flag;
+    return check ;
   };
 
   const table = useReactTable({
@@ -121,7 +97,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           setSelectedValues={setSelectedProjects}
         />
         <FancyBox
-          options={dataFilter(data, "name", "client")}
+          options={dataFilter(data, "client")}
           selectedValues={selectedClient}
           setSelectedValues={setSelectedClient}
         />
@@ -158,22 +134,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     (filterMatcher(cell.row, i) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
                       <TableCell
-                        className={`px-8 ${cell.row.original?.lead ? "" : "h-[69px] bg-slate-100 font-bold"}`}
+                        className="px-8 "
                         key={cell.id}
                       >
                         {j === 1 && cell.row.original?.lead && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}
                         {j === 3 && cell.row.original?.lead && (
-                          <Image
-                            src={cell.row.original.leadImage}
-                            alt={cell.row.original.lead}
-                            width={18}
-                            height={18}
-                            className="mr-2 inline-block"
-                          />
+                          <UserAvatar user={{name:cell.row.original.lead,image:cell.row.original.leadAvatar}} className="inline-block mr-2 "/>
                         )}
-                        {}
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     )

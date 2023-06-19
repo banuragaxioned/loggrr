@@ -124,3 +124,29 @@ export type GlobalAllocation = {
     allocations: AllocationDates;
   }[];
 };
+
+export type Summary =   {
+  id:number,
+  name:string,
+  client:string,
+  billable:boolean,
+  lead:string|null,
+  leadAvatar:string|null,
+  budget:number,
+  logged:number
+};
+
+export type Assignment = {
+  id: number;
+  date: Date;
+  endate?: Date | null;
+  billableTime?: number;
+  nonBillableTime?: number;
+  projectId: number;
+  projectName: string;
+  userId: number;
+  userName?: string | null;
+  userImage?: string | null;
+  frequency: string;
+  status: string;
+};
