@@ -55,7 +55,7 @@ export const columns: ColumnDef<Summary>[] = [
     },
   },
   {
-    accessorKey: "lead",
+    accessorKey: "projectOwner",
     header: ({ column }) => {
       return (
         <Button
@@ -72,16 +72,13 @@ export const columns: ColumnDef<Summary>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const lead = row.original.lead;
 
       return (
-        lead && (
           <div className="flex gap-3">
             <Button className="border-0 bg-inherit p-0">
               <Archive height={18} width={18} />
             </Button>
           </div>
-        )
       );
     },
   },

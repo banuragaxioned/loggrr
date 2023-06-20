@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [selectedLead, setSelectedLead] = React.useState<List[]>([]);
 
   const dataFormator = (arr: never[], key: string) => {
-    return arr.map((obj: any) => obj.lead && { label: obj[key], value: obj[key] });
+    return arr.map((obj: any) => ({ label: obj[key], value: obj[key] }));
   };
 
   const dataFilter = (arr: [] | any, key: string) => {
@@ -50,11 +50,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     return processedData;
   };
 
-  const filterMatcher = (rowObj: any, index: number) => {
+  const filterMatcher = (rowObj: any) => {
     let check = true;
     const projectName = rowObj.original.name;
-    const lead = rowObj.original.lead;
-    const client = rowObj.original.client;
+    const lead = rowObj.original.projectOwner;
+    const client = rowObj.original.clientName;
     const selectedReference = [
       selectedProjects.length && selectedProjects,
       selectedClient.length && selectedClient,
@@ -96,16 +96,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           defaultLabel="My Projects"
         />
         <FancyBox
-          options={dataFilter(data, "client")}
+          options={dataFilter(data, "clientName")}
           selectedValues={selectedClient}
           setSelectedValues={setSelectedClient}
           defaultLabel="Clients"
         />
         <FancyBox
-          options={dataFilter(data, "lead")}
+          options={dataFilter(data, "projectOwner")}
           selectedValues={selectedLead}
           setSelectedValues={setSelectedLead}
-          defaultLabel="Project Lead"
+          defaultLabel="Project Owner"
         />
         <Button variant="outline" className="ml-auto">
           <FolderPlus className="mr-2 h-4 w-4" />
@@ -132,15 +132,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell: any, j: number) => {
                   return (
-                    (filterMatcher(cell.row, i) ||
+                    (filterMatcher(cell.row) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
                       <TableCell className={`px-8 tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
-                        {j === 1 && cell.row.original?.lead && (
+                        {j === 1 && cell.row.original?.budget && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}
-                        {j === 3 && cell.row.original?.lead && (
+                        {j === 3 && cell.row.original?.projectOwner && (
                           <UserAvatar
-                            user={{ name: cell.row.original.lead, image: cell.row.original.leadAvatar }}
+                            user={{ name: cell.row.original.projectOwner, image: cell.row.original.projectOwnerAvatar }}
                             className="mr-2 inline-block h-8 w-8"
                           />
                         )}

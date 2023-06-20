@@ -54,9 +54,10 @@ export async function getProjectSummary(slug: string) {
     id: project.id,
     name: project.name,
     billable: project.billable,
-    client: project.Client.name,
-    lead: project.Owner.name,
-    leadAvatar: project.Owner.image,
+    clientId:project.Client.id,
+    clientName: project.Client.name,
+    projectOwner: project.Owner.name,
+    projectOwnerAvatar: project.Owner.image,
     budget: project.Milestone.length ? project.Milestone.filter((item) => item.projectId === project.id)[0].budget : 0,
     logged: project.TimeEntry.length ? project.TimeEntry.filter((item) => item.projectId === project.id)[0].time : 0,
   }));
