@@ -30,7 +30,7 @@ export const columns: ColumnDef<Summary>[] = [
       return (
         <Button
           variant="link"
-          className="cursor-default text-slate-500 hover:no-underline"
+          className="text-slate-500"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Budget
@@ -45,7 +45,7 @@ export const columns: ColumnDef<Summary>[] = [
       return (
         <Button
           variant="link"
-          className="cursor-default text-slate-500 hover:no-underline"
+          className="text-slate-500"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Logged
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Summary>[] = [
       return (
         <Button
           variant="link"
-          className="cursor-default text-slate-500 hover:no-underline"
+          className="text-slate-500"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Project Leads

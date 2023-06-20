@@ -36,9 +36,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [selectedLead, setSelectedLead] = React.useState<List[]>([]);
 
   const dataFormator = (arr: never[], key: string) => {
-    return arr.map((obj: any) =>
-      obj.lead && { label: obj[key], value: obj[key] }
-    );
+    return arr.map((obj: any) => obj.lead && { label: obj[key], value: obj[key] });
   };
 
   const dataFilter = (arr: [] | any, key: string) => {
@@ -68,7 +66,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           check && item.find((obj) => obj.value === (i === 2 ? lead : i === 1 ? client : projectName)) !== undefined;
       }
     });
-    return check ;
+    return check;
   };
 
   const table = useReactTable({
@@ -95,16 +93,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           options={dataFilter(data, "name")}
           selectedValues={selectedProjects}
           setSelectedValues={setSelectedProjects}
+          defaultLabel="My Projects"
         />
         <FancyBox
           options={dataFilter(data, "client")}
           selectedValues={selectedClient}
           setSelectedValues={setSelectedClient}
+          defaultLabel="Clients"
         />
         <FancyBox
           options={dataFilter(data, "lead")}
           selectedValues={selectedLead}
           setSelectedValues={setSelectedLead}
+          defaultLabel="Project Lead"
         />
         <Button variant="outline" className="ml-auto">
           <FolderPlus className="mr-2 h-4 w-4" />
@@ -133,15 +134,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   return (
                     (filterMatcher(cell.row, i) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
-                      <TableCell
-                        className="px-8 "
-                        key={cell.id}
-                      >
+                      <TableCell className={`px-8 tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
                         {j === 1 && cell.row.original?.lead && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}
                         {j === 3 && cell.row.original?.lead && (
-                          <UserAvatar user={{name:cell.row.original.lead,image:cell.row.original.leadAvatar}} className="inline-block mr-2 "/>
+                          <UserAvatar
+                            user={{ name: cell.row.original.lead, image: cell.row.original.leadAvatar }}
+                            className="mr-2 inline-block h-8 w-8"
+                          />
                         )}
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
