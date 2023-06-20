@@ -33,9 +33,7 @@ const formSchema = z.object({
     .max(12, {
       message: "Username must be less than 12 characters.",
     }),
-  time: z.number().min(1, {
-    message: "Hour should be greater than 1",
-  }),
+  time: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Hour should be greater than 1"),
 });
 
 export function TimeLogForm() {
@@ -45,7 +43,7 @@ export function TimeLogForm() {
       projectName: "",
       milestoneName: "",
       taskName: "",
-      time: 0,
+      time: "0",
     },
   });
 
