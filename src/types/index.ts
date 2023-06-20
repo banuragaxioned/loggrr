@@ -128,6 +128,7 @@ export type GlobalAllocation = {
 export type Summary =   {
   id:number,
   name:string,
+  clientId:number,
   clientName:string,
   billable:boolean,
   projectOwner:string|null,
