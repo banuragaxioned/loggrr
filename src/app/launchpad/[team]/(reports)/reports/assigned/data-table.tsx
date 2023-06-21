@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { FancyBox, List } from "@/components/ui/fancybox";
 
 import * as React from "react";
 
@@ -51,6 +52,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility,
     },
   });
+  let filterData = data.map((obj: any) => {
+    return { label: obj.projectName, value: obj.projectName };
+  });
+
+  filterData = filterData.filter((obj: any, i) => {
+    const repeated = filterData.slice(i + 1, filterData.length).find((item: any) => item?.label === obj.label);
+    if (!repeated) {
+      return obj;
+    }
+  });
+
+  const filterMatcher = (rowObj: any) => selectedValues.find((obj) => obj.value === rowObj.original.projectName);
+  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
 
   return (
     <div>
@@ -61,6 +75,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
+        <div className="ml-auto">
+          <FancyBox
+            options={filterData}
+            selectedValues={selectedValues}
+            setSelectedValues={setSelectedValues}
+            defaultLabel="My Projects"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -102,15 +124,18 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="px-8" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map(
+              (row) =>
+                (filterMatcher(row) || !selectedValues.length) && (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell className="px-8" key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+            )
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
