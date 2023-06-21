@@ -19,6 +19,11 @@ const config = {
         destination: "/launchpad/:team/skills/summary",
         permanent: true,
       },
+      {
+        source: "/launchpad/:team/reports",
+        destination: "/launchpad/:team/reports/summary",
+        permanent: true,
+      },
     ];
   },
 };
