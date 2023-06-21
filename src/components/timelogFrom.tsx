@@ -188,7 +188,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
     }
 
     if (selected?.projectName && selected?.milestoneName && selected?.taskName && selected) {
-      console.log(selected);
       setAllDropDownSelect(true);
       commentRef?.current?.focus();
     } else {
@@ -314,7 +313,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
           loggedHours: Number(timeLogged),
           isBillable: billable,
         });
-        console.log(filledData);
       }
     }
   };
