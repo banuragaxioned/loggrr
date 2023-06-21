@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import TeamSwitcher from "@/components/teamSwitcher";
 
 export interface NavItem {
   title: string;
@@ -31,6 +32,7 @@ export function MainNav({ items }: MainNavProps) {
         <Icons.logo className="h-6 w-6" />
         <span className="hidden font-bold sm:inline-block">{siteConfig.name}</span>
       </Link>
+      <TeamSwitcher />
       {items?.length ? (
         <nav className="hidden gap-6 md:flex">
           {items?.map(
