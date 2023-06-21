@@ -12,5 +12,14 @@ const config = {
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/launchpad/:team/skills",
+        destination: "/launchpad/:team/skills/summary",
+        permanent: true,
+      },
+    ];
+  },
 };
 export default config;
