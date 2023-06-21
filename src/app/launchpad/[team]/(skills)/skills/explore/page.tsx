@@ -1,35 +1,12 @@
-import { db } from "@/lib/db";
 import { Tenant } from "@prisma/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { NewSkillForm } from "@/components/skillForm";
-
-async function getUserSkills(team: Tenant["slug"]) {
-  const response = await db.skill.findMany({
-    select: {
-      id: true,
-      name: true,
-    },
-    where: {
-      Tenant: {
-        slug: team,
-      },
-    },
-  });
-
-  const flatResponse = response.map((skill) => {
-    return {
-      id: skill.id,
-      name: skill.name,
-    };
-  });
-
-  return flatResponse;
-}
+import { getSkills } from "@/server/services/skill";
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
-  const skills = await getUserSkills(params.team);
+  const skills = await getSkills(params.team);
   const { team } = params;
 
   return (
