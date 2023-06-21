@@ -1,7 +1,20 @@
-export default async function Page() {
+import { DashboardShell } from "@/components/ui/shell";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { DashboardHeader } from "@/components/ui/header";
+import { getProjectSummary } from "@/server/services/project";
+import { Tenant } from "@prisma/client";
+
+export default async function Page({ params }: { params: { team: Tenant["slug"] } }) {
+  const { team } = params;
+  const data = await getProjectSummary(team);
+
   return (
-    <>
-      <h3>Coming soon</h3>
-    </>
+    <DashboardShell>
+      <DashboardHeader heading="Project list"></DashboardHeader>
+      <div className="container mx-auto">
+        <DataTable columns={columns} data={data} />
+      </div>
+    </DashboardShell>
   );
 }

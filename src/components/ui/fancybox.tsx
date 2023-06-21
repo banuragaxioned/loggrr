@@ -6,15 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-type List = Record<"value" | "label", string>;
+export type List = Record<"value" | "label", string>;
 
 interface FancyBoxProps {
   options: List[];
   selectedValues: List[];
   setSelectedValues: React.Dispatch<React.SetStateAction<List[]>>;
+  defaultLabel: string;
 }
 
-export function FancyBox({ options, selectedValues, setSelectedValues }: FancyBoxProps) {
+export function FancyBox({ options, selectedValues, setSelectedValues, defaultLabel }: FancyBoxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [list, setList] = React.useState<List[]>(options);
   const [openCombobox, setOpenCombobox] = React.useState(false);
@@ -50,7 +51,7 @@ export function FancyBox({ options, selectedValues, setSelectedValues }: FancyBo
             className="w-[200px] justify-between text-foreground"
           >
             <span className="truncate">
-              {selectedValues.length === 0 && "Select labels"}
+              {selectedValues.length === 0 && defaultLabel}
               {selectedValues.length === 1 && selectedValues[0].label}
               {selectedValues.length > 1 && `${selectedValues[0].label} + ${selectedValues.length - 1} more`}
             </span>
