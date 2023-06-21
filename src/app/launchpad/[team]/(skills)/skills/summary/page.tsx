@@ -29,8 +29,6 @@ async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
     },
   });
 
-  console.log(response);
-
   const flatResponse = response.map((skill) => {
     return {
       id: skill.id,
