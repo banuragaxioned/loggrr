@@ -19,7 +19,17 @@ async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
       },
       level: true,
     },
+    where: {
+      Tenant: {
+        slug: team,
+      },
+      User: {
+        id: userId,
+      },
+    },
   });
+
+  console.log(response);
 
   const flatResponse = response.map((skill) => {
     return {
@@ -56,7 +66,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
           {skills.map((skill) => (
             <TableRow key={skill.id}>
               <TableCell key={skill.id}>{skill.name}</TableCell>
-              <TableCell key={skill.id}>{skill.level}</TableCell>
+              <TableCell key={skill.id}>{skill.level}/5</TableCell>
             </TableRow>
           ))}
         </TableBody>
