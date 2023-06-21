@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { getUserSkills } from "@/server/services/skill";
+import { Overview } from "@/components/skillWidget";
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
   const user = await getCurrentUser();
@@ -13,6 +14,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
     redirect(authOptions?.pages?.signIn || "/login");
   }
   const skills = await getUserSkills(user.id, params.team);
+  console.log(skills);
 
   return (
     <DashboardShell>
@@ -20,6 +22,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
         heading="My Skills"
         text="This is a summary of your skills that you have been assessed on."
       ></DashboardHeader>
+      <Overview data={skills} />
       <Table>
         <TableHeader>
           <TableRow>
