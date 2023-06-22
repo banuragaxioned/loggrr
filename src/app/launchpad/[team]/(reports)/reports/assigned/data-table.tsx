@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { FancyBox, List } from "@/components/ui/fancybox";
 
 import * as React from "react";
+import { DatePicker } from "@/components/datePicker";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,6 +36,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [startDate, setStartDate] = React.useState<Date>();
 
   const table = useReactTable({
     data,
@@ -69,44 +71,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <div>
       <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        <div className="ml-auto">
-          <FancyBox
-            options={filterData}
-            selectedValues={selectedValues}
-            setSelectedValues={setSelectedValues}
-            defaultLabel="My Projects"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <DatePicker date={startDate} setDate={setStartDate}/>
       </div>
       <Table>
         <TableHeader>

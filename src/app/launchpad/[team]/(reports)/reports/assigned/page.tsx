@@ -8,7 +8,6 @@ import { Tenant } from "@prisma/client";
 export default async function Assigned({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
   const data = await getAssignments(team);
-
   return (
     <>
       <DashboardShell>
