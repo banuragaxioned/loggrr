@@ -18,7 +18,6 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     endDate,
     page: 1,
     pageSize: 20,
-    projectId: 1,
   }
 
   const allocation = await getAllocations(options)
@@ -213,7 +212,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
       <DashboardShell>
         <DashboardHeader heading="Assignments" text="This is a summary current assignments"></DashboardHeader>
         <div className="container mx-auto">
-          <DataTable columns={columns} data={dataFiltering(tempData)
+          <DataTable columns={columns} data={dataFiltering(allocation)
           } />
         </div>
       </DashboardShell>

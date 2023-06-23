@@ -158,6 +158,6 @@ export type getAllocation = {
   endDate: Date,
   page: number,
   pageSize: number,
-  projectId: number,
+  projectId?: number,
 }
 export type SkillRadar = SkillScore[];
