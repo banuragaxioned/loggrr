@@ -13,7 +13,7 @@ export const columns: ColumnDef<Assignment>[] = [
     accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button variant="link">
+        <Button variant="link" className="text-slate-500">
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -24,7 +24,7 @@ export const columns: ColumnDef<Assignment>[] = [
     accessorKey: "totalTime",
     header: ({ column }) => {
       return (
-        <Button variant="link">
+        <Button variant="link" className="text-slate-500">
           23 June
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>

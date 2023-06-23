@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   className={!row.original.userName ? "cursor-pointer":"transition-all duration-300 ease-in-out"}
                   >
                     {row.getVisibleCells().map((cell:any,i:number) => (
-                      <TableCell className={`px-8 tabular-nums ${i<1 ? row.original.userName ? "indent-9":"flex items-center":""}`} key={cell.id}>
+                      <TableCell className={`px-8 py-0 tabular-nums min-h-[42px] ${i<1 ? row.original.userName ? "indent-9 h-[43px]":"flex items-center":""}`} key={cell.id}>
                         { i<1 &&  !cell.row.original.userName &&
                           <UserAvatar
                           user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
