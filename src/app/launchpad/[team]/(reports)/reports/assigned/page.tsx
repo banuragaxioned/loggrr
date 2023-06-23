@@ -11,8 +11,8 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   const { team } = params;
   const data = await getAssignments(team);
 
-  const endDate = dayjs().toDate()
-  const startDate = dayjs().add(14, 'day').toDate()
+  const endDate = dayjs().toDate();
+  const startDate = dayjs().add(14, "day").toDate();
 
   const options = {
     team,
@@ -20,11 +20,11 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     endDate,
     page: 1,
     pageSize: 20,
-  }
+  };
 
-  const allocation = await getAllocations(options)
+  const allocation = await getAllocations(options);
 
-  console.log(allocation)
+  console.log(allocation);
 
   return (
     <>
