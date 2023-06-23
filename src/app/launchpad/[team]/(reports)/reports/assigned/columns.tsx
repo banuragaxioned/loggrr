@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Assignment } from "@/types";
 
 // This type is used to define the shape of our data.
@@ -10,10 +10,10 @@ import { Assignment } from "@/types";
 
 export const columns: ColumnDef<Assignment>[] = [
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button variant="link">
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -21,59 +21,13 @@ export const columns: ColumnDef<Assignment>[] = [
     },
   },
   {
-    accessorKey: "projectName",
+    accessorKey: "totalTime",
     header: ({ column }) => {
       return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Project Name
+        <Button variant="link">
+          23 June
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "frequency",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Frequency
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "billableTime",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Billable
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "nonBillableTime",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Non-billable
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const assignment = row.original
-      return (
-        <div className="flex gap-3">
-          <Button className="bg-inherit border-0 p-0">
-            <Archive height={18} width={18} />
-          </Button>
-        </div>
       );
     },
   },

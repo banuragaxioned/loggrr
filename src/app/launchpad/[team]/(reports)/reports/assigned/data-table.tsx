@@ -15,14 +15,7 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { FancyBox, List } from "@/components/ui/fancybox";
+import { UserAvatar } from "@/components/user-avatar";
 
 import * as React from "react";
 import { DatePicker } from "@/components/datePicker";
@@ -54,19 +47,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility,
     },
   });
-  let filterData = data.map((obj: any) => {
-    return { label: obj.projectName, value: obj.projectName };
-  });
 
-  filterData = filterData.filter((obj: any, i) => {
-    const repeated = filterData.slice(i + 1, filterData.length).find((item: any) => item?.label === obj.label);
-    if (!repeated) {
-      return obj;
-    }
-  });
+  const [activeRow,setActiveRow] = React.useState(null);
 
-  const filterMatcher = (rowObj: any) => selectedValues.find((obj) => obj.value === rowObj.original.projectName);
-  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
+  const isVisible = (rowObj: any)=> rowObj.original.userName === activeRow || !rowObj.original.userName;
+
+  const clickHandler = (rowObj:any)=> !rowObj?.original?.userName && setActiveRow((prev)=>prev !== rowObj?.original?.name ? rowObj?.original?.name :"")
 
   return (
     <div>
@@ -90,11 +76,20 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map(
-              (row) =>
-                (filterMatcher(row) || !selectedValues.length) && (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                    {row.getVisibleCells().map((cell) => (
+              (row:any) =>
+                (isVisible(row)) && (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} 
+                  onClick={()=>clickHandler(row)}
+                  className={!row.original.userName ? "cursor-pointer":"transition-all duration-300 ease-in-out"}
+                  >
+                    {row.getVisibleCells().map((cell:any,i:number) => (
                       <TableCell className="px-8" key={cell.id}>
+                        { i<1 &&  !cell.row.original.userName &&
+                          <UserAvatar
+                          user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
+                          className="mr-2 inline-block h-8 w-8"
+                        />
+                        }
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
