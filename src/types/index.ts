@@ -152,6 +152,15 @@ export type Assignment = {
   status: string;
 };
 
+export type getAllocation = {
+  team: string,
+  startDate: Date,
+  endDate: Date,
+  page: number,
+  pageSize: number,
+  projectId?: number,
+}
+
 export type SkillScore = {
   id: number;
   name: string;
