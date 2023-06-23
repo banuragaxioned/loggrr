@@ -158,5 +158,6 @@ export type getAllocation = {
   endDate: Date,
   page: number,
   pageSize: number,
-  projectId: number,
+  projectId?: number,
 }
+
