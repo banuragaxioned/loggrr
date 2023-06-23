@@ -125,31 +125,31 @@ export type GlobalAllocation = {
   }[];
 };
 
-export type Summary =   {
-  id:number,
-  name:string,
-  clientId:number,
-  clientName:string,
-  billable:boolean,
-  projectOwner:string|null,
-  projectOwnerAvatar:string|null,
-  budget:number,
-  logged:number
+export type Summary = {
+  id: number;
+  name: string;
+  clientId: number;
+  clientName: string;
+  billable: boolean;
+  projectOwner: string | null;
+  projectOwnerAvatar: string | null;
+  budget: number;
+  logged: number;
 };
 
 export type Assignment = {
   id: number;
-  date: Date;
-  endate?: Date | null;
-  billableTime?: number;
-  nonBillableTime?: number;
-  projectId: number;
-  projectName: string;
-  userId: number;
-  userName?: string | null;
-  userImage?: string | null;
-  frequency: string;
-  status: string;
+  name: string;
+  userAvatar?: string;
+  totalTime: number;
+  clientName?:string;
+  userName?:string;
+};
+
+export type SkillScore = {
+  id: number;
+  name: string;
+  level: number;
 };
 
 export type getAllocation = {
@@ -160,3 +160,4 @@ export type getAllocation = {
   pageSize: number,
   projectId: number,
 }
+export type SkillRadar = SkillScore[];

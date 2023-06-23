@@ -14,6 +14,7 @@ import {
   type Icon as LucideIcon,
   Settings,
   CreditCard,
+  Boxes,
   FileText,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ export type Icon = LucideIcon;
 export const Icons = {
   sun: SunMedium,
   moon: Moon,
+  team: Boxes,
   laptop: Laptop,
   logo: Clock,
   help: HelpCircle,

@@ -15,16 +15,10 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { FancyBox, List } from "@/components/ui/fancybox";
+import { UserAvatar } from "@/components/user-avatar";
 
 import * as React from "react";
+import { DatePicker } from "@/components/datePicker";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,7 +29,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-
+  const [startDate, setStartDate] = React.useState<Date>();
   const table = useReactTable({
     data,
     columns,
@@ -52,61 +46,17 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnVisibility,
     },
   });
-  let filterData = data.map((obj: any) => {
-    return { label: obj.projectName, value: obj.projectName };
-  });
 
-  filterData = filterData.filter((obj: any, i) => {
-    const repeated = filterData.slice(i + 1, filterData.length).find((item: any) => item?.label === obj.label);
-    if (!repeated) {
-      return obj;
-    }
-  });
+  const [activeRow,setActiveRow] = React.useState(null);
 
-  const filterMatcher = (rowObj: any) => selectedValues.find((obj) => obj.value === rowObj.original.projectName);
-  const [selectedValues, setSelectedValues] = React.useState<List[]>([]);
+  const isVisible = (rowObj: any)=> rowObj.original.userName === activeRow || !rowObj.original.userName;
+
+  const clickHandler = (rowObj:any)=> !rowObj?.original?.userName && setActiveRow((prev)=>prev !== rowObj?.original?.name ? rowObj?.original?.name :"")
 
   return (
     <div>
-      <div className="flex items-center py-2">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("userName")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        <div className="ml-auto">
-          <FancyBox
-            options={filterData}
-            selectedValues={selectedValues}
-            setSelectedValues={setSelectedValues}
-            defaultLabel="My Projects"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
+        <DatePicker date={startDate} setDate={setStartDate}/>
       </div>
       <Table>
         <TableHeader>
@@ -125,11 +75,20 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map(
-              (row) =>
-                (filterMatcher(row) || !selectedValues.length) && (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell className="px-8" key={cell.id}>
+              (row:any) =>
+                (isVisible(row)) && (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} 
+                  onClick={()=>clickHandler(row)}
+                  className={!row.original.userName ? "cursor-pointer":"transition-all duration-300 ease-in-out"}
+                  >
+                    {row.getVisibleCells().map((cell:any,i:number) => (
+                      <TableCell className={`px-8 tabular-nums ${i<1 ? row.original.userName ? "indent-9":"flex items-center":""}`} key={cell.id}>
+                        { i<1 &&  !cell.row.original.userName &&
+                          <UserAvatar
+                          user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
+                          className="mr-2 inline-block h-8 w-8"
+                        />
+                        }
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
