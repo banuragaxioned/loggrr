@@ -1,13 +1,18 @@
-import { Calendar } from "@/components/ui/calendar";
-import { Popover,PopoverContent,PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+ 
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
-export const DatePicker = ({date,setDate}:any)=>{
+export const DatePicker = ({date,setDate}:any) => {
 
-    return (
+    return(
         <Popover>
         <PopoverTrigger asChild>
           <Button
