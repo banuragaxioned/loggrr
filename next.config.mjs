@@ -6,11 +6,20 @@
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
+const bundleAnalyzerConfig = {
+  enabled: process.env.ANALYZE === "true",
+};
+
+const withBundleAnalyzerPlugin = withBundleAnalyzer(bundleAnalyzerConfig);
+
 /** @type {import("next").NextConfig} */
-const config = {
+const config = withBundleAnalyzerPlugin({
   reactStrictMode: true,
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
-};
+});
+
 export default config;
