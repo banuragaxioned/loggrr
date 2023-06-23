@@ -151,3 +151,12 @@ export type Assignment = {
   frequency: string;
   status: string;
 };
+
+export type getAllocation = {
+  team: string,
+  startDate: Date,
+  endDate: Date,
+  page: number,
+  pageSize: number,
+  projectId: number,
+}
