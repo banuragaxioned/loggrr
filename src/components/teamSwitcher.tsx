@@ -9,15 +9,18 @@ import { Command, CommandItem, CommandList, CommandSeparator } from "@/component
 import { Dialog } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Icons } from "@/components/icons";
+import { Tenant } from "@prisma/client";
 
 const teams = [
   {
-    label: "Axioned",
-    value: "axioned",
+    id: 1,
+    name: "Axioned",
+    slug: "axioned",
   },
   {
-    label: "Loggr",
-    value: "loggr",
+    id: 2,
+    name: "Loggr",
+    slug: "loggr",
   },
 ];
 
@@ -27,10 +30,21 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
-export default function TeamSwitcher({ className }: TeamSwitcherProps) {
+interface TeamSwitchertNavProps extends React.HTMLAttributes<HTMLDivElement> {
+  team: Pick<Tenant, "id" | "name" | "slug">;
+}
+
+type Teams = {
+  id: number;
+  name: string;
+  slug: string;
+}[];
+
+export default function TeamSwitcher(team: Teams, { className }: TeamSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(teams[0]);
+  console.log(team);
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -45,7 +59,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
             className={cn("w-[200px] justify-between", className)}
           >
             <Icons.team className="mr-2 h-5 w-5" />
-            {selectedTeam.label}
+            {selectedTeam.name}
             <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -54,7 +68,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
             <CommandList>
               {teams.map((list) => (
                 <CommandItem
-                  key={list.value}
+                  key={list.slug}
                   onSelect={() => {
                     setSelectedTeam(list);
                     setOpen(false);
@@ -62,9 +76,9 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
                   className="text-sm"
                 >
                   <Icons.team className="mr-2 h-5 w-5" />
-                  {list.label}
+                  {list.name}
                   <Check
-                    className={cn("ml-auto h-4 w-4", selectedTeam.value === list.value ? "opacity-100" : "opacity-0")}
+                    className={cn("ml-auto h-4 w-4", selectedTeam.slug === list.slug ? "opacity-100" : "opacity-0")}
                   />
                 </CommandItem>
               ))}
