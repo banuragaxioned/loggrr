@@ -19,6 +19,7 @@ import { UserAvatar } from "@/components/user-avatar";
 
 import * as React from "react";
 import { DatePicker } from "@/components/datePicker";
+import { ChevronDown,ChevronRight } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,11 +48,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     },
   });
 
-  const [activeRow,setActiveRow] = React.useState(null);
+  const [activeRows,setActiveRows] = React.useState([]);
 
-  const isVisible = (rowObj: any)=> rowObj.original.userName === activeRow || !rowObj.original.userName;
+  const isVisible = (rowObj: any)=> activeRows?.find((item)=>item === rowObj.original.userName ) || !rowObj.original.userName;
 
-  const clickHandler = (rowObj:any)=> !rowObj?.original?.userName && setActiveRow((prev)=>prev !== rowObj?.original?.name ? rowObj?.original?.name :"")
+  const clickHandler = (rowObj:any)=> !rowObj?.original?.userName && setActiveRows((prev:any)=>prev?.find((item:string)=>rowObj?.original?.name === item)?prev?.filter((item:string)=>item!==rowObj?.original?.name):[...prev,rowObj?.original?.name]);
 
   return (
     <div>
@@ -82,12 +83,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   className={!row.original.userName ? "cursor-pointer":"transition-all duration-300 ease-in-out"}
                   >
                     {row.getVisibleCells().map((cell:any,i:number) => (
-                      <TableCell className={`px-8 py-0 tabular-nums h-[43px] max-h-[43px] ${i<1 ? row.original.userName ? "indent-9 relative before:absolute before:block before:content-[''] before:w-1 before:bg-slate-600":"flex items-center":""}`} key={cell.id}>
+                      <TableCell className={`px-8 py-0 tabular-nums h-[43px] max-h-[43px] ${i<1 ? row.original.userName ? "indent-9 relative before:absolute before:top-0 before:left-10 before:h-[22px] before:block before:content-['a'] before:-indent-[9999px] before:w-6 before:border-slate-600 before:border-b-2 before:rounded-bl-md before:border-l-2":"flex items-center":""}`} key={cell.id}>
                         { i<1 &&  !cell.row.original.userName &&
-                          <UserAvatar
-                          user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
-                          className="mr-2 inline-block h-5 w-5"
-                        />
+                        <>
+                        {activeRows.find((item)=>item === cell.row.original?.name)?<ChevronDown className="w-4 h-4 text-slate-600"/>:<ChevronRight className="w-4 h-4 text-slate-600"/>}
+                        <UserAvatar
+                        user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
+                        className="mr-2 inline-block h-5 w-5"
+                      />
+                        </>
                         }
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
