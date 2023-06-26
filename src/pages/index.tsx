@@ -19,6 +19,13 @@ const Home: NextPage = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
+              href="/launchpad"
+            >
+              <h3 className="text-2xl font-bold">Launchpad →</h3>
+              <div className="text-lg">The new version of the application using App Directory lives here.</div>
+            </Link>
+            <Link
+              className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
               href="https://create.t3.gg/en/introduction"
               target="_blank"
             >
