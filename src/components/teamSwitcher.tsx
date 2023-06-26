@@ -31,6 +31,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
+
   if (selectedTeam.slug !== params?.team) {
     router.push(`/launchpad/${selectedTeam.slug}`);
   }

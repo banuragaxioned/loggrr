@@ -240,8 +240,7 @@ export async function getAllocations(input: getAllocation) {
       });
 
       // calculate average hours
-      const averageHours =
-        parseFloat((grandTotalHours / Object.keys(cumulativeProjectDates).length).toFixed(2)) || 0;
+      const averageHours = parseFloat((grandTotalHours / Object.keys(cumulativeProjectDates).length).toFixed(2)) || 0;
 
       return {
         globalView: true,

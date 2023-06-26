@@ -72,13 +72,12 @@ export const columns: ColumnDef<Summary>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-
       return (
-          <div className="flex gap-3">
-            <Button className="border-0 bg-inherit p-0">
-              <Archive height={18} width={18} />
-            </Button>
-          </div>
+        <div className="flex gap-3">
+          <Button className="border-0 bg-inherit p-0">
+            <Archive height={18} width={18} />
+          </Button>
+        </div>
       );
     },
   },
