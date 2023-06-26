@@ -9,42 +9,44 @@ import { Command, CommandItem, CommandList, CommandSeparator } from "@/component
 import { Dialog } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Icons } from "@/components/icons";
-import { Tenant } from "@prisma/client";
+import { Role } from "@prisma/client";
 
+// TODO: Need to remove this mock data
 const teams = [
   {
     id: 1,
     name: "Axioned",
     slug: "axioned",
+    role: "ADMIN",
   },
   {
     id: 2,
     name: "Loggr",
     slug: "loggr",
+    role: "ADMIN",
   },
 ];
 
+// TODO: Need to remove this
 type Team = (typeof teams)[number];
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
-interface TeamSwitchertNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  team: Pick<Tenant, "id" | "name" | "slug">;
+interface Teams extends React.HTMLAttributes<HTMLDivElement> {
+  teams: {
+    id: number;
+    name: string;
+    slug: string;
+    role: Role;
+  }[];
 }
 
-type Teams = {
-  id: number;
-  name: string;
-  slug: string;
-}[];
-
-export default function TeamSwitcher(team: Teams, { className }: TeamSwitcherProps) {
+export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(teams[0]);
-  console.log(team);
+  const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -66,7 +68,7 @@ export default function TeamSwitcher(team: Teams, { className }: TeamSwitcherPro
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandList>
-              {teams.map((list) => (
+              {teamData.teams.map((list) => (
                 <CommandItem
                   key={list.slug}
                   onSelect={() => {
