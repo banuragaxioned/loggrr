@@ -14,6 +14,8 @@ import {
   type Icon as LucideIcon,
   Settings,
   CreditCard,
+  Check,
+  ChevronsUpDown,
   Boxes,
   FileText,
 } from "lucide-react";
@@ -40,4 +42,6 @@ export const Icons = {
   settings: Settings,
   billing: CreditCard,
   post: FileText,
+  check: Check,
+  select: ChevronsUpDown,
 };

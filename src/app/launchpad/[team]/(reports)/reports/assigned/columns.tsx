@@ -67,10 +67,10 @@ export const columns: ColumnDef<Assignment>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const assignment = row.original
+      const assignment = row.original;
       return (
         <div className="flex gap-3">
-          <Button className="bg-inherit border-0 p-0">
+          <Button className="border-0 bg-inherit p-0">
             <Archive height={18} width={18} />
           </Button>
         </div>
