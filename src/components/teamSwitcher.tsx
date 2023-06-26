@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
@@ -10,43 +8,32 @@ import { Dialog } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Icons } from "@/components/icons";
 import { Role } from "@prisma/client";
-
-// TODO: Need to remove this mock data
-const teams = [
-  {
-    id: 1,
-    name: "Axioned",
-    slug: "axioned",
-    role: "ADMIN",
-  },
-  {
-    id: 2,
-    name: "Loggr",
-    slug: "loggr",
-    role: "ADMIN",
-  },
-];
-
-// TODO: Need to remove this
-type Team = (typeof teams)[number];
+import { redirect, useRouter, useParams } from "next/navigation";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
+interface Team {
+  id: number;
+  name: string;
+  slug: string;
+  role: Role;
+}
+
 interface Teams extends React.HTMLAttributes<HTMLDivElement> {
-  teams: {
-    id: number;
-    name: string;
-    slug: string;
-    role: Role;
-  }[];
+  teams: Team[];
 }
 
 export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitcherProps) {
+  const router = useRouter();
+  const params = useParams();
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
+  if (selectedTeam.slug !== params?.team) {
+    router.push(`/launchpad/${selectedTeam.slug}`);
+  }
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -62,25 +49,28 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           >
             <Icons.team className="mr-2 h-5 w-5" />
             {selectedTeam.name}
-            <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+            <Icons.select className="ml-auto h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandList>
-              {teamData.teams.map((list) => (
+              {teamData.teams.map((item) => (
                 <CommandItem
-                  key={list.slug}
+                  key={item.slug}
                   onSelect={() => {
-                    setSelectedTeam(list);
+                    setSelectedTeam(item);
                     setOpen(false);
+                  }}
+                  onChange={() => {
+                    redirect(`/teams/${item.slug}`);
                   }}
                   className="text-sm"
                 >
                   <Icons.team className="mr-2 h-5 w-5" />
-                  {list.name}
-                  <Check
-                    className={cn("ml-auto h-4 w-4", selectedTeam.slug === list.slug ? "opacity-100" : "opacity-0")}
+                  {item.name}
+                  <Icons.check
+                    className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")}
                   />
                 </CommandItem>
               ))}
