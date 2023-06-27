@@ -4,7 +4,7 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 import { AllocationFrequency } from "@prisma/client";
 
-const clientCreateSchema = z.object({
+const allocationCreateSchema = z.object({
   team: z.string(),
   projectId: z.number(),
   userId: z.number(),
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = clientCreateSchema.parse(json);
+    const body = allocationCreateSchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
@@ -38,8 +38,8 @@ export async function POST(req: Request) {
       data: {
         date: body.date,
         enddate: body.enddate,
-        billableTime: body.billableTime,
         frequency: body.frequency,
+        billableTime: body.billableTime,
         nonBillableTime: body.nonBillableTime,
         Tenant: {
           connect: { slug: body.team },
