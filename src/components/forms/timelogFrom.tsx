@@ -4,11 +4,11 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 
 // static data
-import { clients } from "../lib/tempData";
+import { clients } from "../../lib/tempData";
 
 import { Command } from "cmdk";
-import { Toggle } from "./ui/toggle";
-import ComboBox from "./ui/combobox";
+import { Toggle } from "../ui/toggle";
+import ComboBox from "../ui/combobox";
 
 type FormData = {
   project: string | undefined;
