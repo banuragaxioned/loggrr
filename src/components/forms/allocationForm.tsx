@@ -21,6 +21,7 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
+import { CalendarDateRangePicker } from "../datepicker";
 
 const formSchema = z.object({
   projectId: z.number(),
@@ -28,8 +29,8 @@ const formSchema = z.object({
   date: z.date(),
   frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.date().optional(),
-  billableTime: z.number(),
-  nonBillableTime: z.number(),
+  billableTime: z.number().default(0),
+  nonBillableTime: z.number().default(0),
 });
 
 export function NewAllocationForm({ team }: { team: string }) {
@@ -82,7 +83,7 @@ export function NewAllocationForm({ team }: { team: string }) {
             <SheetTitle>Add a new allocation</SheetTitle>
             <SheetDescription>Good planning goes a long way.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
               name="projectId"
@@ -104,6 +105,19 @@ export function NewAllocationForm({ team }: { team: string }) {
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
                     <Input type="number" placeholder="User Id" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Duration</FormLabel>
+                  <FormControl className="mt-2">
+                    <CalendarDateRangePicker />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
