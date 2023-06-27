@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: { team: Tenant["slug"] 
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Project list"></DashboardHeader>
+      <DashboardHeader heading="Reports"></DashboardHeader>
       <div className="container mx-auto">
         <DataTable columns={columns} data={data} />
       </div>
