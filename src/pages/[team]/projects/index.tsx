@@ -3,8 +3,7 @@ import { useValidateTeamAccess } from "@/hooks/useTeam";
 import { api } from "@/lib/api";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import CreateProject from "@/components/createProject";
-// import TableUI from "@/components/ui/table";
+import CreateProject from "@/components/forms/projectForm";
 
 export default function Projects() {
   const { isLoading, isInvalid, isReady, currentTeam } = useValidateTeamAccess();

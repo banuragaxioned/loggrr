@@ -2,7 +2,7 @@ import { Tenant } from "@prisma/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { NewSkillForm } from "@/components/skillForm";
+import { NewSkillForm } from "@/components/forms/skillForm";
 import { getSkills } from "@/server/services/skill";
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {

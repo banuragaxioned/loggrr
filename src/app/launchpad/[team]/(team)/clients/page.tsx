@@ -3,7 +3,7 @@ import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { type Tenant } from "@prisma/client";
-import { NewClientForm } from "@/components/clientForm";
+import { NewClientForm } from "@/components/forms/clientForm";
 
 export default async function Clients({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
