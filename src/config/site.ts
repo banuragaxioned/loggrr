@@ -23,12 +23,24 @@ interface ReportingConfig {
 export const siteConfig: SiteConfig = {
   name: "Loggr",
   description: "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  url: "https://loggr-app.vercel.app",
+  url: "https://loggr.dev",
   mainNav: [
-    // {
-    //   title: "Home",
-    //   href: "/",
-    // },
+    {
+      title: "Projects",
+      href: "/projects",
+    },
+    {
+      title: "Clients",
+      href: "/clients",
+    },
+    {
+      title: "Skills",
+      href: "/skills",
+    },
+    {
+      title: "Reports",
+      href: "/reports",
+    },
   ],
   links: {
     help: "mailto:loggr@axioned.com",
