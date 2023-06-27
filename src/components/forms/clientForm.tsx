@@ -61,7 +61,7 @@ export function NewClientForm({ team }: { team: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline">Add</Button>
       </SheetTrigger>
       <SheetContent position="right" size="sm">
         <Form {...form}>
