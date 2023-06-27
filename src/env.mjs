@@ -23,8 +23,6 @@ const server = z.object({
   EMAIL_USER: z.string().min(1),
   EMAIL_PASSWORD: z.string().min(1),
   EMAIL_PORT: z.string().min(1),
-  // NEXT_PUBLIC_MIXPANEL_TOKEN: z.string().min(1),
-  // NEXT_PUBLIC_SEGMENT_WRITE_KEY: z.string().min(1),
   NEXT_PUBLIC_POSTHOG_HOST: z.string().min(1),
   NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
 });
@@ -56,8 +54,6 @@ const processEnv = {
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   EMAIL_PORT: process.env.EMAIL_PORT,
-  // NEXT_PUBLIC_MIXPANEL_TOKEN: process.env.NEXT_PUBLIC_MIXPANEL_TOKEN,
-  // NEXT_PUBLIC_SEGMENT_WRITE_KEY: process.env.NEXT_PUBLIC_SEGMENT_WRITE_KEY,
   NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
 };
