@@ -21,16 +21,16 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
-import { CalendarDateRangePicker } from "../datepicker";
+import { CalendarDateRangePicker } from "@/components/datepicker";
 
 const formSchema = z.object({
-  projectId: z.number(),
-  userId: z.number(),
+  projectId: z.coerce.number().min(1),
+  userId: z.coerce.number().min(1),
   date: z.date(),
   frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.date().optional(),
-  billableTime: z.number().default(0),
-  nonBillableTime: z.number().default(0),
+  billableTime: z.coerce.number(),
+  nonBillableTime: z.coerce.number(),
 });
 
 export function NewAllocationForm({ team }: { team: string }) {
