@@ -54,7 +54,7 @@ export async function getProjectSummary(slug: string) {
     id: project.id,
     name: project.name,
     billable: project.billable,
-    clientId:project.Client.id,
+    clientId: project.Client.id,
     clientName: project.Client.name,
     projectOwner: project.Owner.name,
     projectOwnerAvatar: project.Owner.image,

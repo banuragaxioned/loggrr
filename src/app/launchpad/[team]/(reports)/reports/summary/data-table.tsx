@@ -1,5 +1,6 @@
 "use client";
-import { Hourglass } from "lucide-react";
+
+import { Hourglass, FolderPlus } from "lucide-react";
 import { UserAvatar } from "@/components/user-avatar";
 
 import {
@@ -16,7 +17,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FancyBox, List } from "@/components/ui/fancybox";
 
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="mb-3 flex items-center gap-x-3 rounded-lg border-2 border-slate-200 p-[15px] py-2">
+      <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
         <FancyBox
           options={dataFilter(data, "name")}
           selectedValues={selectedProjects}

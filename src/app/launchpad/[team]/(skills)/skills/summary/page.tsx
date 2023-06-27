@@ -1,36 +1,12 @@
-import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { authOptions } from "@/server/auth";
-import { Tenant, User } from "@prisma/client";
+import { Tenant } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-
-async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
-  const response = await db.skillScore.findMany({
-    select: {
-      id: true,
-      Skill: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      level: true,
-    },
-  });
-
-  const flatResponse = response.map((skill) => {
-    return {
-      id: skill.id,
-      name: skill.Skill.name,
-      level: skill.level,
-    };
-  });
-
-  return flatResponse;
-}
+import { getUserSkills } from "@/server/services/skill";
+import { Overview } from "@/components/skillWidget";
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
   const user = await getCurrentUser();
@@ -45,6 +21,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
         heading="My Skills"
         text="This is a summary of your skills that you have been assessed on."
       ></DashboardHeader>
+      <Overview data={skills} />
       <Table>
         <TableHeader>
           <TableRow>
@@ -56,7 +33,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
           {skills.map((skill) => (
             <TableRow key={skill.id}>
               <TableCell key={skill.id}>{skill.name}</TableCell>
-              <TableCell key={skill.id}>{skill.level}</TableCell>
+              <TableCell key={skill.id}>{skill.level}/5</TableCell>
             </TableRow>
           ))}
         </TableBody>

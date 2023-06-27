@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Button } from "./button";
+import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { ChevronDown, SearchIcon } from "lucide-react";
 

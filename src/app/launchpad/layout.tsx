@@ -8,6 +8,7 @@ import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
+import TeamSwitcher from "@/components/teamSwitcher";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -15,6 +16,7 @@ interface DashboardLayoutProps {
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const user = await getCurrentUser();
+  const teamData = user?.tenants;
 
   if (!user) {
     return notFound();
@@ -26,6 +28,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
+            {teamData && <TeamSwitcher teams={teamData} />}
             <Link href={siteConfig.links.help} target="_blank" rel="noreferrer">
               <div
                 className={buttonVariants({
