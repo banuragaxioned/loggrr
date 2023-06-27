@@ -21,12 +21,13 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
-import { CalendarDateRangePicker } from "@/components/datepicker";
+import { CalendarDateRangePicker } from "@/components/datePicker";
+import { cleanDate } from "@/lib/helper";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
   userId: z.coerce.number().min(1),
-  date: z.date(),
+  date: z.coerce.date().optional(), // TODO: make this required
   frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.date().optional(),
   billableTime: z.coerce.number(),
@@ -45,6 +46,7 @@ export function NewAllocationForm({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const date = new Date();
     const response = await fetch("/api/team/allocation", {
       method: "POST",
       headers: {
@@ -53,14 +55,17 @@ export function NewAllocationForm({ team }: { team: string }) {
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
-        date: values.date,
+        date: cleanDate(date),
         frequency: values.frequency,
-        enddate: values.enddate,
+        enddate: new Date(),
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
       }),
     });
+
+    console.log(values);
+    console.log(response);
 
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
@@ -75,7 +80,7 @@ export function NewAllocationForm({ team }: { team: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Create</Button>
+        <Button variant="outline">Add</Button>
       </SheetTrigger>
       <SheetContent position="right" size="sm">
         <Form {...form}>
