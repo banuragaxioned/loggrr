@@ -49,7 +49,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const getDynamicColumns = () => {
     return getDatesInRange(Date.parse(startDate), Date.parse(endDate)).map((dateObj) => {
       return {
-        accessorKey: `${dateObj.dateKey}`,
+        accessorKey: `time.${dateObj.dateKey}.totalTime`,
         header: ({ }) => {
           return (
             <Button variant="link" className="text-slate-500">

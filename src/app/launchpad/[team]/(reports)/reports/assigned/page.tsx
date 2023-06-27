@@ -179,21 +179,20 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     }
   ]
 
-  // const getTime = (timeArr:[])=> {
-  //   let result:any = [];
-  //    timeArr.length ? 
-  //   timeArr.forEach((x)=>{
-  //     console.log(x)
-  //   })
-  //   :result = {loggedTime:0};
-  // }
+  const getFormatedData = (timeArr:any)=>{
+    const resultObj:any = {};
+    for(let x in timeArr) {
+      const date = Date.parse(x);
+      resultObj[date]=timeArr[x];
+    }
+    return resultObj
+  }
 
   const dataFiltering = (data: any) => {
     const resultantArray: any = [];
     const notEmptyArr = data.filter((user: any) => user?.userName);
     notEmptyArr.map((user: any) => {
-      const temp = { id: user?.userId, name: user?.userName, userAvatar: user?.userAvatar, totalTime: user?.totalTime }
-      // getTime(user?.cumulativeProjectDates)
+      const temp = { id: user?.userId, name: user?.userName, userAvatar: user?.userAvatar,time:getFormatedData(user?.cumulativeProjectDates) }
       resultantArray.push(temp);
       user?.projects?.length && user?.projects?.map((project: any) => {
         const temp = { id: project?.projectId, name: project?.projectName, clientName: project?.clientName, totalTime: project?.totalTime, userName: user.userName }
