@@ -32,19 +32,15 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
 
-  if (path === "/launchpad") {
-    return (
-      <Link href="/launchpad">
-        <Button>Launchpad</Button>
-      </Link>
-    );
-  }
-
   if (params?.team && selectedTeam.slug !== params.team) {
     const team = teamData.teams.find((item) => item.slug === params.team);
     if (team) {
       setSelectedTeam(team);
     }
+  }
+
+  if (path === "/launchpad" || teamData.teams.length === 1) {
+    return null;
   }
 
   return (
