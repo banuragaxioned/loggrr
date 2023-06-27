@@ -33,6 +33,5 @@ export const columns: ColumnDef<Assignment>[] = [
         </Button>
       );
     },
-  },
- getDynamicColumns()
+  }
 ];
