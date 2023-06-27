@@ -28,29 +28,40 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
+//function to get date between two dates
+const getDatesInRange = (startDate: any, endDate: any) => {
+  const dates = [];
+  let start = startDate,
+    end = endDate;
+  while (start <= end) {
+    const currentDate = new Date(start);
+    currentDate.getDay() !== 0 &&
+      currentDate.getDay() !== 6 &&
+      dates.push({
+        date: currentDate.getDate(),
+        month: currentDate.toLocaleString("en-us", { month: "short" }),
+        day: currentDate.toLocaleString("en-us", { weekday: "short" }),
+        dateKey: start,
+      });
+    start = new Date(start).setDate(new Date(start).getDate() + 1);
+  }
+  return dates;
+};
+
 export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const { startDate, setStartDate, endDate, setEndDate }: any = useDateState();
+  const [colums, setColumns] = React.useState<ColumnFiltersState>([]);
 
-  const getDatesInRange = (startDate: any, endDate: any) => {
-    const dates = [];
-    let start = startDate, end = endDate;
-    while (start <= end) {
-      const currentDate = new Date(start);
-      currentDate.getDay() !== 0 && currentDate.getDay() !== 6 &&
-        dates.push({ date: currentDate.getDate(), month: currentDate.toLocaleString('en-us', { month: 'short' }), day: currentDate.toLocaleString('en-us', { weekday: 'long' }), dateKey: start });
-      start = new Date(start).setDate(new Date(start).getDate() + 1);
-    }
-    return dates
-  }
-
+  //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
-    return getDatesInRange(Date.parse(startDate), Date.parse(endDate)).map((dateObj) => {
+    const endDate = new Date().setDate(new Date(startDate).getDate() + 7);
+    return getDatesInRange(Date.parse(startDate), endDate).map((dateObj) => {
       return {
         accessorKey: `time.${dateObj.dateKey}.totalTime`,
-        header: ({ }) => {
+        header: ({}) => {
           return (
             <Button variant="link" className="text-slate-500">
               {`${dateObj.date} ${dateObj.month} ${dateObj.day}`}
@@ -58,11 +69,11 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
             </Button>
           );
         },
-      }
-    }
-    )
-  }
+      };
+    });
+  };
 
+  //shadcn modified colums array to create columns
   const columns: ColumnDef<Assignment>[] | any = [
     {
       accessorKey: "name",
@@ -75,9 +86,8 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         );
       },
     },
-    ...getDynamicColumns()
+    ...getDynamicColumns(),
   ];
-  const [colums, setColumns] = React.useState<ColumnFiltersState>(columns);
 
   const table = useReactTable({
     data,
@@ -110,15 +120,17 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
     );
 
   React.useEffect(() => {
+    setStartDate(new Date())
     setColumns(columns);
-  }, [startDate, endDate])
-
+  }, [startDate, endDate,[]]);
 
   return (
     <div>
       <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
-        <div className="flex gap-x-1 items-center text-sm"><label>Start Date</label><DatePicker date={startDate} setDate={setStartDate} /></div>
-        <div className="flex gap-x-1 items-center text-sm"><label>End Date</label><DatePicker date={endDate} setDate={setEndDate} /></div>
+        <div className="flex items-center gap-x-1 text-sm">
+          <label>Start Date</label>
+          <DatePicker date={startDate} setDate={setStartDate} />
+        </div>
       </div>
       <Table>
         <TableHeader>
@@ -147,28 +159,29 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`h-[43px] max-h-[43px] px-8 py-0 tabular-nums ${i < 1
-                          ? row.original.userName
-                            ? "relative indent-14 before:absolute before:left-14 before:-top-6 before:block before:h-[46px] before:z-[-1] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                            : "flex items-center"
-                          : ""
-                          }`}
+                        className={`h-[43px] max-h-[43px] px-0 py-0 tabular-nums ${
+                          i < 1
+                            ? row.original.userName
+                              ? "relative pl-8 indent-14 before:absolute before:-top-6 before:left-14 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              : "line-clamp-1 flex pl-8 items-center"
+                            : ""
+                        }`}
                         key={cell.id}
                       >
                         {i < 1 && !cell.row.original.userName && (
                           <>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
-                              <ChevronDown className="h-4 w-4 text-slate-600" />
+                              <ChevronDown className="h-4 w-4 block stroke-slate-600" />
                             ) : (
-                              <ChevronRight className="h-4 w-4 text-slate-600" />
+                              <ChevronRight className="h-4 w-4 block stroke-slate-600" />
                             )}
                             <UserAvatar
                               user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
-                              className="mr-2 inline-block h-5 w-5"
+                              className="z-10 mr-2 inline-block h-5 w-5"
                             />
                           </>
                         )}
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <span className="line-clamp-1">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
                       </TableCell>
                     ))}
                   </TableRow>
@@ -180,10 +193,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                 No results.
               </TableCell>
             </TableRow>
-          )
-          }
-        </TableBody >
-      </Table >
+          )}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           Previous
@@ -192,6 +204,6 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
           Next
         </Button>
       </div>
-    </div >
+    </div>
   );
 }

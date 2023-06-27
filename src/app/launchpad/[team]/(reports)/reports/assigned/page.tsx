@@ -5,6 +5,7 @@ import { DashboardHeader } from "@/components/ui/header";
 import { Tenant } from "@prisma/client";
 import { getAllocations } from "@/server/services/allocation";
 import dayjs from "dayjs";
+import { json } from "stream/consumers";
 
 export default async function Assigned({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
@@ -214,6 +215,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   };
 
   const allocation = await getAllocations(options);
+  allocation.map((obj)=>console.log(obj.projects))
 
   return (
     <>
