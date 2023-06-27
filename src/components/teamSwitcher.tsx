@@ -8,7 +8,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Icons } from "@/components/icons";
 import { Role } from "@prisma/client";
 import { useRouter, useParams, usePathname } from "next/navigation";
-import Link from "next/link";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
