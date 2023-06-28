@@ -17,12 +17,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { useDateState } from "@/hooks/useDate";
-import { ArrowUpDown } from "lucide-react";
 import { Assignment } from "@/types";
 
 import * as React from "react";
 import { DatePicker } from "@/components/datePicker";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronsUpDown } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
@@ -41,7 +40,7 @@ const getDatesInRange = (startDate: any, endDate: any) => {
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
         day: currentDate.toLocaleString("en-us", { weekday: "short" }),
-        dateKey: start,
+        dateKey: currentDate.toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" }),
       });
     start = new Date(start).setDate(new Date(start).getDate() + 1);
   }
@@ -60,12 +59,12 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
     const endDate = new Date().setDate(new Date(startDate).getDate() + 7);
     return getDatesInRange(Date.parse(startDate), endDate).map((dateObj) => {
       return {
-        accessorKey: `time.${dateObj.dateKey}.totalTime`,
+        accessorKey: `timeAssigned.${dateObj.dateKey}.totalTime`,
         header: ({}) => {
           return (
             <Button variant="link" className="text-slate-500">
               {`${dateObj.date} ${dateObj.month} ${dateObj.day}`}
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <ChevronsUpDown className="ml-2 h-4 w-4" />
             </Button>
           );
         },
@@ -81,7 +80,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         return (
           <Button variant="link" className="text-slate-500">
             Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ChevronsUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
@@ -120,9 +119,12 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
     );
 
   React.useEffect(() => {
-    setStartDate(new Date())
     setColumns(columns);
-  }, [startDate, endDate,[]]);
+  }, [startDate, endDate]);
+
+  React.useEffect(() => {
+    setStartDate(new Date());
+  }, []);
 
   return (
     <div>
@@ -159,11 +161,11 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`h-[43px] max-h-[43px] px-0 py-0 tabular-nums ${
+                        className={`h-[43px] max-h-[43px] px-8 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative pl-8 indent-14 before:absolute before:-top-6 before:left-14 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                              : "line-clamp-1 flex pl-8 items-center"
+                              ? "relative indent-14 before:absolute before:-top-6 before:left-14 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              : "line-clamp-1 flex items-center"
                             : ""
                         }`}
                         key={cell.id}
@@ -171,9 +173,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         {i < 1 && !cell.row.original.userName && (
                           <>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
-                              <ChevronDown className="h-4 w-4 block stroke-slate-600" />
+                              <ChevronDown className="block h-4 w-4 stroke-slate-500 text-slate-500" />
                             ) : (
-                              <ChevronRight className="h-4 w-4 block stroke-slate-600" />
+                              <ChevronRight className="block h-4 w-4 stroke-slate-500  text-slate-500" />
                             )}
                             <UserAvatar
                               user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
@@ -181,7 +183,11 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                             />
                           </>
                         )}
-                        <span className="line-clamp-1">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+                        <span className="line-clamp-1 block text-right">
+                          {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
+                            ? 0
+                            : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </span>
                       </TableCell>
                     ))}
                   </TableRow>
