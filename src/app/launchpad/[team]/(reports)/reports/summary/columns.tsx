@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown } from "lucide-react";
+import { Archive, ChevronsUpDown } from "lucide-react";
 import { Summary } from "@/types";
 
 // This type is used to define the shape of our data.
@@ -19,7 +19,7 @@ export const columns: ColumnDef<Summary>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Project
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -34,7 +34,7 @@ export const columns: ColumnDef<Summary>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Budget
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -49,7 +49,7 @@ export const columns: ColumnDef<Summary>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Logged
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -64,7 +64,7 @@ export const columns: ColumnDef<Summary>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Project Leads
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },

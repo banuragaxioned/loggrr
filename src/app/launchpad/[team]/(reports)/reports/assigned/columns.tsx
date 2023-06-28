@@ -33,38 +33,5 @@ export const columns: ColumnDef<Assignment>[] = [
         </Button>
       );
     },
-  },
-  {
-    accessorKey: "frequency",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Frequency
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "billableTime",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Billable
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "nonBillableTime",
-    header: ({ column }) => {
-      return (
-        <Button variant="link" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Non-billable
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
+  }
 ];
