@@ -35,7 +35,12 @@ export const FancyBoxDemo = () => {
 
   return (
     <div>
-      <FancyBox options={options} selectedValues={selectedValues} setSelectedValues={setSelectedValues} defaultLabel="Select Labels"/>
+      <FancyBox
+        options={options}
+        selectedValues={selectedValues}
+        setSelectedValues={setSelectedValues}
+        defaultLabel="Select Labels"
+      />
     </div>
   );
 };

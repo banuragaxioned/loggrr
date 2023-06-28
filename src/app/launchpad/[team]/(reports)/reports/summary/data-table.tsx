@@ -1,5 +1,6 @@
 "use client";
-import { Hourglass } from "lucide-react";
+
+import { Hourglass, FolderPlus } from "lucide-react";
 import { UserAvatar } from "@/components/user-avatar";
 
 import {
@@ -16,7 +17,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FancyBox, List } from "@/components/ui/fancybox";
 

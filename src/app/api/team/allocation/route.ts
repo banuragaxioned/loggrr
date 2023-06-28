@@ -5,14 +5,14 @@ import { db } from "@/lib/db";
 import { AllocationFrequency } from "@prisma/client";
 
 const allocationCreateSchema = z.object({
-  team: z.string(),
-  projectId: z.number(),
-  userId: z.number(),
-  date: z.date(),
+  team: z.string().min(1),
+  projectId: z.coerce.number().min(1),
+  userId: z.coerce.number().min(1),
+  date: z.coerce.date().optional(),
   frequency: z.nativeEnum(AllocationFrequency),
-  enddate: z.date().optional(),
-  billableTime: z.number(),
-  nonBillableTime: z.number(),
+  enddate: z.coerce.date().optional(),
+  billableTime: z.coerce.number(),
+  nonBillableTime: z.coerce.number(),
 });
 
 export async function POST(req: Request) {
@@ -36,10 +36,10 @@ export async function POST(req: Request) {
 
     const client = await db.allocation.create({
       data: {
-        date: body.date,
+        date: new Date(),
         enddate: body.enddate,
-        billableTime: body.billableTime,
         frequency: body.frequency,
+        billableTime: body.billableTime,
         nonBillableTime: body.nonBillableTime,
         Tenant: {
           connect: { slug: body.team },
