@@ -1,6 +1,32 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCurrentUser } from "@/lib/session";
+import { prisma } from "@/server/db";
+import { Tenant } from "@prisma/client";
+import { notFound } from "next/navigation";
 
-export default function Page() {
+export default async function Dashboard({ params }: { params: { team: Tenant["slug"] } }) {
+  const user = await getCurrentUser();
+  const { team } = params;
+
+  if (!user) {
+    return notFound();
+  }
+
+  const hasAccess = await prisma.userRole.findMany({
+    where: {
+      Tenant: {
+        slug: team,
+      },
+      User: {
+        id: user.id,
+      },
+    },
+  });
+
+  if (hasAccess && hasAccess.length !== 1) {
+    return notFound();
+  }
+
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-9 flex flex-col gap-4">
