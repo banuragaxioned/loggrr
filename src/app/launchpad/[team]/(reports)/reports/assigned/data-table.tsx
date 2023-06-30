@@ -137,10 +137,10 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="flex">
               {headerGroup.headers.map((header,i) => {
                 return (
-                  <TableHead key={header.id} className={`${i}`}>
+                  <TableHead key={header.id} className={`${i>0 ? "inline-block px-0":"px-8"}`}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
