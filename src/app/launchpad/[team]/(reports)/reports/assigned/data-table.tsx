@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
-    const endDate = new Date().setDate(new Date(startDate).getDate() + 7);
+    const endDate = new Date().setDate(new Date(startDate).getDate() + 13);
     return getDatesInRange(Date.parse(startDate), endDate).map((dateObj) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.totalTime`,
@@ -64,7 +64,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
           return (
             <Button variant="link" className="text-slate-500 px-0">
               {`${dateObj.date} ${dateObj.month} ${dateObj.day}`}
-              <ChevronsUpDown className="ml-2 h-4 w-4" />
+              <ChevronsUpDown className="h-4 w-4" />
             </Button>
           );
         },
@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         return (
           <Button variant="link" className="text-slate-500">
             Name
-            <ChevronsUpDown className="ml-2 h-4 w-4" />
+            <ChevronsUpDown className="h-4 w-4" />
           </Button>
         );
       },
@@ -140,8 +140,10 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
             <TableRow key={headerGroup.id} className="flex">
               {headerGroup.headers.map((header,i) => {
                 return (
-                  <TableHead key={header.id} className={`${i>0 ? "inline-block px-0":"px-8"}`}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  <TableHead key={header.id} className={`font-normal ${i>0 ? "inline-flex px-3 w-[88px]":"px-2"}`}>
+                    <span className="flex">
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </span>
                   </TableHead>
                 );
               })}
@@ -161,12 +163,12 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`h-[43px] max-h-[43px] px-8 py-0 tabular-nums ${
+                        className={`h-[43px] max-h-[43px] inline-block px-2 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative indent-14 before:absolute before:-top-6 before:left-14 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                              : "line-clamp-1 flex items-center"
-                            : ""
+                              ? "relative inline-flex items-center indent-14 before:absolute before:-top-6 before:left-10 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              : "line-clamp-1 inline-flex w-[104.34px] items-center"
+                            : "px-3 w-[88px]"
                         }`}
                         key={cell.id}
                       >
