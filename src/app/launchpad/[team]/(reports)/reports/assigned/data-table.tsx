@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         accessorKey: `timeAssigned.${dateObj.dateKey}.totalTime`,
         header: ({}) => {
           return (
-            <Button variant="link" className="text-slate-500">
+            <Button variant="link" className="text-slate-500 px-0">
               {`${dateObj.date} ${dateObj.month} ${dateObj.day}`}
               <ChevronsUpDown className="ml-2 h-4 w-4" />
             </Button>
@@ -138,9 +138,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map((header,i) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={`${i}`}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -183,7 +183,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                             />
                           </>
                         )}
-                        <span className="line-clamp-1 block text-right">
+                        <span className="line-clamp-1 block text-center">
                           {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
                             ? 0
                             : flexRender(cell.column.columnDef.cell, cell.getContext())}
