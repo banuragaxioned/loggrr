@@ -182,8 +182,8 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                 return (
                   <TableHead
                     key={header.id}
-                    className={`shrink-0 grow-0 font-normal ${
-                      i > 0 ? "inline-flex basis-[8.7%] px-3  2xl:basis-[9%]" : "basis-[13%] px-2 2xl:basis-[10%]"
+                    className={`shrink-0 grow-0 font-normal inline-flex  items-center ${
+                      i > 0 ? "basis-[8.7%] px-3  2xl:basis-[9%]" : "basis-[13%] px-2 2xl:basis-[10%]"
                     }`}
                   >
                     <span className="flex">
@@ -213,7 +213,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[13%] px-2 py-0 tabular-nums 2xl:basis-[10%] ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex items-center indent-14 before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              ? "relative inline-flex items-center indent-12 max-w-[13%] before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
                             : "basis-[8.7%] px-3 2xl:basis-[9%]"
                         }`}
@@ -222,9 +222,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         {i < 1 && !cell.row.original.userName && (
                           <>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
-                              <ChevronDown className="block h-4 w-4 shrink-0 stroke-slate-500 text-slate-500" />
+                              <ChevronDown className={`block h-4 w-4 shrink-0 stroke-slate-500`} />
                             ) : (
-                              <ChevronRight className="block h-4 w-4 shrink-0 stroke-slate-500  text-slate-500" />
+                              <ChevronRight className={`block h-4 w-4 shrink-0 ${ row.original.isProjectAssigned ?"stroke-slate-500 " : "stroke-muted"}`} />
                             )}
                             <UserAvatar
                               user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
@@ -233,7 +233,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                           </>
                         )}
                         <span
-                          className={i < 1 ? "line-clamp-1" : "flex h-full items-center justify-center"}
+                          className={i < 1 ? "line-clamp-1 h-[15px]" : "flex h-full items-center justify-center"}
                           title={i < 1 ? cell.row.original.name : null}
                         >
                           {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
