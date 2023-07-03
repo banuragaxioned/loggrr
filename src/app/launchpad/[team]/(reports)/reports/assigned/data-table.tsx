@@ -37,14 +37,13 @@ interface DataTableProps<TData, TValue> {
 }
 
 //function to get date between two dates
-const getDatesInRange = (startDate: any, endDate: any) => {
+const getDatesInRange = (startDate: any, endDate: any, includeWeekend: boolean) => {
   const dates = [];
   let start = startDate,
     end = endDate;
   while (start <= end) {
     const currentDate = new Date(start);
-    currentDate.getDay() !== 0 &&
-      currentDate.getDay() !== 6 &&
+    (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) &&
       dates.push({
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
@@ -62,18 +61,23 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const { startDate, setStartDate, endDate, setEndDate }: any = useDateState();
   const [colums, setColumns] = React.useState<ColumnFiltersState>([]);
+  const [weekend, setWeekend] = React.useState<boolean>(false);
+  const [billable, setBillable] = React.useState<string>("totalTime");
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
     const days = 13;
     const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
-    return getDatesInRange(Date.parse(startDate), endDate).map((dateObj) => {
+    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj) => {
       return {
-        accessorKey: `timeAssigned.${dateObj.dateKey}.totalTime`,
+        accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
           return (
-            <Button variant="link" className="px-0 text-slate-500">
-              {`${dateObj.date} ${dateObj.month} ${dateObj.day}`}
+            <Button variant="link" className="shrink-0 grow-0 px-0  text-slate-500">
+              <p className="flex flex-col items-center justify-center">
+                <span>{`${dateObj.date} ${dateObj.month}`}</span>
+                <span>{dateObj.day}</span>
+              </p>
               <ChevronsUpDown className="h-4 w-4" />
             </Button>
           );
@@ -123,9 +127,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const clickHandler = (rowObj: any) =>
     !rowObj?.original?.userName &&
     setActiveRows((prev: any) =>
-      prev?.find((item: string) => rowObj?.original?.name === item)
-        ? prev?.filter((item: string) => item !== rowObj?.original?.name)
-        : [...prev, rowObj?.original?.name]
+      prev?.find((item: string) => rowObj?.original?.fullName === item)
+        ? prev?.filter((item: string) => item !== rowObj?.original?.fullName)
+        : [...prev, rowObj?.original?.fullName]
     );
 
   React.useEffect(() => {
@@ -135,7 +139,6 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   React.useEffect(() => {
     setStartDate(new Date());
   }, []);
-
   return (
     <div>
       <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
@@ -143,7 +146,8 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
           <label>Start Date</label>
           <DatePicker date={startDate} setDate={setStartDate} />
         </div>
-        <Select>
+        {/* weekend dropdown */}
+        <Select onValueChange={(value) => setWeekend(value === "weekend" ? true : false)}>
           <SelectTrigger className="w-[220px] 2xl:text-sm">
             <SelectValue placeholder="Weekend/Weekdays" />
           </SelectTrigger>
@@ -158,17 +162,21 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Select>
+        {/* time entry type dropdown */}
+        <Select onValueChange={(value) => setBillable(value)}>
           <SelectTrigger className="w-[220px] 2xl:text-sm">
-            <SelectValue placeholder="Billable/Non-billable" />
+            <SelectValue placeholder="Entered time type" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className="p-[5px]">
-              <SelectItem value="weekend">
-                <SelectItemText value="billable">Billable</SelectItemText>
+              <SelectItem value="billableTime">
+                <SelectItemText value="billableTime">Billable</SelectItemText>
               </SelectItem>
-              <SelectItem value="nonBillable">
+              <SelectItem value="nonBillableTime">
                 <SelectItemText value="">Non-billable</SelectItemText>
+              </SelectItem>
+              <SelectItem value="totalTime">
+                <SelectItemText value="">Total Time</SelectItemText>
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -182,8 +190,10 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                 return (
                   <TableHead
                     key={header.id}
-                    className={`shrink-0 grow-0 font-normal inline-flex  items-center ${
-                      i > 0 ? "basis-[8.7%] px-3  2xl:basis-[9%]" : "basis-[13%] px-2 2xl:basis-[10%]"
+                    className={`inline-flex shrink-0 grow-0 items-center  font-normal ${
+                      i > 0
+                        ? `px-3 ${weekend ? "basis-[1%] 2xl:basis-[9%]" : "basis-[8.6%] 2xl:basis-[9%]"}`
+                        : ` px-2 ${weekend ? "basis-[5%] 2xl:basis-[10%]" : "basis-[13%] 2xl:basis-[5%]"}`
                     }`}
                   >
                     <span className="flex">
@@ -210,12 +220,14 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[13%] px-2 py-0 tabular-nums 2xl:basis-[10%] ${
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 ${
+                          weekend ? "" : " basis-[13%] 2xl:basis-[10%] "
+                        } px-2 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex items-center indent-12 max-w-[13%] before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              ? "relative inline-flex max-w-[13%] items-center indent-12 before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
-                            : "basis-[8.7%] px-3 2xl:basis-[9%]"
+                            : `px-3 ${weekend ? "" : "basis-[8.6%] 2xl:basis-[9%]"}`
                         }`}
                         key={cell.id}
                       >
@@ -224,7 +236,11 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
                               <ChevronDown className={`block h-4 w-4 shrink-0 stroke-slate-500`} />
                             ) : (
-                              <ChevronRight className={`block h-4 w-4 shrink-0 ${ row.original.isProjectAssigned ?"stroke-slate-500 " : "stroke-muted"}`} />
+                              <ChevronRight
+                                className={`block h-4 w-4 shrink-0 ${
+                                  row.original.isProjectAssigned ? "stroke-slate-500 " : "stroke-muted"
+                                }`}
+                              />
                             )}
                             <UserAvatar
                               user={{ name: cell.row.original.name, image: cell.row.original.userAvatar }}
@@ -233,8 +249,10 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                           </>
                         )}
                         <span
-                          className={i < 1 ? "line-clamp-1 h-[15px]" : "flex h-full items-center justify-center"}
-                          title={i < 1 ? cell.row.original.name : null}
+                          className={
+                            i < 1 ? "line-clamp-1 h-[15px] cursor-default" : "flex h-full items-center justify-center"
+                          }
+                          title={i < 1 ? cell.row.original.fullName || cell.row.original.name : null}
                         >
                           {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
                             ? 0

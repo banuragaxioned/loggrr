@@ -24,10 +24,11 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     notEmptyArr.map((user: any) => {
       const temp = {
         id: user?.userId,
-        name: user?.userName,
+        name: user?.userName.split(" ")[0],
+        fullName: user?.userName,
         userAvatar: user?.userAvatar,
         timeAssigned: getFormatedData(user?.cumulativeProjectDates),
-        isProjectAssigned:user?.projects?.length 
+        isProjectAssigned: user?.projects?.length,
       };
       resultantArray.push(temp);
       user?.projects?.length &&
