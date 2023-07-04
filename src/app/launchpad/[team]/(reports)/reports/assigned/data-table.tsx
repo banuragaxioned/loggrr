@@ -225,7 +225,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         } px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex items-center indent-12 before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
                             : `${weekend ? "" : "basis-[12%]"}`
                         }`}
@@ -250,7 +250,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         )}
                         <span
                           className={
-                            i < 1 ? "line-clamp-1 h-[15px] cursor-default" : "flex h-full items-center justify-center"
+                            i < 1 ? `line-clamp-1 h-[15px] cursor-default ${row.original.userName ? "ml-auto":"" }` : "flex h-full items-center justify-center"
                           }
                           title={i < 1 ? cell.row.original.fullName || cell.row.original.name : null}
                         >
