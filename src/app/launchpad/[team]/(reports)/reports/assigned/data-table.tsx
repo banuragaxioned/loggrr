@@ -16,7 +16,6 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
-import { useDateState } from "@/hooks/useDate";
 import { Assignment } from "@/types";
 
 import * as React from "react";
@@ -59,14 +58,14 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const { startDate, setStartDate, endDate, setEndDate }: any = useDateState();
+  const [startDate, setStartDate]= React.useState<any>();
   const [colums, setColumns] = React.useState<ColumnFiltersState>([]);
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
-    const days = 13;
+    const days = 8;
     const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
     return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj) => {
       return {
@@ -134,11 +133,12 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
 
   React.useEffect(() => {
     setColumns(columns);
-  }, [startDate, endDate]);
+  }, [startDate]);
 
   React.useEffect(() => {
     setStartDate(new Date());
   }, []);
+
   return (
     <div>
       <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
@@ -190,10 +190,10 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                 return (
                   <TableHead
                     key={header.id}
-                    className={`inline-flex shrink-0 grow-0 items-center  font-normal ${
+                    className={`inline-flex shrink-0 grow-0 items-center justify-center  font-normal ${
                       i > 0
-                        ? `px-3 ${weekend ? "basis-[1%] 2xl:basis-[9%]" : "basis-[8.6%] 2xl:basis-[9%]"}`
-                        : ` px-2 ${weekend ? "basis-[5%] 2xl:basis-[10%]" : "basis-[13%] 2xl:basis-[5%]"}`
+                        ? `px-0 ${weekend ? "basis-[1%] 2xl:basis-[9%]" : "basis-[12%]"}`
+                        : ` px-0 ${weekend ? "basis-[5%] 2xl:basis-[10%]" : "basis-[15%]"}`
                     }`}
                   >
                     <span className="flex">
@@ -221,23 +221,23 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
                         className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 ${
-                          weekend ? "" : " basis-[13%] 2xl:basis-[10%] "
-                        } px-2 py-0 tabular-nums ${
+                          weekend ? "" : " basis-[15%]"
+                        } px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex max-w-[13%] items-center indent-12 before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              ? "relative inline-flex items-center indent-12 before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
-                            : `px-3 ${weekend ? "" : "basis-[8.6%] 2xl:basis-[9%]"}`
+                            : `${weekend ? "" : "basis-[12%]"}`
                         }`}
                         key={cell.id}
                       >
                         {i < 1 && !cell.row.original.userName && (
                           <>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
-                              <ChevronDown className={`block h-4 w-4 shrink-0 stroke-slate-500`} />
+                              <ChevronDown className={`block h-4 w-4 ml-2 shrink-0 stroke-slate-500`} />
                             ) : (
                               <ChevronRight
-                                className={`block h-4 w-4 shrink-0 ${
+                                className={`block h-4 w-4 shrink-0 ml-2 ${
                                   row.original.isProjectAssigned ? "stroke-slate-500 " : "stroke-muted"
                                 }`}
                               />
