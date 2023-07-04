@@ -1,8 +1,8 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skill } from "@prisma/client";
 import { Ban, Brain, Circle, CircleDashed, CircleDot, CircleDotDashed, LucideIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 type Scores = {
   id: number;
@@ -55,35 +55,43 @@ async function Update(skill: number, value: string) {
 
 export function SkillList({ props }: { props: Scores }) {
   return (
-    <div className="grid gap-6">
-      {props.map((skill) => (
-        <div key={skill.id} className="flex items-center justify-between space-x-4">
-          <div className="flex items-center space-x-4">
-            <div>
-              <p className="text-sm font-medium leading-none">{skill.name}</p>
+    <Card>
+      <CardHeader>
+        <CardTitle>Update skills</CardTitle>
+        <CardDescription>Select the new value from the dropdown</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-6">
+          {props.map((skill) => (
+            <div key={skill.id} className="flex items-center justify-between space-x-4">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <p className="text-sm font-medium leading-none">{skill.name}</p>
+                </div>
+              </div>
+              <Select defaultValue={String(skill.level)} onValueChange={(value) => Update(skill.id, value)}>
+                <SelectTrigger className="ml-auto w-[200px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {levels.map((level) => (
+                    <SelectItem key={level.id} value={String(level.id)}>
+                      <div className="flex items-center space-x-4">
+                        <div>
+                          <level.icon size={16} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium leading-none">{level.name}</p>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-          <Select defaultValue={String(skill.level)} onValueChange={(value) => Update(skill.id, value)}>
-            <SelectTrigger className="ml-auto w-[200px]">
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              {levels.map((level) => (
-                <SelectItem key={level.id} value={String(level.id)}>
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <level.icon size={16} />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium leading-none">{level.name}</p>
-                    </div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          ))}
         </div>
-      ))}
-    </div>
+      </CardContent>
+    </Card>
   );
 }
