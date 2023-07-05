@@ -17,10 +17,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Assignment } from "@/types";
+import { ColumnPopover } from "@/components/ui/columnPopover";
 
 import * as React from "react";
 import { DatePicker } from "@/components/datePicker";
-import { ChevronDown, ChevronRight, ChevronsUpDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -58,27 +59,26 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [startDate, setStartDate]= React.useState<any>();
+  const [startDate, setStartDate] = React.useState<any>();
   const [colums, setColumns] = React.useState<ColumnFiltersState>([]);
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
-    const days = 8;
+    const days = weekend ? 6 : 8;
     const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
     return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
           return (
-            <Button variant="link" className="shrink-0 grow-0 px-0  text-slate-500">
+            <ColumnPopover>
               <p className="flex flex-col items-center justify-center">
                 <span>{`${dateObj.date} ${dateObj.month}`}</span>
                 <span>{dateObj.day}</span>
               </p>
-              <ChevronsUpDown className="h-4 w-4" />
-            </Button>
+            </ColumnPopover>
           );
         },
       };
@@ -91,10 +91,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
       accessorKey: "name",
       header: ({ column }: any) => {
         return (
-          <Button variant="link" className="text-slate-500">
-            Name
-            <ChevronsUpDown className="h-4 w-4" />
-          </Button>
+          <ColumnPopover>
+            <span>Name</span>
+          </ColumnPopover>
         );
       },
     },
@@ -126,9 +125,9 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
   const clickHandler = (rowObj: any) =>
     !rowObj?.original?.userName &&
     setActiveRows((prev: any) =>
-      prev?.find((item: string) => rowObj?.original?.fullName === item)
-        ? prev?.filter((item: string) => item !== rowObj?.original?.fullName)
-        : [...prev, rowObj?.original?.fullName]
+      prev?.find((item: string) => rowObj?.original?.title === item)
+        ? prev?.filter((item: string) => item !== rowObj?.original?.title)
+        : [...prev, rowObj?.original?.title]
     );
 
   React.useEffect(() => {
@@ -191,9 +190,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   <TableHead
                     key={header.id}
                     className={`inline-flex shrink-0 grow-0 items-center justify-center  font-normal ${
-                      i > 0
-                        ? `px-0 ${weekend ? "basis-[9.5%]" : "basis-[12%]"}`
-                        : ` px-0 ${weekend ? "basis-[10%]" : "basis-[15%]"}`
+                      i > 0 ? "basis-[12%] px-0" : "basis-[15%] px-0"
                     }`}
                   >
                     <span className="flex">
@@ -220,24 +217,23 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 ${
-                          weekend ? "basis-[11%]" : " basis-[15%]"
-                        } px-0 py-0 tabular-nums ${
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
+                        px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
                               ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
-                            : `${weekend ? "basis-[9.5%]" : "basis-[12%]"}`
+                            : "basis-[12%]"
                         }`}
                         key={cell.id}
                       >
                         {i < 1 && !cell.row.original.userName && (
                           <>
                             {activeRows.find((item) => item === cell.row.original?.name) ? (
-                              <ChevronDown className={`block h-4 w-4 ml-2 shrink-0 stroke-slate-500`} />
+                              <ChevronDown className={`ml-2 block h-4 w-4 shrink-0 stroke-slate-500`} />
                             ) : (
                               <ChevronRight
-                                className={`block h-4 w-4 shrink-0 ml-2 ${
+                                className={`ml-2 block h-4 w-4 shrink-0 ${
                                   row.original.isProjectAssigned ? "stroke-slate-500 " : "stroke-muted"
                                 }`}
                               />
@@ -250,9 +246,13 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         )}
                         <span
                           className={
-                            i < 1 ? `line-clamp-1 h-[15px] cursor-default ${row.original.userName ? "relative left-14":"" }` : "flex h-full items-center justify-center"
+                            i < 1
+                              ? `line-clamp-1 h-[15px] cursor-default ${
+                                  row.original.userName ? "relative left-14" : ""
+                                }`
+                              : "flex h-full items-center justify-center"
                           }
-                          title={i < 1 ? cell.row.original.fullName || cell.row.original.name : null}
+                          title={cell.row.original.title}
                         >
                           {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
                             ? 0

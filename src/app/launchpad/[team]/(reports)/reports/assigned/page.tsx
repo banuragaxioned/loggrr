@@ -25,7 +25,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
       const temp = {
         id: user?.userId,
         name: user?.userName.split(" ")[0],
-        fullName: user?.userName,
+        title: user?.userName,
         userAvatar: user?.userAvatar,
         timeAssigned: getFormatedData(user?.cumulativeProjectDates),
         isProjectAssigned: user?.projects?.length,
@@ -35,7 +35,8 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
         user?.projects?.map((project: any) => {
           const temp = {
             id: project?.projectId,
-            name: project?.projectName,
+            name: project?.projectName.slice(0,5)+"...",
+            title:project?.projectName,
             clientName: project?.clientName,
             totalTime: project?.totalTime,
             userName: user.userName,
@@ -48,7 +49,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   };
 
   const endDate = dayjs().toDate();
-  const startDate = dayjs().add(-100, "day").toDate();
+  const startDate = dayjs().add(14, "day").toDate();
 
   const options = {
     team,

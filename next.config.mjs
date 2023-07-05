@@ -18,7 +18,7 @@ const withBundleAnalyzerPlugin = withBundleAnalyzer(bundleAnalyzerConfig);
 const config = withBundleAnalyzerPlugin({
   reactStrictMode: true,
   images: {
-    domains: ["lh3.googleusercontent.com","localhost"],
+    domains: ["lh3.googleusercontent.com"],
   },
   async redirects() {
     return [
