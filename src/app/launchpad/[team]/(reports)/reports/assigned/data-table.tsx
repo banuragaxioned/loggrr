@@ -86,13 +86,10 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     });
   };
 
-
   //function to sort rows
   const getSortedRows = ()=> {
-    const sortedData = data.map((item:any)=>{
-      console.log(item)
-    })
-    return data
+    const sortedData = data;
+    return sortedData;
   }
 
   //shadcn modified colums array to create columns
