@@ -25,7 +25,7 @@ export const ColumnPopover = ({ children }: any) => {
           <ArrowDownWideNarrow className="h-4 w-4" />
           Desc
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="border-t-[1px] border-slate-500 w-[80%] mx-auto"/>
         <DropdownMenuLabel className="flex text-slate-500">
           <EyeOff className="h-4 w-4" />
           Hide
