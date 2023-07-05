@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
-  data: TData[];
+  tableData: TData[];
 }
 
 //function to get date between two dates
@@ -55,14 +55,15 @@ const getDatesInRange = (startDate: any, endDate: any, includeWeekend: boolean) 
   return dates;
 };
 
-export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [startDate, setStartDate] = React.useState<any>();
-  const [colums, setColumns] = React.useState<ColumnFiltersState>([]);
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
+  const [sortingType,setSortingType] = React.useState<number>(0);
+  const [data,setData] = React.useState<TData[]>(tableData);
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
@@ -73,7 +74,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
           return (
-            <ColumnPopover>
+            <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id={dateObj.dateKey}>
               <p className="flex flex-col items-center justify-center">
                 <span>{`${dateObj.date} ${dateObj.month}`}</span>
                 <span>{dateObj.day}</span>
@@ -85,13 +86,22 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
     });
   };
 
+
+  //function to sort rows
+  const getSortedRows = ()=> {
+    const sortedData = data.map((item:any)=>{
+      console.log(item)
+    })
+    return data
+  }
+
   //shadcn modified colums array to create columns
   const columns: ColumnDef<Assignment>[] | any = [
     {
       accessorKey: "name",
       header: ({ column }: any) => {
         return (
-          <ColumnPopover>
+          <ColumnPopover  setSortingType={setSortingType} sortingType={sortingType} id="name">
             <span>Name</span>
           </ColumnPopover>
         );
@@ -131,12 +141,12 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
     );
 
   React.useEffect(() => {
-    setColumns(columns);
-  }, [startDate]);
-
-  React.useEffect(() => {
     setStartDate(new Date());
   }, []);
+
+  React.useEffect(()=>{
+   setData(getSortedRows());
+  },[sortingType]);
 
   return (
     <div>

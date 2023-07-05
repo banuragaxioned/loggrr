@@ -69,7 +69,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
         </DashboardHeader>
 
         <div className="container mx-auto">
-          <DataTable data={dataFiltering(allocation)} />
+          <DataTable tableData={dataFiltering(allocation)} />
         </div>
       </DashboardShell>
     </>
