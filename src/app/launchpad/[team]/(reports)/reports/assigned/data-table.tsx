@@ -192,8 +192,8 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                     key={header.id}
                     className={`inline-flex shrink-0 grow-0 items-center justify-center  font-normal ${
                       i > 0
-                        ? `px-0 ${weekend ? "basis-[1%] 2xl:basis-[9%]" : "basis-[12%]"}`
-                        : ` px-0 ${weekend ? "basis-[5%] 2xl:basis-[10%]" : "basis-[15%]"}`
+                        ? `px-0 ${weekend ? "basis-[9.5%]" : "basis-[12%]"}`
+                        : ` px-0 ${weekend ? "basis-[10%]" : "basis-[15%]"}`
                     }`}
                   >
                     <span className="flex">
@@ -221,13 +221,13 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
                         className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 ${
-                          weekend ? "" : " basis-[15%]"
+                          weekend ? "basis-[11%]" : " basis-[15%]"
                         } px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
                               ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
-                            : `${weekend ? "" : "basis-[12%]"}`
+                            : `${weekend ? "basis-[9.5%]" : "basis-[12%]"}`
                         }`}
                         key={cell.id}
                       >
@@ -250,7 +250,7 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                         )}
                         <span
                           className={
-                            i < 1 ? `line-clamp-1 h-[15px] cursor-default ${row.original.userName ? "ml-auto":"" }` : "flex h-full items-center justify-center"
+                            i < 1 ? `line-clamp-1 h-[15px] cursor-default ${row.original.userName ? "relative left-14":"" }` : "flex h-full items-center justify-center"
                           }
                           title={i < 1 ? cell.row.original.fullName || cell.row.original.name : null}
                         >
