@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [startDate, setStartDate] = React.useState<any>();
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
-  const [sortingType,setSortingType] = React.useState<number>(0);
+  const [sortingType,setSortingType] = React.useState<{key:number,id:string}>({key:1,id:"name"});
   const [data,setData] = React.useState<TData[]>(tableData);
 
   //function to create dynamic columns based on dates
@@ -86,9 +86,28 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     });
   };
 
+  //reusable sort function
+  const sortFunction = (item:any,item2:any)=>{
+    const {key,id} = sortingType;
+    const t1 = id ==="name" ? item.title  : item.timeAssigned[id]?.[billable] ;
+    const t2 = id ==="name" ? item.title  : item2.timeAssigned[id]?.[billable] ;
+    console.log(t1)
+    return (key ===1 ? 1 : -1)*((t1?t1:0) - (t2?t2:0 ))
+  }
+
   //function to sort rows
   const getSortedRows = ()=> {
-    const sortedData = data;
+    const sortedData:TData[] = [];
+    let users,projects:TData[];
+    users = tableData.filter((user:any)=>!user.userName);
+    projects = tableData.filter((user:any)=>user.userName);
+    users = users.sort((user1:any,user2:any)=>sortFunction(user1,user2));
+    projects = projects.sort((project1:any,project2:any)=>sortFunction(project1,project2));
+    users.map((user:any)=>{
+      const userprojects = projects.filter((project:any)=>project.userName === user.title);
+      sortedData.push(user);
+      userprojects.length > 0 && sortedData.push(...userprojects);
+    });
     return sortedData;
   }
 
