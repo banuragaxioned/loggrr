@@ -65,10 +65,9 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
             {searchable && (
               <div className="space-between flex w-full items-center rounded-t-[5px]">
-                <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
                 <CommandInput
                   tabIndex={tabIndex}
-                  className={`text-popover-foregroun box-border rounded-t-[5px] border-0 border-none border-border bg-popover px-0 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
+                  className={`text-popover-foregroun box-border border-0 border-none border-border bg-popover px-0 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
                   autoFocus
                   placeholder={placeholder ?? "Search here..."}
                   value={searchTerm}
@@ -98,7 +97,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                                 <CommandItem
                                   key={item.id}
                                   value={item.value}
-                                  className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px] aria-selected:bg-hover"
+                                  className="w-full cursor-pointer rounded px-[18px] py-2 text-[14px]"
                                   onSelect={(val: string) => {
                                     handleGroupSelect && handleGroupSelect(val, groupName);
                                     setIsOpen(false);
@@ -120,7 +119,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                             handleSelect && handleSelect(val);
                             setIsOpen(false);
                           }}
-                          className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px] aria-selected:bg-hover"
+                          className="w-full cursor-pointer rounded px-[14px] py-2 text-[14px]"
                         >
                           {item.name}
                         </CommandItem>
