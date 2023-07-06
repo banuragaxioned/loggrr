@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { cleanDate } from "@/lib/helper";
+import { FancyMultiSelect } from "../ui/inlineCombobox";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -77,7 +78,44 @@ export function NewAllocationForm({ team }: { team: string }) {
     router.refresh();
   }
 
+  const FRAMEWORKS = [
+    {
+      value: "next.js",
+      label: "Next.js",
+    },
+    {
+      value: "sveltekit",
+      label: "SvelteKit",
+    },
+    {
+      value: "nuxt.js",
+      label: "Nuxt.js",
+    },
+    {
+      value: "remix",
+      label: "Remix",
+    },
+    {
+      value: "astro",
+      label: "Astro",
+    },
+    {
+      value: "wordpress",
+      label: "WordPress",
+    },
+    {
+      value: "express.js",
+      label: "Express.js",
+    },
+    {
+      value: "nest.js",
+      label: "Nest.js",
+    }
+  ];
+
   return (
+    <>
+    <FancyMultiSelect FRAMEWORKS={FRAMEWORKS}/>
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
@@ -168,5 +206,6 @@ export function NewAllocationForm({ team }: { team: string }) {
         </Form>
       </SheetContent>
     </Sheet>
+    </>
   );
 }

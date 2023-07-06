@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const Sheet = SheetPrimitive.Root;
+const Sheet = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) => <SheetPrimitive.Root {...props} />;
 
 const SheetTrigger = SheetPrimitive.Trigger;
 
@@ -40,7 +40,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
+      "fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
       className
     )}
     {...props}
@@ -49,7 +49,7 @@ const SheetOverlay = React.forwardRef<
 ));
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
-const sheetVariants = cva("fixed z-50 scale-100 gap-4 bg-background p-6 opacity-100 shadow-lg border", {
+const sheetVariants = cva("fixed z-40 scale-100 gap-4 bg-background p-6 opacity-100 shadow-lg border", {
   variants: {
     position: {
       top: "animate-in slide-in-from-top w-full duration-300",
