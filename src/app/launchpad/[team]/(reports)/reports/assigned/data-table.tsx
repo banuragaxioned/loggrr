@@ -62,19 +62,19 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [startDate, setStartDate] = React.useState<any>();
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
-  const [sortingType,setSortingType] = React.useState<{key:number,id:string}>({key:1,id:"name"});
+  const [sortingType,setSortingType] = React.useState<{key:number,id:string,index?:number}>({key:1,id:"name"});
   const [data,setData] = React.useState<TData[]>(tableData);
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
     const days = weekend ? 6 : 8;
     const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
-    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj) => {
+    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj,i) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
           return (
-            <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id={dateObj.dateKey}>
+            <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id={dateObj.dateKey} index={i++}>
               <p className="flex flex-col items-center justify-center">
                 <span>{`${dateObj.date} ${dateObj.month}`}</span>
                 <span>{dateObj.day}</span>
@@ -91,7 +91,6 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     const {key,id} = sortingType;
     const t1 = id ==="name" ? item.title  : item.timeAssigned[id]?.[billable] ;
     const t2 = id ==="name" ? item.title  : item2.timeAssigned[id]?.[billable] ;
-    console.log(t1)
     return (key ===1 ? 1 : -1)*((t1?t1:0) - (t2?t2:0 ))
   }
 
@@ -108,7 +107,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
       sortedData.push(user);
       userprojects.length > 0 && sortedData.push(...userprojects);
     });
-    return sortedData;
+    return sortingType.id ==="name" && sortingType.key === -1 ? sortedData.reverse() : sortedData;
   }
 
   //shadcn modified colums array to create columns
@@ -174,15 +173,15 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
         {/* weekend dropdown */}
         <Select onValueChange={(value) => setWeekend(value === "weekend" ? true : false)}>
           <SelectTrigger className="w-[220px] 2xl:text-sm">
-            <SelectValue placeholder="Weekend/Weekdays" />
+            <SelectValue placeholder="Table view" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className="p-[5px]">
               <SelectItem value="weekend">
-                <SelectItemText value="weekend">weekend</SelectItemText>
+                <SelectItemText value="weekend">Weekend view</SelectItemText>
               </SelectItem>
               <SelectItem value="weekdays">
-                <SelectItemText value="">weekdays</SelectItemText>
+                <SelectItemText value="">Weekdays view</SelectItemText>
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -243,7 +242,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] ${sortingType.index === i && sortingType.key === 0 ? "invisible":""}
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
