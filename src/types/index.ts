@@ -139,11 +139,17 @@ export type Summary = {
 
 export type Assignment = {
   id: number;
-  name: string;
-  userAvatar?: string;
-  totalTime: number;
-  clientName?:string;
-  userName?:string;
+  date: Date;
+  endate?: Date | null;
+  billableTime?: number;
+  nonBillableTime?: number;
+  projectId: number;
+  projectName: string;
+  userId: number;
+  userName?: string | null;
+  userImage?: string | null;
+  frequency: string;
+  status: string;
 };
 
 export type getAllocation = {
