@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -24,10 +23,6 @@ import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { cleanDate } from "@/lib/helper";
-import { getMembers, getProjects } from "@/server/services/project";
-import ComboBox from "../ui/combobox";
-import { FolderIcon } from "lucide-react";
-import { AllProjects } from "@/types";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -39,8 +34,7 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team, allProjects }: { team: string; allProjects: AllProjects[] }) {
-  const [selectedProject, setSelectedProject] = useState<AllProjects>();
+export function NewAllocationForm({ team }: { team: string }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -50,25 +44,6 @@ export function NewAllocationForm({ team, allProjects }: { team: string; allProj
       frequency: AllocationFrequency.DAY,
     },
   });
-
-  const ProjectCombobox = ({ projects }: { projects: AllProjects[] }) => {
-    const handleSelect = (val: string) => {
-      const selectedObj = projects.find((item: any) => item.value.toLowerCase() === val);
-      console.log(projects, { selectedObj });
-      setSelectedProject(selectedObj);
-    };
-    
-    return (
-      <ComboBox
-        icon={<FolderIcon className={`h-4 w-4`} />}
-        options={projects}
-        label={selectedProject?.name || "Select Project"}
-        selectedItem={selectedProject?.name}
-        handleSelect={handleSelect}
-        searchable
-      />
-    );
-  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const date = new Date();
@@ -121,8 +96,7 @@ export function NewAllocationForm({ team, allProjects }: { team: string; allProj
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <ProjectCombobox projects={allProjects} {...field}/>
-                    {/* <Input type="number" placeholder="Project Id" {...field} /> */}
+                    <Input type="number" placeholder="Project Id" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
