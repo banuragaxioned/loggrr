@@ -17,7 +17,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Assignment } from "@/types";
-import { ColumnPopover } from "@/components/ui/columnPopover";
+import { ColumnControls } from "@/components/ui/column-controls";
 
 import * as React from "react";
 import { DatePicker } from "@/components/datePicker";
@@ -62,10 +62,9 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [startDate, setStartDate] = React.useState<any>();
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
-  const [sortingType, setSortingType] = React.useState<{ key: number; id: string; indexArr: number[] }>({
-    key: 1,
+  const [sortingType, setSortingType] = React.useState<{ key: number; id: string }>({
+    key: 0,
     id: "name",
-    indexArr: [],
   });
   const [data, setData] = React.useState<TData[]>(tableData);
 
@@ -78,12 +77,12 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
           return (
-            <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id={dateObj.dateKey} index={i++}>
-              <p className="flex flex-col items-center justify-center">
+            <ColumnControls setSortingType={setSortingType} sortingType={sortingType} id={dateObj.dateKey} index={i++}>
+              <p className="flex flex-col items-center justify-center gap-y-1">
                 <span>{`${dateObj.date} ${dateObj.month}`}</span>
                 <span>{dateObj.day}</span>
               </p>
-            </ColumnPopover>
+            </ColumnControls>
           );
         },
       };
@@ -93,8 +92,8 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   //reusable sort function
   const sortFunction = (item: any, item2: any) => {
     const { key, id } = sortingType;
-    const t1 = id === "name" ? item.title : item.timeAssigned[id]?.[billable];
-    const t2 = id === "name" ? item.title : item2.timeAssigned[id]?.[billable];
+    const t1 = id === "name" || key === 0 ? item.title : item.timeAssigned[id]?.[billable];
+    const t2 = id === "name" || key === 0 ? item.title : item2.timeAssigned[id]?.[billable];
     return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
   };
 
@@ -120,9 +119,9 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
       accessorKey: "name",
       header: ({ column }: any) => {
         return (
-          <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id="name">
+          <ColumnControls setSortingType={setSortingType} sortingType={sortingType} id="name">
             <span>Name</span>
-          </ColumnPopover>
+          </ColumnControls>
         );
       },
     },
@@ -246,11 +245,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] ${
-                          sortingType.indexArr?.find((num: number) => num === i) && sortingType.key === 0
-                            ? "invisible"
-                            : ""
-                        }
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
