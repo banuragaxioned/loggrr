@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [startDate, setStartDate] = React.useState<any>();
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
-  const [sortingType, setSortingType] = React.useState<{ key: number; id: string }>({
+  const [sortingType, setSortingType] = React.useState<{ key: number; id: string; active?: number }>({
     key: 0,
     id: "name",
   });
@@ -239,7 +239,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     onClick={() => row.original.isProjectAssigned && clickHandler(row)}
-                    className={`flex ${
+                    className={`group flex hover:bg-hover ${
                       !row.original.userName ? "cursor-pointer" : "transition-all duration-300 ease-in-out"
                     }`}
                   >
@@ -249,7 +249,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-[46px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                              ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-12 before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                               : "inline-flex items-center"
                             : "basis-[12%]"
                         }`}
