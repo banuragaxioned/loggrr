@@ -17,15 +17,15 @@ export const ColumnControls = ({ children, setSortingType, sortingType, id }: an
   return (
     <Button
       onClick={() => setSortingType({ key: key === 0 ? 1 : key > 0 ? -1 : 0, id: id })}
-      className={`gap-x-1 border-none px-0 py-0 ${sortingType > 0 ? "text-black" : "text-slate-500"}`}
+      className={`gap-x-1 border-none px-0 py-0 group ${sortingType > 0 ? "text-black" : "text-slate-500"}`}
     >
       {children}
       {key === 0 ? (
-        <ChevronsUpDown className="h-4 w-4" />
+        <ChevronsUpDown className="h-4 w-4 invisible group-hover:visible" />
       ) : key > 0 ? (
-        <ChevronUp className="h-4 w-4" />
+        <ChevronUp className="h-4 w-4 invisible group-hover:visible" />
       ) : (
-        <ChevronDown className="h-4 w-4" />
+        <ChevronDown className="h-4 w-4 invisible group-hover:visible" />
       )}
     </Button>
   );
