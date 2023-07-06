@@ -62,14 +62,18 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [startDate, setStartDate] = React.useState<any>();
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
-  const [sortingType,setSortingType] = React.useState<{key:number,id:string,index?:number}>({key:1,id:"name"});
-  const [data,setData] = React.useState<TData[]>(tableData);
+  const [sortingType, setSortingType] = React.useState<{ key: number; id: string; indexArr: number[] }>({
+    key: 1,
+    id: "name",
+    indexArr: [],
+  });
+  const [data, setData] = React.useState<TData[]>(tableData);
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
     const days = weekend ? 6 : 8;
     const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
-    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj,i) => {
+    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj, i) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -87,28 +91,28 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   };
 
   //reusable sort function
-  const sortFunction = (item:any,item2:any)=>{
-    const {key,id} = sortingType;
-    const t1 = id ==="name" ? item.title  : item.timeAssigned[id]?.[billable] ;
-    const t2 = id ==="name" ? item.title  : item2.timeAssigned[id]?.[billable] ;
-    return (key ===1 ? 1 : -1)*((t1?t1:0) - (t2?t2:0 ))
-  }
+  const sortFunction = (item: any, item2: any) => {
+    const { key, id } = sortingType;
+    const t1 = id === "name" ? item.title : item.timeAssigned[id]?.[billable];
+    const t2 = id === "name" ? item.title : item2.timeAssigned[id]?.[billable];
+    return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
+  };
 
   //function to sort rows
-  const getSortedRows = ()=> {
-    const sortedData:TData[] = [];
-    let users,projects:TData[];
-    users = tableData.filter((user:any)=>!user.userName);
-    projects = tableData.filter((user:any)=>user.userName);
-    users = users.sort((user1:any,user2:any)=>sortFunction(user1,user2));
-    projects = projects.sort((project1:any,project2:any)=>sortFunction(project1,project2));
-    users.map((user:any)=>{
-      const userprojects = projects.filter((project:any)=>project.userName === user.title);
+  const getSortedRows = () => {
+    const sortedData: TData[] = [];
+    let users, projects: TData[];
+    users = tableData.filter((user: any) => !user.userName);
+    projects = tableData.filter((user: any) => user.userName);
+    users = users.sort((user1: any, user2: any) => sortFunction(user1, user2));
+    projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
+    users.map((user: any) => {
+      const userprojects = projects.filter((project: any) => project.userName === user.title);
       sortedData.push(user);
       userprojects.length > 0 && sortedData.push(...userprojects);
     });
-    return sortingType.id ==="name" && sortingType.key === -1 ? sortedData.reverse() : sortedData;
-  }
+    return sortingType.id === "name" && sortingType.key === -1 ? sortedData.reverse() : sortedData;
+  };
 
   //shadcn modified colums array to create columns
   const columns: ColumnDef<Assignment>[] | any = [
@@ -116,7 +120,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
       accessorKey: "name",
       header: ({ column }: any) => {
         return (
-          <ColumnPopover  setSortingType={setSortingType} sortingType={sortingType} id="name">
+          <ColumnPopover setSortingType={setSortingType} sortingType={sortingType} id="name">
             <span>Name</span>
           </ColumnPopover>
         );
@@ -159,9 +163,9 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     setStartDate(new Date());
   }, []);
 
-  React.useEffect(()=>{
-   setData(getSortedRows());
-  },[sortingType]);
+  React.useEffect(() => {
+    setData(getSortedRows());
+  }, [sortingType]);
 
   return (
     <div>
@@ -242,7 +246,11 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] ${sortingType.index === i && sortingType.key === 0 ? "invisible":""}
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] ${
+                          sortingType.indexArr?.find((num: number) => num === i) && sortingType.key === 0
+                            ? "invisible"
+                            : ""
+                        }
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
