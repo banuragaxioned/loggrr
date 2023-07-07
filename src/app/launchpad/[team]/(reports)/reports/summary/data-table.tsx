@@ -129,12 +129,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, i) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} >
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="group">
                 {row.getVisibleCells().map((cell: any, j: number) => {
                   return (
                     (filterMatcher(cell.row) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
-                      <TableCell className={`px-8 py-0 h-[43px] max-h-[43px] tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
+                      <TableCell className={`px-8 [&>div]:invisible group-hover:[&>div]:visible py-0 h-[43px] max-h-[43px] tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
                         {j === 1 && cell.row.original?.budget && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}

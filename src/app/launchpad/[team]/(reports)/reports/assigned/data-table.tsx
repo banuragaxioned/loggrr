@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,13 +14,19 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Assignment } from "@/types";
 import { ColumnControls } from "@/components/ui/column-controls";
-
-import * as React from "react";
+import {Input} from "@/components/ui/input";
 import { DatePicker } from "@/components/datePicker";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
@@ -177,7 +184,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
           <SelectTrigger className="w-[220px] 2xl:text-sm">
             <SelectValue placeholder="Table view" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="[&>div]hover:bg-hover">
             <SelectGroup className="p-[5px]">
               <SelectItem value="weekend">
                 <SelectItemText value="weekend">Weekend view</SelectItemText>
@@ -193,7 +200,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
           <SelectTrigger className="w-[220px] 2xl:text-sm">
             <SelectValue placeholder="Entered time type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="[&>div]hover:bg-hover">
             <SelectGroup className="p-[5px]">
               <SelectItem value="billableTime">
                 <SelectItemText value="billableTime">Billable</SelectItemText>
@@ -237,13 +244,13 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => row.original.isProjectAssigned && clickHandler(row)}
                     className={`group flex hover:bg-hover ${
                       !row.original.userName ? "cursor-pointer" : "transition-all duration-300 ease-in-out"
                     }`}
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
+                      onClick={() => i<1 && row.original.isProjectAssigned && clickHandler(row)}
                         className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
                         px-0 py-0 tabular-nums ${
                           i < 1
@@ -271,20 +278,27 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                             />
                           </>
                         )}
-                        <span
-                          className={
-                            i < 1
-                              ? `line-clamp-1 h-[15px] cursor-default ${
+                          {i > 0 ?
+                          <div className="flex h-full justify-center items-center">
+                              <Input 
+                              className="basis-14 mx-auto border-none hover:border border-hover"
+                              disabled={true}
+                              onMouseOver={(e:any)=>e.target.disabled = false}
+                              onMouseOut={(e:any)=>e.target.disabled = true}
+                              defaultValue={!cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? 0 : cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable]}/>
+                          </div>
+                          :
+                            <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger className={`line-clamp-1 h-[15px] cursor-default ${
                                   row.original.userName ? "relative left-14" : ""
-                                }`
-                              : "flex h-full items-center justify-center"
+                                }`}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TooltipTrigger>
+                              <TooltipContent>
+                                <span className="border border-primary p-1 rounded-sm">{cell.row.original.title}</span>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           }
-                          title={cell.row.original.title}
-                        >
-                          {i > 0 && !cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
-                            ? 0
-                            : flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </span>
                       </TableCell>
                     ))}
                   </TableRow>

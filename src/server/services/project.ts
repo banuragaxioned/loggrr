@@ -120,3 +120,14 @@ export async function getAssignments(slug: string) {
 
   return flattenedAssignments;
 }
+
+export const updateAssignedHours = async(userId:number,projectId:number,timeType:string) => {
+  const updateUser = await prisma.user.update({
+    where: {
+      //condition 
+    },
+    data: {
+      //key:updated value
+    },
+  })
+}
