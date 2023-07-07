@@ -106,12 +106,14 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     projects = tableData.filter((user: any) => user.userName);
     users = users.sort((user1: any, user2: any) => sortFunction(user1, user2));
     projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
+    sortingType.id === "name" && sortingType.key === -1 && users.reverse();
+    sortingType.id === "name" && sortingType.key === 1 && projects.reverse();
     users.map((user: any) => {
       const userprojects = projects.filter((project: any) => project.userName === user.title);
       sortedData.push(user);
       userprojects.length > 0 && sortedData.push(...userprojects);
     });
-    return sortingType.id === "name" && sortingType.key === -1 ? sortedData.reverse() : sortedData;
+    return sortedData;
   };
 
   //shadcn modified colums array to create columns
