@@ -37,19 +37,21 @@ interface DataTableProps<TData, TValue> {
 }
 
 //function to get date between two dates
-const getDatesInRange = (startDate: any, endDate: any, includeWeekend: boolean) => {
+const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) => {
   const dates = [];
   let start = startDate,
-    end = endDate;
-  while (start <= end) {
+    count = 0;
+  while (count < days) {
     const currentDate = new Date(start);
-    (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) &&
+    if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
       dates.push({
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
         day: currentDate.toLocaleString("en-us", { weekday: "short" }),
         dateKey: currentDate.toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" }),
       });
+      count++;
+    }
     start = new Date(start).setDate(new Date(start).getDate() + 1);
   }
   return dates;
@@ -59,7 +61,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [startDate, setStartDate] = React.useState<any>();
+  const [startDate, setStartDate] = React.useState<any>(new Date());
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
   const [sortingType, setSortingType] = React.useState<{ key: number; id: string; active?: number }>({
@@ -70,9 +72,8 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
-    const days = weekend ? 6 : 8;
-    const endDate = new Date(new Date(startDate).getTime() + 86400000 * days);
-    return getDatesInRange(Date.parse(startDate), endDate, weekend).map((dateObj, i) => {
+    const days = 7;
+    return getDatesInRange(Date.parse(startDate), days, weekend).map((dateObj, i) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -157,10 +158,6 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
         ? prev?.filter((item: string) => item !== rowObj?.original?.title)
         : [...prev, rowObj?.original?.title]
     );
-
-  React.useEffect(() => {
-    setStartDate(new Date());
-  }, []);
 
   React.useEffect(() => {
     setData(getSortedRows());
