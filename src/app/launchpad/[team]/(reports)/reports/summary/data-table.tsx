@@ -129,19 +129,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, i) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} >
                 {row.getVisibleCells().map((cell: any, j: number) => {
                   return (
                     (filterMatcher(cell.row) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
-                      <TableCell className={`px-8 tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
+                      <TableCell className={`px-8 py-0 h-[43px] max-h-[43px] tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
                         {j === 1 && cell.row.original?.budget && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}
                         {j === 3 && cell.row.original?.projectOwner && (
                           <UserAvatar
                             user={{ name: cell.row.original.projectOwner, image: cell.row.original.projectOwnerAvatar }}
-                            className="mr-2 inline-block h-8 w-8"
+                            className="mr-2 inline-block h-5 w-5"
                           />
                         )}
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
