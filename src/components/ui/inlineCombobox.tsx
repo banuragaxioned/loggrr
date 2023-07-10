@@ -6,19 +6,30 @@ import { X } from "lucide-react";
 import { Command, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { UseFormSetValue } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import { AllProjects, AssignFormValues } from "@/types";
+import { AllProjects, AssignFormValues, UserProfile } from "@/types";
 
+type InlineComboboxProps = {
+  options: AllProjects[] | UserProfile[],
+  setVal: UseFormSetValue<AssignFormValues>,
+  fieldName: "projectId" | "userId",
+};
 
-export function InlineCombobox({ options, setVal }: { options: AllProjects[], setVal: UseFormSetValue<AssignFormValues> }) {
+export function InlineCombobox({ options, setVal, fieldName }: InlineComboboxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<AllProjects>();
+  const [selected, setSelected] = React.useState<AllProjects | UserProfile>();
   const [inputValue, setInputValue] = React.useState("");
 
   const selectables = options.filter((option) => selected !== option);
+  
 
   return (
-    <Command className={cn("max-w-[230px] h-auto overflow-visible bg-transparent border rounded-md", open && ("ring-2 ring-offset-2 ring-ring"))}>
+    <Command
+      className={cn(
+        "h-auto max-w-[230px] overflow-visible rounded-md border bg-transparent",
+        open && "ring-2 ring-ring ring-offset-2"
+      )}
+    >
       {/* Avoid having the "Search" Icon */}
       <CommandInput
         ref={inputRef}
@@ -27,7 +38,7 @@ export function InlineCombobox({ options, setVal }: { options: AllProjects[], se
         onBlur={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         placeholder="Select options..."
-        className="rounded-0 ml-1 flex-1 bg-transparent outline-none placeholder:text-muted-foreground border-0 focus:ring-0 py-0"
+        className="rounded-0 ml-1 flex-1 border-0 bg-transparent py-0 outline-none placeholder:text-muted-foreground focus:ring-0"
       />
       <div className="relative">
         {open && selectables.length > 0 ? (
@@ -44,8 +55,8 @@ export function InlineCombobox({ options, setVal }: { options: AllProjects[], se
                     onSelect={(value) => {
                       setInputValue(option.name);
                       setSelected(option);
-                      setVal("projectId", option.id)
-                      setOpen(false)
+                      setVal(fieldName, option.id);
+                      setOpen(false);
                     }}
                     className={"cursor-pointer py-1.5 pl-8 pr-2"}
                   >

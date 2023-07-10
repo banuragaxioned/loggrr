@@ -13,6 +13,18 @@ export const getMembers = async (slug: string, projectId: number) => {
   return members;
 };
 
+export const getAllUsers = async (slug: string) => {
+  const users = await prisma.user.findMany({
+    where: { TenantId: { some: { slug } } },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  });
+  return users;
+};
+
 export async function getProjects(slug: string) {
   const projects = await db.project.findMany({
     where: { Tenant: { slug } },
@@ -23,6 +35,7 @@ export async function getProjects(slug: string) {
       interval: true,
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
+      Members: { select: { id: true, name: true, image: true } },
       status: true,
     },
     orderBy: {

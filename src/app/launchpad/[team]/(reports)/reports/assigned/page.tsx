@@ -2,7 +2,7 @@ import { DashboardShell } from "@/components/ui/shell";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
-import { getAssignments, getProjects } from "@/server/services/project";
+import { getAllUsers, getAssignments, getProjects } from "@/server/services/project";
 import { Tenant } from "@prisma/client";
 import { getAllocations } from "@/server/services/allocation";
 import dayjs from "dayjs";
@@ -26,11 +26,18 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   const allocation = await getAllocations(options);
   const projects = await getProjects(team)
 
+  const users = await getAllUsers(team)
+
+  // projects.map((x) => {
+  //   console.log(x.Members)
+  // })
+  console.log(users)
+  // console.log(projects)
   return (
     <>
       <DashboardShell>
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
-          <NewAllocationForm team={team} projects={projects}/>
+          <NewAllocationForm projects={projects} users={users}/>
         </DashboardHeader>
         <div className="container mx-auto">
           <DataTable columns={columns} data={data} />

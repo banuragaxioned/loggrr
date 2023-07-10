@@ -24,7 +24,7 @@ import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { cleanDate } from "@/lib/helper";
 import { InlineCombobox } from "../ui/inlineCombobox";
-import { AllProjects } from "../../types";
+import { AllProjects, UserProfile } from "../../types";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -36,7 +36,7 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team, projects }: { team: string; projects: AllProjects[] }) {
+export function NewAllocationForm({ projects, users }: { projects: AllProjects[], users: UserProfile[] }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -98,7 +98,7 @@ export function NewAllocationForm({ team, projects }: { team: string; projects: 
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox options={projects} setVal={form.setValue}/>
+                    <InlineCombobox options={projects} setVal={form.setValue} fieldName="projectId"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +111,8 @@ export function NewAllocationForm({ team, projects }: { team: string; projects: 
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <Input type="number" placeholder="User Id" {...field} />
+                    <InlineCombobox options={users} setVal={form.setValue} fieldName="userId"/>
+                    {/* <Input type="number" placeholder="User Id" {...field} /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

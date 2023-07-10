@@ -18,9 +18,9 @@ export type Projects = {
 };
 
 export type UserProfile = {
-  name: string;
+  name: string | null;
   id: number;
-  avatar: string;
+  image: string;
 };
 
 export type AllocationReport = {
@@ -185,6 +185,11 @@ export type AllProjects = {
     name: string | null;
     image: string | null;
   };
+  Members: {
+    id: number;
+    name: string | null;
+    image: string | null;
+  }[];
   status: "PUBLISHED" | "ARCHIVED";
 };
 
