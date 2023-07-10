@@ -169,23 +169,31 @@ export type SkillScore = {
 
 export type SkillRadar = SkillScore[];
 
-export type ProjectInterval = {
-
-}
+export type ProjectInterval = {};
 
 export type AllProjects = {
   id: number;
+  name: string;
+  billable: boolean;
+  interval: "FIXED" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "HALFYEARLY" | "YEARLY";
+  Client: {
+    id: number;
     name: string;
-    billable: boolean;
-    interval: 'FIXED' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'HALFYEARLY' | 'YEARLY';
-    Client: {
-        id: number;
-        name: string;
-    };
-    Owner: {
-        id: number;
-        name: string | null;
-        image: string | null;
-    };
-    status: 'PUBLISHED' | 'ARCHIVED';
-}
+  };
+  Owner: {
+    id: number;
+    name: string | null;
+    image: string | null;
+  };
+  status: "PUBLISHED" | "ARCHIVED";
+};
+
+export type AssignFormValues = {
+  projectId: number;
+  userId: number;
+  frequency: "DAY" | "ONGOING";
+  billableTime: number;
+  nonBillableTime: number;
+  date?: Date | undefined;
+  enddate?: Date | undefined;
+};

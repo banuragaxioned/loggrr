@@ -23,7 +23,8 @@ import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { cleanDate } from "@/lib/helper";
-import { FancyMultiSelect } from "../ui/inlineCombobox";
+import { InlineCombobox } from "../ui/inlineCombobox";
+import { AllProjects } from "../../types";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -35,7 +36,7 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team }: { team: string }) {
+export function NewAllocationForm({ team, projects }: { team: string; projects: AllProjects[] }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -48,29 +49,29 @@ export function NewAllocationForm({ team }: { team: string }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const date = new Date();
-    const response = await fetch("/api/team/allocation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectId: values.projectId,
-        userId: values.userId,
-        date: cleanDate(date),
-        frequency: values.frequency,
-        enddate: new Date(),
-        billableTime: values.billableTime,
-        nonBillableTime: values.nonBillableTime,
-        team: team,
-      }),
-    });
+    // const response = await fetch("/api/team/allocation", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     projectId: values.projectId,
+    //     userId: values.userId,
+    //     date: cleanDate(date),
+    //     frequency: values.frequency,
+    //     enddate: new Date(),
+    //     billableTime: values.billableTime,
+    //     nonBillableTime: values.nonBillableTime,
+    //     team: team,
+    //   }),
+    // });
 
     console.log(values);
-    console.log(response);
+    // console.log(response);
 
-    if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
-    }
+    // if (!response?.ok) {
+    //   return showToast("Something went wrong.", "warning");
+    // }
 
     form.reset();
     SheetCloseButton.current?.click();
@@ -78,44 +79,7 @@ export function NewAllocationForm({ team }: { team: string }) {
     router.refresh();
   }
 
-  const FRAMEWORKS = [
-    {
-      value: "next.js",
-      label: "Next.js",
-    },
-    {
-      value: "sveltekit",
-      label: "SvelteKit",
-    },
-    {
-      value: "nuxt.js",
-      label: "Nuxt.js",
-    },
-    {
-      value: "remix",
-      label: "Remix",
-    },
-    {
-      value: "astro",
-      label: "Astro",
-    },
-    {
-      value: "wordpress",
-      label: "WordPress",
-    },
-    {
-      value: "express.js",
-      label: "Express.js",
-    },
-    {
-      value: "nest.js",
-      label: "Nest.js",
-    }
-  ];
-
   return (
-    <>
-    <FancyMultiSelect FRAMEWORKS={FRAMEWORKS}/>
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
@@ -134,7 +98,7 @@ export function NewAllocationForm({ team }: { team: string }) {
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <Input type="number" placeholder="Project Id" {...field} />
+                    <InlineCombobox options={projects} setVal={form.setValue}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,6 +170,5 @@ export function NewAllocationForm({ team }: { team: string }) {
         </Form>
       </SheetContent>
     </Sheet>
-    </>
   );
 }
