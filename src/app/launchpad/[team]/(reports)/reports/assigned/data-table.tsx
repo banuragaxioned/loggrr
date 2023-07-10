@@ -20,7 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
+import {TableInput} from "@/components/table-input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
@@ -38,7 +38,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 interface DataTableProps<TData, TValue> {
   tableData: TData[];
 }
@@ -244,19 +248,19 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className={`group flex hover:bg-hover ${
-                      !row.original.userName ? "cursor-pointer" : "transition-all duration-300 ease-in-out"
+                    className={`group flex ${
+                      !row.original.userName ? "" : "transition-all duration-300 ease-in-out"
                     }`}
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
                       onClick={() => i<1 && row.original.isProjectAssigned && clickHandler(row)}
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
+                        className={`inline-block cursor-default h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
                               ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-12 before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                              : "inline-flex items-center"
+                              : `inline-flex items-center ${row.original.isProjectAssigned? "cursor-pointer" : ""}`
                             : "basis-[12%]"
                         }`}
                         key={cell.id}
@@ -279,18 +283,11 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                           </>
                         )}
                           {i > 0 ?
-                          <div className="flex h-full justify-center items-center">
-                              <Input 
-                              className="basis-14 mx-auto border-none hover:border border-hover"
-                              disabled={true}
-                              onMouseOver={(e:any)=>e.target.disabled = false}
-                              onMouseOut={(e:any)=>e.target.disabled = true}
-                              defaultValue={!cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? 0 : cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable]}/>
-                          </div>
+                        <TableInput hours={cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0 }/>
                           :
                             <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger className={`line-clamp-1 h-[15px] cursor-default ${
+                              <TooltipTrigger className={`line-clamp-1 h-[15px] ${
                                   row.original.userName ? "relative left-14" : ""
                                 }`}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TooltipTrigger>
                               <TooltipContent>

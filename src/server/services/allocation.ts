@@ -234,6 +234,7 @@ export async function getAllocations(input: getAllocation) {
           clientName: project.Client.name,
           projectId: project.id,
           projectName: project.name,
+          billable:project.billable,
           totalTime: projectTotalTime,
           allocations: allocations,
         };

@@ -121,7 +121,8 @@ export async function getAssignments(slug: string) {
   return flattenedAssignments;
 }
 
-export const updateAssignedHours = async(userId:number,projectId:number,timeType:string) => {
+export const updateAssignedHours = async(userId:number,projectId:number,timeType:string,time:number) => {
+  console.log(time)
   const updateUser = await prisma.user.update({
     where: {
       //condition 
