@@ -171,26 +171,9 @@ export type SkillRadar = SkillScore[];
 
 export type ProjectInterval = {};
 
-export type AllProjects = {
+export type ComboboxOptions = {
   id: number;
-  name: string;
-  billable: boolean;
-  interval: "FIXED" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "HALFYEARLY" | "YEARLY";
-  Client: {
-    id: number;
-    name: string;
-  };
-  Owner: {
-    id: number;
-    name: string | null;
-    image: string | null;
-  };
-  Members: {
-    id: number;
-    name: string | null;
-    image: string | null;
-  }[];
-  status: "PUBLISHED" | "ARCHIVED";
+  name: string | null | undefined;
 };
 
 export type AssignFormValues = {

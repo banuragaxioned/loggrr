@@ -6,23 +6,22 @@ import { X } from "lucide-react";
 import { Command, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { UseFormSetValue } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import { AllProjects, AssignFormValues, UserProfile } from "@/types";
+import { ComboboxOptions, AssignFormValues } from "@/types";
 
 type InlineComboboxProps = {
-  options: AllProjects[] | UserProfile[],
-  setVal: UseFormSetValue<AssignFormValues>,
-  fieldName: "projectId" | "userId",
+  options: ComboboxOptions[];
+  setVal: UseFormSetValue<AssignFormValues>;
+  fieldName: "projectId" | "userId";
 };
 
 export function InlineCombobox({ options, setVal, fieldName }: InlineComboboxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<AllProjects | UserProfile>();
+  const [selected, setSelected] = React.useState<ComboboxOptions>();
   const [inputValue, setInputValue] = React.useState("");
 
   const selectables = options.filter((option) => selected !== option);
   
-
   return (
     <Command
       className={cn(
@@ -46,22 +45,24 @@ export function InlineCombobox({ options, setVal, fieldName }: InlineComboboxPro
             <CommandGroup className="h-full overflow-auto">
               {selectables.map((option) => {
                 return (
-                  <CommandItem
-                    key={option.id}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onSelect={(value) => {
-                      setInputValue(option.name);
-                      setSelected(option);
-                      setVal(fieldName, option.id);
-                      setOpen(false);
-                    }}
-                    className={"cursor-pointer py-1.5 pl-8 pr-2"}
-                  >
-                    {option.name}
-                  </CommandItem>
+                  option.name && (
+                    <CommandItem
+                      key={option.id}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onSelect={() => {
+                        if (option.name) setInputValue(option.name);
+                        setSelected(option);
+                        setVal(fieldName, option.id);
+                        setOpen(false);
+                      }}
+                      className={"cursor-pointer py-1.5 pl-8 pr-2"}
+                    >
+                      {option.name}
+                    </CommandItem>
+                  )
                 );
               })}
             </CommandGroup>

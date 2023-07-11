@@ -2,9 +2,9 @@ import { DashboardShell } from "@/components/ui/shell";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
-import { getAllUsers, getAssignments, getProjects } from "@/server/services/project";
+import { getAssignments } from "@/server/services/project";
 import { Tenant } from "@prisma/client";
-import { getAllocations } from "@/server/services/allocation";
+import { getAllocations, getProjectsId, getAllUsers } from "@/server/services/allocation";
 import dayjs from "dayjs";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
 
@@ -24,15 +24,12 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   };
 
   const allocation = await getAllocations(options);
-  const projects = await getProjects(team)
+  const projects = await getProjectsId(team)
 
   const users = await getAllUsers(team)
 
-  // projects.map((x) => {
-  //   console.log(x.Members)
-  // })
   console.log(users)
-  // console.log(projects)
+  console.log(projects)
   return (
     <>
       <DashboardShell>
