@@ -177,11 +177,12 @@ export type ComboboxOptions = {
 };
 
 export type AssignFormValues = {
+  date: Date;
+  billableTime: number;
+  nonBillableTime: number;
   projectId: number;
   userId: number;
   frequency: "DAY" | "ONGOING";
-  billableTime: number;
-  nonBillableTime: number;
-  date?: Date | undefined;
   enddate?: Date | undefined;
+  isOngoing: boolean;
 };
