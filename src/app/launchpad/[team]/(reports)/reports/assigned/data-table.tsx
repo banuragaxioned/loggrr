@@ -26,7 +26,6 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
 import { Assignment } from "@/types";
 import { ColumnControls } from "@/components/ui/column-controls";
-import {Input} from "@/components/ui/input";
 import { DatePicker } from "@/components/datePicker";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
@@ -283,7 +282,11 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                           </>
                         )}
                           {i > 0 ?
+                          row.original.userName ? 
                         <TableInput hours={cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0 }/>
+                          :<span className="flex items-center h-full w-12 justify-center mx-auto">{
+                            cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0 
+                            }</span>
                           :
                             <TooltipProvider>
                             <Tooltip>
