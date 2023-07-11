@@ -29,9 +29,10 @@ import { ComboboxOptions } from "../../types";
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
   userId: z.coerce.number().min(1),
-  date: z.coerce.date().optional(), // TODO: make this required
+  date: z.coerce.date(), // TODO: make this required
   frequency: z.nativeEnum(AllocationFrequency),
-  enddate: z.date().optional(),
+  isOngoing: z.boolean().default(false),
+  enddate: z.coerce.date().optional(),
   billableTime: z.coerce.number(),
   nonBillableTime: z.coerce.number(),
 });
@@ -124,7 +125,7 @@ export function NewAllocationForm({ projects, users }: { projects: ComboboxOptio
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker />
+                    <CalendarDateRangePicker setVal={form.setValue} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
