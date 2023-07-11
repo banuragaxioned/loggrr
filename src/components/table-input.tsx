@@ -12,7 +12,7 @@ const submitHandler = (e:any)=> {
   console.log(e)
 }
 
-export const TableInput = ({hours}:any)=> {
+export const TableInput = ({hours,type}:any)=> {
 
   const [range,setRange] = useState<any>(null);
   const [formData,setFormData] = useState<any>({billable:0});
@@ -25,7 +25,7 @@ export const TableInput = ({hours}:any)=> {
             disabled={true}
             onMouseOver={(e:any)=>e.target.disabled = false}
             onMouseOut={(e:any)=>e.target.disabled = true}
-            defaultValue={hours}
+            defaultValue={hours[type] ? hours[type] : 0}
             />
         </PopoverTrigger>
         <PopoverContent className="w-64 text-slate-500">
