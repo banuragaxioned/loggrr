@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import { addDays, format } from "date-fns";
+import { addDays, addYears, format, getYear } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -12,15 +12,24 @@ import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
 import dayjs from "dayjs";
 
-export function CalendarDateRangePicker({ setVal }: { setVal: UseFormSetValue<AssignFormValues> }) {
+export function CalendarDateRangePicker({ setVal, isOngoing, setOngoing }: { setVal: UseFormSetValue<AssignFormValues>, isOngoing: boolean, setOngoing: Dispatch<SetStateAction<boolean>> }) {
   const [date, setDate] = useState<DateRange | undefined>({
-    from: dayjs().toDate(),
-    to: dayjs().toDate(),
+    from: new Date(),
+    to: addDays(new Date(), 10)
   });
 
-  const [isOngoing, setOngoing] = useState(false)
+  console.log(new Date(2022, 0, 20));
+  console.log(new Date());
+  
+  
 
   useEffect(() => {
+    if(isOngoing) setDate((prev: DateRange | undefined) => (prev?.from && {from: prev?.from, to: addYears(prev?.from, 1)}))
+    else setDate((prev: DateRange | undefined) => (prev?.from && {from: prev?.from, to: addDays(prev?.from, 10)}))
+  }, [isOngoing])
+
+  useEffect(() => {
+    console.log(date)
     if (date?.from) setVal("date", date?.from);
     if (date?.to) setVal("enddate", date?.to);
   }, [date]);
@@ -58,7 +67,7 @@ export function CalendarDateRangePicker({ setVal }: { setVal: UseFormSetValue<As
             numberOfMonths={1}
           />
           <div className="items-top flex justify-end space-x-2 p-3">
-            <Checkbox id="terms1" onCheckedChange={(e) => setVal("isOngoing", !!e)}/>
+            <Checkbox id="terms1" onCheckedChange={(e:boolean) => setOngoing(e)}/>
             <div className="grid gap-1.5 leading-none">
               <label
                 htmlFor="terms1"

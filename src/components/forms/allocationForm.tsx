@@ -18,9 +18,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AllocationFrequency } from "@prisma/client";
+import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { cleanDate } from "@/lib/helper";
 import { InlineCombobox } from "../ui/inlineCombobox";
@@ -31,13 +31,13 @@ const formSchema = z.object({
   userId: z.coerce.number().min(1),
   date: z.coerce.date(), // TODO: make this required
   frequency: z.nativeEnum(AllocationFrequency),
-  isOngoing: z.boolean().default(false),
   enddate: z.coerce.date().optional(),
   billableTime: z.coerce.number(),
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ projects, users }: { projects: ComboboxOptions[], users: ComboboxOptions[] }) {
+export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: ComboboxOptions[], users: ComboboxOptions[] }) {
+  const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -49,36 +49,40 @@ export function NewAllocationForm({ projects, users }: { projects: ComboboxOptio
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const date = new Date();
-    // const response = await fetch("/api/team/allocation", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     projectId: values.projectId,
-    //     userId: values.userId,
-    //     date: cleanDate(date),
-    //     frequency: values.frequency,
-    //     enddate: new Date(),
-    //     billableTime: values.billableTime,
-    //     nonBillableTime: values.nonBillableTime,
-    //     team: team,
-    //   }),
-    // });
+    const response = await fetch("/api/team/allocation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        projectId: values.projectId,
+        userId: values.userId,
+        date: values.date,
+        frequency: values.frequency,
+        enddate: values?.enddate,
+        billableTime: values.billableTime,
+        nonBillableTime: values.nonBillableTime,
+        team: team,
+      }),
+    });
 
     console.log(values);
-    // console.log(response);
+    console.log(response);
 
-    // if (!response?.ok) {
-    //   return showToast("Something went wrong.", "warning");
-    // }
+    if (!response?.ok) {
+      return showToast("Something went wrong.", "warning");
+    }
 
     form.reset();
     SheetCloseButton.current?.click();
     showToast("A new allocation was created", "success");
     router.refresh();
   }
+
+  useEffect(() => {
+    if(isOngoing) form.setValue("frequency", "ONGOING")
+    else form.setValue("frequency", "DAY")
+  }, [isOngoing])
 
   return (
     <Sheet>
@@ -125,7 +129,7 @@ export function NewAllocationForm({ projects, users }: { projects: ComboboxOptio
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} />
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -184,5 +184,4 @@ export type AssignFormValues = {
   userId: number;
   frequency: "DAY" | "ONGOING";
   enddate?: Date | undefined;
-  isOngoing: boolean;
 };
