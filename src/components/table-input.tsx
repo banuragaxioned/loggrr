@@ -16,7 +16,6 @@ export const TableInput = ({hours,type}:any)=> {
 
   const [range,setRange] = useState<any>(null);
   const [formData,setFormData] = useState<any>({billable:0});
-
     return (
         <Popover>
         <PopoverTrigger className="flex h-full justify-center items-center cursor-default w-12 mx-auto">
@@ -25,7 +24,7 @@ export const TableInput = ({hours,type}:any)=> {
             disabled={true}
             onMouseOver={(e:any)=>e.target.disabled = false}
             onMouseOut={(e:any)=>e.target.disabled = true}
-            defaultValue={hours[type] ? hours[type] : 0}
+            defaultValue={hours}
             />
         </PopoverTrigger>
         <PopoverContent className="w-64 text-slate-500">
@@ -49,7 +48,7 @@ export const TableInput = ({hours,type}:any)=> {
             className="basis-14"
             type="number"
             onBlur={(e)=>console.log(e.target.value)}
-            defaultValue={hours}
+            // defaultValue={hours}
             />
               </div>
               </div>
