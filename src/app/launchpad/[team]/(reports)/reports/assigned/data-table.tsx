@@ -283,7 +283,13 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
                         )}
                           {i > 0 ?
                           row.original.userName ? 
-                        <TableInput hours={cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]} type={billable}/>
+                        <TableInput 
+                        hours={row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0} 
+                        data={{hoursObj:row.original.timeAssigned[columns[i].accessorKey.split(".")[1]],userName:row.original.userName,
+                          projectId:row.original.id,userId:row.original.userId
+                      }} 
+                        type={billable}
+                        />
                           :<span className="flex items-center h-full w-12 justify-center mx-auto">{
                             cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0 
                             }</span>

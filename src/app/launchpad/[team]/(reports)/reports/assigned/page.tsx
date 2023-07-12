@@ -35,6 +35,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
         user?.projects?.map((project: any) => {
           const temp = {
             id: project?.projectId,
+            userId:user.userId,
             name: project?.projectName.slice(0,5)+"...",
             title:project?.projectName,
             clientName: project?.clientName,
@@ -58,9 +59,8 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     page: 1,
     pageSize: 20,
   };
-
   const allocation = await getAllocations(options);
-
+  
   return (
     <>
       <DashboardShell>
@@ -69,7 +69,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
         </DashboardHeader>
 
         <div className="container mx-auto">
-          <DataTable tableData={dataFiltering(allocation)} />
+          <DataTable tableData={dataFiltering(allocation)}/>
         </div>
       </DashboardShell>
     </>

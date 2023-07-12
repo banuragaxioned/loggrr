@@ -9,7 +9,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+
+interface OnGoing extends DateRange {onGoing?:boolean}
 
 export const DatePicker = ({date,setDate}:any) => {
 
@@ -41,9 +43,10 @@ export const DatePicker = ({date,setDate}:any) => {
 
 export function DateRangePicker({ className,setRange,startDate }: {className?:React.HTMLAttributes<HTMLDivElement>,setRange?:any,startDate?:any}) {
   const initailDate = startDate ? startDate : new Date();
-  const [date, setDate] = useState<DateRange | undefined>({
+  const [date, setDate] = useState< OnGoing | undefined>({
     from: initailDate,
     to:initailDate,
+    onGoing:false,
   });
 
   useEffect(()=>setRange(date),[date]);
@@ -71,15 +74,21 @@ export function DateRangePicker({ className,setRange,startDate }: {className?:Re
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto px-0 py-2" align="start">
           <Calendar
             initialFocus
             mode="range"
             defaultMonth={date?.from}
+            today={date?.to}
             selected={date}
             onSelect={setDate}
             numberOfMonths={1}
           />
+         <div className="flex justify-center">
+         <Button className="text-center w-4/5" onClick={()=>setDate((prev:any)=>({...prev,onGoing:true,to:new Date().setFullYear(new Date().getFullYear()+100)}))}>
+          OnGoing
+          </Button>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

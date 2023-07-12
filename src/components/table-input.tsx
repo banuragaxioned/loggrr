@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{ useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -6,16 +6,28 @@ import {
 } from "@/components/ui/popover";
 import {Input} from "@/components/ui/input";
 import { DateRangePicker } from "@/components/datePicker";
+import updateAssignedHours from "@/app/actions/update";
 
-const submitHandler = (e:any)=> {
-  e.preventDefault();
-  console.log(e)
-}
 
-export const TableInput = ({hours,type}:any)=> {
+export const TableInput = ({hours,data,type,updateHandler}:any)=> {
 
+  const billable = data.hoursObj?.billableTime || 0;
+  const nonBillable = data.hoursObj?.nonBillableTime || 0;
+  const totaTime = data.hoursObj?.totalTime || 0;
   const [range,setRange] = useState<any>(null);
-  const [formData,setFormData] = useState<any>({billable:0});
+  const [formData,setFormData] = useState<any>({total:totaTime,nonBillable:nonBillable,billable:billable});
+
+  const submitHandler = (e:any)=> {
+    e.preventDefault();
+    const updatedData = {...formData,total:formData.nonBillable + formData.billable};
+    updateAssignedHours(updatedData,range,data.projectId,data.userId);
+  }
+
+  const blurHandler = (e:any)=> {
+    const element = e.target;
+    setFormData((prev:any)=>({...prev,[element.name]:Number(element.value)}));
+  }
+
     return (
         <Popover>
         <PopoverTrigger className="flex h-full justify-center items-center cursor-default w-12 mx-auto">
@@ -34,10 +46,11 @@ export const TableInput = ({hours,type}:any)=> {
                 <label>Billable</label>
                <div className="basis-[90%] mx-auto flex">
                <Input 
-            className="basis-14"
+            className="basis-16"
             type="number"
-            onBlur={(e)=>console.log(e.target.value)}
-            defaultValue={hours}
+            name="billable"
+            onBlur={blurHandler}
+            defaultValue={billable}
             />
               </div>
               </div>
@@ -45,10 +58,11 @@ export const TableInput = ({hours,type}:any)=> {
               <label>Non-billable</label>
               <div className="basis-[90%] mx-auto flex">
               <Input 
-            className="basis-14"
+            className="basis-16"
             type="number"
-            onBlur={(e)=>console.log(e.target.value)}
-            // defaultValue={hours}
+            name="nonBillable"
+            onBlur={blurHandler}
+            defaultValue={nonBillable}
             />
               </div>
               </div>

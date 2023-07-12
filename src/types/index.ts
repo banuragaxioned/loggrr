@@ -90,6 +90,7 @@ export type AllocationDates = {
     nonBillableTime: number;
     totalTime: number;
     updatedAt: Date;
+    frequency: string;
   };
 };
 

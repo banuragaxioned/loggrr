@@ -41,6 +41,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
+        frequency:allocation.frequency
       };
 
       return accumulator;
@@ -57,6 +58,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
+        frequency:allocation.frequency
       };
 
       // increase one day
@@ -162,7 +164,7 @@ export async function getAllocations(input: getAllocation) {
 
           // calculate average time
           const averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
-
+          console.log(user.Allocation)
           return {
             userId: user.id,
             userName: user.name,
