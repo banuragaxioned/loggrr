@@ -41,6 +41,8 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
             clientName: project?.clientName,
             totalTime: project?.totalTime,
             userName: user.userName,
+            billable: project?.billable,
+            frequency:project?.frequency,
             timeAssigned: getFormatedData(project?.allocations),
           };
           resultantArray.push(temp);
@@ -60,7 +62,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     pageSize: 20,
   };
   const allocation = await getAllocations(options);
-  
+
   return (
     <>
       <DashboardShell>

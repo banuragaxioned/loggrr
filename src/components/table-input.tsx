@@ -7,13 +7,15 @@ import {
 import {Input} from "@/components/ui/input";
 import { DateRangePicker } from "@/components/datePicker";
 import updateAssignedHours from "@/app/actions/update";
+import { Button } from "@/components/ui/button";
 
 
-export const TableInput = ({hours,data,type,updateHandler}:any)=> {
+export const TableInput = ({hours,data,type}:any)=> {
 
   const billable = data.hoursObj?.billableTime || 0;
   const nonBillable = data.hoursObj?.nonBillableTime || 0;
   const totaTime = data.hoursObj?.totalTime || 0;
+  const isOnGoing = data.hoursObj?.frequency  === "ONGOING";
   const [range,setRange] = useState<any>(null);
   const [formData,setFormData] = useState<any>({total:totaTime,nonBillable:nonBillable,billable:billable});
 
@@ -23,11 +25,17 @@ export const TableInput = ({hours,data,type,updateHandler}:any)=> {
     updateAssignedHours(updatedData,range,data.projectId,data.userId);
   }
 
-  const blurHandler = (e:any)=> {
+  const inputHandler = (e:any)=> {
     const element = e.target;
-    setFormData((prev:any)=>({...prev,[element.name]:Number(element.value)}));
+    const temp = {...formData,[element.name]:Number(element.value)}
+    setFormData(temp);
   }
-
+  
+  const keypressHandler = (e:any)=> {
+    const element = e.target;
+   e.key === "Enter" &&
+    submitHandler(e);
+  }
     return (
         <Popover>
         <PopoverTrigger className="flex h-full justify-center items-center cursor-default w-12 mx-auto">
@@ -37,19 +45,23 @@ export const TableInput = ({hours,data,type,updateHandler}:any)=> {
             onMouseOver={(e:any)=>e.target.disabled = false}
             onMouseOut={(e:any)=>e.target.disabled = true}
             defaultValue={hours}
+            name={data.isBillable ? "billable" : "nonBillable"}
+            onInput={inputHandler}
+            onKeyUp={keypressHandler}
             />
         </PopoverTrigger>
         <PopoverContent className="w-64 text-slate-500">
-            <form method="POST" onSubmit={submitHandler} action="#FIXME">
+            <form method="POST" onSubmit={submitHandler} action="#FIXME" className="flex justify-center flex-col">
             <div className="flex mb-2 gap-x-[2%] justify-center">
               <div className="basis-[48%]">
                 <label>Billable</label>
                <div className="basis-[90%] mx-auto flex">
                <Input 
-            className="basis-16"
+            className="basis-full"
             type="number"
             name="billable"
-            onBlur={blurHandler}
+            disabled={data.isBillable?false:true}
+            onInput={inputHandler}
             defaultValue={billable}
             />
               </div>
@@ -58,17 +70,19 @@ export const TableInput = ({hours,data,type,updateHandler}:any)=> {
               <label>Non-billable</label>
               <div className="basis-[90%] mx-auto flex">
               <Input 
-            className="basis-16"
+            className="basis-full"
             type="number"
             name="nonBillable"
-            onBlur={blurHandler}
+            onInput={inputHandler}
             defaultValue={nonBillable}
             />
               </div>
               </div>
             </div>
-            <DateRangePicker setRange={setRange} />
-           <Input type="submit" value="Update" className="mt-2 w-auto mx-auto text-slate-500 cursor-pointer"/>
+            <DateRangePicker setRange={setRange} isOnGoing={isOnGoing} startDate={new Date(data.date)}/>
+            <Button type="submit" className="mt-2 w-auto mx-auto">
+              Update
+            </Button>
             </form>
         </PopoverContent>
       </Popover>

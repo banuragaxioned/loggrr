@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { addDays,format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon,Infinity } from "lucide-react"
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 
 interface OnGoing extends DateRange {onGoing?:boolean}
 
@@ -41,12 +42,12 @@ export const DatePicker = ({date,setDate}:any) => {
     )
 }
 
-export function DateRangePicker({ className,setRange,startDate }: {className?:React.HTMLAttributes<HTMLDivElement>,setRange?:any,startDate?:any}) {
-  const initailDate = startDate ? startDate : new Date();
+export function DateRangePicker({ className,setRange,startDate,isOnGoing }: {className?:React.HTMLAttributes<HTMLDivElement>,setRange?:any,startDate?:any,isOnGoing:boolean}) {
+  const initialDate = startDate ? startDate : new Date();
   const [date, setDate] = useState< OnGoing | undefined>({
-    from: initailDate,
-    to:initailDate,
-    onGoing:false,
+    from: initialDate,
+    to:initialDate,
+    onGoing:isOnGoing,
   });
 
   useEffect(()=>setRange(date),[date]);
@@ -64,7 +65,7 @@ export function DateRangePicker({ className,setRange,startDate }: {className?:Re
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                  {format(date.from, "LLL dd")} - {date.onGoing ? <Infinity /> :format(date.to, "LLL dd")}
                 </>
               ) : (
                 format(date.from, "LLL dd, y")
@@ -84,10 +85,12 @@ export function DateRangePicker({ className,setRange,startDate }: {className?:Re
             onSelect={setDate}
             numberOfMonths={1}
           />
-         <div className="flex justify-center">
-         <Button className="text-center w-4/5" onClick={()=>setDate((prev:any)=>({...prev,onGoing:true,to:new Date().setFullYear(new Date().getFullYear()+100)}))}>
+         <div className="flex justify-center gap-x-2 items-center">
+          <label  htmlFor="set-ongoing" className="cursor-pointer">Set OnGoing</label>
+          <Input type="checkbox" id="set-ongoing" className="w-5 h-5" onInput={()=>setDate((prev:any)=>({...prev,onGoing:!date?.onGoing,to:date?.onGoing ? "" : new Date().setFullYear(new Date().getFullYear()+100)}))}/>
+         {/* <Button className="text-center w-4/5" onClick={()=>setDate((prev:any)=>({...prev,onGoing:true,to:new Date().setFullYear(new Date().getFullYear()+100)}))}>
           OnGoing
-          </Button>
+          </Button> */}
           </div>
         </PopoverContent>
       </Popover>
