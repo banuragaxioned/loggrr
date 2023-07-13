@@ -127,11 +127,11 @@ export const updateAssignedHours = async(data:any,range:any,project:number,user:
     console.log(total,billable,nonBillable,from,to,onGoing)
   // const updatedAllocation = await prisma.allocation.update({
   //   where: {
-  //     id:user
+      
   //   },
   //   data: {
   //     //key:updated value
-  //     frequency:onGoing ? 'ONGOING':'Da'
+  //     frequency:onGoing ? 'ONGOING':'Day'
   //   },
   // })
 }

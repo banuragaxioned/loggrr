@@ -18,23 +18,27 @@ export const TableInput = ({hours,data,type}:any)=> {
   const isOnGoing = data.hoursObj?.frequency  === "ONGOING";
   const [range,setRange] = useState<any>(null);
   const [formData,setFormData] = useState<any>({total:totaTime,nonBillable:nonBillable,billable:billable});
+  const [submitted,setSubmitted] = useState<boolean>(false);
 
   const submitHandler = (e:any)=> {
     e.preventDefault();
     const updatedData = {...formData,total:formData.nonBillable + formData.billable};
     updateAssignedHours(updatedData,range,data.projectId,data.userId);
+    setSubmitted(true);
   }
 
   const inputHandler = (e:any)=> {
     const element = e.target;
-    const temp = {...formData,[element.name]:Number(element.value)}
+    const temp = {...formData,[element.name]:Number(element.value === "" ? 0 : element.value)}
     setFormData(temp);
   }
   
   const keypressHandler = (e:any)=> {
     const element = e.target;
-   e.key === "Enter" &&
-    submitHandler(e);
+   if(e.key === "Enter") {
+    element.value === "" ? element.value = 0 : null;
+     submitHandler(e);
+   }
   }
     return (
         <Popover>
@@ -47,6 +51,8 @@ export const TableInput = ({hours,data,type}:any)=> {
             defaultValue={hours}
             name={data.isBillable ? "billable" : "nonBillable"}
             onInput={inputHandler}
+            // onFocus={()=>setSubmitted(false)}
+            onBlur={(e)=>!submitted ? e.target.value = (type === "billable" ? billable: type === "nonBillable" ? nonBillable : totaTime ): null }
             onKeyUp={keypressHandler}
             />
         </PopoverTrigger>
