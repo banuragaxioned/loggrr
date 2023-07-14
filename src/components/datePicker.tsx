@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import { addDays, addYears, format, getYear } from "date-fns";
+import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -10,29 +10,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
-import dayjs from "dayjs";
 
 export function CalendarDateRangePicker({ setVal, isOngoing, setOngoing }: { setVal: UseFormSetValue<AssignFormValues>, isOngoing: boolean, setOngoing: Dispatch<SetStateAction<boolean>> }) {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
-    to: addDays(new Date(), 10)
+    to: new Date(),
   });
-
-  console.log(new Date(2022, 0, 20));
-  console.log(new Date());
-  
-  
-
-  useEffect(() => {
-    if(isOngoing) setDate((prev: DateRange | undefined) => (prev?.from && {from: prev?.from, to: addYears(prev?.from, 1)}))
-    else setDate((prev: DateRange | undefined) => (prev?.from && {from: prev?.from, to: addDays(prev?.from, 10)}))
-  }, [isOngoing])
 
   useEffect(() => {
     console.log(date)
     if (date?.from) setVal("date", date?.from);
     if (date?.to) setVal("enddate", date?.to);
   }, [date]);
+
+  const handleChecked = (evt: boolean) => { 
+    evt ? setDate((prev: DateRange | undefined) => (prev?.from && {from: prev?.from, to: addYears(prev?.from, 1)})) : setDate((prev: DateRange | undefined) => ({from: prev?.from, to: undefined}))
+    setOngoing (evt)
+  }
 
   return (
     <div className={cn("grid gap-2")}>
@@ -62,12 +56,13 @@ export function CalendarDateRangePicker({ setVal, isOngoing, setOngoing }: { set
             initialFocus
             mode="range"
             defaultMonth={date?.from}
+            today={date?.to}
             selected={date}
             onSelect={setDate}
             numberOfMonths={1}
           />
           <div className="items-top flex justify-end space-x-2 p-3">
-            <Checkbox id="terms1" onCheckedChange={(e:boolean) => setOngoing(e)}/>
+            <Checkbox id="terms1" checked={isOngoing} onCheckedChange={handleChecked}/>
             <div className="grid gap-1.5 leading-none">
               <label
                 htmlFor="terms1"
