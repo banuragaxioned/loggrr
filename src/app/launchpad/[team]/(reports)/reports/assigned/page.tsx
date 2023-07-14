@@ -27,14 +27,12 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
   const projects = await getProjectsId(team)
 
   const users = await getAllUsers(team)
-
-  console.log(users)
-  console.log(projects)
+  
   return (
     <>
       <DashboardShell>
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
-          <NewAllocationForm projects={projects} users={users}/>
+          <NewAllocationForm team={team} projects={projects} users={users}/>
         </DashboardHeader>
         <div className="container mx-auto">
           <DataTable columns={columns} data={data} />
