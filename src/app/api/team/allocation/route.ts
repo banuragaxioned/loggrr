@@ -34,8 +34,6 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    console.log(body);
-
     const client = await db.allocation.create({
       data: {
         date: new Date(),
