@@ -86,11 +86,8 @@ export function DateRangePicker({ className,setRange,startDate,isOnGoing }: {cla
             numberOfMonths={1}
           />
          <div className="flex justify-center gap-x-2 items-center">
-          <label  htmlFor="set-ongoing" className="cursor-pointer">Set OnGoing</label>
-          <Input type="checkbox" id="set-ongoing" className="w-5 h-5" onInput={()=>setDate((prev:any)=>({...prev,onGoing:!date?.onGoing,to:date?.onGoing ? "" : new Date().setFullYear(new Date().getFullYear()+100)}))}/>
-         {/* <Button className="text-center w-4/5" onClick={()=>setDate((prev:any)=>({...prev,onGoing:true,to:new Date().setFullYear(new Date().getFullYear()+100)}))}>
-          OnGoing
-          </Button> */}
+          <label  htmlFor="set-ongoing" className="cursor-pointer text-sm">Set OnGoing</label>
+          <Input type="checkbox" id="set-ongoing" className="w-2 h-2" onInput={()=>setDate((prev:any)=>({...prev,onGoing:!date?.onGoing,to:date?.onGoing ? "" : new Date().setFullYear(new Date().getFullYear()+100)}))}/>
           </div>
         </PopoverContent>
       </Popover>

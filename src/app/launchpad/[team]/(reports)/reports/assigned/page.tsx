@@ -62,7 +62,7 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     pageSize: 20,
   };
   const allocation = await getAllocations(options);
-
+  console.log(allocation)
   return (
     <>
       <DashboardShell>

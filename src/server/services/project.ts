@@ -124,14 +124,26 @@ export async function getAssignments(slug: string) {
 export const updateAssignedHours = async(data:any,range:any,project:number,user:number) => {
     const {total,billable,nonBillable} = data;
     const {from,to,onGoing} = range;
-    console.log(total,billable,nonBillable,from,to,onGoing)
-  // const updatedAllocation = await prisma.allocation.update({
+    const getAllocationData = await db.allocation.findMany({
+      select:{
+        id:true,
+        userId:true,
+        Project:true,
+        projectId:true,
+        frequency:true,
+      }
+    })
+    const requiredAllocation = getAllocationData.find((obj)=>obj.projectId === project && obj.userId === user)
+    console.log(requiredAllocation,data)
+  // const updatedAllocation = await prisma.allocation.updateMany({
   //   where: {
-      
+  //      id:requiredAllocation?.id
   //   },
   //   data: {
   //     //key:updated value
-  //     frequency:onGoing ? 'ONGOING':'Day'
+  //      billableTime:billable,
+  //      nonBillableTime:nonBillable,
+  //     frequency: onGoing ? 'ONGOING':'DAY'
   //   },
   // })
 }

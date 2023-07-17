@@ -8,6 +8,7 @@ import {Input} from "@/components/ui/input";
 import { DateRangePicker } from "@/components/datePicker";
 import updateAssignedHours from "@/app/actions/update";
 import { Button } from "@/components/ui/button";
+import useToast from "@/hooks/useToast";
 
 
 export const TableInput = ({hours,data,type}:any)=> {
@@ -19,11 +20,12 @@ export const TableInput = ({hours,data,type}:any)=> {
   const [range,setRange] = useState<any>(null);
   const [formData,setFormData] = useState<any>({total:totaTime,nonBillable:nonBillable,billable:billable});
   const [submitted,setSubmitted] = useState<boolean>(false);
-
+  const showToast = useToast();
   const submitHandler = (e:any)=> {
     e.preventDefault();
     const updatedData = {...formData,total:formData.nonBillable + formData.billable};
     updateAssignedHours(updatedData,range,data.projectId,data.userId);
+    showToast("A allocation was updated", "success");
     setSubmitted(true);
   }
 
