@@ -75,7 +75,7 @@ export function DateRangePicker({ className,setRange,startDate,isOnGoing }: {cla
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto px-0 py-2" align="start">
+        <PopoverContent className="w-auto px-0 py-0" align="start">
           <Calendar
             initialFocus
             mode="range"
@@ -85,9 +85,9 @@ export function DateRangePicker({ className,setRange,startDate,isOnGoing }: {cla
             onSelect={setDate}
             numberOfMonths={1}
           />
-         <div className="flex justify-center gap-x-2 items-center">
+         <div className={`flex w-11/12 pb-6 mx-auto justify-end gap-x-2 items-center ${(date?.to && !date.onGoing )|| !date?.from? "invisible" : "visible"}`}>
           <label  htmlFor="set-ongoing" className="cursor-pointer text-sm">Set OnGoing</label>
-          <Input type="checkbox" id="set-ongoing" className="w-2 h-2" onInput={()=>setDate((prev:any)=>({...prev,onGoing:!date?.onGoing,to:date?.onGoing ? "" : new Date().setFullYear(new Date().getFullYear()+100)}))}/>
+          <Input type="checkbox" id="set-ongoing" className="w-2 h-2" checked={date?.onGoing} onInput={()=>setDate((prev:any)=>({...prev,onGoing:!date?.onGoing,to:date?.onGoing ? "" : new Date().setFullYear(new Date().getFullYear()+100)}))}/>
           </div>
         </PopoverContent>
       </Popover>

@@ -134,16 +134,15 @@ export const updateAssignedHours = async(data:any,range:any,project:number,user:
       }
     })
     const requiredAllocation = getAllocationData.find((obj)=>obj.projectId === project && obj.userId === user)
-    console.log(requiredAllocation,data)
-  // const updatedAllocation = await prisma.allocation.updateMany({
-  //   where: {
-  //      id:requiredAllocation?.id
-  //   },
-  //   data: {
-  //     //key:updated value
-  //      billableTime:billable,
-  //      nonBillableTime:nonBillable,
-  //     frequency: onGoing ? 'ONGOING':'DAY'
-  //   },
-  // })
+  const updatedAllocation = await prisma.allocation.updateMany({
+    where: {
+       id:requiredAllocation?.id
+    },
+    data: {
+      //key:updated value
+       billableTime:billable,
+       nonBillableTime:nonBillable,
+      frequency: onGoing ? 'ONGOING':'DAY'
+    },
+  }).then(data=>console.log("success")).catch(e=>console.log("Error"));
 }
