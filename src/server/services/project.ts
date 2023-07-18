@@ -121,28 +121,61 @@ export async function getAssignments(slug: string) {
   return flattenedAssignments;
 }
 
-export const updateAssignedHours = async(data:any,range:any,project:number,user:number) => {
-    const {total,billable,nonBillable} = data;
-    const {from,to,onGoing} = range;
-    const getAllocationData = await db.allocation.findMany({
-      select:{
-        id:true,
-        userId:true,
-        Project:true,
-        projectId:true,
-        frequency:true,
-      }
-    })
-    const requiredAllocation = getAllocationData.find((obj)=>obj.projectId === project && obj.userId === user)
-  const updatedAllocation = await prisma.allocation.updateMany({
+const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
+  const { total, billable, nonBillable } = data;
+  const { from, to, onGoing } = range;
+  return await prisma.allocation.update({
     where: {
-       id:requiredAllocation?.id
+      id: requiredAllocation?.id,
     },
     data: {
       //key:updated value
-       billableTime:billable,
-       nonBillableTime:nonBillable,
-      frequency: onGoing ? 'ONGOING':'DAY'
+      billableTime: billable,
+      nonBillableTime: nonBillable,
+      frequency: onGoing ? "ONGOING" : "DAY",
+      date: from,
+      enddate: to,
+      updatedAt:new Date(),
     },
-  }).then(data=>console.log("success")).catch(e=>console.log("Error"));
-}
+  });
+};
+
+const insertAllocation = async (requiredAllocation: any, data: any, range: any,userId:number,projectId:number) => {
+  const { total, billable, nonBillable } = data;
+  const { from, to, onGoing } = range;
+  return await prisma.allocation.create({
+    data: {
+      projectId:projectId,
+      billableTime: billable,
+      nonBillableTime: nonBillable,
+      frequency: onGoing ? "ONGOING" : "DAY",
+      date: from,
+      enddate: to,
+      createdAt:new Date(),
+      updatedAt:new Date(),
+      userId:userId,
+      tenantId:1
+    },
+  });
+};
+
+export const updateAssignedHours = async (startDate: any, data: any, range: any, project: number, user: number) => {
+  const { total, billable, nonBillable } = data;
+  const { from, to, onGoing } = range;
+  const getAllocationData = await db.allocation.findMany({
+    select: {
+      id: true,
+      userId: true,
+      Project: true,
+      projectId: true,
+      frequency: true,
+      date: true,
+      enddate: true,
+    },
+  });
+  const requiredAllocation = getAllocationData.find((obj) => obj.projectId === project && obj.userId === user );
+  // console.log(new Date(requiredAllocation[0].date),new Date(startDate).getDate())
+  requiredAllocation
+    ? await updatedAllocation(requiredAllocation, data, range)
+    : await insertAllocation(requiredAllocation, data, range,project,user);
+};

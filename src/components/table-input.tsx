@@ -16,13 +16,22 @@ export const TableInput = ({ hours, data, type }: any) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
   const showToast = useToast();
+
+  const onSuccess = () => {
+    setSubmitted(true);
+    showToast("A allocation was updated", "success");
+  };
+
+  const onFailure = () => {
+    setSubmitted(false);
+    showToast("A allocation was not updated", "error");
+  };
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      updateAssignedHours(updatedData, range, data.projectId, data.userId);
-      showToast("A allocation was updated", "success");
-      setSubmitted(true);
+      updateAssignedHours(new Date(data.date), updatedData, range, data.projectId, data.userId).then(data=>onSuccess()).catch(e=>onFailure())
     } else {
       setDateError(true);
     }
