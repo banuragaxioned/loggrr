@@ -25,8 +25,8 @@ export function InlineCombobox({ options, setVal, fieldName }: InlineComboboxPro
   return (
     <Command
       className={cn(
-        "h-auto max-w-[230px] overflow-visible rounded-md border bg-transparent",
-        open && "ring-2 ring-ring ring-offset-2"
+        "h-auto w-full overflow-visible rounded-md border bg-transparent mt-2",
+        open && "ring-2 ring-ring ring-offset-0"
       )}
     >
       {/* Avoid having the "Search" Icon */}

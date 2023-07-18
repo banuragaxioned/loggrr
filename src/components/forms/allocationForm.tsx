@@ -22,7 +22,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
-import { cleanDate } from "@/lib/helper";
 import { InlineCombobox } from "../ui/inlineCombobox";
 import { ComboboxOptions } from "../../types";
 
@@ -73,7 +72,6 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
       return showToast("Something went wrong.", "warning");
     }
 
-    form.reset();
     SheetCloseButton.current?.click();
     showToast("A new allocation was created", "success");
     router.refresh();
@@ -84,8 +82,15 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     else form.setValue("frequency", "DAY")
   }, [isOngoing])
 
+  const handleOpenChange = (evt: boolean) => {
+    if(evt) {
+      setOngoing(false)
+      form.reset();
+    }
+  }
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
       </SheetTrigger>
