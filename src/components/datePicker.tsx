@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { addYears, format } from "date-fns";
-import { Calendar as CalendarIcon, InfinityIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Infinity } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,7 @@ export function CalendarDateRangePicker({
               date.to ? (
                 <>
                   {format(date.from, "LLL dd, y")} -{" "}
-                  {isOngoing ? <InfinityIcon className="ml-1" /> : format(date.to, "LLL dd, y")}
+                  {isOngoing ? <Infinity className="ml-1 stroke-[1.5]" /> : format(date.to, "LLL dd, y")}
                 </>
               ) : (
                 format(date.from, "LLL dd, y")
@@ -90,7 +90,7 @@ export function CalendarDateRangePicker({
             onSelect={setDate}
             numberOfMonths={1}
           />
-          {date?.from && !date?.to && (
+          {(isOngoing || (date?.from && !date?.to)) && (
             <div className="items-top flex justify-end space-x-2 p-3">
               <Checkbox id="terms1" checked={isOngoing} onCheckedChange={handleChecked} />
               <div className="grid gap-1.5 leading-none">
@@ -98,7 +98,7 @@ export function CalendarDateRangePicker({
                   htmlFor="terms1"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Ongoing
+                  Set as Ongoing
                 </label>
               </div>
             </div>
