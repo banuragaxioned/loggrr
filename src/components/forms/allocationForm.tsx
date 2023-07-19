@@ -24,6 +24,7 @@ import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/inlineCombobox";
 import { ComboboxOptions } from "../../types";
+import { Icons } from "../icons";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -108,7 +109,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox options={projects} setVal={form.setValue} fieldName="projectId"/>
+                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,7 +122,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox options={users} setVal={form.setValue} fieldName="userId"/>
+                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -166,7 +167,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 </FormItem>
               )}
             />
-            <SheetFooter>
+            <SheetFooter className="justify-start mt-2 space-x-3">
               <Button type="submit" variant="secondary">
                 Submit
               </Button>
