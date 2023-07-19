@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
-import { InlineCombobox } from "../ui/inlineCombobox";
+import { InlineCombobox } from "../ui/combobox";
 import { ComboboxOptions } from "../../types";
 import { Icons } from "../icons";
 
