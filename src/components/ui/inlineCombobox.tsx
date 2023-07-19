@@ -12,33 +12,39 @@ type InlineComboboxProps = {
   options: ComboboxOptions[];
   setVal: UseFormSetValue<AssignFormValues>;
   fieldName: "projectId" | "userId";
+  icon: React.ReactNode;
+  label: string
 };
 
-export function InlineCombobox({ options, setVal, fieldName }: InlineComboboxProps) {
+export function InlineCombobox({ options, setVal, fieldName, icon, label }: InlineComboboxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<ComboboxOptions>();
   const [inputValue, setInputValue] = React.useState("");
 
   const selectables = options.filter((option) => selected !== option);
-  
+
   return (
     <Command
       className={cn(
-        "h-auto w-full overflow-visible rounded-md border bg-transparent mt-2",
+        "mt-2 h-auto w-full overflow-visible rounded-md border bg-transparent",
         open && "ring-2 ring-ring ring-offset-0"
       )}
     >
       {/* Avoid having the "Search" Icon */}
-      <CommandInput
-        ref={inputRef}
-        value={inputValue}
-        onValueChange={setInputValue}
-        onBlur={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        placeholder="Select options..."
-        className="rounded-0 ml-1 flex-1 border-0 bg-transparent py-0 outline-none placeholder:text-muted-foreground focus:ring-0"
-      />
+      <div className="flex items-center px-3" cmdk-input-wrapper="">
+        {icon}
+        <CommandInput
+          ref={inputRef}
+          value={inputValue}
+          onValueChange={setInputValue}
+          onBlur={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+          placeholder={`Select ${label}...`}
+          className="rounded-0 flex-1 border-0 bg-transparent pl-1 outline-none placeholder:text-muted-foreground focus:ring-0"
+        />
+      </div>
+
       <div className="relative">
         {open && selectables.length > 0 ? (
           <div className="absolute top-2 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
