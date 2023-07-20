@@ -94,31 +94,13 @@ export async function getAllocations(input: getAllocation) {
     where: {
       OR: [
         {
-          date: {
-            gte: input.startDate,
-            lte: input.endDate,
-          },
+          enddate:null
         },
         {
-          enddate: {
-            gte: input.startDate,
-            lte: input.endDate,
+          enddate:{
+            gte:input.startDate
           },
-        },
-        {
-          AND: [
-            {
-              date: {
-                lte: input.startDate,
-              },
-            },
-            {
-              enddate: {
-                gte: input.endDate,
-              },
-            },
-          ],
-        },
+        }
       ],
     },
   };
