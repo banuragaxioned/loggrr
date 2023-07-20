@@ -18,9 +18,9 @@ export type Projects = {
 };
 
 export type UserProfile = {
-  name: string;
+  name: string | null;
   id: number;
-  avatar: string;
+  image: string;
 };
 
 export type AllocationReport = {
@@ -168,3 +168,20 @@ export type SkillScore = {
 };
 
 export type SkillRadar = SkillScore[];
+
+export type ProjectInterval = {};
+
+export type ComboboxOptions = {
+  id: number;
+  name: string | null | undefined;
+};
+
+export type AssignFormValues = {
+  date: Date;
+  billableTime: number;
+  nonBillableTime: number;
+  projectId: number;
+  userId: number;
+  frequency: "DAY" | "ONGOING";
+  enddate?: Date | undefined;
+};
