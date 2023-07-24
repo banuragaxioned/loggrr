@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { DateRangePicker } from "@/components/datePicker";
+import { CalendarDateRangePicker as DateRangePicker } from "@/components/datePicker";
 import updateAssignedHours from "@/app/actions/update";
 import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
@@ -15,6 +15,7 @@ export const TableInput = ({ hours, data, type }: any) => {
   const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable: nonBillable, billable: billable });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
+  const [Ongoing,setOngoing] = useState<boolean>(isOnGoing);
   const showToast = useToast();
 
   const onSuccess = () => {
@@ -102,7 +103,7 @@ export const TableInput = ({ hours, data, type }: any) => {
             </div>
           </div>
           <div>
-            <DateRangePicker setRange={setRange} isOnGoing={isOnGoing} startDate={new Date(data.date)} />
+            <DateRangePicker setVal={setRange} isOngoing={Ongoing} setOngoing={setOngoing} startDate={new Date(data.date)} />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>
           <Button type="submit" className="mx-auto mt-2 w-auto">

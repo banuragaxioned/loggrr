@@ -1,3 +1,5 @@
+import dynamic from "next/dynamic";
+
 import {
   Laptop,
   Moon,
@@ -11,18 +13,29 @@ import {
   MessageSquare,
   User,
   ArrowRight,
-  type Icon as LucideIcon,
   Settings,
   CreditCard,
   Check,
   ChevronsUpDown,
   Boxes,
+  Loader,
   FileText,
+  LucideProps,
 } from "lucide-react";
-
+import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 
-export type Icon = LucideIcon;
+interface IconProps extends LucideProps {
+  name: keyof typeof dynamicIconImports;
+}
+
+const Icon = ({ name, color, size }: IconProps) => {
+  const LucideIcon = dynamic(dynamicIconImports[name]);
+
+  return <LucideIcon color={color} size={size} />;
+};
+
+export default Icon;
 
 export const Icons = {
   sun: SunMedium,
@@ -44,4 +57,5 @@ export const Icons = {
   post: FileText,
   check: Check,
   select: ChevronsUpDown,
+  spinner: Loader,
 };

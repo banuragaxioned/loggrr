@@ -8,7 +8,7 @@ import { clients } from "../../lib/tempData";
 
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
-import ComboBox from "../ui/combobox";
+import {ComboBox} from "../ui/combobox";
 
 type FormData = {
   project: string | undefined;

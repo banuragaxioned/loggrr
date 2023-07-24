@@ -23,6 +23,7 @@ export async function getProjects(slug: string) {
       interval: true,
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
+      Members: { select: { id: true, name: true, image: true } },
       status: true,
     },
     orderBy: {

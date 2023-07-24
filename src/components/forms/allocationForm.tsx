@@ -18,23 +18,26 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AllocationFrequency } from "@prisma/client";
+import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
-import { cleanDate } from "@/lib/helper";
+import { InlineCombobox } from "../ui/combobox";
+import { ComboboxOptions } from "../../types";
+import { Icons } from "../icons";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
   userId: z.coerce.number().min(1),
-  date: z.coerce.date().optional(), // TODO: make this required
+  date: z.coerce.date(), // TODO: make this required
   frequency: z.nativeEnum(AllocationFrequency),
-  enddate: z.date().optional(),
+  enddate: z.coerce.date().optional(),
   billableTime: z.coerce.number(),
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team }: { team: string }) {
+export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: ComboboxOptions[], users: ComboboxOptions[] }) {
+  const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -46,7 +49,6 @@ export function NewAllocationForm({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const date = new Date();
     const response = await fetch("/api/team/allocation", {
       method: "POST",
       headers: {
@@ -55,9 +57,9 @@ export function NewAllocationForm({ team }: { team: string }) {
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
-        date: cleanDate(date),
+        date: values.date,
         frequency: values.frequency,
-        enddate: new Date(),
+        enddate: values?.enddate,
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
@@ -71,14 +73,25 @@ export function NewAllocationForm({ team }: { team: string }) {
       return showToast("Something went wrong.", "warning");
     }
 
-    form.reset();
     SheetCloseButton.current?.click();
     showToast("A new allocation was created", "success");
     router.refresh();
   }
 
+  useEffect(() => {
+    if(isOngoing) form.setValue("frequency", "ONGOING")
+    else form.setValue("frequency", "DAY")
+  }, [isOngoing])
+
+  const handleOpenChange = (evt: boolean) => {
+    if(evt) {
+      setOngoing(false)
+      form.reset();
+    }
+  }
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
       </SheetTrigger>
@@ -96,7 +109,7 @@ export function NewAllocationForm({ team }: { team: string }) {
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <Input type="number" placeholder="Project Id" {...field} />
+                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,7 +122,7 @@ export function NewAllocationForm({ team }: { team: string }) {
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <Input type="number" placeholder="User Id" {...field} />
+                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -122,7 +135,7 @@ export function NewAllocationForm({ team }: { team: string }) {
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker />
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,7 +167,7 @@ export function NewAllocationForm({ team }: { team: string }) {
                 </FormItem>
               )}
             />
-            <SheetFooter>
+            <SheetFooter className="justify-start mt-2 space-x-3">
               <Button type="submit" variant="secondary">
                 Submit
               </Button>

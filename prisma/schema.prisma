@@ -288,7 +288,7 @@ model User {
   updatedAt     DateTime   @updatedAt
   allocationId  Int?
   status        UserStatus @default(ACTIVE)
-
+  
   TenantId      Tenant[]     @relation("UserTenants")
   UserGroup     UserGroup[]
   accounts      Account[]

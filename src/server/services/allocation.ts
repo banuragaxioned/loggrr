@@ -70,6 +70,14 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
 }
 
 export async function getAllocations(input: getAllocation) {
+
+  const isProjectExist = input.projectId && (await prisma.project.findUnique({
+      where: { id: input.projectId },
+    }));
+
+  if (input.projectId && !isProjectExist) {
+    throw new Error("Project not found");
+  }
   const projectFilter = {
     Project: {
       some: { id: input.projectId },
@@ -242,3 +250,26 @@ export async function getAllocations(input: getAllocation) {
 
   return finalData;
 }
+
+export async function getProjectsId(slug: string) {
+  const projects = await db.project.findMany({
+    where: { Tenant: { slug } },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return projects;
+}
+
+export const getAllUsers = async (slug: string) => {
+  const users = await prisma.user.findMany({
+    where: { TenantId: { some: { slug } } },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+  return users;
+};
