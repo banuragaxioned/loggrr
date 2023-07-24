@@ -48,8 +48,8 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     return resultantArray;
   };
 
-  const endDate = dayjs().toDate();
-  const startDate = dayjs().add(14, "day").toDate();
+  const startDate = dayjs().toDate();
+  const endDate = dayjs().add(14, "day").toDate();
 
   const options = {
     team,
