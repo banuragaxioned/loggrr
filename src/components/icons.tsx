@@ -18,6 +18,7 @@ import {
   Check,
   ChevronsUpDown,
   Boxes,
+  Loader,
   FileText,
   LucideProps,
 } from "lucide-react";
@@ -56,4 +57,5 @@ export const Icons = {
   post: FileText,
   check: Check,
   select: ChevronsUpDown,
+  spinner: Loader,
 };
