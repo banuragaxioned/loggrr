@@ -42,8 +42,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import dayjs from "dayjs";
 interface DataTableProps<TData, TValue> {
-  tableData: TData[];
+  team:string;
 }
 
 //function to get date between two dates
@@ -67,7 +68,9 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
   return dates;
 };
 
-export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TValue>) {
+
+
+export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -78,7 +81,7 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
     key: 0,
     id: "name",
   });
-  const [data, setData] = React.useState<TData[]>(tableData);
+  const [data, setData] = React.useState<TData[]>([]);
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
@@ -112,8 +115,8 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
   const getSortedRows = () => {
     const sortedData: TData[] = [];
     let users, projects: TData[];
-    users = tableData.filter((user: any) => !user.userName);
-    projects = tableData.filter((user: any) => user.userName);
+    users = data.filter((user: any) => !user.userName);
+    projects = data.filter((user: any) => user.userName);
     users = users.sort((user1: any, user2: any) => sortFunction(user1, user2));
     projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
     sortingType.id === "name" && sortingType.key === -1 && users.reverse();
@@ -171,9 +174,77 @@ export function DataTable<TData, TValue>({ tableData }: DataTableProps<TData, TV
         : [...prev, rowObj?.original?.title]
     );
 
+
+    const getFormatedData = (timeArr: any) => {
+      const resultObj: any = {};
+      for (let x in timeArr) {
+        const date = new Date(x).toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" });
+        resultObj[date] = timeArr[x];
+      }
+      return resultObj;
+    };
+  
+    const dataFiltering = (data: any) => {
+      const resultantArray: any = [];
+      const notEmptyArr = data.filter((user: any) => user?.userName);
+      notEmptyArr.map((user: any) => {
+        const temp = {
+          id: user?.userId,
+          name: user?.userName.split(" ")[0],
+          title: user?.userName,
+          userAvatar: user?.userAvatar,
+          timeAssigned: getFormatedData(user?.cumulativeProjectDates),
+          isProjectAssigned: user?.projects?.length,
+        };
+        resultantArray.push(temp);
+        user?.projects?.length &&
+          user?.projects?.map((project: any) => {
+            const temp = {
+              id: project?.projectId,
+              userId:user.userId,
+              name: project?.projectName.slice(0,5)+"...",
+              title:project?.projectName,
+              clientName: project?.clientName,
+              totalTime: project?.totalTime,
+              userName: user.userName,
+              billable: project?.billable,
+              frequency:project?.frequency,
+              timeAssigned: getFormatedData(project?.allocations),
+            };
+            resultantArray.push(temp);
+          });
+      });
+      return resultantArray;
+    };
+
+    //api call to get allocation data
+const response = async ()=> {
+  const endDate = dayjs(startDate).add(14, "day").toDate();
+  return await fetch("/api/team/allocation/get", {
+   method: "POST",
+   headers: {
+     "Content-Type": "application/json",
+   },
+   body: JSON.stringify({
+     team,
+     startDate,
+     endDate,
+     page: 1,
+     pageSize: 20,
+   }),
+ })
+};
+
   React.useEffect(() => {
     setData(getSortedRows());
   }, [sortingType]);
+
+  React.useEffect(()=>{
+    response().then(res=>res.json()).then(res=>{
+      setData(dataFiltering(res))
+      console.log(res)
+    }).catch(e=>console.log(e));
+  },[startDate,[]]);
 
   return (
     <div>
