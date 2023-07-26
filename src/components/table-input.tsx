@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { CalendarDateRangePicker as DateRangePicker } from "@/components/datePicker";
-import updateAssignedHours from "@/app/actions/update";
 import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
 
@@ -15,7 +14,7 @@ export const TableInput = ({ hours, data, type }: any) => {
   const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable: nonBillable, billable: billable });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
-  const [Ongoing,setOngoing] = useState<boolean>(isOnGoing);
+  const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
   const showToast = useToast();
 
   const onSuccess = () => {
@@ -32,7 +31,27 @@ export const TableInput = ({ hours, data, type }: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      updateAssignedHours(new Date(data.date), updatedData, range, data.projectId, data.userId).then(data=>onSuccess()).catch(e=>onFailure())
+      console.log(new Date(range.from))
+      fetch("/api/team/allocation/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          billable:updatedData.billable,
+          nonBillable:updatedData.nonBillable,
+          total:updatedData.total,
+          onGoing:Ongoing,
+          startDate:range.from,
+          endDate:range.to,
+          projectId: data.projectId,
+          userId: data.userId,
+          team:data.team
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => onSuccess())
+        .catch((e) => onFailure());
     } else {
       setDateError(true);
     }
@@ -103,7 +122,12 @@ export const TableInput = ({ hours, data, type }: any) => {
             </div>
           </div>
           <div>
-            <DateRangePicker setVal={setRange} isOngoing={Ongoing} setOngoing={setOngoing} startDate={new Date(data.date)} />
+            <DateRangePicker
+              setVal={setRange}
+              isOngoing={Ongoing}
+              setOngoing={setOngoing}
+              startDate={new Date(data.date)}
+            />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>
           <Button type="submit" className="mx-auto mt-2 w-auto">

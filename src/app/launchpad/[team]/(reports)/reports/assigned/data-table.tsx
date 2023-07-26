@@ -14,13 +14,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {TableInput} from "@/components/table-input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TableInput } from "@/components/table-input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
@@ -37,14 +32,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import dayjs from "dayjs";
 interface DataTableProps<TData, TValue> {
-  team:string;
+  team: string;
 }
 
 //function to get date between two dates
@@ -67,8 +57,6 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
   }
   return dates;
 };
-
-
 
 export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -171,80 +159,90 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     setActiveRows((prev: any) =>
       prev?.find((item: string) => rowObj?.original?.title === item)
         ? prev?.filter((item: string) => item !== rowObj?.original?.title)
-        : [...prev, rowObj?.original?.title]
+        : [...prev, rowObj?.original?.title],
     );
 
+  const getFormatedData = (timeArr: any) => {
+    const resultObj: any = {};
+    for (let x in timeArr) {
+      const date = new Date(x).toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" });
+      resultObj[date] = timeArr[x];
+    }
+    return resultObj;
+  };
 
-    const getFormatedData = (timeArr: any) => {
-      const resultObj: any = {};
-      for (let x in timeArr) {
-        const date = new Date(x).toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" });
-        resultObj[date] = timeArr[x];
-      }
-      return resultObj;
-    };
-  
-    const dataFiltering = (data: any) => {
-      const resultantArray: any = [];
-      const notEmptyArr = data.filter((user: any) => user?.userName);
-      notEmptyArr.map((user: any) => {
-        const temp = {
-          id: user?.userId,
-          name: user?.userName.split(" ")[0],
-          title: user?.userName,
-          userAvatar: user?.userAvatar,
-          timeAssigned: getFormatedData(user?.cumulativeProjectDates),
-          isProjectAssigned: user?.projects?.length,
-        };
-        resultantArray.push(temp);
-        user?.projects?.length &&
-          user?.projects?.map((project: any) => {
-            const temp = {
-              id: project?.projectId,
-              userId:user.userId,
-              name: project?.projectName.slice(0,5)+"...",
-              title:project?.projectName,
-              clientName: project?.clientName,
-              totalTime: project?.totalTime,
-              userName: user.userName,
-              billable: project?.billable,
-              frequency:project?.frequency,
-              timeAssigned: getFormatedData(project?.allocations),
-            };
-            resultantArray.push(temp);
-          });
+  const getTotal = (obj: any, key: string) => {
+    let total = 0;
+    const temp: any = data.filter((project: any) => project.userId === obj.id);
+    temp?.length &&
+      temp?.map((arr: any) => {
+        total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
       });
-      return resultantArray;
-    };
+    return total;
+  };
 
-    //api call to get allocation data
-const response = async ()=> {
-  const endDate = dayjs(startDate).add(14, "day").toDate();
-  return await fetch("/api/team/allocation/get", {
-   method: "POST",
-   headers: {
-     "Content-Type": "application/json",
-   },
-   body: JSON.stringify({
-     team,
-     startDate,
-     endDate,
-     page: 1,
-     pageSize: 20,
-   }),
- })
-};
+  const dataFiltering = (data: any) => {
+    const resultantArray: any = [];
+    const notEmptyArr = data.filter((user: any) => user?.userName);
+    notEmptyArr.map((user: any) => {
+      const temp = {
+        id: user?.userId,
+        name: user?.userName.split(" ")[0],
+        title: user?.userName,
+        userAvatar: user?.userAvatar,
+        isProjectAssigned: user?.projects?.length,
+      };
+      resultantArray.push(temp);
+      user?.projects?.length &&
+        user?.projects?.map((project: any) => {
+          const temp = {
+            id: project?.projectId,
+            userId: user.userId,
+            name: project?.projectName.slice(0, 5) + "...",
+            title: project?.projectName,
+            clientName: project?.clientName,
+            totalTime: project?.totalTime,
+            userName: user.userName,
+            billable: project?.billable,
+            frequency: project?.frequency,
+            timeAssigned: getFormatedData(project?.allocations),
+          };
+          resultantArray.push(temp);
+        });
+    });
+    return resultantArray;
+  };
+
+  //api call to get allocation data
+  const response = async () => {
+    const endDate = dayjs(startDate).add(14, "day").toDate();
+    return await fetch("/api/team/allocation/get", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team,
+        startDate,
+        endDate,
+        page: 1,
+        pageSize: 20,
+      }),
+    });
+  };
 
   React.useEffect(() => {
     setData(getSortedRows());
   }, [sortingType]);
 
-  React.useEffect(()=>{
-    response().then(res=>res.json()).then(res=>{
-      setData(dataFiltering(res))
-      console.log(res)
-    }).catch(e=>console.log(e));
-  },[startDate,[]]);
+  React.useEffect(() => {
+    response()
+      .then((res) => res.json())
+      .then((res) => {
+        setData(dataFiltering(res));
+      })
+      .catch((e) => console.log(e));
+  }, [startDate]);
 
   return (
     <div>
@@ -318,19 +316,17 @@ const response = async ()=> {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className={`group flex ${
-                      !row.original.userName ? "" : "transition-all duration-300 ease-in-out"
-                    }`}
+                    className={`group flex ${!row.original.userName ? "" : "transition-all duration-300 ease-in-out"}`}
                   >
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
-                      onClick={() => i<1 && row.original.isProjectAssigned && clickHandler(row)}
-                        className={`inline-block cursor-default h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%]
+                        onClick={() => i < 1 && row.original.isProjectAssigned && clickHandler(row)}
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] cursor-default
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
                               ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-12 before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                              : `inline-flex items-center ${row.original.isProjectAssigned? "cursor-pointer" : ""}`
+                              : `inline-flex items-center ${row.original.isProjectAssigned ? "cursor-pointer" : ""}`
                             : "basis-[12%]"
                         }`}
                         key={cell.id}
@@ -352,34 +348,51 @@ const response = async ()=> {
                             />
                           </>
                         )}
-                          {i > 0 ?
-                          row.original.userName ? 
-                        <TableInput 
-                        hours={row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0} 
-                        data={{hoursObj:row.original.timeAssigned[columns[i].accessorKey.split(".")[1]],userName:row.original.userName,
-                          projectId:row.original.id,userId:row.original.userId,isBillable:row.original.billable,date:columns[i].accessorKey.split(".")[1]
-                      }} 
-                        type={billable}
-                        />
-                          :<span className="flex items-center h-full w-12 justify-center mx-auto">{
-                            cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0 
-                            }</span>
-                          :
-                            <TooltipProvider>
+                        {i > 0 ? (
+                          row.original.userName ? (
+                            <TableInput
+                              hours={
+                                row.original.timeAssigned[columns[i].accessorKey.split(".")[1]]
+                                  ? row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable]
+                                  : 0
+                              }
+                              data={{
+                                hoursObj: row.original.timeAssigned[columns[i].accessorKey.split(".")[1]],
+                                userName: row.original.userName,
+                                projectId: row.original.id,
+                                userId: row.original.userId,
+                                isBillable: row.original.billable,
+                                date: columns[i].accessorKey.split(".")[1],
+                                team: team,
+                              }}
+                              type={billable}
+                            />
+                          ) : (
+                            <span className="mx-auto flex h-full w-12 items-center justify-center">
+                              {
+                                getTotal(cell.row.original, columns[i].accessorKey.split(".")[1])
+                                // cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0
+                              }
+                            </span>
+                          )
+                        ) : (
+                          <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger className={`line-clamp-1 h-[15px] ${
-                                  row.original.userName ? "relative left-14" : ""
-                                }`}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TooltipTrigger>
+                              <TooltipTrigger
+                                className={`line-clamp-1 h-[15px] ${row.original.userName ? "relative left-14" : ""}`}
+                              >
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </TooltipTrigger>
                               <TooltipContent>
-                                <span className="border border-primary p-1 rounded-sm">{cell.row.original.title}</span>
+                                <span className="rounded-sm border border-primary p-1">{cell.row.original.title}</span>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                          }
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
-                )
+                ),
             )
           ) : (
             <TableRow>
