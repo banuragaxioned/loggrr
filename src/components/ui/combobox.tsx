@@ -150,8 +150,6 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
   const [selected, setSelected] = useState<ComboboxOptions>();
   const [inputValue, setInputValue] = useState("");
 
-  const selectables = options.filter((option) => selected !== option);
-
   return (
     <Command
       className={cn(
@@ -174,10 +172,10 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
       </div>
 
       <div className="relative">
-        {open && selectables.length > 0 ? (
+        {open && options.length > 0 ? (
           <div className="absolute top-2 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
-              {selectables.map((option) => {
+              {options.map((option) => {
                 return (
                   option.name && (
                     <CommandItem
