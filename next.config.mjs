@@ -34,9 +34,6 @@ const config = withBundleAnalyzerPlugin({
       },
     ];
   },
-  experimental: {
-    serverActions: true,
-  },
 });
 
 export default config;

@@ -75,7 +75,7 @@ export function CalendarDateRangePicker({
               date.to ? (
                 <>
                   {startDate ?format(date.from, "LLL dd") :format(date.from, "LLL dd, y")} -{" "}
-                  {isOngoing ? <Infinity className="ml-1 stroke-[1.5]" /> :startDate ? format(date.from, "LLL dd") :  format(date.to, "LLL dd, y")}
+                  {isOngoing ? <Infinity className="ml-1 stroke-[1.5]" /> :startDate ? format(date.to, "LLL dd") :  format(date.to, "LLL dd, y")}
                 </>
               ) : (
                 startDate ? format(date.from, "LLL dd") : format(date.from, "LLL dd, y")

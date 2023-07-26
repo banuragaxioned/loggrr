@@ -18,7 +18,7 @@ const allocationCreateSchema = z.object({
 });
 
 const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
-  const { total, billable, nonBillable } = data;
+  const { billable, nonBillable } = data;
   const { from, to, onGoing } = range;
   return await db.allocation.update({
     where: {
@@ -30,7 +30,7 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: to,
-      updatedAt:new Date().toISOString(),
+      updatedAt:new Date(),
     },
   });
 };
@@ -45,8 +45,8 @@ const insertAllocation = async (data: any, range: any,userId:number,projectId:nu
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: to,
-      createdAt:new Date().toISOString(),
-      updatedAt:new Date().toISOString(),
+      createdAt:new Date(),
+      updatedAt:new Date(),
         Tenant: {
           connect: { slug:team},
         },

@@ -32,7 +32,7 @@ const createAllocationDates = (allocationData: Allocation[] , endDate: Date)=> {
     // allocationEndDate is not exist
     if (!allocationEndDate) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split("T")[0];
+      const date = allocationStartDate.toLocaleString().split("T")[0];
       const isAllocationDateExist = accumulator[date];
 
       // stop further execution, if allocation date is exist or
@@ -58,7 +58,7 @@ const createAllocationDates = (allocationData: Allocation[] , endDate: Date)=> {
     // iterate if allocationStartDate is less than or equal to endDate and allocationDate
     while (allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split("T")[0];
+      const date = allocationStartDate.toLocaleString().split("T")[0];
 
       accumulator[date] = {
         id: allocation.id,

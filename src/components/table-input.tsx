@@ -26,12 +26,23 @@ export const TableInput = ({ hours, data, type }: any) => {
     setSubmitted(false);
     showToast("A allocation was not updated", "error");
   };
+  
+  const localStringConverter = (date:Date)=>date.toLocaleString('en-IN',{
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZoneName: 'short',
+  }).replaceAll(",","");
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      console.log(new Date(range.from))
+      console.log(localStringConverter(new Date(range.from)))
       fetch("/api/team/allocation/update", {
         method: "POST",
         headers: {
@@ -42,16 +53,16 @@ export const TableInput = ({ hours, data, type }: any) => {
           nonBillable:updatedData.nonBillable,
           total:updatedData.total,
           onGoing:Ongoing,
-          startDate:range.from,
-          endDate:range.to,
+          startDate:new Date(range.from),
+          endDate:new Date(range.to),
           projectId: data.projectId,
           userId: data.userId,
           team:data.team
         }),
       })
         .then((res) => res.json())
-        .then((res) => onSuccess())
-        .catch((e) => onFailure());
+        .then((res) =>{console.log(res); onSuccess()})
+        .catch((e) => {console.log(e);onFailure()});
     } else {
       setDateError(true);
     }
@@ -72,6 +83,12 @@ export const TableInput = ({ hours, data, type }: any) => {
       submitHandler(e);
     }
   };
+
+  const blurHandler = (e:any)=> {
+    const element = e.target;
+    element.value === "" ?  element.value = 0 : null;
+  }
+
   return (
     <Popover>
       <PopoverTrigger className="mx-auto flex h-full w-12 cursor-default items-center justify-center">
@@ -85,9 +102,12 @@ export const TableInput = ({ hours, data, type }: any) => {
           onInput={inputHandler}
           // onFocus={()=>setSubmitted(false)}
           onBlur={(e) =>
+           {
             !submitted
-              ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)
-              : null
+            ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)
+            : null;
+            blurHandler(e)
+           }
           }
           onKeyUp={keypressHandler}
         />
@@ -105,6 +125,7 @@ export const TableInput = ({ hours, data, type }: any) => {
                   disabled={data.isBillable ? false : true}
                   onInput={inputHandler}
                   defaultValue={billable}
+                  onBlur={blurHandler}
                 />
               </div>
             </div>
@@ -117,6 +138,7 @@ export const TableInput = ({ hours, data, type }: any) => {
                   name="nonBillable"
                   onInput={inputHandler}
                   defaultValue={nonBillable}
+                  onBlur={blurHandler}
                 />
               </div>
             </div>

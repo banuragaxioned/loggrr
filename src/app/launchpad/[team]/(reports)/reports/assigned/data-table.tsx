@@ -23,15 +23,7 @@ import { Assignment } from "@/types";
 import { ColumnControls } from "@/components/ui/column-controls";
 import { DatePicker } from "@/components/datePicker";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectItemText,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
 interface DataTableProps<TData, TValue> {
   team: string;
@@ -70,6 +62,9 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     id: "name",
   });
   const [data, setData] = React.useState<TData[]>([]);
+
+  //start date validator
+  const startDateValidator = (date: string) => date && setStartDate(date);
 
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
@@ -249,43 +244,31 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       <div className="mb-3 flex items-center gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
         <div className="flex items-center gap-x-1 text-sm">
           <label>Start Date</label>
-          <DatePicker date={startDate} setDate={setStartDate} />
+          <DatePicker date={startDate} setDate={startDateValidator} />
         </div>
         {/* weekend dropdown */}
-        <Select onValueChange={(value) => setWeekend(value === "weekend" ? true : false)}>
-          <SelectTrigger className="w-[220px] 2xl:text-sm">
-            <SelectValue placeholder="Table view" />
-          </SelectTrigger>
-          <SelectContent className="[&>div]hover:bg-hover">
-            <SelectGroup className="p-[5px]">
-              <SelectItem value="weekend">
-                <SelectItemText value="weekend">Weekend view</SelectItemText>
-              </SelectItem>
-              <SelectItem value="weekdays">
-                <SelectItemText value="">Weekdays view</SelectItemText>
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SingleSelectDropdown
+          selectionHandler={(value: string) => setWeekend(value === "weekend" ? true : false)}
+          contentClassName="[&>div]hover:bg-hover"
+          placeholder="Table view"
+          selectionOptions={[
+            { title: "Weekend view", value: "weekend" },
+            { title: "Weekdays view", value: "weekdays" },
+          ]}
+          triggerClassName="w-[220px] 2xl:text-sm"
+        />
         {/* time entry type dropdown */}
-        <Select onValueChange={(value) => setBillable(value)}>
-          <SelectTrigger className="w-[220px] 2xl:text-sm">
-            <SelectValue placeholder="Entered time type" />
-          </SelectTrigger>
-          <SelectContent className="[&>div]hover:bg-hover">
-            <SelectGroup className="p-[5px]">
-              <SelectItem value="billableTime">
-                <SelectItemText value="billableTime">Billable</SelectItemText>
-              </SelectItem>
-              <SelectItem value="nonBillableTime">
-                <SelectItemText value="">Non-billable</SelectItemText>
-              </SelectItem>
-              <SelectItem value="totalTime">
-                <SelectItemText value="">Total Time</SelectItemText>
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SingleSelectDropdown
+          selectionHandler={(value: string) => setBillable(value)}
+          contentClassName="[&>div]hover:bg-hover"
+          placeholder="Entered time type"
+          selectionOptions={[
+            { title: "Billable", value: "billableTime" },
+            { title: "Non-billable", value: "nonBillableTime" },
+            { title: "Total Time", value: "totalTime" },
+          ]}
+          triggerClassName="w-[220px] 2xl:text-sm"
+        />
       </div>
       <Table>
         <TableHeader>
