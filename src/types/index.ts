@@ -176,6 +176,12 @@ export type ComboboxOptions = {
   name: string | null | undefined;
 };
 
+export type AllProjectsWithMembers = {
+  id: number;
+  name: string | null | undefined;
+  Members: ComboboxOptions[],
+}
+
 export type AssignFormValues = {
   date: Date;
   billableTime: number;
