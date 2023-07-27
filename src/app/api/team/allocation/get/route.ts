@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { Allocation } from "@prisma/client";
+import { Allocation,AllocationFrequency } from "@prisma/client";
 import { AllocationDates} from "@/types";
 import dayjs from "dayjs";
 
@@ -14,6 +14,17 @@ const allocationCreateSchema = z.object({
   pageSize: z.coerce.number().min(1),
 });
 
+
+interface AllocationDate {
+  id:number,
+  billableTime:number,
+  nonBillableTime:number,
+  updatedAt:Date,
+  frequency:AllocationFrequency,
+  date:Date,
+  enddate:Date|any,
+}
+
 const calculateAllocationTotalTime = (allocations: AllocationDates) =>{
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
     return accumulator + allocations[allocationKey].totalTime;
@@ -21,7 +32,7 @@ const calculateAllocationTotalTime = (allocations: AllocationDates) =>{
 }
 
 // create allocation object for each date
-const createAllocationDates = (allocationData: Allocation[] , endDate: Date)=> {
+const createAllocationDates = (allocationData: AllocationDate[] , endDate: Date | any)=> {
   return allocationData.reduce((accumulator, allocation) => {
     let allocationStartDate = allocation.date;
     const allocationEndDate = allocation.enddate;
