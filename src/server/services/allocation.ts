@@ -1,10 +1,9 @@
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 import dayjs from "dayjs";
-import { getAllocation } from "@/types";
+import { getAllocation, AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types";
 import { splitIntoChunk } from "@/lib/helper";
 import { Allocation } from "@prisma/client";
-import { AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types";
 
 function calculateAllocationTotalTime(allocations: AllocationDates) {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
@@ -285,6 +284,7 @@ export const getAllUsers = async (slug: string) => {
     select: {
       id: true,
       name: true,
+      Allocation: { select: { id: true, projectId: true } },
     },
   });
   return users;

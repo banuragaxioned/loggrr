@@ -176,6 +176,12 @@ export type ComboboxOptions = {
   name: string | null | undefined;
 };
 
+export type AllUsersWithAllocation = {
+  id: number;
+  name: string | null | undefined;
+  Allocation: {id: number, projectId: number}[]
+}
+
 export type AllProjectsWithMembers = {
   id: number;
   name: string | null | undefined;
