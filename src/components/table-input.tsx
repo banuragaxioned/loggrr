@@ -45,7 +45,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      console.log(localStringConverter(new Date(range.from)));
+      console.log(range);
       fetch("/api/team/allocation/update", {
         method: "POST",
         headers: {
@@ -57,7 +57,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           total: updatedData.total,
           onGoing: Ongoing,
           startDate: new Date(range.from),
-          endDate: new Date(range.to),
+          endDate: new Date((range.to || Ongoing) ? range.to : range.from),
           projectId: data.projectId,
           userId: data.userId,
           team: data.team,

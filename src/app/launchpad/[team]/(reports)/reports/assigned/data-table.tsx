@@ -87,11 +87,21 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     });
   };
 
+  const getTotal = (obj: any, key: string) => {
+    let total = 0;
+    const temp: any = data.filter((project: any) => project.userId === obj.id);
+    temp?.length &&
+      temp?.map((arr: any) => {
+        total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
+      });
+    return total;
+  };
+
   //reusable sort function
-  const sortFunction = (item: any, item2: any) => {
+  const sortFunction = (item: any, item2: any,isUsers?:boolean) => {
     const { key, id } = sortingType;
-    const t1 = id === "name" || key === 0 ? item.title : item.timeAssigned[id]?.[billable];
-    const t2 = id === "name" || key === 0 ? item.title : item2.timeAssigned[id]?.[billable];
+    const t1 =  isUsers ? getTotal(item,id) : item.timeAssigned[id]?.[billable];
+    const t2 =  isUsers ? getTotal(item2,id) : item2.timeAssigned[id]?.[billable];
     return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
   };
 
@@ -101,10 +111,10 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     let users, projects: TData[];
     users = data.filter((user: any) => !user.userName);
     projects = data.filter((user: any) => user.userName);
-    users = users.sort((user1: any, user2: any) => sortFunction(user1, user2));
-    projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
-    sortingType.id === "name" && sortingType.key === -1 && users.reverse();
-    sortingType.id === "name" && sortingType.key === 1 && projects.reverse();
+    if(sortingType.key !== 0 && sortingType.id !== "name") users = users.sort((user1: any, user2: any) => sortFunction(user1, user2,true));
+    if(sortingType.key !== 0 && sortingType.id !== "name") projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
+    sortingType.id === "name" ? sortingType.key === -1 && users.reverse() : users;
+    sortingType.id === "name" ? sortingType.key === 1 && projects.reverse(): projects;
     users.map((user: any) => {
       const userprojects = projects.filter((project: any) => project.userName === user.title);
       sortedData.push(user);
@@ -165,16 +175,6 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       resultObj[date] = timeArr[x];
     }
     return resultObj;
-  };
-
-  const getTotal = (obj: any, key: string) => {
-    let total = 0;
-    const temp: any = data.filter((project: any) => project.userId === obj.id);
-    temp?.length &&
-      temp?.map((arr: any) => {
-        total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
-      });
-    return total;
   };
 
   const dataFiltering = (data: any) => {

@@ -130,6 +130,9 @@ export async function POST(req: Request) {
                       gte: body.startDate,
                     },
                   },
+                  {
+                    enddate:body.startDate
+                  }
                 ],
               },
               select: {
@@ -145,6 +148,7 @@ export async function POST(req: Request) {
           },
         },
       },
+      orderBy: { name: "asc" },
     });
 
     const allocationData = client.map((obj, i) => {

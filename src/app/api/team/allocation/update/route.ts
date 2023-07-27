@@ -3,18 +3,16 @@ import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
-
-
 const allocationCreateSchema = z.object({
-  billable:z.coerce.number().optional(),
-  nonBillable:z.coerce.number().min(1),
-  total:z.coerce.number().min(1),
-  onGoing:z.coerce.boolean(),
-  startDate:z.coerce.date().optional(),
-  endDate:z.coerce.date().optional(),
-  projectId:z.coerce.number().min(1),
-  userId:z.coerce.number().min(1),
-  team:z.string().min(1)
+  billable: z.coerce.number().optional(),
+  nonBillable: z.coerce.number().min(1),
+  total: z.coerce.number().min(1),
+  onGoing: z.coerce.boolean(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
+  projectId: z.coerce.number().min(1),
+  userId: z.coerce.number().min(1),
+  team: z.string().min(1),
 });
 
 const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
@@ -29,13 +27,13 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
       nonBillableTime: nonBillable,
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
-      enddate: to,
-      updatedAt:new Date(),
+      enddate: onGoing ? null : to,
+      updatedAt: new Date(),
     },
   });
 };
 
-const insertAllocation = async (data: any, range: any,userId:number,projectId:number,team:string) => {
+const insertAllocation = async (data: any, range: any, userId: number, projectId: number, team: string) => {
   const { total, billable, nonBillable } = data;
   const { from, to, onGoing } = range;
   return await db.allocation.create({
@@ -44,18 +42,18 @@ const insertAllocation = async (data: any, range: any,userId:number,projectId:nu
       nonBillableTime: nonBillable,
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
-      enddate: to,
-      createdAt:new Date(),
-      updatedAt:new Date(),
-        Tenant: {
-          connect: { slug:team},
-        },
-        Project: {
-          connect: { id: projectId },
-        },
-        User: {
-          connect: { id: userId },
-        },
+      enddate: onGoing ? null : to,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      Tenant: {
+        connect: { slug: team },
+      },
+      Project: {
+        connect: { id: projectId },
+      },
+      User: {
+        connect: { id: userId },
+      },
     },
   });
 };
@@ -78,37 +76,55 @@ export async function POST(req: Request) {
     if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
-  
-      const getAllocationData = await db.allocation.findMany({
-        select: {
-          id: true,
-          userId: true,
-          Project: true,
-          projectId: true,
-          frequency: true,
-          date: true,
-          enddate: true,
-        },
-      });
-      
-      const data = {
-        total:body.total,
-        billable:body.billable,
-        nonBillable:body.nonBillable
-      }
 
-      const range = {
-        from:body.startDate,
-        to:body.endDate,
-        onGoing:body.onGoing
-      }
+    const getAllocationData = await db.allocation.findMany({
+      select: {
+        id: true,
+        userId: true,
+        Project: true,
+        projectId: true,
+        frequency: true,
+        date: true,
+        enddate: true,
+      },
+    });
 
-      const requiredAllocation = getAllocationData.find((obj) => obj.projectId === body.projectId && obj.userId === body.userId );
-      const response = requiredAllocation?.id
-        ? await updatedAllocation(requiredAllocation, data, range)
-        : await insertAllocation(data, range,body.projectId,body.userId,body.team);
-        
-    return new Response(JSON.stringify({response}));
+    const data = {
+      total: body.total,
+      billable: body.billable,
+      nonBillable: body.nonBillable,
+    };
+
+    const range = {
+      from: body.startDate,
+      to: body.endDate,
+      onGoing: body.onGoing,
+    };
+
+    const options = { day: "2-digit", month: "2-digit", year: "2-digit" };
+    const requiredAllocation = getAllocationData.find(
+      (obj) =>
+        (obj.projectId === body.projectId &&
+          obj.userId === body.userId &&
+          new Date(obj.date).toLocaleDateString("en", { day: "2-digit", month: "2-digit", year: "2-digit" }) ===
+            new Date(body.startDate).toLocaleDateString("en", { day: "2-digit", month: "2-digit", year: "2-digit" }) &&
+          new Date(obj.enddate ? obj.enddate : "").toLocaleDateString("en", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+          }) ===
+            new Date(body.endDate ? body.endDate : "").toLocaleDateString("en", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })) ||
+        obj.frequency === "ONGOING",
+    );
+    const response = requiredAllocation?.id
+      ? await updatedAllocation(requiredAllocation, data, range)
+      : await insertAllocation(data, range, body.projectId, body.userId, body.team);
+
+    return new Response(JSON.stringify({ response }));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
