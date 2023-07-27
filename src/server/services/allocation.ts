@@ -257,6 +257,7 @@ export async function getProjectsId(slug: string) {
     select: {
       id: true,
       name: true,
+      Members: { select: { id: true, name: true } },
     },
   });
 

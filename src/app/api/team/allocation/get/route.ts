@@ -2,37 +2,36 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { Allocation,AllocationFrequency } from "@prisma/client";
-import { AllocationDates} from "@/types";
+import { AllocationFrequency } from "@prisma/client";
+import { AllocationDates } from "@/types";
 import dayjs from "dayjs";
 
 const allocationCreateSchema = z.object({
   team: z.string().min(1),
-  startDate:z.coerce.date().optional(),
-  endDate:z.coerce.date().optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
   page: z.coerce.number().min(1),
   pageSize: z.coerce.number().min(1),
 });
 
-
 interface AllocationDate {
-  id:number,
-  billableTime:number,
-  nonBillableTime:number,
-  updatedAt:Date,
-  frequency:AllocationFrequency,
-  date:Date,
-  enddate:Date|any,
+  id: number;
+  billableTime: number;
+  nonBillableTime: number;
+  updatedAt: Date;
+  frequency: AllocationFrequency;
+  date: Date;
+  enddate: Date | any;
 }
 
-const calculateAllocationTotalTime = (allocations: AllocationDates) =>{
+const calculateAllocationTotalTime = (allocations: AllocationDates) => {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
     return accumulator + allocations[allocationKey].totalTime;
   }, 0);
-}
+};
 
 // create allocation object for each date
-const createAllocationDates = (allocationData: AllocationDate[] , endDate: Date | any)=> {
+const createAllocationDates = (allocationData: AllocationDate[], endDate: Date | any) => {
   return allocationData.reduce((accumulator, allocation) => {
     let allocationStartDate = allocation.date;
     const allocationEndDate = allocation.enddate;
@@ -60,7 +59,7 @@ const createAllocationDates = (allocationData: AllocationDate[] , endDate: Date 
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
-        frequency:allocation.frequency
+        frequency: allocation.frequency,
       };
 
       return accumulator;
@@ -77,7 +76,7 @@ const createAllocationDates = (allocationData: AllocationDate[] , endDate: Date 
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
-        frequency:allocation.frequency
+        frequency: allocation.frequency,
       };
 
       // increase one day
@@ -86,8 +85,7 @@ const createAllocationDates = (allocationData: AllocationDate[] , endDate: Date 
 
     return accumulator;
   }, {} as AllocationDates);
-}
-
+};
 
 export async function POST(req: Request) {
   try {
@@ -109,67 +107,68 @@ export async function POST(req: Request) {
     }
 
     const client = await db.user.findMany({
-        where:{TenantId: { some: { slug: body.team } }},
-        select:{
-          id:true,
-          name:true,
-          image:true,
-          Project:{
-            select:{
-              id:true,
-              name:true,
-              clientId:true,
-              Client:{select:{id:true,name:true}},
-              billable:true,
-              Allocation:{
-                where: {
-                  OR: [
-                    {
-                      enddate:null
+      where: { TenantId: { some: { slug: body.team } } },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        Project: {
+          select: {
+            id: true,
+            name: true,
+            clientId: true,
+            Client: { select: { id: true, name: true } },
+            billable: true,
+            Allocation: {
+              where: {
+                OR: [
+                  {
+                    enddate: null,
+                  },
+                  {
+                    enddate: {
+                      gte: body.startDate,
                     },
-                    {
-                      enddate:{
-                        gte:body.startDate
-                      },
-                    }
-                  ],
-                },
-                select:{
-                  id:true,
-                  billableTime:true,
-                  nonBillableTime:true,
-                  updatedAt:true,
-                  frequency:true,
-                  date:true,
-                  enddate:true,
-                }
-              }
-            }
+                  },
+                ],
+              },
+              select: {
+                id: true,
+                billableTime: true,
+                nonBillableTime: true,
+                updatedAt: true,
+                frequency: true,
+                date: true,
+                enddate: true,
+              },
+            },
           },
-        }
+        },
+      },
     });
 
-    const allocationData = client.map((obj,i)=>{
-      let allocations,totalTime,averageTime;
+    const allocationData = client.map((obj, i) => {
+      let allocations, totalTime, averageTime;
       return {
-        userId:obj.id,
-        userName:obj.name,
-        userAvatar:obj.image,
-        projects:obj.Project.map((project)=>{
-          allocations = createAllocationDates(project.Allocation,body.endDate);
+        userId: obj.id,
+        userName: obj.name,
+        userAvatar: obj.image,
+        projects: obj.Project.map((project) => {
+          allocations = createAllocationDates(project.Allocation, body.endDate);
           totalTime = calculateAllocationTotalTime(allocations);
           averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
           return {
-          projectId:project.id,
-          clientName:project.Client.name,
-          projectName:project.name,
-          billable:project.billable,
-          allocations:allocations
-        }}),
-        totalTime:totalTime,
-        averageTime:averageTime
-      }
-    })
+            projectId: project.id,
+            clientName: project.Client.name,
+            projectName: project.name,
+            billable: project.billable,
+            allocations: allocations,
+          };
+        }),
+        totalTime: totalTime,
+        averageTime: averageTime,
+      };
+    });
 
     return new Response(JSON.stringify(allocationData));
   } catch (error) {

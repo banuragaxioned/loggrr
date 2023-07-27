@@ -5,7 +5,7 @@ import { CalendarDateRangePicker as DateRangePicker } from "@/components/datePic
 import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
 
-export const TableInput = ({ hours, data, type }: any) => {
+export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const billable = data.hoursObj?.billableTime || 0;
   const nonBillable = data.hoursObj?.nonBillableTime || 0;
   const totaTime = data.hoursObj?.totalTime || 0;
@@ -26,43 +26,53 @@ export const TableInput = ({ hours, data, type }: any) => {
     setSubmitted(false);
     showToast("A allocation was not updated", "error");
   };
-  
-  const localStringConverter = (date:Date)=>date.toLocaleString('en-IN',{
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZoneName: 'short',
-  }).replaceAll(",","");
+
+  const localStringConverter = (date: Date) =>
+    date
+      .toLocaleString("en-IN", {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short",
+      })
+      .replaceAll(",", "");
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      console.log(localStringConverter(new Date(range.from)))
+      console.log(localStringConverter(new Date(range.from)));
       fetch("/api/team/allocation/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          billable:updatedData.billable,
-          nonBillable:updatedData.nonBillable,
-          total:updatedData.total,
-          onGoing:Ongoing,
-          startDate:new Date(range.from),
-          endDate:new Date(range.to),
+          billable: updatedData.billable,
+          nonBillable: updatedData.nonBillable,
+          total: updatedData.total,
+          onGoing: Ongoing,
+          startDate: new Date(range.from),
+          endDate: new Date(range.to),
           projectId: data.projectId,
           userId: data.userId,
-          team:data.team
+          team: data.team,
         }),
       })
-        .then((res) => res.json())
-        .then((res) =>{console.log(res); onSuccess()})
-        .catch((e) => {console.log(e);onFailure()});
+        .then((res) => res)
+        .then((res) => {
+          if (res.status === 200) {
+            setSubmitCount((prev: number) => prev + 1);
+            onSuccess();
+          } else {
+            onFailure();
+          }
+        })
+        .catch((e) => onFailure());
     } else {
       setDateError(true);
     }
@@ -84,10 +94,10 @@ export const TableInput = ({ hours, data, type }: any) => {
     }
   };
 
-  const blurHandler = (e:any)=> {
+  const blurHandler = (e: any) => {
     const element = e.target;
-    element.value === "" ?  element.value = 0 : null;
-  }
+    element.value === "" ? (element.value = 0) : null;
+  };
 
   return (
     <Popover>
@@ -101,14 +111,12 @@ export const TableInput = ({ hours, data, type }: any) => {
           name={data.isBillable ? "billable" : "nonBillable"}
           onInput={inputHandler}
           // onFocus={()=>setSubmitted(false)}
-          onBlur={(e) =>
-           {
+          onBlur={(e) => {
             !submitted
-            ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)
-            : null;
-            blurHandler(e)
-           }
-          }
+              ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)
+              : null;
+            blurHandler(e);
+          }}
           onKeyUp={keypressHandler}
         />
       </PopoverTrigger>

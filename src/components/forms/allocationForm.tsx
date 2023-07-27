@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation";
 import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
-import { ComboboxOptions } from "../../types";
+import { AllProjectsWithMembers, ComboboxOptions } from "../../types";
 import { Icons } from "../icons";
 
 const formSchema = z.object({
@@ -36,7 +36,7 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: ComboboxOptions[], users: ComboboxOptions[] }) {
+export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: AllProjectsWithMembers[], users: ComboboxOptions[] }) {
   const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
@@ -48,7 +48,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const createAllocation = async (values : z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
       method: "POST",
       headers: {
@@ -63,14 +63,34 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
-      }),
+      }),    
     });
-
-    console.log(values);
-    console.log(response);
-
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
+    }
+  }
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const isUserAdded =  !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+
+    if(!isUserAdded) {
+      const response = await fetch("/api/team/project", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          team: team,
+          projectId: values.projectId,
+          userId: values.userId,
+        }),
+      })
+
+      if(response?.ok) {
+        createAllocation(values)
+      }
+    }else {
+      createAllocation(values)
     }
 
     SheetCloseButton.current?.click();

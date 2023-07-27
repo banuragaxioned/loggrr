@@ -57,6 +57,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const [startDate, setStartDate] = React.useState<any>(new Date());
   const [weekend, setWeekend] = React.useState<boolean>(false);
   const [billable, setBillable] = React.useState<string>("totalTime");
+  const [submitCount, setSubmitCount] = React.useState<number>(1);
   const [sortingType, setSortingType] = React.useState<{ key: number; id: string; active?: number }>({
     key: 0,
     id: "name",
@@ -237,7 +238,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         setData(dataFiltering(res));
       })
       .catch((e) => console.log(e));
-  }, [startDate]);
+  }, [startDate, submitCount]);
 
   return (
     <div>
@@ -349,6 +350,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                                 team: team,
                               }}
                               type={billable}
+                              setSubmitCount={setSubmitCount}
                             />
                           ) : (
                             <span className="mx-auto flex h-full w-12 items-center justify-center">
