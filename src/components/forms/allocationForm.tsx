@@ -23,20 +23,20 @@ import { useRouter } from "next/navigation";
 import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
-import { AllProjectsWithMembers, ComboboxOptions } from "../../types";
+import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Icons } from "../icons";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
   userId: z.coerce.number().min(1),
-  date: z.coerce.date(), // TODO: make this required
+  date: z.coerce.date(),
   frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.coerce.date().optional(),
   billableTime: z.coerce.number(),
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: AllProjectsWithMembers[], users: ComboboxOptions[] }) {
+export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[] }) {
   const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
@@ -48,7 +48,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     },
   });
 
-  const createAllocation = async (values : z.infer<typeof formSchema>) => {
+  const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
       method: "POST",
       headers: {
@@ -57,54 +57,89 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
-        date: values.date,
+        date: values?.date,
         frequency: values.frequency,
-        enddate: values?.enddate,
+        enddate: values?.enddate ? values?.enddate : values?.date,
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
-      }),    
+      }),
     });
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
+    } else {
+      showToast("A new allocation was created", "success");
+    }
+  }
+
+  const addUser = async (values: z.infer<typeof formSchema>) => {
+    const response = await fetch("/api/team/project", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team: team,
+        projectId: values.projectId,
+        userId: values.userId,
+      }),
+    })
+
+    return response;
+  }
+
+  const updateAllocation = async ({ values, allocationId }: { values: z.infer<typeof formSchema>; allocationId: number }) => {
+    const response = await fetch("/api/team/allocation/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team: team,
+        allocationId,
+        date: values.date,
+        frequency: values.frequency,
+        enddate: values?.enddate ? values?.enddate : values?.date,
+        billableTime: values.billableTime,
+        nonBillableTime: values.nonBillableTime,
+      }),
+    })
+
+    if (!response?.ok) {
+      return showToast("Something went wrong.", "warning");
+    } else {
+      showToast("A new allocation was updated", "success");
     }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded =  !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+    const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+    const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
+    console.log(isAssignmentCreated)
+    console.log(values)
 
-    if(!isUserAdded) {
-      const response = await fetch("/api/team/project", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          team: team,
-          projectId: values.projectId,
-          userId: values.userId,
-        }),
-      })
-
-      if(response?.ok) {
+    if (!isUserAdded) {
+      const addUserResponse = await addUser(values)
+      if (addUserResponse?.ok) {
         createAllocation(values)
       }
-    }else {
+    } else if (isAssignmentCreated) {
+      updateAllocation({ values, allocationId: isAssignmentCreated?.id })
+    } else {
       createAllocation(values)
     }
 
     SheetCloseButton.current?.click();
-    showToast("A new allocation was created", "success");
     router.refresh();
   }
 
   useEffect(() => {
-    if(isOngoing) form.setValue("frequency", "ONGOING")
+    if (isOngoing) form.setValue("frequency", "ONGOING")
     else form.setValue("frequency", "DAY")
   }, [isOngoing])
 
   const handleOpenChange = (evt: boolean) => {
-    if(evt) {
+    if (evt) {
       setOngoing(false)
       form.reset();
     }
@@ -129,7 +164,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
+                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,7 +177,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
+                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -155,7 +190,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing}/>
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
