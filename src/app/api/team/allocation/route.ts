@@ -8,7 +8,7 @@ const allocationCreateSchema = z.object({
   team: z.string().min(1),
   projectId: z.coerce.number().min(1),
   userId: z.coerce.number().min(1),
-  date: z.coerce.date().optional(),
+  date: z.coerce.date(),
   frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.coerce.date().optional(),
   billableTime: z.coerce.number(),
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     const client = await db.allocation.create({
       data: {
-        date: new Date(),
+        date: body.date,
         enddate: body.enddate,
         frequency: body.frequency,
         billableTime: body.billableTime,
