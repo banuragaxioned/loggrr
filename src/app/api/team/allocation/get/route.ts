@@ -130,9 +130,6 @@ export async function POST(req: Request) {
                       gte: body.startDate,
                     },
                   },
-                  {
-                    enddate:body.startDate
-                  }
                 ],
               },
               select: {

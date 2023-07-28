@@ -62,6 +62,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     key: 0,
     id: "name",
   });
+  const [defaultData,setDefaultData] = React.useState<TData[]>([]);
   const [data, setData] = React.useState<TData[]>([]);
 
   //start date validator
@@ -109,8 +110,8 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const getSortedRows = () => {
     const sortedData: TData[] = [];
     let users, projects: TData[];
-    users = data.filter((user: any) => !user.userName);
-    projects = data.filter((user: any) => user.userName);
+    users = defaultData.filter((user: any) => !user.userName);
+    projects = defaultData.filter((user: any) => user.userName);
     if(sortingType.key !== 0 && sortingType.id !== "name") users = users.sort((user1: any, user2: any) => sortFunction(user1, user2,true));
     if(sortingType.key !== 0 && sortingType.id !== "name") projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
     sortingType.id === "name" ? sortingType.key === -1 && users.reverse() : users;
@@ -238,6 +239,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         setData(dataFiltering(res));
       })
       .catch((e) => console.log(e));
+      setDefaultData(data)
   }, [startDate, submitCount]);
 
   return (
