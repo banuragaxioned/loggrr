@@ -140,6 +140,8 @@ export async function POST(req: Request) {
                 frequency: true,
                 date: true,
                 enddate: true,
+                projectId:true,
+                userId:true
               },
             },
           },
@@ -155,7 +157,7 @@ export async function POST(req: Request) {
         userName: obj.name,
         userAvatar: obj.image,
         projects: obj.Project.map((project) => {
-          allocations = createAllocationDates(project.Allocation, body.endDate);
+          allocations = createAllocationDates(project.Allocation.filter((allocation)=>allocation.userId === obj.id && allocation.projectId === project.id), body.endDate);
           totalTime = calculateAllocationTotalTime(allocations);
           averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
           return {

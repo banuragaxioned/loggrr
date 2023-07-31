@@ -5,8 +5,8 @@ import { db } from "@/lib/db";
 
 const allocationCreateSchema = z.object({
   billable: z.coerce.number().optional(),
-  nonBillable: z.coerce.number().min(1),
-  total: z.coerce.number().min(1),
+  nonBillable: z.coerce.number().optional(),
+  total: z.coerce.number().min(0),
   onGoing: z.coerce.boolean(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
@@ -36,6 +36,7 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
 const insertAllocation = async (data: any, range: any, userId: number, projectId: number, team: string) => {
   const { total, billable, nonBillable } = data;
   const { from, to, onGoing } = range;
+
   return await db.allocation.create({
     data: {
       billableTime: billable,
@@ -43,8 +44,6 @@ const insertAllocation = async (data: any, range: any, userId: number, projectId
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: onGoing ? null : to,
-      createdAt: new Date(),
-      updatedAt: new Date(),
       Tenant: {
         connect: { slug: team },
       },

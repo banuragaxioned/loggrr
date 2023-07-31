@@ -27,25 +27,10 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
     showToast("A allocation was not updated", "error");
   };
 
-  const localStringConverter = (date: Date) =>
-    date
-      .toLocaleString("en-IN", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZoneName: "short",
-      })
-      .replaceAll(",", "");
-
   const submitHandler = (e: any) => {
     e.preventDefault();
     const updatedData = { ...formData, total: formData.nonBillable + formData.billable };
     if (range?.from) {
-      console.log(range);
       fetch("/api/team/allocation/update", {
         method: "POST",
         headers: {

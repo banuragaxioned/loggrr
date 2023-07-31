@@ -25,6 +25,8 @@ import { DatePicker } from "@/components/datePicker";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
+import { Progress } from "@/components/ui/progress";
+
 interface DataTableProps<TData, TValue> {
   team: string;
 }
@@ -62,8 +64,9 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     key: 0,
     id: "name",
   });
-  const [defaultData,setDefaultData] = React.useState<TData[]>([]);
+  const [defaultData, setDefaultData] = React.useState<TData[] | null>(null);
   const [data, setData] = React.useState<TData[]>([]);
+  const [loading, setLoading] = React.useState<number>(50);
 
   //start date validator
   const startDateValidator = (date: string) => date && setStartDate(date);
@@ -99,10 +102,10 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   };
 
   //reusable sort function
-  const sortFunction = (item: any, item2: any,isUsers?:boolean) => {
+  const sortFunction = (item: any, item2: any, isUsers?: boolean) => {
     const { key, id } = sortingType;
-    const t1 =  isUsers ? getTotal(item,id) : item.timeAssigned[id]?.[billable];
-    const t2 =  isUsers ? getTotal(item2,id) : item2.timeAssigned[id]?.[billable];
+    const t1 = isUsers ? getTotal(item, id) : item.timeAssigned[id]?.[billable];
+    const t2 = isUsers ? getTotal(item2, id) : item2.timeAssigned[id]?.[billable];
     return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
   };
 
@@ -110,12 +113,14 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const getSortedRows = () => {
     const sortedData: TData[] = [];
     let users, projects: TData[];
-    users = defaultData.filter((user: any) => !user.userName);
-    projects = defaultData.filter((user: any) => user.userName);
-    if(sortingType.key !== 0 && sortingType.id !== "name") users = users.sort((user1: any, user2: any) => sortFunction(user1, user2,true));
-    if(sortingType.key !== 0 && sortingType.id !== "name") projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
+    users = (defaultData ? defaultData : data).filter((user: any) => !user.userName);
+    projects = (defaultData ? defaultData : data).filter((user: any) => user.userName);
+    if (sortingType.key !== 0 && sortingType.id !== "name")
+      users = users.sort((user1: any, user2: any) => sortFunction(user1, user2, true));
+    if (sortingType.key !== 0 && sortingType.id !== "name")
+      projects = projects.sort((project1: any, project2: any) => sortFunction(project1, project2));
     sortingType.id === "name" ? sortingType.key === -1 && users.reverse() : users;
-    sortingType.id === "name" ? sortingType.key === 1 && projects.reverse(): projects;
+    sortingType.id === "name" ? sortingType.key === 1 && projects.reverse() : projects;
     users.map((user: any) => {
       const userprojects = projects.filter((project: any) => project.userName === user.title);
       sortedData.push(user);
@@ -191,7 +196,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       };
       resultantArray.push(temp);
       user?.projects?.length &&
-        user?.projects?.map((project: any,i:number) => {
+        user?.projects?.map((project: any, i: number) => {
           const temp = {
             id: project?.projectId,
             userId: user.userId,
@@ -234,9 +239,11 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   }, [sortingType]);
 
   React.useEffect(() => {
+    setLoading(80);
     response()
-      .then((res) => res.json())
-      .then((res) => {
+    .then((res) => res.json())
+    .then((res) => {
+        setLoading(100);
         const temp = dataFiltering(res);
         setData(temp);
         setDefaultData(temp);
@@ -309,12 +316,22 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
                         onClick={() => i < 1 && row.original.isProjectAssigned && clickHandler(row)}
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 relative grow-0 basis-[15%] cursor-default
+                        className={`relative inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] cursor-default
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? `inline-flex items-center before:absolute before:left-8 before:block ${row.original.isFirst ? "before:-top-0 before:h-6" :"before:-top-6 before:h-12 "} before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']`
-                              : `inline-flex items-center ${row.original.isProjectAssigned ? "cursor-pointer " : ""}`
+                              ? `inline-flex items-center before:absolute before:left-8 before:block ${
+                                  row.original.isFirst ? "before:-top-0 before:h-6" : "before:-top-6 before:h-12 "
+                                } before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']`
+                              : `inline-flex items-center ${
+                                  row.original.isProjectAssigned
+                                    ? `cursor-pointer before:absolute before:left-8 ${
+                                        activeRows.find((item: string) => row.original?.title === item)
+                                          ? "before:block"
+                                          : "before:hidden"
+                                      } before:-bottom-[.5px] before:z-10 before:h-6 before:w-[2px] before:bg-slate-300`
+                                    : ""
+                                }`
                             : "basis-[12%]"
                         }`}
                         key={cell.id}
@@ -358,9 +375,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                             />
                           ) : (
                             <span className="mx-auto flex h-full w-12 items-center justify-center">
-                              {
-                                getTotal(cell.row.original, columns[i].accessorKey.split(".")[1])
-                              }
+                              {getTotal(cell.row.original, columns[i].accessorKey.split(".")[1])}
                             </span>
                           )
                         ) : (
@@ -385,7 +400,11 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                {!defaultData ? (
+                  <Progress value={loading} className="border-2 border-primary bg-slate-500 w-9/12 h-4 mx-auto [&>div]:bg-green-400" />
+                ) : (
+                  "No results."
+                )}
               </TableCell>
             </TableRow>
           )}
