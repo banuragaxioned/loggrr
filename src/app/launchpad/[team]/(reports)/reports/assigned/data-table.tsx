@@ -191,7 +191,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       };
       resultantArray.push(temp);
       user?.projects?.length &&
-        user?.projects?.map((project: any) => {
+        user?.projects?.map((project: any,i:number) => {
           const temp = {
             id: project?.projectId,
             userId: user.userId,
@@ -202,6 +202,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
             userName: user.userName,
             billable: project?.billable,
             frequency: project?.frequency,
+            isFirst: i === 0 ? true : false,
             timeAssigned: getFormatedData(project?.allocations),
           };
           resultantArray.push(temp);
@@ -236,10 +237,11 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     response()
       .then((res) => res.json())
       .then((res) => {
-        setData(dataFiltering(res));
+        const temp = dataFiltering(res);
+        setData(temp);
+        setDefaultData(temp);
       })
       .catch((e) => console.log(e));
-      setDefaultData(data)
   }, [startDate, submitCount]);
 
   return (
@@ -307,12 +309,12 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                     {row.getVisibleCells().map((cell: any, i: number) => (
                       <TableCell
                         onClick={() => i < 1 && row.original.isProjectAssigned && clickHandler(row)}
-                        className={`inline-block h-[43px] max-h-[43px] shrink-0 grow-0 basis-[15%] cursor-default
+                        className={`inline-block h-[43px] max-h-[43px] shrink-0 relative grow-0 basis-[15%] cursor-default
                         px-0 py-0 tabular-nums ${
                           i < 1
                             ? row.original.userName
-                              ? "relative inline-flex items-center before:absolute before:-top-6 before:left-8 before:block before:h-12 before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-                              : `inline-flex items-center ${row.original.isProjectAssigned ? "cursor-pointer" : ""}`
+                              ? `inline-flex items-center before:absolute before:left-8 before:block ${row.original.isFirst ? "before:-top-0 before:h-6" :"before:-top-6 before:h-12 "} before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']`
+                              : `inline-flex items-center ${row.original.isProjectAssigned ? "cursor-pointer " : ""}`
                             : "basis-[12%]"
                         }`}
                         key={cell.id}
@@ -358,7 +360,6 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                             <span className="mx-auto flex h-full w-12 items-center justify-center">
                               {
                                 getTotal(cell.row.original, columns[i].accessorKey.split(".")[1])
-                                // cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]] ? cell.row.original.timeAssigned[columns[i].accessorKey.split(".")[1]][billable] : 0
                               }
                             </span>
                           )
