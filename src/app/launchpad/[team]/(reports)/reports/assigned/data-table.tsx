@@ -245,6 +245,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
+        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
@@ -401,7 +402,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
                 {!defaultData ? (
-                  <Progress value={loading} className="border-2 border-primary bg-slate-500 w-9/12 h-4 mx-auto [&>div]:bg-green-400" />
+                  <Progress value={loading} className="border-2 border-primary bg-slate-500 w-1/3 h-4 mx-auto [&>div]:bg-green-400" />
                 ) : (
                   "No results."
                 )}

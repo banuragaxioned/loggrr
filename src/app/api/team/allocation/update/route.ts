@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 const allocationCreateSchema = z.object({
   billable: z.coerce.number().optional(),
   nonBillable: z.coerce.number().optional(),
-  total: z.coerce.number().min(0),
+  total: z.coerce.number().optional(),
   onGoing: z.coerce.boolean(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
@@ -18,6 +18,7 @@ const allocationCreateSchema = z.object({
 const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
   const { billable, nonBillable } = data;
   const { from, to, onGoing } = range;
+ 
   return await db.allocation.update({
     where: {
       id: requiredAllocation?.id,
@@ -34,7 +35,7 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
 };
 
 const insertAllocation = async (data: any, range: any, userId: number, projectId: number, team: string) => {
-  const { total, billable, nonBillable } = data;
+  const { billable, nonBillable } = data;
   const { from, to, onGoing } = range;
 
   return await db.allocation.create({
@@ -100,7 +101,6 @@ export async function POST(req: Request) {
       onGoing: body.onGoing,
     };
 
-    const options = { day: "2-digit", month: "2-digit", year: "2-digit" };
     const requiredAllocation = getAllocationData.find(
       (obj) =>
         (obj.projectId === body.projectId &&
@@ -122,7 +122,6 @@ export async function POST(req: Request) {
     const response = requiredAllocation?.id
       ? await updatedAllocation(requiredAllocation, data, range)
       : await insertAllocation(data, range, body.projectId, body.userId, body.team);
-
     return new Response(JSON.stringify({ response }));
   } catch (error) {
     if (error instanceof z.ZodError) {

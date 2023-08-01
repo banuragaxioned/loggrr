@@ -35,24 +35,22 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
   return allocationData.reduce((accumulator, allocation) => {
     let allocationStartDate = allocation.date;
     const allocationEndDate = allocation.enddate;
-
     const billableTime = allocation.billableTime || 0;
     const nonBillableTime = allocation.nonBillableTime || 0;
-
+    
     // allocationEndDate is not exist
-    if (!allocationEndDate) {
+    if (!allocationEndDate && allocation.frequency !== 'ONGOING') {
       // change date string format to YYYY-MM-DD
       const date = allocationStartDate.toLocaleString().split("T")[0];
-      const isAllocationDateExist = accumulator[date];
-
+      const isAllocationDateExist = accumulator[date];      
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
       const existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt =
-        isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
+      isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
       if (isAllocationDateExist || existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt) {
         return accumulator;
       }
-
+      
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
@@ -61,12 +59,12 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
-
+      
       return accumulator;
     }
 
     // iterate if allocationStartDate is less than or equal to endDate and allocationDate
-    while (allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) {
+    while (((allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) ||(!allocationEndDate && allocationStartDate <= endDate ))) {
       // change date string format to YYYY-MM-DD
       const date = allocationStartDate.toLocaleString().split("T")[0];
 
@@ -172,7 +170,6 @@ export async function POST(req: Request) {
         averageTime: averageTime,
       };
     });
-
     return new Response(JSON.stringify(allocationData));
   } catch (error) {
     if (error instanceof z.ZodError) {
