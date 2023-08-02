@@ -136,26 +136,26 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: to,
-      updatedAt:new Date(),
+      updatedAt: new Date(),
     },
   });
 };
 
-const insertAllocation = async (requiredAllocation: any, data: any, range: any,userId:number,projectId:number) => {
+const insertAllocation = async (requiredAllocation: any, data: any, range: any, userId: number, projectId: number) => {
   const { total, billable, nonBillable } = data;
   const { from, to, onGoing } = range;
   return await prisma.allocation.create({
     data: {
-      projectId:projectId,
+      projectId: projectId,
       billableTime: billable,
       nonBillableTime: nonBillable,
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: to,
-      createdAt:new Date(),
-      updatedAt:new Date(),
-      userId:userId,
-      tenantId:1
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: userId,
+      tenantId: 1,
     },
   });
 };
@@ -174,9 +174,9 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
       enddate: true,
     },
   });
-  const requiredAllocation = getAllocationData.find((obj) => obj.projectId === project && obj.userId === user );
+  const requiredAllocation = getAllocationData.find((obj) => obj.projectId === project && obj.userId === user);
   // console.log(new Date(requiredAllocation[0].date),new Date(startDate).getDate())
   requiredAllocation
     ? await updatedAllocation(requiredAllocation, data, range)
-    : await insertAllocation(requiredAllocation, data, range,project,user);
+    : await insertAllocation(requiredAllocation, data, range, project, user);
 };

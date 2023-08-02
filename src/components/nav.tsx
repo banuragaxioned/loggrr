@@ -30,7 +30,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-600",
                   path === item.href ? "bg-zinc-200" : "transparent",
-                  item.disabled && "cursor-not-allowed opacity-80"
+                  item.disabled && "cursor-not-allowed opacity-80",
                 )}
               >
                 <Icon className="mr-2 h-4 w-4" />

@@ -17,7 +17,7 @@ export default function Dashboard() {
   const selectDate = cleanDate(getValues("date") ? new Date(getValues("date")) : new Date());
   const { data: getMyTimeLog, refetch: refetchMyTimeLog } = api.timelog.getMyTimeLog.useQuery(
     { slug: currentTeam, date: selectDate },
-    { enabled: isReady }
+    { enabled: isReady },
   );
 
   const onTimeEntrySubmit = (data: any) => addTimeEntryHandler(data);

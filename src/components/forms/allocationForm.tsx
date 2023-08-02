@@ -36,8 +36,16 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: AllProjectsWithMembers[], users: ComboboxOptions[] }) {
-  const [isOngoing, setOngoing] = useState(false)
+export function NewAllocationForm({
+  team,
+  projects,
+  users,
+}: {
+  team: Tenant["slug"];
+  projects: AllProjectsWithMembers[];
+  users: ComboboxOptions[];
+}) {
+  const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -48,7 +56,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     },
   });
 
-  const createAllocation = async (values : z.infer<typeof formSchema>) => {
+  const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
       method: "POST",
       headers: {
@@ -63,17 +71,19 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
-      }),    
+      }),
     });
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
     }
-  }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded =  !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+    const isUserAdded = !!projects
+      .find((project) => project.id === values.projectId)
+      ?.Members.find((member) => member.id === values.userId);
 
-    if(!isUserAdded) {
+    if (!isUserAdded) {
       const response = await fetch("/api/team/project", {
         method: "POST",
         headers: {
@@ -84,13 +94,13 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
           projectId: values.projectId,
           userId: values.userId,
         }),
-      })
+      });
 
-      if(response?.ok) {
-        createAllocation(values)
+      if (response?.ok) {
+        createAllocation(values);
       }
-    }else {
-      createAllocation(values)
+    } else {
+      createAllocation(values);
     }
 
     SheetCloseButton.current?.click();
@@ -99,16 +109,16 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
   }
 
   useEffect(() => {
-    if(isOngoing) form.setValue("frequency", "ONGOING")
-    else form.setValue("frequency", "DAY")
-  }, [isOngoing])
+    if (isOngoing) form.setValue("frequency", "ONGOING");
+    else form.setValue("frequency", "DAY");
+  }, [isOngoing]);
 
   const handleOpenChange = (evt: boolean) => {
-    if(evt) {
-      setOngoing(false)
+    if (evt) {
+      setOngoing(false);
       form.reset();
     }
-  }
+  };
 
   return (
     <Sheet onOpenChange={handleOpenChange}>
@@ -129,7 +139,13 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
+                    <InlineCombobox
+                      label="projects"
+                      options={projects}
+                      setVal={form.setValue}
+                      fieldName="projectId"
+                      icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,7 +158,13 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50"/>}/>
+                    <InlineCombobox
+                      label="users"
+                      options={users}
+                      setVal={form.setValue}
+                      fieldName="userId"
+                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -155,7 +177,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing}/>
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +209,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
                 </FormItem>
               )}
             />
-            <SheetFooter className="justify-start mt-2 space-x-3">
+            <SheetFooter className="mt-2 justify-start space-x-3">
               <Button type="submit" variant="secondary">
                 Submit
               </Button>

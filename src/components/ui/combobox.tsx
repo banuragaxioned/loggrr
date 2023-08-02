@@ -12,7 +12,7 @@ type InlineComboboxProps = {
   setVal: UseFormSetValue<AssignFormValues>;
   fieldName: "projectId" | "userId";
   icon: React.ReactNode;
-  label: string
+  label: string;
 };
 
 type ComboBoxProps = {
@@ -154,7 +154,7 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
     <Command
       className={cn(
         "mt-2 h-auto w-full overflow-visible rounded-md border bg-transparent",
-        open && "ring-2 ring-ring ring-offset-0"
+        open && "ring-2 ring-ring ring-offset-0",
       )}
     >
       {/* Avoid having the "Search" Icon */}
@@ -203,6 +203,6 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
       </div>
     </Command>
   );
-}
+};
 
-export {ComboBox, InlineCombobox};
+export { ComboBox, InlineCombobox };

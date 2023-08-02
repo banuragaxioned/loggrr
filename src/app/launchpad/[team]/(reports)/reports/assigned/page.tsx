@@ -8,17 +8,17 @@ import { NewAllocationForm } from "@/components/forms/allocationForm";
 
 export default async function Assigned({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
-  const projects = await getProjectsId(team)
+  const projects = await getProjectsId(team);
   const users = await getAllUsers(team);
-  
+
   return (
     <>
       <DashboardShell>
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
-          <NewAllocationForm team={team} projects={projects} users={users}/>
+          <NewAllocationForm team={team} projects={projects} users={users} />
         </DashboardHeader>
         <div className="container mx-auto">
-          <DataTable team={team}/>
+          <DataTable team={team} />
         </div>
       </DashboardShell>
     </>

@@ -98,7 +98,7 @@ export const CalendarRelativeDatePicker = ({ className }: React.HTMLAttributes<H
       <div
         className={cn(
           "flex items-center px-4 py-2 text-left font-normal text-popover-foreground",
-          !date && "text-muted-foreground"
+          !date && "text-muted-foreground",
         )}
       >
         <CalendarIcon className="mr-2 h-4 w-4" />

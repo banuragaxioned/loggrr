@@ -35,7 +35,7 @@ export default function RootLayout({
         className={cn(
           "min-h-screen items-center border-border bg-background font-sans text-base text-foreground antialiased",
           font.variable,
-          fontHeading.variable
+          fontHeading.variable,
         )}
       >
         <PHProvider>

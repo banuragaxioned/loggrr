@@ -59,7 +59,7 @@ export const projectRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         userId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const projectId = input.projectId;
@@ -81,7 +81,7 @@ export const projectRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         userId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const projectId = input.projectId;
@@ -106,7 +106,7 @@ export const projectRouter = createTRPCRouter({
         enddate: z.date().optional(),
         billable: z.boolean(),
         interval: z.enum(["FIXED", "WEEKLY", "MONTHLY", "QUARTERLY", "HALFYEARLY", "YEARLY"]),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const slug = input.slug;
