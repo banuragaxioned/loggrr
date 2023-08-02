@@ -18,7 +18,7 @@ const allocationCreateSchema = z.object({
 const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
   const { billable, nonBillable } = data;
   const { from, to, onGoing } = range;
- 
+
   return await db.allocation.update({
     where: {
       id: requiredAllocation?.id,
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
     );
     const response = requiredAllocation?.id
       ? await updatedAllocation(requiredAllocation, data, range)
-      : await insertAllocation(data, range, body.projectId, body.userId, body.team);
+      : await insertAllocation(data, range, body.userId, body.projectId, body.team);
     return new Response(JSON.stringify({ response }));
   } catch (error) {
     if (error instanceof z.ZodError) {

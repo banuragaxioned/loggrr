@@ -39,11 +39,20 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
   while (count < days) {
     const currentDate = new Date(start);
     if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+      const dateArr = currentDate
+        .toLocaleString("en-us", {
+          day: "numeric",
+          month: "numeric",
+          year: "numeric",
+        })
+        .split(",")[0]
+        .split("/");
+      const dateKey = `${dateArr[1]}/${dateArr[0]}/${dateArr[2]}`;
       dates.push({
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
         day: currentDate.toLocaleString("en-us", { weekday: "short" }),
-        dateKey: currentDate.toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" }),
+        dateKey,
       });
       count++;
     }
@@ -177,7 +186,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const getFormatedData = (timeArr: any) => {
     const resultObj: any = {};
     for (let x in timeArr) {
-      const date = new Date(x).toLocaleString("en-us", { day: "2-digit", month: "short", year: "2-digit" });
+      const date = x.split(",")[0];
       resultObj[date] = timeArr[x];
     }
     return resultObj;
@@ -241,15 +250,14 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   React.useEffect(() => {
     setLoading(80);
     response()
-    .then((res) => res.json())
-    .then((res) => {
+      .then((res) => res.json())
+      .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
-        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => setData([]));
   }, [startDate, submitCount]);
 
   return (
@@ -368,7 +376,10 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                                 projectId: row.original.id,
                                 userId: row.original.userId,
                                 isBillable: row.original.billable,
-                                date: columns[i].accessorKey.split(".")[1],
+                                date: () => {
+                                  const temp = columns[i].accessorKey.split(".")[1].split("/");
+                                  return `${temp[1]}/${temp[0]}/${temp[2]}`;
+                                },
                                 team: team,
                               }}
                               type={billable}
@@ -402,7 +413,10 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
                 {!defaultData ? (
-                  <Progress value={loading} className="border-2 border-primary bg-slate-500 w-1/3 h-4 mx-auto [&>div]:bg-green-400" />
+                  <Progress
+                    value={loading}
+                    className="mx-auto h-4 w-1/3 border-2 border-primary bg-slate-500 [&>div]:bg-green-400"
+                  />
                 ) : (
                   "No results."
                 )}

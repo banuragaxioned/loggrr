@@ -16,7 +16,6 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
   const showToast = useToast();
-
   const onSuccess = () => {
     setSubmitted(true);
     showToast("A allocation was updated", "success");
@@ -42,7 +41,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           total: updatedData.total,
           onGoing: Ongoing,
           startDate: new Date(range.from),
-          endDate: new Date((range.to || Ongoing) ? range.to : range.from),
+          endDate: new Date(range.to || Ongoing ? range.to : range.from),
           projectId: data.projectId,
           userId: data.userId,
           team: data.team,
@@ -95,7 +94,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           defaultValue={hours}
           name={data.isBillable ? "billable" : "nonBillable"}
           onInput={inputHandler}
-          // onFocus={()=>setSubmitted(false)}
+          onFocus={()=>setSubmitted(false)}
           onBlur={(e) => {
             !submitted
               ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)
@@ -141,7 +140,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
               setVal={setRange}
               isOngoing={Ongoing}
               setOngoing={setOngoing}
-              startDate={new Date(data.date)}
+              startDate={new Date(data.date())}
             />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>

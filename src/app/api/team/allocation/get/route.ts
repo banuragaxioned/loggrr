@@ -37,20 +37,20 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
     const allocationEndDate = allocation.enddate;
     const billableTime = allocation.billableTime || 0;
     const nonBillableTime = allocation.nonBillableTime || 0;
-    
+
     // allocationEndDate is not exist
-    if (!allocationEndDate && allocation.frequency !== 'ONGOING') {
+    if (!allocationEndDate && allocation.frequency !== "ONGOING") {
       // change date string format to YYYY-MM-DD
       const date = allocationStartDate.toLocaleString().split("T")[0];
-      const isAllocationDateExist = accumulator[date];      
+      const isAllocationDateExist = accumulator[date];
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
       const existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt =
-      isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
+        isAllocationDateExist && isAllocationDateExist.updatedAt > allocation.updatedAt;
       if (isAllocationDateExist || existAllocationUpdateAtIsGreaterThanNewAllocationUpdateAt) {
         return accumulator;
       }
-      
+
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
@@ -59,15 +59,17 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
-      
+
       return accumulator;
     }
 
     // iterate if allocationStartDate is less than or equal to endDate and allocationDate
-    while (((allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) ||(!allocationEndDate && allocationStartDate <= endDate ))) {
+    while (
+      (allocationStartDate <= endDate && allocationStartDate <= allocationEndDate) ||
+      (allocation.frequency === "ONGOING" && !allocation.enddate && allocationStartDate <= endDate)
+    ) {
       // change date string format to YYYY-MM-DD
       const date = allocationStartDate.toLocaleString().split("T")[0];
-
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
@@ -100,9 +102,9 @@ export async function POST(req: Request) {
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
-    }
+    // if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+    //   return new Response("Unauthorized", { status: 403 });
+    // }
 
     const client = await db.user.findMany({
       where: { TenantId: { some: { slug: body.team } } },
@@ -118,18 +120,6 @@ export async function POST(req: Request) {
             Client: { select: { id: true, name: true } },
             billable: true,
             Allocation: {
-              where: {
-                OR: [
-                  {
-                    enddate: null,
-                  },
-                  {
-                    enddate: {
-                      gte: body.startDate,
-                    },
-                  },
-                ],
-              },
               select: {
                 id: true,
                 billableTime: true,
@@ -138,8 +128,8 @@ export async function POST(req: Request) {
                 frequency: true,
                 date: true,
                 enddate: true,
-                projectId:true,
-                userId:true
+                projectId: true,
+                userId: true,
               },
             },
           },
@@ -155,7 +145,12 @@ export async function POST(req: Request) {
         userName: obj.name,
         userAvatar: obj.image,
         projects: obj.Project.map((project) => {
-          allocations = createAllocationDates(project.Allocation.filter((allocation)=>allocation.userId === obj.id && allocation.projectId === project.id), body.endDate);
+          allocations = createAllocationDates(
+            project.Allocation.filter(
+              (allocation) => allocation.userId === obj.id && allocation.projectId === project.id,
+            ),
+            body.endDate,
+          );
           totalTime = calculateAllocationTotalTime(allocations);
           averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
           return {
