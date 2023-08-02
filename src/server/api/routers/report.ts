@@ -13,7 +13,7 @@ export const reportRouter = createTRPCRouter({
         clientId: z.number().optional(),
         userId: z.number().optional(),
         billable: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;
@@ -76,7 +76,7 @@ export const reportRouter = createTRPCRouter({
         projectId: z.number().optional(),
         clientId: z.number().optional(),
         userId: z.number().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const slug = input.tenant;

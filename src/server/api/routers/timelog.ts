@@ -16,7 +16,7 @@ export const timelogRouter = createTRPCRouter({
         billable: z.boolean(),
         time: z.string(),
         comments: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const task = await ctx.prisma.timeEntry.create({
@@ -40,7 +40,7 @@ export const timelogRouter = createTRPCRouter({
       z.object({
         slug: z.string(),
         date: z.date(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const selectedDate = cleanDate(input.date);

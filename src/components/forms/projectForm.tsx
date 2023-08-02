@@ -15,7 +15,7 @@ export default function CreateProject() {
 
   const { data: clientList } = api.client.getClients.useQuery(
     { text: currentTeam },
-    { enabled: session?.user !== undefined }
+    { enabled: session?.user !== undefined },
   );
 
   const { register, handleSubmit, reset, getValues } = useForm({

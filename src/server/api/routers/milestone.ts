@@ -23,7 +23,7 @@ export const milestoneRouter = createTRPCRouter({
         budget: z.number().optional(),
         startdate: z.date().optional(),
         enddate: z.date().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const milestone = await ctx.prisma.milestone.create({

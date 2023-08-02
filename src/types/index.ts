@@ -180,8 +180,8 @@ export type ComboboxOptions = {
 export type AllProjectsWithMembers = {
   id: number;
   name: string | null | undefined;
-  Members: ComboboxOptions[],
-}
+  Members: ComboboxOptions[];
+};
 
 export type AssignFormValues = {
   date: Date;

@@ -134,7 +134,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   return (
                     (filterMatcher(cell.row) ||
                       (!selectedProjects.length && !selectedClient.length && !selectedLead.length)) && (
-                      <TableCell className={`px-8 [&>div]:invisible group-hover:[&>div]:visible py-0 h-[43px] max-h-[43px] tabular-nums ${j === 3 ? "flex items-center" : ""}`} key={cell.id}>
+                      <TableCell
+                        className={`h-[43px] max-h-[43px] px-8 py-0 tabular-nums [&>div]:invisible group-hover:[&>div]:visible ${
+                          j === 3 ? "flex items-center" : ""
+                        }`}
+                        key={cell.id}
+                      >
                         {j === 1 && cell.row.original?.budget && (
                           <Hourglass height={18} width={18} className="my-auto mr-2 inline" />
                         )}

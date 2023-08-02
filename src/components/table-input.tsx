@@ -94,7 +94,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           defaultValue={hours}
           name={data.isBillable ? "billable" : "nonBillable"}
           onInput={inputHandler}
-          onFocus={()=>setSubmitted(false)}
+          onFocus={() => setSubmitted(false)}
           onBlur={(e) => {
             !submitted
               ? (e.target.value = type === "billable" ? billable : type === "nonBillable" ? nonBillable : totaTime)

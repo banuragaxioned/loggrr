@@ -41,7 +41,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
-        frequency:allocation.frequency
+        frequency: allocation.frequency,
       };
 
       return accumulator;
@@ -58,7 +58,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         nonBillableTime: nonBillableTime,
         totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
-        frequency:allocation.frequency
+        frequency: allocation.frequency,
       };
 
       // increase one day
@@ -70,8 +70,9 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
 }
 
 export async function getAllocations(input: getAllocation) {
-
-  const isProjectExist = input.projectId && (await prisma.project.findUnique({
+  const isProjectExist =
+    input.projectId &&
+    (await prisma.project.findUnique({
       where: { id: input.projectId },
     }));
 
@@ -102,13 +103,13 @@ export async function getAllocations(input: getAllocation) {
     where: {
       OR: [
         {
-          enddate:null
+          enddate: null,
         },
         {
-          enddate:{
-            gte:input.startDate
+          enddate: {
+            gte: input.startDate,
           },
-        }
+        },
       ],
     },
   };
@@ -154,7 +155,7 @@ export async function getAllocations(input: getAllocation) {
 
           // calculate average time
           const averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
-          console.log(user.Allocation)
+          console.log(user.Allocation);
           return {
             userId: user.id,
             userName: user.name,
@@ -226,7 +227,7 @@ export async function getAllocations(input: getAllocation) {
           clientName: project.Client.name,
           projectId: project.id,
           projectName: project.name,
-          billable:project.billable,
+          billable: project.billable,
           totalTime: projectTotalTime,
           allocations: allocations,
         };

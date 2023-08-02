@@ -55,7 +55,7 @@ export const teamRouter = createTRPCRouter({
       z.object({
         tenant: z.string(),
         email: z.string().email(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const userEmail = input.email;

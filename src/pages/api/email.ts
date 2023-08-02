@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         inviteLink: "https://loggr-app.vercel.app",
         teamImage: "https://loggr-app.vercel.app/images/axioned.png",
         userImage: "https://loggr-app.vercel.app/images/axioned.png",
-      })
+      }),
     ),
   });
 

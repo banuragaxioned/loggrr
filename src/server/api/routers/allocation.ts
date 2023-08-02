@@ -19,7 +19,7 @@ export const allocationRouter = createTRPCRouter({
         enddate: z.date().optional(),
         billableTime: z.number(),
         nonBillableTime: z.number(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const slug = input.slug;
@@ -54,7 +54,7 @@ export const allocationRouter = createTRPCRouter({
         page: z.number(),
         pageSize: z.number(),
         projectId: z.number().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       if (input.startDate > input.endDate) {

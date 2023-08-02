@@ -17,7 +17,7 @@ export const profileRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         timezone: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({

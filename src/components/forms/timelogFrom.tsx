@@ -8,7 +8,7 @@ import { clients } from "../../lib/tempData";
 
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
-import {ComboBox} from "../ui/combobox";
+import { ComboBox } from "../ui/combobox";
 
 type FormData = {
   project: string | undefined;
@@ -229,13 +229,13 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
           filledData?.taskName ||
           filledData?.timeLogged.length !== 0 ||
           filledData?.comment?.length > 0) &&
-          selected
+          selected,
       );
       setSubmit(
         filledData?.projectName &&
           filledData?.milestoneName &&
           filledData?.taskName &&
-          filledData?.timeLogged.length !== 0
+          filledData?.timeLogged.length !== 0,
       );
     }
   }, [filledData, selected]);
@@ -362,7 +362,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
         if (taskList.indexOf(prev) === -1) return "";
       });
     },
-    [milestoneList, taskList]
+    [milestoneList, taskList],
   );
 
   const openSearch = () => {
@@ -381,7 +381,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
       )
         setFocus(false);
     },
-    [activeDropdown, dropdownRef]
+    [activeDropdown, dropdownRef],
   );
 
   useEffect(() => {
