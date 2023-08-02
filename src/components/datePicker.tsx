@@ -33,27 +33,32 @@ export function CalendarDateRangePicker({
   setVal,
   isOngoing,
   setOngoing,
+  startDate
 }: {
-  setVal: UseFormSetValue<AssignFormValues>;
-  isOngoing: boolean;
+  setVal: UseFormSetValue<AssignFormValues> | any;
+  isOngoing?: boolean;
+  startDate?:any;
   setOngoing: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
+  const [date, setDate] = useState<DateRange | any>({
+    from: startDate ? startDate : new Date(),
+    to:startDate ? startDate :  new Date(),
   });
 
   useEffect(() => {
-    console.log(date);
-    if (date?.from) setVal("date", date?.from);
+    if(startDate) {
+      setVal(date)
+    }else {
+      if (date?.from) setVal("date", date?.from);
     if (date?.to) setVal("enddate", date?.to);
+    }
   }, [date]);
 
   const handleChecked = (evt: boolean) => {
     evt
       ? setDate((prev: DateRange | undefined) => prev?.from && { from: prev?.from, to: addYears(prev?.from, 1) })
       : setDate((prev: DateRange | undefined) => ({ from: prev?.from, to: undefined }));
-    setOngoing(evt);
+      setOngoing(evt);
   };
 
   return (
@@ -69,11 +74,11 @@ export function CalendarDateRangePicker({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {isOngoing ? <Infinity className="ml-1 stroke-[1.5]" /> : format(date.to, "LLL dd, y")}
+                  {startDate ?format(date.from, "LLL dd") :format(date.from, "LLL dd, y")} -{" "}
+                  {isOngoing ? <Infinity className="ml-1 stroke-[1.5]" /> :startDate ? format(date.to, "LLL dd") :  format(date.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                startDate ? format(date.from, "LLL dd") : format(date.from, "LLL dd, y")
               )
             ) : (
               <span>Pick a date</span>
