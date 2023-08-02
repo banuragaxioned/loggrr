@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,6 +26,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
+import { useSubmit } from "@/hooks/useSubmit";
 
 interface DataTableProps<TData, TValue> {
   team: string;
@@ -62,20 +63,20 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
 };
 
 export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [startDate, setStartDate] = React.useState<any>(new Date());
-  const [weekend, setWeekend] = React.useState<boolean>(false);
-  const [billable, setBillable] = React.useState<string>("totalTime");
-  const [submitCount, setSubmitCount] = React.useState<number>(1);
-  const [sortingType, setSortingType] = React.useState<{ key: number; id: string; active?: number }>({
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [startDate, setStartDate] = useState<any>(new Date());
+  const [weekend, setWeekend] = useState<boolean>(false);
+  const [billable, setBillable] = useState<string>("totalTime");
+  const { submitCount, setSubmitCount } = useSubmit();
+  const [sortingType, setSortingType] = useState<{ key: number; id: string; active?: number }>({
     key: 0,
     id: "name",
   });
-  const [defaultData, setDefaultData] = React.useState<TData[] | null>(null);
-  const [data, setData] = React.useState<TData[]>([]);
-  const [loading, setLoading] = React.useState<number>(50);
+  const [defaultData, setDefaultData] = useState<TData[] | null>(null);
+  const [data, setData] = useState<TData[]>([]);
+  const [loading, setLoading] = useState<number>(50);
 
   //start date validator
   const startDateValidator = (date: string) => date && setStartDate(date);
@@ -100,26 +101,32 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     });
   };
 
-  const getTotal = (obj: any, key: string) => {
-    let total = 0;
-    const temp: any = data.filter((project: any) => project.userId === obj.id);
-    temp?.length &&
-      temp?.map((arr: any) => {
-        total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
-      });
-    return total;
-  };
+  const getTotal = useCallback(
+    (obj: any, key: string) => {
+      let total = 0;
+      const temp: any = data.filter((project: any) => project.userId === obj.id);
+      temp?.length &&
+        temp?.map((arr: any) => {
+          total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
+        });
+      return total;
+    },
+    [billable, data],
+  );
 
   //reusable sort function
-  const sortFunction = (item: any, item2: any, isUsers?: boolean) => {
-    const { key, id } = sortingType;
-    const t1 = isUsers ? getTotal(item, id) : item.timeAssigned[id]?.[billable];
-    const t2 = isUsers ? getTotal(item2, id) : item2.timeAssigned[id]?.[billable];
-    return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
-  };
+  const sortFunction = useCallback(
+    (item: any, item2: any, isUsers?: boolean) => {
+      const { key, id } = sortingType;
+      const t1 = isUsers ? getTotal(item, id) : item.timeAssigned[id]?.[billable];
+      const t2 = isUsers ? getTotal(item2, id) : item2.timeAssigned[id]?.[billable];
+      return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
+    },
+    [sortingType, billable, getTotal],
+  );
 
   //function to sort rows
-  const getSortedRows = () => {
+  const getSortedRows = useCallback(() => {
     const sortedData: TData[] = [];
     let users, projects: TData[];
     users = (defaultData ? defaultData : data).filter((user: any) => !user.userName);
@@ -136,7 +143,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       userprojects.length > 0 && sortedData.push(...userprojects);
     });
     return sortedData;
-  };
+  }, [data, defaultData, sortingType, sortFunction]);
 
   //shadcn modified colums array to create columns
   const columns: ColumnDef<Assignment>[] | any = [
@@ -170,7 +177,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     },
   });
 
-  const [activeRows, setActiveRows] = React.useState([]);
+  const [activeRows, setActiveRows] = useState([]);
 
   const isVisible = (rowObj: any) =>
     activeRows?.find((item) => item === rowObj.original.userName) || !rowObj.original.userName;
@@ -183,50 +190,53 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         : [...prev, rowObj?.original?.title],
     );
 
-  const getFormatedData = (timeArr: any) => {
+  const getFormatedData = useCallback((timeArr: any) => {
     const resultObj: any = {};
     for (let x in timeArr) {
       const date = x.split(",")[0];
       resultObj[date] = timeArr[x];
     }
     return resultObj;
-  };
+  }, []);
 
-  const dataFiltering = (data: any) => {
-    const resultantArray: any = [];
-    const notEmptyArr = data.filter((user: any) => user?.userName);
-    notEmptyArr.map((user: any) => {
-      const temp = {
-        id: user?.userId,
-        name: user?.userName.split(" ")[0],
-        title: user?.userName,
-        userAvatar: user?.userAvatar,
-        isProjectAssigned: user?.projects?.length,
-      };
-      resultantArray.push(temp);
-      user?.projects?.length &&
-        user?.projects?.map((project: any, i: number) => {
-          const temp = {
-            id: project?.projectId,
-            userId: user.userId,
-            name: project?.projectName.slice(0, 5) + "...",
-            title: project?.projectName,
-            clientName: project?.clientName,
-            totalTime: project?.totalTime,
-            userName: user.userName,
-            billable: project?.billable,
-            frequency: project?.frequency,
-            isFirst: i === 0 ? true : false,
-            timeAssigned: getFormatedData(project?.allocations),
-          };
-          resultantArray.push(temp);
-        });
-    });
-    return resultantArray;
-  };
+  const dataFiltering = useCallback(
+    (data: any) => {
+      const resultantArray: any = [];
+      const notEmptyArr = data.filter((user: any) => user?.userName);
+      notEmptyArr.map((user: any) => {
+        const temp = {
+          id: user?.userId,
+          name: user?.userName.split(" ")[0],
+          title: user?.userName,
+          userAvatar: user?.userAvatar,
+          isProjectAssigned: user?.projects?.length,
+        };
+        resultantArray.push(temp);
+        user?.projects?.length &&
+          user?.projects?.map((project: any, i: number) => {
+            const temp = {
+              id: project?.projectId,
+              userId: user.userId,
+              name: project?.projectName.slice(0, 5) + "...",
+              title: project?.projectName,
+              clientName: project?.clientName,
+              totalTime: project?.totalTime,
+              userName: user.userName,
+              billable: project?.billable,
+              frequency: project?.frequency,
+              isFirst: i === 0 ? true : false,
+              timeAssigned: getFormatedData(project?.allocations),
+            };
+            resultantArray.push(temp);
+          });
+      });
+      return resultantArray;
+    },
+    [getFormatedData],
+  );
 
   //api call to get allocation data
-  const response = async () => {
+  const response = useCallback(async () => {
     const endDate = dayjs(startDate).add(14, "day").toDate();
     return await fetch("/api/team/allocation/get", {
       method: "POST",
@@ -241,13 +251,13 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         pageSize: 20,
       }),
     });
-  };
+  }, [startDate, team]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setData(getSortedRows());
-  }, [sortingType]);
+  }, [sortingType,getSortedRows]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(80);
     response()
       .then((res) => res.json())
@@ -258,7 +268,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         setDefaultData(temp);
       })
       .catch((e) => setData([]));
-  }, [startDate, submitCount]);
+  }, [startDate,submitCount,dataFiltering,response]);
 
   return (
     <div>

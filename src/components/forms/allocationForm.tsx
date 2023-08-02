@@ -25,6 +25,7 @@ import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, ComboboxOptions } from "../../types";
 import { Icons } from "../icons";
+import { useSubmit } from "@/hooks/useSubmit";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -49,6 +50,7 @@ export function NewAllocationForm({
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
+  const { setSubmitCount } = useSubmit();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,6 +78,7 @@ export function NewAllocationForm({
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
     }
+    setSubmitCount((prev) => prev++);
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -111,7 +114,7 @@ export function NewAllocationForm({
   useEffect(() => {
     if (isOngoing) form.setValue("frequency", "ONGOING");
     else form.setValue("frequency", "DAY");
-  }, [isOngoing]);
+  }, [isOngoing, form]);
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
