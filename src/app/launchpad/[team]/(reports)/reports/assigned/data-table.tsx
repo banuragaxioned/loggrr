@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,6 +26,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
+import { useSubmit } from "@/hooks/useSubmit";
 
 interface DataTableProps<TData, TValue> {
   team: string;
@@ -62,20 +63,20 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
 };
 
 export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [startDate, setStartDate] = React.useState<any>(new Date());
-  const [weekend, setWeekend] = React.useState<boolean>(false);
-  const [billable, setBillable] = React.useState<string>("totalTime");
-  const [submitCount, setSubmitCount] = React.useState<number>(1);
-  const [sortingType, setSortingType] = React.useState<{ key: number; id: string; active?: number }>({
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [startDate, setStartDate] = useState<any>(new Date());
+  const [weekend, setWeekend] = useState<boolean>(false);
+  const [billable, setBillable] = useState<string>("totalTime");
+  const { submitCount, setSubmitCount } = useSubmit();
+  const [sortingType, setSortingType] = useState<{ key: number; id: string; active?: number }>({
     key: 0,
     id: "name",
   });
-  const [defaultData, setDefaultData] = React.useState<TData[] | null>(null);
-  const [data, setData] = React.useState<TData[]>([]);
-  const [loading, setLoading] = React.useState<number>(50);
+  const [defaultData, setDefaultData] = useState<TData[] | null>(null);
+  const [data, setData] = useState<TData[]>([]);
+  const [loading, setLoading] = useState<number>(50);
 
   //start date validator
   const startDateValidator = (date: string) => date && setStartDate(date);
@@ -170,7 +171,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     },
   });
 
-  const [activeRows, setActiveRows] = React.useState([]);
+  const [activeRows, setActiveRows] = useState([]);
 
   const isVisible = (rowObj: any) =>
     activeRows?.find((item) => item === rowObj.original.userName) || !rowObj.original.userName;
@@ -243,11 +244,11 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setData(getSortedRows());
   }, [sortingType]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(80);
     response()
       .then((res) => res.json())
