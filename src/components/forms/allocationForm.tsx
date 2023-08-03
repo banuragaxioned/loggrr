@@ -58,8 +58,8 @@ export function NewAllocationForm({
     },
   });
 
-  const createAllocation = async (values: z.infer<typeof formSchema>) => {
-    const response = await fetch("/api/team/allocation", {
+  const createAllocation = (values: z.infer<typeof formSchema>) => {
+    const response = fetch("/api/team/allocation", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,20 +74,23 @@ export function NewAllocationForm({
         nonBillableTime: values.nonBillableTime,
         team: team,
       }),
-    });
-    if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
-    }
-    setSubmitCount((prev) => prev++);
+    }).then((res)=>{
+      if(res.ok ){
+        setSubmitCount((prev) => prev++) 
+        showToast("A new allocation was created", "success");
+      }else {
+        showToast("Something went wrong.", "warning")
+      }
+    }).catch((e)=>showToast("Something went wrong.", "warning"))
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     const isUserAdded = !!projects
       .find((project) => project.id === values.projectId)
       ?.Members.find((member) => member.id === values.userId);
 
     if (!isUserAdded) {
-      const response = await fetch("/api/team/project", {
+      const response = fetch("/api/team/project", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,17 +100,12 @@ export function NewAllocationForm({
           projectId: values.projectId,
           userId: values.userId,
         }),
-      });
-
-      if (response?.ok) {
-        createAllocation(values);
-      }
+      }).then((res)=>res.ok &&  createAllocation(values));
     } else {
       createAllocation(values);
     }
 
     SheetCloseButton.current?.click();
-    showToast("A new allocation was created", "success");
     router.refresh();
   }
 

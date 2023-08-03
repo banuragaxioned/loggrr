@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -101,32 +101,26 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
     });
   };
 
-  const getTotal = useCallback(
-    (obj: any, key: string) => {
-      let total = 0;
-      const temp: any = data.filter((project: any) => project.userId === obj.id);
-      temp?.length &&
-        temp?.map((arr: any) => {
-          total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
-        });
-      return total;
-    },
-    [billable, data],
-  );
+  const getTotal = (obj: any, key: string) => {
+    let total = 0;
+    const temp: any = data.filter((project: any) => project.userId === obj.id);
+    temp?.length &&
+      temp?.map((arr: any) => {
+        total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
+      });
+    return total;
+  };
 
   //reusable sort function
-  const sortFunction = useCallback(
-    (item: any, item2: any, isUsers?: boolean) => {
-      const { key, id } = sortingType;
-      const t1 = isUsers ? getTotal(item, id) : item.timeAssigned[id]?.[billable];
-      const t2 = isUsers ? getTotal(item2, id) : item2.timeAssigned[id]?.[billable];
-      return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
-    },
-    [sortingType, billable, getTotal],
-  );
+  const sortFunction = (item: any, item2: any, isUsers?: boolean) => {
+    const { key, id } = sortingType;
+    const t1 = isUsers ? getTotal(item, id) : item.timeAssigned[id]?.[billable];
+    const t2 = isUsers ? getTotal(item2, id) : item2.timeAssigned[id]?.[billable];
+    return (key === 1 ? 1 : -1) * ((t1 ? t1 : 0) - (t2 ? t2 : 0));
+  };
 
   //function to sort rows
-  const getSortedRows = useCallback(() => {
+  const getSortedRows = () => {
     const sortedData: TData[] = [];
     let users, projects: TData[];
     users = (defaultData ? defaultData : data).filter((user: any) => !user.userName);
@@ -143,7 +137,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       userprojects.length > 0 && sortedData.push(...userprojects);
     });
     return sortedData;
-  }, [data, defaultData, sortingType, sortFunction]);
+  };
 
   //shadcn modified colums array to create columns
   const columns: ColumnDef<Assignment>[] | any = [
@@ -190,53 +184,50 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         : [...prev, rowObj?.original?.title],
     );
 
-  const getFormatedData = useCallback((timeArr: any) => {
+  const getFormatedData = (timeArr: any) => {
     const resultObj: any = {};
     for (let x in timeArr) {
       const date = x.split(",")[0];
       resultObj[date] = timeArr[x];
     }
     return resultObj;
-  }, []);
+  };
 
-  const dataFiltering = useCallback(
-    (data: any) => {
-      const resultantArray: any = [];
-      const notEmptyArr = data.filter((user: any) => user?.userName);
-      notEmptyArr.map((user: any) => {
-        const temp = {
-          id: user?.userId,
-          name: user?.userName.split(" ")[0],
-          title: user?.userName,
-          userAvatar: user?.userAvatar,
-          isProjectAssigned: user?.projects?.length,
-        };
-        resultantArray.push(temp);
-        user?.projects?.length &&
-          user?.projects?.map((project: any, i: number) => {
-            const temp = {
-              id: project?.projectId,
-              userId: user.userId,
-              name: project?.projectName.slice(0, 5) + "...",
-              title: project?.projectName,
-              clientName: project?.clientName,
-              totalTime: project?.totalTime,
-              userName: user.userName,
-              billable: project?.billable,
-              frequency: project?.frequency,
-              isFirst: i === 0 ? true : false,
-              timeAssigned: getFormatedData(project?.allocations),
-            };
-            resultantArray.push(temp);
-          });
-      });
-      return resultantArray;
-    },
-    [getFormatedData],
-  );
+  const dataFiltering = (data: any) => {
+    const resultantArray: any = [];
+    const notEmptyArr = data.filter((user: any) => user?.userName);
+    notEmptyArr.map((user: any) => {
+      const temp = {
+        id: user?.userId,
+        name: user?.userName.split(" ")[0],
+        title: user?.userName,
+        userAvatar: user?.userAvatar,
+        isProjectAssigned: user?.projects?.length,
+      };
+      resultantArray.push(temp);
+      user?.projects?.length &&
+        user?.projects?.map((project: any, i: number) => {
+          const temp = {
+            id: project?.projectId,
+            userId: user.userId,
+            name: project?.projectName.slice(0, 5) + "...",
+            title: project?.projectName,
+            clientName: project?.clientName,
+            totalTime: project?.totalTime,
+            userName: user.userName,
+            billable: project?.billable,
+            frequency: project?.frequency,
+            isFirst: i === 0 ? true : false,
+            timeAssigned: getFormatedData(project?.allocations),
+          };
+          resultantArray.push(temp);
+        });
+    });
+    return resultantArray;
+  };
 
   //api call to get allocation data
-  const response = useCallback(async () => {
+  const response = async () => {
     const endDate = dayjs(startDate).add(14, "day").toDate();
     return await fetch("/api/team/allocation/get", {
       method: "POST",
@@ -251,11 +242,11 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         pageSize: 20,
       }),
     });
-  }, [startDate, team]);
+  };
 
   useEffect(() => {
     setData(getSortedRows());
-  }, [sortingType,getSortedRows]);
+  }, [sortingType]);
 
   useEffect(() => {
     setLoading(80);
@@ -268,7 +259,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         setDefaultData(temp);
       })
       .catch((e) => setData([]));
-  }, [startDate,submitCount,dataFiltering,response]);
+  }, [startDate, submitCount]);
 
   return (
     <div>
