@@ -14,9 +14,9 @@ export default async function Assigned({ params }: { params: { team: Tenant["slu
     <>
       <DashboardShell>
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
-          {/* <NewAllocationForm team={team} projects={projects} users={users} /> */}
+          <NewAllocationForm team={team} projects={projects} users={users} />
         </DashboardHeader>
-          {/* <DataTable team={team} /> */}
+          <DataTable team={team} />
       </DashboardShell>
     </>
   );
