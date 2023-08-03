@@ -246,7 +246,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
 
   useEffect(() => {
     setData(getSortedRows());
-  }, [sortingType]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sortingType]);
 
   useEffect(() => {
     setLoading(80);
@@ -259,7 +259,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         setDefaultData(temp);
       })
       .catch((e) => setData([]));
-  }, [startDate, submitCount]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [startDate, submitCount]);
 
   return (
     <div>
