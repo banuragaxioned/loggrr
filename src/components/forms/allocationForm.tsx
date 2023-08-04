@@ -51,12 +51,12 @@ export function NewAllocationForm({
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const { setSubmitCount } = useSubmit();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      frequency: AllocationFrequency.DAY ,
-    },
-  });
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     frequency: AllocationFrequency.DAY ,
+  //   },
+  // });
 
   const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
@@ -111,17 +111,17 @@ export function NewAllocationForm({
     router.refresh();
   }
 
-  useEffect(() => {
-    if (isOngoing) form.setValue("frequency", "ONGOING");
-    else form.setValue("frequency", "DAY");
-  }, [isOngoing]);
+  // useEffect(() => {
+  //   if (isOngoing) form.setValue("frequency", "ONGOING");
+  //   else form.setValue("frequency", "DAY");
+  // }, [isOngoing]);
 
-  const handleOpenChange = (evt: boolean) => {
-    if (evt) {
-      setOngoing(false);
-      form.reset();
-    }
-  };
+  // const handleOpenChange = (evt: boolean) => {
+  //   if (evt) {
+  //     setOngoing(false);
+  //     form.reset();
+  //   }
+  // };
 
   return (
     <></>
