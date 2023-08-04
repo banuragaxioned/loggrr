@@ -108,10 +108,10 @@ export const  NewAllocationForm = ({
     router.refresh();
   }
 
-  useEffect(() => {
-    if (isOngoing) form.setValue("frequency", "ONGOING");
-    else form.setValue("frequency", "DAY");
-  }, [isOngoing]);
+  // useEffect(() => {
+  //   if (isOngoing) form.setValue("frequency", "ONGOING");
+  //   else form.setValue("frequency", "DAY");
+  // }, [isOngoing]);
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
