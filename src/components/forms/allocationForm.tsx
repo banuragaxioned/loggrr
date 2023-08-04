@@ -25,6 +25,7 @@ import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, ComboboxOptions } from "../../types";
 import { Icons } from "../icons";
+import { useSubmit } from "@/hooks/useSubmit";
 
 const formSchema = z.object({
   projectId: z.coerce.number().min(1),
@@ -36,7 +37,7 @@ const formSchema = z.object({
   nonBillableTime: z.coerce.number(),
 });
 
-export const  NewAllocationForm = ({
+export function NewAllocationForm({
   team,
   projects,
   users,
@@ -44,11 +45,12 @@ export const  NewAllocationForm = ({
   team: Tenant["slug"];
   projects: AllProjectsWithMembers[];
   users: ComboboxOptions[];
-})=>{
+}) {
   const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
+  const { setSubmitCount } = useSubmit();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,6 +78,7 @@ export const  NewAllocationForm = ({
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
     }
+    setSubmitCount((prev) => prev++);
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -108,10 +111,10 @@ export const  NewAllocationForm = ({
     router.refresh();
   }
 
-  // useEffect(() => {
-  //   if (isOngoing) form.setValue("frequency", "ONGOING");
-  //   else form.setValue("frequency", "DAY");
-  // }, [isOngoing]);
+  useEffect(() => {
+    if (isOngoing) form.setValue("frequency", "ONGOING");
+    else form.setValue("frequency", "DAY");
+  }, [isOngoing]);
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
@@ -131,7 +134,7 @@ export const  NewAllocationForm = ({
             <SheetTitle>Add a new allocation</SheetTitle>
             <SheetDescription>Good planning goes a long way.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
+          <form onSubmit={()=>form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
               name="projectId"
