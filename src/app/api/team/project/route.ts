@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     }
 
     const project = await db.project.update({
-      where: { id: body.projectId },
+      where: { id: +body.projectId },
       data: {
         Members: {
           connect: { id: body.userId },

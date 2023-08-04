@@ -97,10 +97,10 @@ export function NewAllocationForm({
       });
 
       if (response?.ok) {
-        createAllocation(values);
+        await createAllocation(values);
       }
     } else {
-      createAllocation(values);
+      await createAllocation(values);
     }
 
     SheetCloseButton.current?.click();
