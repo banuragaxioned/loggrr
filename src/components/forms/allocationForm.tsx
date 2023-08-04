@@ -115,8 +115,6 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
     const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
-    console.log(isAssignmentCreated)
-    console.log(values)
 
     if (!isUserAdded) {
       const addUserResponse = await addUser(values)

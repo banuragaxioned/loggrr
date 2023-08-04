@@ -154,7 +154,6 @@ export async function getAllocations(input: getAllocation) {
 
           // calculate average time
           const averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
-          console.log(user.Allocation);
           return {
             userId: user.id,
             userName: user.name,
