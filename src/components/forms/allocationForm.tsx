@@ -58,58 +58,58 @@ export function NewAllocationForm({
   //   },
   // });
 
-  const createAllocation = async (values: z.infer<typeof formSchema>) => {
-    const response = await fetch("/api/team/allocation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectId: values.projectId,
-        userId: values.userId,
-        date: values.date,
-        frequency: values.frequency,
-        enddate: values?.enddate,
-        billableTime: values.billableTime,
-        nonBillableTime: values.nonBillableTime,
-        team: team,
-      }),
-    });
-    if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
-    }
-    setSubmitCount((prev) => prev++);
-  };
+  // const createAllocation = async (values: z.infer<typeof formSchema>) => {
+  //   const response = await fetch("/api/team/allocation", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       projectId: values.projectId,
+  //       userId: values.userId,
+  //       date: values.date,
+  //       frequency: values.frequency,
+  //       enddate: values?.enddate,
+  //       billableTime: values.billableTime,
+  //       nonBillableTime: values.nonBillableTime,
+  //       team: team,
+  //     }),
+  //   });
+  //   if (!response?.ok) {
+  //     return showToast("Something went wrong.", "warning");
+  //   }
+  //   setSubmitCount((prev) => prev++);
+  // };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded = !!projects
-      .find((project) => project.id === values.projectId)
-      ?.Members.find((member) => member.id === values.userId);
+  // async function onSubmit(values: z.infer<typeof formSchema>) {
+  //   const isUserAdded = !!projects
+  //     .find((project) => project.id === values.projectId)
+  //     ?.Members.find((member) => member.id === values.userId);
 
-    if (!isUserAdded) {
-      const response = await fetch("/api/team/project", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          team: team,
-          projectId: values.projectId,
-          userId: values.userId,
-        }),
-      });
+  //   if (!isUserAdded) {
+  //     const response = await fetch("/api/team/project", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         team: team,
+  //         projectId: values.projectId,
+  //         userId: values.userId,
+  //       }),
+  //     });
 
-      if (response?.ok) {
-        createAllocation(values);
-      }
-    } else {
-      createAllocation(values);
-    }
+  //     if (response?.ok) {
+  //       createAllocation(values);
+  //     }
+  //   } else {
+  //     createAllocation(values);
+  //   }
 
-    SheetCloseButton.current?.click();
-    showToast("A new allocation was created", "success");
-    router.refresh();
-  }
+  //   SheetCloseButton.current?.click();
+  //   showToast("A new allocation was created", "success");
+  //   router.refresh();
+  // }
 
   // useEffect(() => {
   //   if (isOngoing) form.setValue("frequency", "ONGOING");
