@@ -72,21 +72,21 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     }
   }
 
-  const addUser = async (values: z.infer<typeof formSchema>) => {
-    const response = await fetch("/api/team/project", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team: team,
-        projectId: values.projectId,
-        userId: values.userId,
-      }),
-    })
+  // const addUser = async (values: z.infer<typeof formSchema>) => {
+  //   const response = await fetch("/api/team/project", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       team: team,
+  //       projectId: values.projectId,
+  //       userId: values.userId,
+  //     }),
+  //   })
 
-    return response;
-  }
+  //   return response;
+  // }
 
   // const updateAllocation = async ({ values, allocationId }: { values: z.infer<typeof formSchema>; allocationId: number }) => {
   //   const response = await fetch("/api/team/allocation/update", {
@@ -116,16 +116,16 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
     const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
 
-    if (!isUserAdded) {
-      const addUserResponse = await addUser(values)
-      if (addUserResponse?.ok) {
-        createAllocation(values)
-      }
-    } else if (isAssignmentCreated) {
-      // updateAllocation({ values, allocationId: isAssignmentCreated?.id })
-    } else {
-      createAllocation(values)
-    }
+    // if (!isUserAdded) {
+    //   const addUserResponse = await addUser(values)
+    //   if (addUserResponse?.ok) {
+    //     createAllocation(values)
+    //   }
+    // } else if (isAssignmentCreated) {
+    //   // updateAllocation({ values, allocationId: isAssignmentCreated?.id })
+    // } else {
+    //   createAllocation(values)
+    // }
 
     SheetCloseButton.current?.click();
     router.refresh();
