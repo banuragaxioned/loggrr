@@ -112,7 +112,7 @@ export function NewAllocationForm({
   useEffect(() => {
     if (isOngoing) form.setValue("frequency", "ONGOING");
     else form.setValue("frequency", "DAY");
-  }, [isOngoing, form]);
+  }, [isOngoing]);
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
