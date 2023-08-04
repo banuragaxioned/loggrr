@@ -112,24 +112,24 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
   //   }
   // }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
-    const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
+  // async function onSubmit(values: z.infer<typeof formSchema>) {
+  //   const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+  //   const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
 
-    // if (!isUserAdded) {
-    //   const addUserResponse = await addUser(values)
-    //   if (addUserResponse?.ok) {
-    //     createAllocation(values)
-    //   }
-    // } else if (isAssignmentCreated) {
-    //   // updateAllocation({ values, allocationId: isAssignmentCreated?.id })
-    // } else {
-    //   createAllocation(values)
-    // }
+  //   // if (!isUserAdded) {
+  //   //   const addUserResponse = await addUser(values)
+  //   //   if (addUserResponse?.ok) {
+  //   //     createAllocation(values)
+  //   //   }
+  //   // } else if (isAssignmentCreated) {
+  //   //   // updateAllocation({ values, allocationId: isAssignmentCreated?.id })
+  //   // } else {
+  //   //   createAllocation(values)
+  //   // }
 
-    SheetCloseButton.current?.click();
-    router.refresh();
-  }
+  //   SheetCloseButton.current?.click();
+  //   router.refresh();
+  // }
 
   useEffect(() => {
     if (isOngoing) form.setValue("frequency", "ONGOING")
@@ -154,7 +154,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
             <SheetTitle>Add a new allocation</SheetTitle>
             <SheetDescription>Good planning goes a long way.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
+          <form onSubmit={/*form.handleSubmit(onSubmit)*/ ()=>null} className="my-2 grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
               name="projectId"
