@@ -20,33 +20,35 @@ import {
 import useToast from "@/hooks/useToast";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Icons } from "../icons";
 
-const formSchema = z.object({
-  projectId: z.coerce.number().min(1),
-  userId: z.coerce.number().min(1),
-  date: z.coerce.date(),
-  frequency: z.nativeEnum(AllocationFrequency),
-  enddate: z.coerce.date().optional(),
-  billableTime: z.coerce.number(),
-  nonBillableTime: z.coerce.number(),
-});
-
-export function NewAllocationForm({ team, projects, users }: { team: Tenant["slug"], projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[] }) {
+export function NewAllocationForm({ team, projects, users, AllocationFrequency }: { team: string, projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[],AllocationFrequency:any }) {
   const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
+  
+  const formSchema = z.object({
+    projectId: z.coerce.number().min(1),
+    userId: z.coerce.number().min(1),
+    date: z.coerce.date(),
+    frequency: z.nativeEnum(AllocationFrequency),
+    enddate: z.coerce.date().optional(),
+    billableTime: z.coerce.number(),
+    nonBillableTime: z.coerce.number(),
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       frequency: AllocationFrequency.DAY,
     },
   });
+
+  
 
   const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {

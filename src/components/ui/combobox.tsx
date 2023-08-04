@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 type InlineComboboxProps = {
   options: ComboboxOptions[];
-  setVal: UseFormSetValue<AssignFormValues>;
+  setVal: UseFormSetValue<AssignFormValues> | any;
   fieldName: "projectId" | "userId";
   icon: React.ReactNode;
   label: string;
