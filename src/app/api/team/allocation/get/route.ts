@@ -102,9 +102,9 @@ export async function POST(req: Request) {
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    // if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
-    //   return new Response("Unauthorized", { status: 403 });
-    // }
+    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+      return new Response("Unauthorized", { status: 403 });
+    }
 
     const client = await db.user.findMany({
       where: { TenantId: { some: { slug: body.team } } },
