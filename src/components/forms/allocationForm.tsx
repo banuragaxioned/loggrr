@@ -81,7 +81,7 @@ export function NewAllocationForm({
             <SheetTitle>Add a new allocation</SheetTitle>
             <SheetDescription>Good planning goes a long way.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
+          <form onSubmit={()=>alert("hu")} className="my-2 grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
               name="projectId"
