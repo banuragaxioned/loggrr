@@ -85,7 +85,6 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const getDynamicColumns = () => {
     const days = 7;
     return getDatesInRange(Date.parse(startDate), days, weekend).map((dateObj, i) => {
-      console.log(dateObj.dateKey)
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -256,7 +255,6 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
-        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
