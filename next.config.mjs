@@ -23,6 +23,11 @@ const config = withBundleAnalyzerPlugin({
   async redirects() {
     return [
       {
+        source: "/",
+        destination: "/launchpad",
+        permanent: true,
+      },
+      {
         source: "/launchpad/:team/skills",
         destination: "/launchpad/:team/skills/summary",
         permanent: true,
