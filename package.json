@@ -5,6 +5,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "turbo": "next dev --turbo",
+    "preview": "next build && next start",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
@@ -101,5 +103,8 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.5.1"
-  }
+  },
+  "browserslist": [
+    "defaults"
+  ]
 }
