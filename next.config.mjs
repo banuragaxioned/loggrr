@@ -20,6 +20,9 @@ const config = withBundleAnalyzerPlugin({
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
+  experimental: {
+    serverComponentsExternalPackages: ["@prisma/client"],
+  },
   async redirects() {
     return [
       {
