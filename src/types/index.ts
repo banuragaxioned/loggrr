@@ -192,3 +192,9 @@ export type AssignFormValues = {
   frequency: "DAY" | "ONGOING";
   enddate?: Date | undefined;
 };
+
+export type AllUsersWithAllocation = {
+  id: number;
+  name: string | null | undefined;
+  Allocation: {id: number, projectId: number}[]
+}
