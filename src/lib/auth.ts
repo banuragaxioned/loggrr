@@ -1,9 +1,8 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { getServerSession, type NextAuthOptions, type DefaultSession } from "next-auth";
+import { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
-import { siteConfig } from "@/config/site";
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 
@@ -38,9 +37,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  // pages: {
-  //   signIn: "/login",
-  // },
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
