@@ -87,43 +87,14 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     return response;
   }
 
-  const updateAllocation = async ({ values, allocationId }: { values: z.infer<typeof formSchema>; allocationId: number }) => {
-    const response = await fetch("/api/team/allocation/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team: team,
-        allocationId,
-        date: values.date,
-        frequency: values.frequency,
-        enddate: values?.enddate ? values?.enddate : values?.date,
-        billableTime: values.billableTime,
-        nonBillableTime: values.nonBillableTime,
-      }),
-    })
-
-    if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
-    } else {
-      showToast("A new allocation was updated", "success");
-    }
-  }
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
-    const isAssignmentCreated = users.find((user) => user.id === values.userId)?.Allocation.find(allocation => allocation.projectId === values.projectId)
 
     if (!isUserAdded) {
       const addUserResponse = await addUser(values)
       if (addUserResponse?.ok) {
         createAllocation(values)
       }
-    } else if (isAssignmentCreated) {
-      updateAllocation({ values, allocationId: isAssignmentCreated?.id })
-    } else {
-      createAllocation(values)
     }
 
     SheetCloseButton.current?.click();
