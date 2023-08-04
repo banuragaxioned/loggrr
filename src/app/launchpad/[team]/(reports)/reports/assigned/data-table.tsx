@@ -48,7 +48,7 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
         })
         .split(",")[0]
         .split("/");
-      const dateKey = `${dateArr[1]}/${dateArr[0]}/${dateArr[2]}`;
+      const dateKey = `${dateArr[0]}/${dateArr[1]}/${dateArr[2]}`;
       dates.push({
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
@@ -85,6 +85,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const getDynamicColumns = () => {
     const days = 7;
     return getDatesInRange(Date.parse(startDate), days, weekend).map((dateObj, i) => {
+      console.log(dateObj.dateKey)
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -255,6 +256,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
+        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
@@ -379,7 +381,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                                 isBillable: row.original.billable,
                                 date: () => {
                                   const temp = columns[i].accessorKey.split(".")[1].split("/");
-                                  return `${temp[1]}/${temp[0]}/${temp[2]}`;
+                                  return `${temp[0]}/${temp[1]}/${temp[2]}`;
                                 },
                                 team: team,
                               }}
