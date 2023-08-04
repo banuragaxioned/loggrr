@@ -57,9 +57,9 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
-        date: values?.date,
+        date: values.date,
         frequency: values.frequency,
-        enddate: values?.enddate ? values?.enddate : values?.date,
+        enddate: values?.enddate,
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
@@ -67,10 +67,9 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     });
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
-    } else {
-      showToast("A new allocation was created", "success");
     }
-  }
+  };
+
 
   const addUser = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/project", {
