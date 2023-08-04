@@ -124,107 +124,108 @@ export function NewAllocationForm({
   };
 
   return (
-    <Sheet onOpenChange={handleOpenChange}>
-      <SheetTrigger asChild>
-        <Button variant="outline">Add</Button>
-      </SheetTrigger>
-      <SheetContent position="right" size="sm">
-        <Form {...form}>
-          <SheetHeader>
-            <SheetTitle>Add a new allocation</SheetTitle>
-            <SheetDescription>Good planning goes a long way.</SheetDescription>
-          </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="projectId"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Project</FormLabel>
-                  <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="projects"
-                      options={projects}
-                      setVal={form.setValue}
-                      fieldName="projectId"
-                      icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>User</FormLabel>
-                  <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="users"
-                      options={users}
-                      setVal={form.setValue}
-                      fieldName="userId"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="billableTime"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Billable</FormLabel>
-                  <FormControl className="mt-2">
-                    <Input type="number" placeholder="1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="nonBillableTime"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Non-billable</FormLabel>
-                  <FormControl className="mt-2">
-                    <Input type="number" placeholder="1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <SheetFooter className="mt-2 justify-start space-x-3">
-              <Button type="submit" variant="secondary">
-                Submit
-              </Button>
-              <SheetClose asChild>
-                <Button type="submit" ref={SheetCloseButton}>
-                  Cancel
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+    <></>
+    // <Sheet onOpenChange={handleOpenChange}>
+    //   <SheetTrigger asChild>
+    //     <Button variant="outline">Add</Button>
+    //   </SheetTrigger>
+    //   <SheetContent position="right" size="sm">
+    //     <Form {...form}>
+    //       <SheetHeader>
+    //         <SheetTitle>Add a new allocation</SheetTitle>
+    //         <SheetDescription>Good planning goes a long way.</SheetDescription>
+    //       </SheetHeader>
+    //       <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
+    //         <FormField
+    //           control={form.control}
+    //           name="projectId"
+    //           render={({ field }) => (
+    //             <FormItem className="col-span-2">
+    //               <FormLabel>Project</FormLabel>
+    //               <FormControl className="mt-2">
+    //                 <InlineCombobox
+    //                   label="projects"
+    //                   options={projects}
+    //                   setVal={form.setValue}
+    //                   fieldName="projectId"
+    //                   icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+    //                 />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name="userId"
+    //           render={({ field }) => (
+    //             <FormItem className="col-span-2">
+    //               <FormLabel>User</FormLabel>
+    //               <FormControl className="mt-2">
+    //                 <InlineCombobox
+    //                   label="users"
+    //                   options={users}
+    //                   setVal={form.setValue}
+    //                   fieldName="userId"
+    //                   icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+    //                 />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name="date"
+    //           render={({ field }) => (
+    //             <FormItem className="col-span-2">
+    //               <FormLabel>Duration</FormLabel>
+    //               <FormControl className="mt-2">
+    //                 <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name="billableTime"
+    //           render={({ field }) => (
+    //             <FormItem className="col-span-1">
+    //               <FormLabel>Billable</FormLabel>
+    //               <FormControl className="mt-2">
+    //                 <Input type="number" placeholder="1" {...field} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name="nonBillableTime"
+    //           render={({ field }) => (
+    //             <FormItem className="col-span-1">
+    //               <FormLabel>Non-billable</FormLabel>
+    //               <FormControl className="mt-2">
+    //                 <Input type="number" placeholder="1" {...field} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <SheetFooter className="mt-2 justify-start space-x-3">
+    //           <Button type="submit" variant="secondary">
+    //             Submit
+    //           </Button>
+    //           <SheetClose asChild>
+    //             <Button type="submit" ref={SheetCloseButton}>
+    //               Cancel
+    //             </Button>
+    //           </SheetClose>
+    //         </SheetFooter>
+    //       </form>
+    //     </Form>
+    //   </SheetContent>
+    // </Sheet>
   );
 }
