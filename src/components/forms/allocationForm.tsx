@@ -122,7 +122,7 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
         createAllocation(values)
       }
     } else if (isAssignmentCreated) {
-      updateAllocation({ values, allocationId: isAssignmentCreated?.id })
+      // updateAllocation({ values, allocationId: isAssignmentCreated?.id })
     } else {
       createAllocation(values)
     }
