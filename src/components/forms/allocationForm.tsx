@@ -48,29 +48,29 @@ export function NewAllocationForm({ team, projects, users }: { team: Tenant["slu
     },
   });
 
-  const createAllocation = async (values: z.infer<typeof formSchema>) => {
-    const response = await fetch("/api/team/allocation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectId: values.projectId,
-        userId: values.userId,
-        date: values?.date,
-        frequency: values.frequency,
-        enddate: values?.enddate ? values?.enddate : values?.date,
-        billableTime: values.billableTime,
-        nonBillableTime: values.nonBillableTime,
-        team: team,
-      }),
-    });
-    if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
-    } else {
-      showToast("A new allocation was created", "success");
-    }
-  }
+  // const createAllocation = async (values: z.infer<typeof formSchema>) => {
+  //   const response = await fetch("/api/team/allocation", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       projectId: values.projectId,
+  //       userId: values.userId,
+  //       date: values?.date,
+  //       frequency: values.frequency,
+  //       enddate: values?.enddate ? values?.enddate : values?.date,
+  //       billableTime: values.billableTime,
+  //       nonBillableTime: values.nonBillableTime,
+  //       team: team,
+  //     }),
+  //   });
+  //   if (!response?.ok) {
+  //     return showToast("Something went wrong.", "warning");
+  //   } else {
+  //     showToast("A new allocation was created", "success");
+  //   }
+  // }
 
   // const addUser = async (values: z.infer<typeof formSchema>) => {
   //   const response = await fetch("/api/team/project", {
