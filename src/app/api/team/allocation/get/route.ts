@@ -41,7 +41,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
     // allocationEndDate is not exist
     if (!allocationEndDate && allocation.frequency !== "ONGOING") {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toLocaleString().split("T")[0];
+      const date = allocationStartDate.toISOString().split("T")[0];
       const isAllocationDateExist = accumulator[date];
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
@@ -69,7 +69,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
       (allocation.frequency === "ONGOING" && !allocation.enddate && allocationStartDate <= endDate)
     ) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toLocaleString().split("T")[0];
+      const date = allocationStartDate.toISOString().split("T")[0]
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,

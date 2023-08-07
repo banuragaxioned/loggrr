@@ -40,15 +40,7 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
   while (count < days) {
     const currentDate = new Date(start);
     if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-      const dateArr = currentDate
-        .toLocaleString("en-us", {
-          day: "numeric",
-          month: "numeric",
-          year: "numeric",
-        })
-        .split(",")[0]
-        .split("/");
-      const dateKey = `${dateArr[0]}/${dateArr[1]}/${dateArr[2]}`;
+      const dateKey = currentDate.toISOString().split("T")[0];
       dates.push({
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
@@ -377,10 +369,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                                 projectId: row.original.id,
                                 userId: row.original.userId,
                                 isBillable: row.original.billable,
-                                date: () => {
-                                  const temp = columns[i].accessorKey.split(".")[1].split("/");
-                                  return `${temp[0]}/${temp[1]}/${temp[2]}`;
-                                },
+                                date:  columns[i].accessorKey.split(".")[1],
                                 team: team,
                               }}
                               type={billable}
