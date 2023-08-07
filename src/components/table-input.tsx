@@ -140,7 +140,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
               setVal={setRange}
               isOngoing={Ongoing}
               setOngoing={setOngoing}
-              startDate={new Date(data.date())}
+              startDate={new Date(data.date)}
             />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>

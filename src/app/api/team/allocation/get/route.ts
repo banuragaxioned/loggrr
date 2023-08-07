@@ -41,7 +41,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
     // allocationEndDate is not exist
     if (!allocationEndDate && allocation.frequency !== "ONGOING") {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toLocaleString().split("T")[0];
+      const date = allocationStartDate.toISOString().split("T")[0];
       const isAllocationDateExist = accumulator[date];
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
@@ -69,7 +69,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
       (allocation.frequency === "ONGOING" && !allocation.enddate && allocationStartDate <= endDate)
     ) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toLocaleString().split("T")[0];
+      const date = allocationStartDate.toISOString().split("T")[0]
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
@@ -102,9 +102,9 @@ export async function POST(req: Request) {
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    // if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
-    //   return new Response("Unauthorized", { status: 403 });
-    // }
+    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+      return new Response("Unauthorized", { status: 403 });
+    }
 
     const client = await db.user.findMany({
       where: { TenantId: { some: { slug: body.team } } },
