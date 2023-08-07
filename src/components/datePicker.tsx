@@ -52,7 +52,7 @@ export function CalendarDateRangePicker({
       if (date?.from) setVal("date", date?.from);
       if (date?.to) setVal("enddate", date?.to);
     }
-  }, []);
+  }, [date]);
 
   const handleChecked = (evt: boolean) => {
     evt

@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { CalendarDateRangePicker as DateRangePicker } from "@/components/datePicker";
 import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
-import dayjs from "dayjs";
 
 export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const billable = data.hoursObj?.billableTime || 0;
@@ -141,7 +140,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
               setVal={setRange}
               isOngoing={Ongoing}
               setOngoing={setOngoing}
-              startDate={dayjs(data.date).add(1, "day").toDate()}
+              startDate={new Date(data.date)}
             />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>

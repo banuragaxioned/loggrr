@@ -369,7 +369,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
                                 projectId: row.original.id,
                                 userId: row.original.userId,
                                 isBillable: row.original.billable,
-                                date:  columns[i].accessorKey.split(".")[1],
+                                date: columns[i].accessorKey.split(".")[1],
                                 team: team,
                               }}
                               type={billable}
