@@ -41,9 +41,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     session: async ({ session, token }) => {
       if (session?.user) {
-        session.user.id = Number(token.uid);
+        session.user.id = Number(token.id);
       }
-
       // Add tenant properties to the session object
       const userWithTenants = await prisma.user.findUniqueOrThrow({
         where: { id: session.user.id },
