@@ -46,6 +46,11 @@ export const dashboardConfig: DashboardConfig = {
       icon: "post",
     },
     {
+      title: "Members",
+      href: "/manage/members",
+      icon: "user",
+    },
+    {
       title: "Billing",
       href: "/billing",
       icon: "billing",

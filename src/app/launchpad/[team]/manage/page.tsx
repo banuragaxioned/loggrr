@@ -1,7 +1,7 @@
-export default async function Page() {
-  return (
-    <>
-      <h3>Manage</h3>
-    </>
-  );
+const Page = async()=> {
+    return (
+        <h2>Manage</h2>
+    )
 }
+
+export default Page;
