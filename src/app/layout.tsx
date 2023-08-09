@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import PHProvider, { Analytics } from "@/components/analytics";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
+import { Metadata } from "next";
 
 // Font files can be colocated inside of `pages`
 const fontHeading = localFont({
@@ -51,7 +52,7 @@ export default function RootLayout({
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
