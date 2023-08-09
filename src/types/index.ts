@@ -207,3 +207,11 @@ export type Member = {
   avatar: string | null;
   role: string;
 };
+
+export type allMembers = {
+  id: number; 
+  name: string | null;
+  image: string | null; 
+  email: string;
+  allocationId: number | null 
+}
