@@ -20,7 +20,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown } from "lucide-react";
 import { Member } from "@/types";
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
+import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 
 const columns: ColumnDef<Member | any>[] = [
   {
@@ -76,6 +77,7 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [data,setData] = React.useState<TData[]>([]);
   const [initialLoad,setInitialLoad] = React.useState<boolean>(false);
+  const [status,setStatus] = React.useState<string>("ACTIVE");
 
   const table = useReactTable({
     data,
@@ -95,7 +97,7 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
   });
   
   React.useEffect(()=>{
-    const members = fetch("/api/team/members",{
+    fetch("/api/team/members",{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,6 +109,19 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
 
   return (
     <div>
+      <div className="mb-3 flex items-center rounded-xl border-[1px] border-border p-[15px]">
+      <SingleSelectDropdown
+          selectionHandler={(value: string) => setStatus(value)}
+          contentClassName="[&>div]hover:bg-hover"
+          placeholder="Active"
+          selectionOptions={[
+            { title: "Active", value: "ACTIVE" },
+            { title: "Archived", value: "INACTIVE" },
+            { title: "All", value: "ALL" },
+          ]}
+          triggerClassName="w-[220px] 2xl:text-sm"
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -124,6 +139,7 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, i) => (
+              (row.original.status.trim() === status || status === 'ALL') &&
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="group">
                 {row.getVisibleCells().map((cell: any, j: number) => {
                   return (

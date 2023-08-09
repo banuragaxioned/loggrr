@@ -39,6 +39,7 @@ export const POST  = async (req : Request) => {
                         name: true,
                         image: true,
                         email: true,
+                        status:true
                       },
                     },
                   },
@@ -50,7 +51,7 @@ export const POST  = async (req : Request) => {
               const id = obj.id;
               const role = obj.role;
               const user = obj.User;
-              return { id, userId: user?.id, name: user?.name, avatar: user?.image, mail: user?.email, role };
+              return { id, userId: user?.id, name: user?.name, avatar: user?.image, mail: user?.email, role,status:user.status };
             });
 
         return new Response(JSON.stringify({ members }));
