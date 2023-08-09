@@ -49,7 +49,10 @@ export function CalendarDateRangePicker({
     if (startDate) {
       setVal(date);
     } else {
-      if (date?.from) setVal("date", date?.from);
+      if (date?.from) {
+        setVal("date", date?.from);
+        setVal("enddate", date?.from);
+      }
       if (date?.to) setVal("enddate", date?.to);
     }
   }, [date]);
