@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { team: Tenant["slug"] 
   return (
     <DashboardShell>
       <DashboardHeader heading="Reports"></DashboardHeader>
-        <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} />
     </DashboardShell>
   );
 }

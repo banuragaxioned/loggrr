@@ -69,7 +69,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
       (allocation.frequency === "ONGOING" && !allocation.enddate && allocationStartDate <= endDate)
     ) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split("T")[0]
+      const date = allocationStartDate.toISOString().split("T")[0];
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
