@@ -1,7 +1,7 @@
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 import dayjs from "dayjs";
-import { getAllocation,AllocationDates, GlobalAllocation, ProjectAllocation} from "@/types";
+import { getAllocation, AllocationDates, GlobalAllocation, ProjectAllocation } from "@/types";
 import { splitIntoChunk } from "@/lib/helper";
 import { Allocation } from "@prisma/client";
 
