@@ -20,26 +20,27 @@ import {
 import useToast from "@/hooks/useToast";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AllocationFrequency, Tenant } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Icons } from "../icons";
 
-export function NewAllocationForm({ team, projects, users, AllocationFrequency }: { team: string, projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[],AllocationFrequency:any }) {
+export function NewAllocationForm({ team, projects, users }: { team: string, projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[] }) {
   const [isOngoing, setOngoing] = useState(false)
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
-  
-  const formSchema = z.object({
-    projectId: z.coerce.number().min(1),
-    userId: z.coerce.number().min(1),
-    date: z.coerce.date(),
-    frequency: z.nativeEnum(AllocationFrequency),
-    enddate: z.coerce.date().optional(),
-    billableTime: z.coerce.number(),
-    nonBillableTime: z.coerce.number(),
-  });
+
+const formSchema = z.object({
+  projectId: z.coerce.number().min(1),
+  userId: z.coerce.number().min(1),
+  date: z.coerce.date(),
+  frequency: z.nativeEnum(AllocationFrequency),
+  enddate: z.coerce.date().optional(),
+  billableTime: z.coerce.number(),
+  nonBillableTime: z.coerce.number(),
+});
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,8 +48,6 @@ export function NewAllocationForm({ team, projects, users, AllocationFrequency }
       frequency: AllocationFrequency.DAY,
     },
   });
-
-  
 
   const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
@@ -69,6 +68,8 @@ export function NewAllocationForm({ team, projects, users, AllocationFrequency }
     });
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
+    } else {
+      showToast("A new allocation was created", "success");
     }
   };
 
@@ -97,6 +98,8 @@ export function NewAllocationForm({ team, projects, users, AllocationFrequency }
       if (addUserResponse?.ok) {
         createAllocation(values)
       }
+    }else {
+      createAllocation(values)
     }
 
     SheetCloseButton.current?.click();
