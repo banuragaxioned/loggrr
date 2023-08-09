@@ -1,4 +1,5 @@
 import { getMembers } from "@/server/services/members";
+import { DataTable } from "./data-table";
 
 const Members = async({params}:{params:{team:string}})=> {
 
@@ -7,8 +8,8 @@ const Members = async({params}:{params:{team:string}})=> {
     console.log(members)
 
     return (
-        <h3>Memebers</h3>
-    )
+        <DataTable data={members}/>
+    ) 
 }
 
 export default Members
