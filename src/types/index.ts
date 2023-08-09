@@ -196,5 +196,14 @@ export type AssignFormValues = {
 export type AllUsersWithAllocation = {
   id: number;
   name: string | null | undefined;
-  Allocation: {id: number, projectId: number}[]
-}
+  Allocation: { id: number; projectId: number }[];
+};
+
+export type Member = {
+  id: number;
+  name: string;
+  mail: string;
+  userId: number;
+  avatar: string | null;
+  role: string;
+};
