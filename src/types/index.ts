@@ -214,5 +214,6 @@ export type allMembers = {
   email: string;
   image: string | null;
   allocationId: number | null;
+  TenantId: { slug: string; }[];
   Roles: { tenantId: number; id: number; role: Role; Tenant: { slug: string } }[];
 };

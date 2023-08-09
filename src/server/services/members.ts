@@ -39,6 +39,11 @@ export const getAllMembers = async () => {
       email: true,
       image: true,
       allocationId: true,
+      TenantId: {
+        select: {
+          slug: true,
+        }
+      },
       Roles: {
         select: {
           id: true,
