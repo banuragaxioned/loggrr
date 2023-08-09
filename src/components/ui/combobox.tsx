@@ -147,9 +147,12 @@ const ComboBox: React.FC<ComboBoxProps> = ({
 const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineComboboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<ComboboxOptions>();
   const [inputValue, setInputValue] = useState("");
 
+  const handleValueChange = (e:string) => {
+    setInputValue(e)
+    setOpen(true)
+  }
   return (
     <Command
       className={cn(
@@ -163,7 +166,7 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
         <CommandInput
           ref={inputRef}
           value={inputValue}
-          onValueChange={setInputValue}
+          onValueChange={handleValueChange}
           onBlur={() => setOpen(false)}
           onFocus={() => setOpen(true)}
           placeholder={`Select ${label}...`}
@@ -186,7 +189,6 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
                       }}
                       onSelect={() => {
                         if (option.name) setInputValue(option.name);
-                        setSelected(option);
                         setVal(fieldName, option.id);
                         setOpen(false);
                       }}
