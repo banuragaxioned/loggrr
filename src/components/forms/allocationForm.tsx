@@ -26,21 +26,29 @@ import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Icons } from "../icons";
 
-export function NewAllocationForm({ team, projects, users }: { team: string, projects: AllProjectsWithMembers[], users: AllUsersWithAllocation[] }) {
-  const [isOngoing, setOngoing] = useState(false)
+export function NewAllocationForm({
+  team,
+  projects,
+  users,
+}: {
+  team: string;
+  projects: AllProjectsWithMembers[];
+  users: AllUsersWithAllocation[];
+}) {
+  const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
-const formSchema = z.object({
-  projectId: z.coerce.number().min(1),
-  userId: z.coerce.number().min(1),
-  date: z.coerce.date(),
-  frequency: z.nativeEnum(AllocationFrequency),
-  enddate: z.coerce.date().optional(),
-  billableTime: z.coerce.number(),
-  nonBillableTime: z.coerce.number(),
-});
+  const formSchema = z.object({
+    projectId: z.coerce.number().min(1),
+    userId: z.coerce.number().min(1),
+    date: z.coerce.date(),
+    frequency: z.nativeEnum(AllocationFrequency),
+    enddate: z.coerce.date().optional(),
+    billableTime: z.coerce.number(),
+    nonBillableTime: z.coerce.number(),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,7 +81,6 @@ const formSchema = z.object({
     }
   };
 
-
   const addUser = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/project", {
       method: "POST",
@@ -85,21 +92,23 @@ const formSchema = z.object({
         projectId: values.projectId,
         userId: values.userId,
       }),
-    })
+    });
 
     return response;
-  }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded = !!projects.find(project => project.id === values.projectId)?.Members.find(member => member.id === values.userId)
+    const isUserAdded = !!projects
+      .find((project) => project.id === values.projectId)
+      ?.Members.find((member) => member.id === values.userId);
 
     if (!isUserAdded) {
-      const addUserResponse = await addUser(values)
+      const addUserResponse = await addUser(values);
       if (addUserResponse?.ok) {
-        createAllocation(values)
+        createAllocation(values);
       }
-    }else {
-      createAllocation(values)
+    } else {
+      createAllocation(values);
     }
 
     SheetCloseButton.current?.click();
@@ -107,16 +116,16 @@ const formSchema = z.object({
   }
 
   useEffect(() => {
-    if (isOngoing) form.setValue("frequency", "ONGOING")
-    else form.setValue("frequency", "DAY")
-  }, [isOngoing])
+    if (isOngoing) form.setValue("frequency", "ONGOING");
+    else form.setValue("frequency", "DAY");
+  }, [isOngoing]);
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
-      setOngoing(false)
+      setOngoing(false);
       form.reset();
     }
-  }
+  };
 
   return (
     <Sheet onOpenChange={handleOpenChange}>
@@ -137,7 +146,13 @@ const formSchema = z.object({
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="projects" options={projects} setVal={form.setValue} fieldName="projectId" icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />} />
+                    <InlineCombobox
+                      label="projects"
+                      options={projects}
+                      setVal={form.setValue}
+                      fieldName="projectId"
+                      icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,7 +165,13 @@ const formSchema = z.object({
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox label="users" options={users} setVal={form.setValue} fieldName="userId" icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />} />
+                    <InlineCombobox
+                      label="users"
+                      options={users}
+                      setVal={form.setValue}
+                      fieldName="userId"
+                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -195,7 +216,7 @@ const formSchema = z.object({
                 </FormItem>
               )}
             />
-            <SheetFooter className="justify-start mt-2 space-x-3">
+            <SheetFooter className="mt-2 justify-start space-x-3">
               <Button type="submit" variant="secondary">
                 Submit
               </Button>

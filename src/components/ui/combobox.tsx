@@ -149,10 +149,10 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineCombo
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const handleValueChange = (e:string) => {
-    setInputValue(e)
-    setOpen(true)
-  }
+  const handleValueChange = (e: string) => {
+    setInputValue(e);
+    setOpen(true);
+  };
   return (
     <Command
       className={cn(
