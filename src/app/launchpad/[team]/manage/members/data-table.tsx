@@ -20,10 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown } from "lucide-react";
 import { Member } from "@/types";
-
-interface DataTableProps<TData, TValue> {
-  data: TData[] | any;
-}
+import { Skeleton } from "@/components/ui/skeleton"
 
 const columns: ColumnDef<Member | any>[] = [
   {
@@ -73,10 +70,12 @@ const columns: ColumnDef<Member | any>[] = [
   },
 ];
 
-export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ team }:{team:string}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [data,setData] = React.useState<TData[]>([]);
+  const [initialLoad,setInitialLoad] = React.useState<boolean>(false);
 
   const table = useReactTable({
     data,
@@ -94,6 +93,17 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
       columnVisibility,
     },
   });
+  
+  React.useEffect(()=>{
+    const members = fetch("/api/team/members",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ team }),
+    }).then((res)=>res.json()).then((res)=>setData(res.members)).catch(e=>setData([]))
+    setInitialLoad(true);
+  },[]);
 
   return (
     <div>
@@ -133,7 +143,30 @@ export function DataTable<TData, TValue>({ data }: DataTableProps<TData, TValue>
                 })}
               </TableRow>
             ))
-          ) : (
+          ) :
+            !initialLoad ?
+            (
+              <>
+              <TableRow>
+                  {columns.map(()=>(
+                   <TableCell>
+                      <Skeleton className="w-40 h-4"/>
+                </TableCell>
+                  )
+                  )}
+              </TableRow>
+               <TableRow>
+               {columns.map(()=>(
+                <TableCell>
+                   <Skeleton className="w-40 h-4"/>
+             </TableCell>
+               )
+               )}
+           </TableRow>
+           </>
+            )
+          :
+           (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
                 No results.
