@@ -1,6 +1,6 @@
 const Page = async()=> {
     return (
-        <h2>Manage</h2>
+        <h3>Manage</h3>
     )
 }
 
