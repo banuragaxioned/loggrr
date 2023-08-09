@@ -19,7 +19,10 @@
     "ladle:build": "npx ladle build",
     "ladle:preview": "npx ladle preview",
     "preview-email": "email dev --dir src/emails",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "analyze:server": "BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "BUNDLE_ANALYZE=browser next build",
+    "commit": "commit"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
@@ -80,6 +83,7 @@
     "@axioned/prettier-config": "^1.0.4",
     "@commitlint/cli": "^17.7.0",
     "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/prompt-cli": "^17.7.0",
     "@next/bundle-analyzer": "^13.4.13",
     "@tailwindcss/forms": "^0.5.4",
     "@types/node": "^20.4.9",
