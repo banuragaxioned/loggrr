@@ -8,8 +8,8 @@ const Members = async ({ params }: { params: { team: string } }) => {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Members" text={`This is a list of  all the member in ${team} team `}>
-        <AddUserInTeam team={team}/>
+      <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
+        <AddUserInTeam team={team} />
       </DashboardHeader>
       <DataTable team={team} />
     </DashboardShell>
