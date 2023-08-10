@@ -86,7 +86,7 @@ export function FancyBox({ options, selectedValues, setSelectedValues, defaultLa
                       key={list.value}
                       value={list.value}
                       onSelect={() => toggleList(list)}
-                      className="flex w-full cursor-pointer justify-between rounded px-[18px] py-2 text-sm aria-selected:bg-hover"
+                      className="flex w-full cursor-pointer justify-between rounded bg-popover px-[18px] py-2 text-sm text-popover-foreground"
                     >
                       <Check className={cn("mr-2 h-4 w-4", isActive ? "opacity-100" : "opacity-0")} />
                       <div className="flex-1">{list.label}</div>
