@@ -7,7 +7,7 @@ import { Role } from "@prisma/client";
 const addUserSchema = z.object({
   team: z.string().min(1),
   userrole: z.nativeEnum(Role),
-  userId: z.coerce.number().min(1),
+  emailAddress: z.string().min(1),
 });
 
 export async function POST(req: Request) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     const adduser = await db.user.update({
-      where: { id: body.userId },
+      where: { email: body.emailAddress },
       data: {
         TenantId: {
           connect: { slug: body.team },
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
           create: {
             role: body.userrole,
             Tenant: {
-              connect: {slug: body.team}
+              connect: { slug: body.team }
             }
           }
         }

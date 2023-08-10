@@ -30,33 +30,3 @@ export const getMembers = async (team: string) => {
   });
   return members;
 };
-
-export const getAllMembers = async () => {
-  const allMembers = await db.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      allocationId: true,
-      TenantId: {
-        select: {
-          slug: true,
-        }
-      },
-      Roles: {
-        select: {
-          id: true,
-          role: true,
-          tenantId: true,
-          Tenant: {
-            select: {
-              slug: true,
-            }
-          }
-        }
-      }
-    }
-  })
-  return allMembers
-}

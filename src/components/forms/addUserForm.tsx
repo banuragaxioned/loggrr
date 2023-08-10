@@ -22,7 +22,7 @@ import { allMembers } from "@/types";
 import { Input } from "../ui/input";
 import { Role } from "@prisma/client";
 
-export function AddUserInTeam({ users, team }: { users: allMembers[]; team: string }) {
+export function AddUserInTeam({ team }: { team: string }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -35,7 +35,7 @@ export function AddUserInTeam({ users, team }: { users: allMembers[]; team: stri
     resolver: zodResolver(formSchema),
   });
 
-  const addUser = async (userId: number | undefined) => {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch("/api/team/members/add", {
       method: "POST",
       headers: {
@@ -44,27 +44,15 @@ export function AddUserInTeam({ users, team }: { users: allMembers[]; team: stri
       body: JSON.stringify({
         team: team,
         userrole: Role.USER,
-        userId
+        emailAddress: values.emailAddress
       }),
     });
-    showToast('User added', 'success')
-  }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserExist = users.find((user) => user.email === values.emailAddress)
-    const isUserAdded = isUserExist?.TenantId.find((tenant) => tenant.slug === team)
 
-    console.log(isUserExist)
-    console.log(isUserAdded)
-
-    if (isUserExist && !isUserAdded) {
-      addUser(isUserExist.id)
-    } else if (!isUserExist) {
-      showToast('User does not exist', 'warning')
-    } else if (isUserAdded) {
-      showToast('User already added', 'info')
-    }
-
+    if(response?.ok) showToast('User added', 'success');
+    else if(response?.status === 500) showToast('User not exist', 'error')
+    else showToast('Not added', 'warning');
+    
     SheetCloseButton.current?.click();
     router.refresh();
   }
