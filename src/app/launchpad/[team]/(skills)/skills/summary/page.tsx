@@ -29,7 +29,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
         text="This is a summary of your skills that you have been assessed on."
       ></DashboardHeader>
       <Overview data={skills} />
-      <SkillList props={skills} />
+      <SkillList props={skills} currentUser={user.id} team={params.team}/>
     </DashboardShell>
   );
 }
