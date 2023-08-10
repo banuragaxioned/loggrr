@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant, User, Project, Allocation, Role } from "@prisma/client";
+import { Tenant, User, Project, Allocation } from "@prisma/client";
 
 export type Allocations = {
   id: number;
@@ -206,14 +206,4 @@ export type Member = {
   userId: number;
   avatar: string | null;
   role: string;
-};
-
-export type allMembers = {
-  id: number;
-  name: string | null;
-  email: string;
-  image: string | null;
-  allocationId: number | null;
-  TenantId: { slug: string; }[];
-  Roles: { tenantId: number; id: number; role: Role; Tenant: { slug: string } }[];
 };
