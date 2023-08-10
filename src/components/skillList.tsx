@@ -3,6 +3,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Ban, Brain, Circle, CircleDashed, CircleDot, CircleDotDashed, LucideIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Tenant } from "@prisma/client";
+import useToast from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 
 type Scores = {
   id: number;
@@ -49,11 +52,29 @@ const levels: Level[] = [
   },
 ];
 
-async function Update(skill: number, value: string) {
-  console.log(skill, Number(value));
-}
+export function SkillList({ props, currentUser, team }: { props: Scores, currentUser: number, team: Tenant["slug"] }) {
+  const router = useRouter()
+  const showToast = useToast();
 
-export function SkillList({ props }: { props: Scores }) {
+  async function Update(skill: number, value: string) {
+    const response = await fetch("/api/team/skill/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team: team,
+        userId: currentUser,
+        skillId: skill,
+        level: Number(value)
+      }),
+    });
+
+    if(response?.ok) showToast('Skill updated', 'success');
+
+    router.refresh()
+  }
+
   return (
     <Card>
       <CardHeader>
