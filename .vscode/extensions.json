@@ -1,11 +1,15 @@
 {
   "recommendations": [
+    "formulahendry.auto-rename-tag",
+    "steoates.autoimport",
     "naumovs.color-highlight",
     "fabiospampinato.vscode-highlight",
     "wix.vscode-import-cost",
     "sonarsource.sonarlint-vscode",
     "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
     "prisma.prisma",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "ms-vsliveshare.vsliveshare"
   ]
 }
