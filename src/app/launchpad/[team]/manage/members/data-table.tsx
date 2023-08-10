@@ -77,6 +77,15 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
   const [data,setData] = React.useState<TData[]>([]);
   const [status,setStatus] = React.useState<string>("ACTIVE");
 
+  
+  fetch("/api/team/members",{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ team }),
+  }).then((res)=>res.json()).then((res)=>setData(res.members)).catch(e=>setData([]));
+
   const table = useReactTable({
     data,
     columns,
@@ -94,16 +103,6 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
     },
   });
   
-  React.useEffect(()=>{
-    fetch("/api/team/members",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ team }),
-    }).then((res)=>res.json()).then((res)=>setData(res.members)).catch(e=>setData([]))
-  },[]);
-
   return (
     <div>
       <div className="mb-3 flex items-center rounded-xl border-[1px] border-border p-[15px]">
