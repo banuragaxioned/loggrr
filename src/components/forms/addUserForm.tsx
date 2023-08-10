@@ -27,7 +27,7 @@ export function AddUserInTeam({ team }: { team: string }) {
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
-    emailAddress: z.string().min(1, { message: "This field has to be filled." }).email("This is not a valid email.")
+    emailAddress: z.string().email("This is not a valid email.")
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
