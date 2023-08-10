@@ -7,7 +7,7 @@ import { Role } from "@prisma/client";
 const addUserSchema = z.object({
   team: z.string().min(1),
   userrole: z.nativeEnum(Role),
-  emailAddress: z.string().min(1),
+  emailAddress: z.string().min(1).email(),
 });
 
 export async function POST(req: Request) {
