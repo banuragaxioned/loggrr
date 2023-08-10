@@ -1,23 +1,24 @@
 "use client";
 
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Members } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Members>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
   },
 ];
