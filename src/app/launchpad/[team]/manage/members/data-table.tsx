@@ -20,7 +20,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown } from "lucide-react";
 import { Member } from "@/types";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 
 const columns: ColumnDef<Member | any>[] = [
@@ -76,7 +75,6 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [data,setData] = React.useState<TData[]>([]);
-  const [initialLoad,setInitialLoad] = React.useState<boolean>(false);
   const [status,setStatus] = React.useState<string>("ACTIVE");
 
   const table = useReactTable({
@@ -104,7 +102,6 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
       },
       body: JSON.stringify({ team }),
     }).then((res)=>res.json()).then((res)=>setData(res.members)).catch(e=>setData([]))
-    setInitialLoad(true);
   },[]);
 
   return (
@@ -160,28 +157,6 @@ export function DataTable<TData, TValue>({ team }:{team:string}) {
               </TableRow>
             ))
           ) :
-            !initialLoad ?
-            (
-              <>
-              <TableRow>
-                  {columns.map(()=>(
-                   <TableCell>
-                      <Skeleton className="w-40 h-4"/>
-                </TableCell>
-                  )
-                  )}
-              </TableRow>
-               <TableRow>
-               {columns.map(()=>(
-                <TableCell>
-                   <Skeleton className="w-40 h-4"/>
-             </TableCell>
-               )
-               )}
-           </TableRow>
-           </>
-            )
-          :
            (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
