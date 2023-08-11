@@ -1,6 +1,7 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { Ban, Brain, Circle, CircleDashed, CircleDot, CircleDotDashed, LucideIcon } from "lucide-react";
 
 type Scores = {
@@ -48,10 +49,10 @@ const levels: Level[] = [
   },
 ];
 
-export function SelectSkillLevel({ skill, setValue }: { skill: Scores; setValue: (skill: number, value: string) => void}) {
+export function SelectSkillLevel({ skill, setValue, className }: { skill: Scores; setValue: (skill: number, value: string) => void, className?: string }) {
   return (
     <Select defaultValue={String(skill.level)} onValueChange={(value) => setValue(skill.id, value)}>
-      <SelectTrigger className="w-full">
+      <SelectTrigger className={cn("w-full", className)}>
         <SelectValue placeholder="Select" />
       </SelectTrigger>
       <SelectContent>
