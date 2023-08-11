@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 const clientCreateSchema = z.object({
   userId: z.number().positive().min(1),
   skillId: z.number().positive().min(1),
-  level: z.number().min(1).max(5),
+  level: z.number().min(0).max(5),
   team: z.string().min(1),
 });
 
