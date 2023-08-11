@@ -25,7 +25,7 @@ export function DataTableColumnHeader<TData, TValue>({
 
   return (
     <div className={cn("flex items-center space-x-2", className)}>
-          <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent" onClick={()=>clickHandler(column)}>
+          <Button variant="ghost" size="sm" className="h-8 data-[state=open]:bg-accent px-0" onClick={()=>clickHandler(column)}>
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (
               <Icons.selectDown className="ml-2 h-4 w-4" />

@@ -24,8 +24,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] =
-  React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -34,7 +33,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel:getFilteredRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
     },
@@ -42,10 +41,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <>
-    <ControlPanel>
-      
-    <SingleSelectDropdown
-          selectionHandler={(value: string) =>value ==="ALL"?table.resetColumnFilters() :table.getColumn("status")?.setFilterValue(value)}
+      <ControlPanel>
+        <SingleSelectDropdown
+          selectionHandler={(value: string) =>
+            value === "ALL" ? table.resetColumnFilters() : table.getColumn("status")?.setFilterValue(value)
+          }
           placeholder="Active"
           selectionOptions={[
             { title: "Active", value: "ACTIVE" },
@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           ]}
           triggerClassName="w-[220px] 2xl:text-sm"
         />
-    </ControlPanel>
+      </ControlPanel>
 
       <Table>
         <TableHeader>
