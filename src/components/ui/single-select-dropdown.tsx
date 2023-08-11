@@ -3,8 +3,8 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SingleSelectDropdownProps {
-  triggerClassName: string;
-  contentClassName: string;
+  triggerClassName?: string;
+  contentClassName?: string;
   placeholder: string;
   selectionHandler: Function;
   selectionOptions: {
