@@ -10,9 +10,10 @@ import { cn } from "@/lib/utils";
 type InlineComboboxProps = {
   options: ComboboxOptions[];
   setVal: UseFormSetValue<AssignFormValues> | any;
-  fieldName: "projectId" | "userId";
+  fieldName: "projectId" | "userId" | "skillId";
   icon: React.ReactNode;
   label: string;
+  defaultValue?: number;
 };
 
 type ComboBoxProps = {
@@ -144,15 +145,24 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   );
 };
 
-const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineComboboxProps) => {
+const InlineCombobox = ({ options, setVal, fieldName, icon, label, defaultValue }: InlineComboboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>();
 
   const handleValueChange = (e: string) => {
     setInputValue(e);
     setOpen(true);
   };
+
+  useEffect(() => {
+    if(defaultValue) {
+      const selectedUser = options.find(option => option.id === defaultValue) 
+      setInputValue(selectedUser?.name ? selectedUser?.name : "")
+      setVal(fieldName, selectedUser?.id)
+    }
+  }, [defaultValue])
+
   return (
     <Command
       className={cn(
