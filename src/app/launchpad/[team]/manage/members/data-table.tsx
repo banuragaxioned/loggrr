@@ -7,6 +7,7 @@ import {
   VisibilityState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel:getFilteredRowModel(),
     state: {
       sorting,
     },
@@ -41,16 +43,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <>
     <ControlPanel>
-    {/* <SingleSelectDropdown
-          selectionHandler={(value: string) =>}
-          placeholder="Table view"
+      
+    <SingleSelectDropdown
+          selectionHandler={(value: string) =>value ==="ALL"?table.resetColumnFilters() :table.getColumn("status")?.setFilterValue(value)}
+          placeholder="Active"
           selectionOptions={[
             { title: "Active", value: "ACTIVE" },
             { title: "Archive", value: "ARCHIVE" },
             { title: "All", value: "ALL" },
           ]}
-        /> */}
+          triggerClassName="w-[220px] 2xl:text-sm"
+        />
     </ControlPanel>
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
