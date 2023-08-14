@@ -5,7 +5,6 @@ import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
   Sheet,
@@ -25,6 +24,13 @@ import { Icons } from "../icons";
 import { AllUsersWithAllocation } from "@/types";
 import { SelectSkillLevel } from "../selectSkill";
 
+type Scores = {
+  id: number;
+  name: string;
+  level: number;
+  skillId: number,
+}[];
+
 const formSchema = z.object({
   skillId: z.coerce.number(),
   userId: z.coerce.number().optional(),
@@ -36,11 +42,13 @@ export function AddSKill({
   users,
   currentUser,
   skillsList,
+  userSkills
 }: {
   team: string;
   users: AllUsersWithAllocation[];
   currentUser: number;
   skillsList: { id: number; name: string }[];
+  userSkills: Scores
 }) {
   const router = useRouter();
   const showToast = useToast();
@@ -50,30 +58,37 @@ export function AddSKill({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // const response = await fetch("/api/team/skill", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     name: values.name,
-    //     team: team,
-    //   }),
-    // });
+    const isSkillExist = userSkills.find(skills => skills.skillId === values.skillId)
 
-    // if (!response?.ok) {
-    //   return showToast("Something went wrong.", "warning");
-    // }
+    SheetCloseButton.current?.click();
 
-    // form.reset();
-    // SheetCloseButton.current?.click();
-    // showToast("A new Client was created", "success");
-    // router.refresh();
+    if (!isSkillExist) {
+      const response = await fetch("/api/team/members/addSkill", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          team: team,
+          userId: values.userId,
+          skillId: values.skillId,
+          skillScore: values.skillScore
+        }),
+      });
+
+      if (!response?.ok) {
+        return showToast("Something went wrong.", "warning");
+      }
+      showToast("A new skill added", "success");
+      router.refresh();
+    }
+    else {
+      showToast("Skill already added", "info");
+    }
   }
 
   return (
-    <Sheet>
+    <Sheet onOpenChange={(evt: boolean) => evt && form.reset()}>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
       </SheetTrigger>
@@ -134,6 +149,7 @@ export function AddSKill({
                       skill={{ id: 0, name: "N/A", level: 0 }}
                       setValue={(skill: number, value: string) => form.setValue("skillScore", Number(value))}
                       className={"mt-2"}
+                      skillForm={true}
                     />
                   </FormControl>
                   <FormMessage />
