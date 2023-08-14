@@ -32,7 +32,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset
-            <Icons.cross className="ml-2 h-4 w-4" />
+            <Icons.reset className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

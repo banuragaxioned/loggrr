@@ -2,14 +2,14 @@ import { Icons } from "@/components/icons";
 
 export const statuses = [
   {
-    value: "INACTIVE",
-    label: "Archived",
-    icon: Icons.archive,
-  },
-  {
     value: "ACTIVE",
     label: "Active",
     icon: Icons.activity,
+  },
+  {
+    value: "INACTIVE",
+    label: "Archived",
+    icon: Icons.archive,
   },
   {
     value: "DELETED",
@@ -22,12 +22,12 @@ export const roles = [
   {
     value: "OWNER",
     label: "Owner",
-    icon: Icons.archive,
+    icon: Icons.user,
   },
   {
     value: "MANAGER",
     label: "Manager",
-    icon: Icons.activity,
+    icon: Icons.user,
   },
   {
     value: "USER",
