@@ -1,15 +1,7 @@
 import { Column } from "@tanstack/react-table";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Icons } from "./icons";
+import { Icons } from "@/components/icons";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
@@ -25,37 +17,32 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>;
   }
 
+  const clickHandler = (column: Column<TData, TValue>) => {
+    const sortingState = column.getIsSorted();
+    !sortingState
+      ? column.toggleSorting(false)
+      : sortingState === "asc"
+      ? column.toggleSorting(true)
+      : column.clearSorting();
+  };
+
   return (
     <div className={cn("flex items-center space-x-2", className)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent">
-            <span>{title}</span>
-            {column.getIsSorted() === "desc" ? (
-              <Icons.select className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === "asc" ? (
-              <Icons.selectUp className="ml-2 h-4 w-4" />
-            ) : (
-              <Icons.select className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <Icons.selectUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Asc
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <Icons.selectDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Desc
-          </DropdownMenuItem>
-          {/* <DropdownMenuSeparator /> */}
-          {/* <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <Icons.eyeOff className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
-          </DropdownMenuItem> */}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 px-0 data-[state=open]:bg-accent"
+        onClick={() => clickHandler(column)}
+      >
+        <span>{title}</span>
+        {column.getIsSorted() === "desc" ? (
+          <Icons.selectDown className="ml-2 h-4 w-4" />
+        ) : column.getIsSorted() === "asc" ? (
+          <Icons.selectUp className="ml-2 h-4 w-4" />
+        ) : (
+          <Icons.select className="ml-2 h-4 w-4" />
+        )}
+      </Button>
     </div>
   );
 }

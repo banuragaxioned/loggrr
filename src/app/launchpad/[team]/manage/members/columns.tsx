@@ -1,9 +1,9 @@
 "use client";
 
-import { DataTableColumnHeader } from "@/components/data-table-column-header2";
 import { Members } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
 export const columns: ColumnDef<Members>[] = [
   {
