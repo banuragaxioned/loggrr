@@ -6,6 +6,8 @@ import {
   SunMedium,
   Clock,
   HelpCircle,
+  Archive,
+  Activity,
   SearchIcon,
   Folder,
   Rocket,
@@ -47,6 +49,8 @@ export default Icon;
 
 export const Icons = {
   sun: SunMedium,
+  archive: Archive,
+  activity: Activity,
   moon: Moon,
   team: Boxes,
   laptop: Laptop,
