@@ -14,6 +14,7 @@ type Scores = {
   id: number;
   name: string;
   level: number;
+  skillId: number,
 }[];
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
@@ -32,7 +33,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
         heading="My Skills"
         text="This is a summary of your skills that you have been assessed on."
       >
-        <AddSKill team={params.team} users={users} currentUser={user.id} skillsList={skillsList} />
+        <AddSKill team={params.team} users={users} currentUser={user.id} skillsList={skillsList} userSkills={skills} />
       </DashboardHeader>
       <Overview data={skills} />
       <SkillList props={skills} currentUser={user.id} team={params.team}/>
