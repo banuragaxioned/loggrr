@@ -2,7 +2,7 @@ import { Icons } from "@/components/icons";
 
 export const statuses = [
   {
-    value: "ARCHIVE",
+    value: "INACTIVE",
     label: "Archived",
     icon: Icons.archive,
   },
@@ -10,6 +10,11 @@ export const statuses = [
     value: "ACTIVE",
     label: "Active",
     icon: Icons.activity,
+  },
+  {
+    value: "DELETED",
+    label: "Deleted",
+    icon: Icons.delete,
   },
 ];
 
