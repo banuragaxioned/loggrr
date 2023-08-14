@@ -4,6 +4,13 @@ import { DashboardHeader } from "@/components/ui/header";
 import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
 import { AllocationFrequency, Tenant } from "@prisma/client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Axioned',
+  description:''
+}
+ 
 
 export default async function Assigned({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;
