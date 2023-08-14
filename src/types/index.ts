@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant, User, Project, Allocation } from "@prisma/client";
+import { Tenant, User, Project, Allocation, Status, Role, AllocationFrequency } from "@prisma/client";
 
 export type Allocations = {
   id: number;
@@ -189,7 +189,7 @@ export type AssignFormValues = {
   nonBillableTime: number;
   projectId: number;
   userId: number;
-  frequency: "DAY" | "ONGOING";
+  frequency: AllocationFrequency;
   enddate?: Date | undefined;
 };
 
@@ -199,11 +199,11 @@ export type AllUsersWithAllocation = {
   Allocation: { id: number; projectId: number }[];
 };
 
-export type Member = {
+export type Members = {
   id: number;
-  name: string;
-  mail: string;
-  userId: number;
-  avatar: string | null;
-  role: string;
+  name: string | null | undefined;
+  email: string;
+  image: string | undefined | null;
+  status: Status;
+  role: Role;
 };

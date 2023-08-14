@@ -1,21 +1,22 @@
-import { getMembers } from "@/server/services/members";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
 import { DataTable } from "./data-table";
+import { columns } from "./columns";
 import { AddUserInTeam } from "@/components/forms/addUserForm";
+import { getMembers } from "@/server/services/members";
 
-const Members = async ({ params }: { params: { team: string } }) => {
+const ManageMembers = async ({ params }: { params: { team: string } }) => {
   const { team } = params;
-  const members = await getMembers(team);
+  const data = await getMembers(team);
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Members" text={`This is a list of  all the member in ${team} team `}>
-        <AddUserInTeam team={team}/>
+      <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
+        <AddUserInTeam team={team} />
       </DashboardHeader>
-      <DataTable data={members} />
+      {data && <DataTable columns={columns} data={data} />}
     </DashboardShell>
   );
 };
 
-export default Members;
+export default ManageMembers;
