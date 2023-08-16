@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="w-6 h-6">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"  class="w-6 h-6">
 <style>
     path {
-      fill: black;
+      fill: #000;
     }
     @media (prefers-color-scheme: dark) {
       path {
-        fill: white;
+        fill: #fff;
       }
     }
   </style>
