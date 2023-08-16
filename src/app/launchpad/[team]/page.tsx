@@ -3,6 +3,12 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/server/db";
 import { Tenant } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Team',
+}
+
 
 export default async function Dashboard({ params }: { params: { team: Tenant["slug"] } }) {
   const user = await getCurrentUser();

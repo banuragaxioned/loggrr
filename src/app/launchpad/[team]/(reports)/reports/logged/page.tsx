@@ -1,3 +1,9 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Logged',
+}
+
 export default async function Page() {
   return (
     <>

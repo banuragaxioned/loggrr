@@ -7,7 +7,7 @@ import { AllocationFrequency, Tenant } from "@prisma/client";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Axioned',
+  title: 'Assigned',
   description:''
 }
  

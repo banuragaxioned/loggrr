@@ -4,6 +4,12 @@ import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { NewSkillForm } from "@/components/forms/skillForm";
 import { getSkills } from "@/server/services/skill";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Explore',
+  description:''
+}
 
 export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
   const skills = await getSkills(params.team);

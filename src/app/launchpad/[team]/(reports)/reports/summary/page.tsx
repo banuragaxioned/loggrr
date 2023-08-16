@@ -4,6 +4,11 @@ import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectSummary } from "@/server/services/project";
 import { Tenant } from "@prisma/client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Summary',
+}
 
 export default async function Page({ params }: { params: { team: Tenant["slug"] } }) {
   const { team } = params;

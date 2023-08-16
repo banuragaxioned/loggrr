@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import { dashboardConfig } from "@/config/dashboard";
 import { getCurrentUser } from "@/lib/session";
 import { DashboardNav } from "@/components/nav";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Loggr',
+    template: `%s | Reports | Loggr`,
+  },
+}
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
