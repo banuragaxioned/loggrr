@@ -7,6 +7,14 @@ import { DashboardShell } from "@/components/ui/shell";
 import { getUserSkills } from "@/server/services/skill";
 import { Overview } from "@/components/skillWidget";
 import { SkillList } from "@/components/skillList";
+import type { Metadata } from 'next';
+import { MetadataProps,pageProps} from "@/types";
+ 
+export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
+  return {
+    title:`${params.team.replace(params.team[0],params.team[0].toUpperCase())} | Summary`
+  }
+}
 
 type Scores = {
   id: number;
@@ -14,9 +22,9 @@ type Scores = {
   level: number;
 }[];
 
-export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function SkillsSummary({ params }: pageProps) {
   const user = await getCurrentUser();
-
+  generateMetadata({params})
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login");
   }

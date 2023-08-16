@@ -3,10 +3,19 @@ import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { type Tenant } from "@prisma/client";
+import type { Metadata } from 'next';
+import { MetadataProps,pageProps} from "@/types";
+ 
+export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
+  return {
+    title:`${params.team.replace(params.team[0],params.team[0].toUpperCase())} | Projects`
+  }
+}
 
-export default async function Projects({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function Projects({ params }: pageProps) {
   const { team } = params;
   const clientList = await getProjects(team);
+  generateMetadata({params})
   return (
     <DashboardShell>
       <DashboardHeader heading="Projects" text="This is all your projects">
