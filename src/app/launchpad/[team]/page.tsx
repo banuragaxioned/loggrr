@@ -3,11 +3,24 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/server/db";
 import { Tenant } from "@prisma/client";
 import { notFound } from "next/navigation";
+import type { Metadata } from 'next'
+ 
+type Props = {
+  params: { team: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+ 
+export function generateMetadata({ params, searchParams }: Props): Metadata {
+  return {
+    title: params.team,
+  }
+}
+ 
 
-export default async function Dashboard({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function Dashboard({ params,searchParams }: { params: { team: Tenant["slug"] },searchParams:any }) {
   const user = await getCurrentUser();
   const { team } = params;
-
+  generateMetadata({params,searchParams})
   if (!user) {
     return notFound();
   }
