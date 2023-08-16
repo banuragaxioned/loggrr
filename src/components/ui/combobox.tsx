@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 type InlineComboboxProps = {
   options: ComboboxOptions[];
   setVal: UseFormSetValue<AssignFormValues> | any;
-  fieldName: "projectId" | "userId" | "skillId";
+  fieldName: string;
   icon: React.ReactNode;
   label: string;
   defaultValue?: number;
