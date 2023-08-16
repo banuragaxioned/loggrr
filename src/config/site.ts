@@ -30,8 +30,8 @@ export const siteConfig: SiteConfig = {
       href: "/projects",
     },
     {
-      title: "Clients",
-      href: "/clients",
+      title: "Members",
+      href: "/manage/members",
     },
     {
       title: "Skills",

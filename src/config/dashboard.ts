@@ -25,7 +25,7 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       title: "Members",
-      href: "/members",
+      href: "/manage/members",
       icon: "user",
     },
     {
@@ -50,21 +50,6 @@ export const dashboardConfig: DashboardConfig = {
       href: "/manage/members",
       icon: "user",
     },
-    {
-      title: "Billing",
-      href: "/billing",
-      icon: "billing",
-    },
-    {
-      title: "Profile",
-      href: "/profile",
-      icon: "user",
-    },
-    {
-      title: "Settings",
-      href: "/settings",
-      icon: "settings",
-    },
   ],
   sidebarSkills: [
     {
@@ -81,11 +66,6 @@ export const dashboardConfig: DashboardConfig = {
       title: "Report",
       href: "/skills/report",
       icon: "billing",
-    },
-    {
-      title: "Settings",
-      href: "/skills/settings",
-      icon: "settings",
     },
   ],
   sidebarReports: [
