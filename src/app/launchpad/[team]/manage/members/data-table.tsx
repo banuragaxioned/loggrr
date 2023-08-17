@@ -61,7 +61,17 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={
+                    header.id === 'name' ? 
+                    'w-[30%]':
+                    header.id === 'email' ? 
+                    'w-[50%] indent-2':
+                    header.id === 'role' ?
+                    'w-[15%]':
+                    header.id === 'status' ?
+                    'w-[15%]':
+                    'w-auto'
+                  }>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -74,7 +84,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell key={cell.id}
+                  className={
+                    row.id === 'name' ? 
+                    'w-[30%]':
+                    row.id === 'email' ? 
+                    'w-[50%] indent-2':
+                    row.id === 'role' ?
+                    'w-[15%]':
+                    row.id === 'status' ?
+                    'w-[15%]':
+                    'w-auto'
+                  }
+                  >{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                 ))}
               </TableRow>
             ))
