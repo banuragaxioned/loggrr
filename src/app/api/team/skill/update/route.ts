@@ -4,10 +4,9 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
 const clientCreateSchema = z.object({
-  userId: z.number().positive().min(1),
-  skillId: z.number().positive().min(1),
   level: z.number().min(0).max(5),
   team: z.string().min(1),
+  scoreId: z.number().min(0)
 });
 
 export async function POST(req: Request) {
@@ -30,17 +29,7 @@ export async function POST(req: Request) {
     }
 
     const client = await db.skillScore.updateMany({
-      where: {
-        Tenant: {
-          slug: body.team,
-        },
-        User: {
-          id: body.userId,
-        },
-        Skill: {
-          id: body.skillId,
-        },
-      },
+      where: { id: body.scoreId },
       data: {
         level: body.level,
       },
