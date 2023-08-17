@@ -1,15 +1,10 @@
-import type { Metadata } from 'next';
-import { MetadataProps,pageProps} from "@/types";
- 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title:`${params.team.replace(params.team[0],params.team[0].toUpperCase())} | Logged`
-  }
-}
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
+import { reportConfig } from "@/config/site";
 
+export const metadata: Metadata = reportConfig.logged;
 
-export default async function Page({params}:pageProps) {
-  generateMetadata({params})
+export default async function Page({ params }: pageProps) {
   return (
     <>
       <h3>Coming soon</h3>

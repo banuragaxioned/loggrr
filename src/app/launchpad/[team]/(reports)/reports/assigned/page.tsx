@@ -3,21 +3,16 @@ import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
-import { AllocationFrequency, Tenant } from "@prisma/client";
-import type { Metadata } from 'next';
-import { MetadataProps,pageProps} from "@/types";
- 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title:`${params.team.replace(params.team[0],params.team[0].toUpperCase())} | Assigned`
-  }
-}
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
+import { reportConfig } from "@/config/site";
 
-export default async function Assigned({ params }:pageProps) {
+export const metadata: Metadata = reportConfig.assigned;
+
+export default async function Assigned({ params }: pageProps) {
   const { team } = params;
   const projects = await getProjectsId(team);
   const users = await getAllUsers(team);
-  generateMetadata({params})
   return (
     <>
       <DashboardShell>

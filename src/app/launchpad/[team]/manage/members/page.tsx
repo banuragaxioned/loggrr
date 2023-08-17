@@ -5,18 +5,14 @@ import { columns } from "./columns";
 import { AddUserInTeam } from "@/components/forms/addUserForm";
 import { getMembers } from "@/server/services/members";
 import type { Metadata } from "next";
-import { MetadataProps, pageProps } from "@/types";
+import { pageProps } from "@/types";
+import { manageConfig } from "@/config/site";
 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title: `${params.team.replace(params.team[0], params.team[0].toUpperCase())} | Members`,
-  };
-}
+export const metadata: Metadata = manageConfig.members;
 
 const ManageMembers = async ({ params }: pageProps) => {
   const { team } = params;
   const data = await getMembers(team);
-  generateMetadata({ params });
   return (
     <DashboardShell>
       <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>

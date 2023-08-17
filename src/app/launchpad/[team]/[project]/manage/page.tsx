@@ -1,16 +1,12 @@
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import type { Metadata } from 'next';
-import { MetadataProps,pageProps} from "@/types";
- 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title:`${params.team.replace(params.team[0],params.team[0].toUpperCase())} | Manage`
-  }
-}
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
+import { projectConfig } from "@/config/site";
 
-export default async function Page({params}:pageProps) {
-  generateMetadata({params})
+export const metadata: Metadata = projectConfig.manage;
+
+export default async function Page({ params }: pageProps) {
   return (
     <>
       <DashboardShell>

@@ -1,25 +1,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/server/db";
-import { Tenant } from "@prisma/client";
 import { notFound } from "next/navigation";
-import type { Metadata } from 'next';
-import { MetadataProps,pageProps } from "@/types";
- 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title: {
-      default:`${params.team.replace(params.team[0],params.team[0].toUpperCase())}`,
-      template:`%s |${params.team.replace(params.team[0],params.team[0].toUpperCase())}`
-    },
-  }
-}
- 
+import { pageProps } from "@/types";
+
 
 export default async function Dashboard({ params }:pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
-  generateMetadata({params});
   if (!user) {
     return notFound();
   }

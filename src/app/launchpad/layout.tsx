@@ -9,6 +9,21 @@ import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import TeamSwitcher from "@/components/teamSwitcher";
+import type { Metadata } from 'next';
+import { MetadataProps } from "@/types";
+import { getTeamName } from "@/server/services/team";
+ 
+export async  function generateMetadata({ params, searchParams }: MetadataProps): Promise<Metadata> {
+  const teamName = await getTeamName(params.team);
+  return {
+    
+    title: {
+      default:`${teamName}`,
+      template:`%s|${teamName}|${siteConfig.name}`
+    },
+  }
+}
+
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

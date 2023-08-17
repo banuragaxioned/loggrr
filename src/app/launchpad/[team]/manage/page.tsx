@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { MetadataProps, pageProps } from "@/types";
+import { pageProps } from "@/types";
+import { manageConfig } from "@/config/site";
 
-export function generateMetadata({ params, searchParams }: MetadataProps): Metadata {
-  return {
-    title: `${params.team.replace(params.team[0], params.team[0].toUpperCase())} | Manage`,
-  };
-}
+export const metadata: Metadata = manageConfig.manage;
 
 const Page = async ({ params }: pageProps) => {
-  generateMetadata({ params });
   return <h3>Manage</h3>;
 };
 
