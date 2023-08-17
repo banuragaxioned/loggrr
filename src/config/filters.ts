@@ -35,3 +35,14 @@ export const roles = [
     icon: Icons.user,
   },
 ];
+
+export const weekOptions = [
+  { id: 0, name: "Weekend view", value: "weekend" },
+  { id: 1, name: "Weekdays view", value: "weekdays" },
+];
+
+export const hoursTypeOptions = [
+  { id: 0, name: "Billable", value: "billableTime" },
+  { id: 1, name: "Non-billable", value: "nonBillableTime" },
+  { id: 2, name: "Total Time", value: "totalTime" },
+];
