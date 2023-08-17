@@ -22,12 +22,13 @@ import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { AllUsersWithAllocation } from "@/types";
-import { SelectSkillLevel } from "../selectSkill";
+import { SingleSelectDropdown } from "../ui/single-select-dropdown";
+import { levels } from "@/config/skillScore";
 
 type Scores = {
   id: number;
   name: string;
-  level: number;
+  value: number;
   skillId: number,
 }[];
 
@@ -145,12 +146,7 @@ export function AddSKill({
                 <FormItem className="col-span-2 pt-1">
                   <FormLabel>Skill Score</FormLabel>
                   <FormControl className="my-2">
-                    <SelectSkillLevel
-                      skill={{ id: 0, name: "N/A", level: 0 }}
-                      setValue={(skill: number, value: string) => form.setValue("skillScore", Number(value))}
-                      className={"mt-2"}
-                      skillForm={true}
-                    />
+                    <SingleSelectDropdown options={levels} defaultValue={levels[0]} setOptions={(value: string) => form.setValue("skillScore", Number(value))} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -27,6 +27,7 @@ import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
 import { useSubmit } from "@/hooks/useSubmit";
+import { hoursTypeOptions, weekOptions } from "@/config/filters";
 
 interface DataTableProps<TData, TValue> {
   team: string;
@@ -262,25 +263,20 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         </div>
         {/* weekend dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setWeekend(value === "weekend" ? true : false)}
+          setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
+          defaultValue={weekOptions[0]}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Table view"
-          selectionOptions={[
-            { title: "Weekend view", value: "weekend" },
-            { title: "Weekdays view", value: "weekdays" },
-          ]}
+          options={weekOptions}
           triggerClassName="w-[220px] 2xl:text-sm"
         />
         {/* time entry type dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setBillable(value)}
+          setOptions={(value: string) => setBillable(value)}
+          defaultValue={hoursTypeOptions[2]}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Entered time type"
-          selectionOptions={[
-            { title: "Billable", value: "billableTime" },
-            { title: "Non-billable", value: "nonBillableTime" },
-            { title: "Total Time", value: "totalTime" },
-          ]}
+          options={hoursTypeOptions}
           triggerClassName="w-[220px] 2xl:text-sm"
         />
       </div>
