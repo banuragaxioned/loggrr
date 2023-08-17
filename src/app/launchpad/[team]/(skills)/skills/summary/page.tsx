@@ -13,7 +13,7 @@ import { AddSKill } from "@/components/forms/addSkillForm";
 type Scores = {
   id: number;
   name: string;
-  level: number;
+  value: number;
   skillId: number,
 }[];
 

@@ -165,7 +165,7 @@ export type getAllocation = {
 export type SkillScore = {
   id: number;
   name: string;
-  level: number;
+  value: number;
 };
 
 export type SkillRadar = SkillScore[];

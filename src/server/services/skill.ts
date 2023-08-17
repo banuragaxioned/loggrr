@@ -52,7 +52,7 @@ export async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
       id: skill.id,
       name: skill.Skill.name,
       skillId: skill.Skill.id,
-      level: skill.level,
+      value: skill.level,
     };
   });
 
