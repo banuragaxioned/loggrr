@@ -63,7 +63,7 @@ export function AddSKill({
     SheetCloseButton.current?.click();
 
     if (!isSkillExist) {
-      const response = await fetch("/api/team/members/addSkill", {
+      const response = await fetch("/api/team/skill/assign", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
