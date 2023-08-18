@@ -23,6 +23,9 @@ export const columns: ColumnDef<Members>[] = [
         </div>
       );
     },
+    meta:{
+      className:"w-10"
+    }
   },
   {
     accessorKey: "email",
