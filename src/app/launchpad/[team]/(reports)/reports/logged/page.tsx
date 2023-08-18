@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { reportConfig } from "@/config/site";
 
-export const metadata: Metadata = reportConfig.logged;
+export const metadata: Metadata = {
+  title:`Logged`
+};
 
 export default async function Page({ params }: pageProps) {
   return (

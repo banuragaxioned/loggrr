@@ -4,9 +4,10 @@ import { DashboardShell } from "@/components/ui/shell";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { teamConfig } from "@/config/site";
 
-export const metadata: Metadata = teamConfig.projects;
+export const metadata: Metadata = {
+  title:`Projects`
+};
 export default async function Projects({ params }: pageProps) {
   const { team } = params;
   const clientList = await getProjects(team);

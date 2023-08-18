@@ -9,9 +9,10 @@ import { Overview } from "@/components/skillWidget";
 import { SkillList } from "@/components/skillList";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { skillConfig } from "@/config/site";
 
-export const metadata: Metadata = skillConfig.explore;
+export const metadata: Metadata = {
+  title:`Summary`
+};
 
 type Scores = {
   id: number;

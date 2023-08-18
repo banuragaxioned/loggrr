@@ -5,9 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { NewClientForm } from "@/components/forms/clientForm";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { teamConfig } from "@/config/site";
 
-export const metadata: Metadata = teamConfig.clients;
+export const metadata: Metadata = {
+  title:`Clients`
+};
 
 export default async function Clients({ params }: pageProps) {
   const { team } = params;

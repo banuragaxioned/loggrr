@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { reportConfig } from "@/config/site";
 
-export const metadata: Metadata = reportConfig.available;
+export const metadata: Metadata = {
+  title:`Available`
+};
 
 export default async function Page({ params }: pageProps) {
   return (

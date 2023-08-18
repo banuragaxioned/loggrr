@@ -5,9 +5,10 @@ import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { reportConfig } from "@/config/site";
 
-export const metadata: Metadata = reportConfig.assigned;
+export const metadata: Metadata = {
+  title: `Assigned`,
+};
 
 export default async function Assigned({ params }: pageProps) {
   const { team } = params;

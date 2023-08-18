@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { skillConfig } from "@/config/site";
 
-export const metadata: Metadata = skillConfig.setting;
+export const metadata: Metadata = {
+  title:`Settings`
+};
 export default async function Page({ params }: pageProps) {
   return (
     <>

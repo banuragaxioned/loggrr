@@ -5,9 +5,10 @@ import { NewSkillForm } from "@/components/forms/skillForm";
 import { getSkills } from "@/server/services/skill";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { skillConfig } from "@/config/site";
 
-export const metadata: Metadata = skillConfig.explore;
+export const metadata: Metadata = {
+  title:`Explore`
+};
 
 export default async function SkillsSummary({ params }: pageProps) {
   const skills = await getSkills(params.team);

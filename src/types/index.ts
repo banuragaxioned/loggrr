@@ -208,9 +208,4 @@ export type Members = {
   role: Role;
 };
 
-export type MetadataProps = {
-  params: { team: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
 export type pageProps = { params: { team: Tenant["slug"] } };

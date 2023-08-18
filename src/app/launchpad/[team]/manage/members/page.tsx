@@ -6,9 +6,10 @@ import { AddUserInTeam } from "@/components/forms/addUserForm";
 import { getMembers } from "@/server/services/members";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { manageConfig } from "@/config/site";
 
-export const metadata: Metadata = manageConfig.members;
+export const metadata: Metadata = {
+  title:`Members`
+};
 
 const ManageMembers = async ({ params }: pageProps) => {
   const { team } = params;

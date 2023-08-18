@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { manageConfig } from "@/config/site";
 
-export const metadata: Metadata = manageConfig.manage;
+export const metadata: Metadata = {
+  title:`Manage`
+};
 
 const Page = async ({ params }: pageProps) => {
   return <h3>Manage</h3>;
