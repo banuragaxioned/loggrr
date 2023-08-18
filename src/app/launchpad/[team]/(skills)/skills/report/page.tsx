@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
-  title:`Report`
+  title: `Report`,
 };
 
 export default async function Page({ params }: pageProps) {

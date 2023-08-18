@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
-  title:`Manage`
+  title: `Manage`,
 };
 
 const Page = async ({ params }: pageProps) => {

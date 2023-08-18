@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
-  title:`Explore`
+  title: `Explore`,
 };
 
 export default async function SkillsSummary({ params }: pageProps) {

@@ -4,8 +4,7 @@ import { prisma } from "@/server/db";
 import { notFound } from "next/navigation";
 import { pageProps } from "@/types";
 
-
-export default async function Dashboard({ params }:pageProps) {
+export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
   if (!user) {

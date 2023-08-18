@@ -9,7 +9,6 @@ import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import TeamSwitcher from "@/components/teamSwitcher";
-import type { Metadata } from "next";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
