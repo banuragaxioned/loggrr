@@ -11,13 +11,6 @@ import { buttonVariants } from "@/components/ui/button";
 import TeamSwitcher from "@/components/teamSwitcher";
 import type { Metadata } from "next";
 
-const metadata: Metadata = {
-  title: {
-    default: `Report`,
-    template: `%s|Report|${siteConfig.name}`,
-  },
-};
-
 interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
