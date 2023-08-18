@@ -1,5 +1,6 @@
 import { Icons } from "@/components/icons";
 import { Tenant, User, Project, Allocation, Status, Role, AllocationFrequency } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
 
 export type Allocations = {
   id: number;
@@ -209,3 +210,8 @@ export type Members = {
 };
 
 export type pageProps = { params: { team: Tenant["slug"] } };
+
+export interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
