@@ -53,7 +53,7 @@ export const columns: ColumnDef<Members>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
     meta: {
-      className: "w-[30%]",
+      className: "w-[15%]",
     },
   },
 ];
