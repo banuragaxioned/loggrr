@@ -27,7 +27,7 @@ export function AddUserInTeam({ team }: { team: string }) {
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
-    emailAddress: z.string().email("This is not a valid email.")
+    emailAddress: z.string().email("This is not a valid email."),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,15 +43,14 @@ export function AddUserInTeam({ team }: { team: string }) {
       body: JSON.stringify({
         team: team,
         userrole: Role.USER,
-        emailAddress: values.emailAddress
+        emailAddress: values.emailAddress,
       }),
     });
 
+    if (response?.ok) showToast("User added", "success");
+    else if (response?.status === 500) showToast("User not exist", "error");
+    else showToast("Not added", "warning");
 
-    if(response?.ok) showToast('User added', 'success');
-    else if(response?.status === 500) showToast('User not exist', 'error')
-    else showToast('Not added', 'warning');
-    
     SheetCloseButton.current?.click();
     router.refresh();
   }

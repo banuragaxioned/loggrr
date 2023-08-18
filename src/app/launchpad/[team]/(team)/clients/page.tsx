@@ -2,10 +2,15 @@ import { getClients } from "@/server/services/project";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { type Tenant } from "@prisma/client";
 import { NewClientForm } from "@/components/forms/clientForm";
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
 
-export default async function Clients({ params }: { params: { team: Tenant["slug"] } }) {
+export const metadata: Metadata = {
+  title: `Clients`,
+};
+
+export default async function Clients({ params }: pageProps) {
   const { team } = params;
   const clientList = await getClients(team);
   return (
