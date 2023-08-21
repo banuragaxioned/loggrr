@@ -1,8 +1,14 @@
 "use client";
 
-import { Client } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import {  Status } from "@prisma/client";
+
+export type Client=  {
+  id: number;
+  name: string | null | undefined;
+  status:Status;
+}
 
 export const columns: ColumnDef<Client>[] = [
   {

@@ -208,10 +208,4 @@ export type Members = {
   role: Role;
 };
 
-export type Client=  {
-  id: number;
-  name: string | null | undefined;
-  status:Status;
-}
-
 export type pageProps = { params: { team: Tenant["slug"] } };
