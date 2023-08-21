@@ -1,22 +1,28 @@
 "use client";
 
 import * as React from "react";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-} from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { columns } from "@/app/launchpad/[team]/(reports)/reports/summary/columns";
 import { cn } from "@/lib/utils";
-import { DataTableToolbarProps } from "@/types";
+import { TableProps } from "@/types";
 
+interface DataTableProps<TData, TValue> {
+  tableConfig: TableProps<TData, TValue>;
+  DataTableToolbar?: any;
+}
 
-export function DataTable<TData, TValue>({ table }: { table: DataTableToolbarProps<TData> }) {
+export function DataTable<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
+  const table = useReactTable({
+    getCoreRowModel: getCoreRowModel(),
+    ...tableConfig,
+  });
+
   return (
     <>
- <Table>
+      <DataTableToolbar table={table} />
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

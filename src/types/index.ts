@@ -212,7 +212,7 @@ export type Members = {
 
 export type pageProps = { params: { team: Tenant["slug"] } };
 
-export interface DataTableProps<TData, TValue> {
+export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
