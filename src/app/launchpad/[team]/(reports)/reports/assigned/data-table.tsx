@@ -248,7 +248,6 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
-        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
