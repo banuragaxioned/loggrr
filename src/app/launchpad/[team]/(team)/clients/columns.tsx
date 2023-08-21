@@ -18,5 +18,6 @@ export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    filterFn: "arrIncludesSome",
   },
 ];
