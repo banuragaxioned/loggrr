@@ -8,7 +8,7 @@ import { SingleSelectDropdown } from "./ui/single-select-dropdown";
 import { levels } from "@/config/skillScore";
 
 type Scores = {
-  id: number | string;
+  id: number;
   name: string;
   value: number | string;
 }[];

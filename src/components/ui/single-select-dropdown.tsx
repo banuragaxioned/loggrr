@@ -3,8 +3,8 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LucideIcon } from "lucide-react";
 
-type option = {
-  id: string | number;
+interface option {
+  id: number;
   name: string;
   value: string | number;
   icon?: LucideIcon;
