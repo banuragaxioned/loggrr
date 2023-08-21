@@ -7,7 +7,6 @@ import {
   SortingState,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
@@ -27,7 +26,6 @@ export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };
 
