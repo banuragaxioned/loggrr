@@ -1,7 +1,8 @@
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
+import { pageProps } from "@/types";
 
-export default async function Page() {
+export default async function Page({ params }: pageProps) {
   return (
     <>
       <DashboardShell>

@@ -1,13 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/server/db";
-import { Tenant } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { pageProps } from "@/types";
 
-export default async function Dashboard({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
-
   if (!user) {
     return notFound();
   }

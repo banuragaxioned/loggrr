@@ -39,10 +39,10 @@ export async function POST(req: Request) {
           create: {
             role: body.userrole,
             Tenant: {
-              connect: { slug: body.team }
-            }
-          }
-        }
+              connect: { slug: body.team },
+            },
+          },
+        },
       },
     });
 

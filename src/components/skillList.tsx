@@ -52,8 +52,8 @@ const levels: Level[] = [
   },
 ];
 
-export function SkillList({ props, currentUser, team }: { props: Scores, currentUser: number, team: Tenant["slug"] }) {
-  const router = useRouter()
+export function SkillList({ props, currentUser, team }: { props: Scores; currentUser: number; team: Tenant["slug"] }) {
+  const router = useRouter();
   const showToast = useToast();
 
   async function Update(skill: number, value: string) {
@@ -66,13 +66,13 @@ export function SkillList({ props, currentUser, team }: { props: Scores, current
         team: team,
         userId: currentUser,
         skillId: skill,
-        level: Number(value)
+        level: Number(value),
       }),
     });
 
-    if(response?.ok) showToast('Skill updated', 'success');
+    if (response?.ok) showToast("Skill updated", "success");
 
-    router.refresh()
+    router.refresh();
   }
 
   return (
