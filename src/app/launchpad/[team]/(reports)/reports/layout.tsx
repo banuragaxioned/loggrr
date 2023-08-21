@@ -6,9 +6,10 @@ import { DashboardNav } from "@/components/nav";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
+  params: string;
 }
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
 
   if (!user) {

@@ -3,13 +3,17 @@ import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
-import { AllocationFrequency, Tenant } from "@prisma/client";
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
 
-export default async function Assigned({ params }: { params: { team: Tenant["slug"] } }) {
+export const metadata: Metadata = {
+  title: `Assigned`,
+};
+
+export default async function Assigned({ params }: pageProps) {
   const { team } = params;
   const projects = await getProjectsId(team);
   const users = await getAllUsers(team);
-
   return (
     <>
       <DashboardShell>

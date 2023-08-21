@@ -1,7 +1,13 @@
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
 
-export default async function Page() {
+export const metadata: Metadata = {
+  title: `Manage Project`,
+};
+
+export default async function Page({ params }: pageProps) {
   return (
     <>
       <DashboardShell>

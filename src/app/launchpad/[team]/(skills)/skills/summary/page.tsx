@@ -7,8 +7,13 @@ import { DashboardShell } from "@/components/ui/shell";
 import { getUserSkills } from "@/server/services/skill";
 import { Overview } from "@/components/skillWidget";
 import { SkillList } from "@/components/skillList";
-import { getAllUsers } from "@/server/services/allocation";
 import { AddSKill } from "@/components/forms/addSkillForm";
+import type { Metadata } from "next";
+import { pageProps } from "@/types";
+
+export const metadata: Metadata = {
+  title: `Summary`,
+};
 
 type Scores = {
   id: number;
@@ -17,9 +22,8 @@ type Scores = {
   skillId: number,
 }[];
 
-export default async function SkillsSummary({ params }: { params: { team: Tenant["slug"] } }) {
+export default async function SkillsSummary({ params }: pageProps) {
   const user = await getCurrentUser();
-
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login");
   }
@@ -34,7 +38,7 @@ export default async function SkillsSummary({ params }: { params: { team: Tenant
         <AddSKill team={params.team} currentUser={user.id} userSkills={skills} />
       </DashboardHeader>
       <Overview data={skills} />
-      <SkillList props={skills} currentUser={user.id} team={params.team}/>
+      <SkillList props={skills} currentUser={user.id} team={params.team} />
     </DashboardShell>
   );
 }
