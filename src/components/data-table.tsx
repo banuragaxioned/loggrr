@@ -3,43 +3,27 @@
 import * as React from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { columns } from "@/app/launchpad/[team]/(reports)/reports/summary/columns";
+import { cn } from "@/lib/utils";
+import { DataTableToolbarProps } from "@/types";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
 
-export function DataTable<TData, TValue>({ tableConfig }: { tableConfig: DataTableProps<TData, TValue> }) {
-  const table = useReactTable({
-    getCoreRowModel: getCoreRowModel(),
-    ...tableConfig,
-  });
-
+export function DataTable<TData, TValue>({ table }: { table: DataTableToolbarProps<TData> }) {
   return (
     <>
-      <Table>
+ <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 const style = header.column.columnDef.meta?.className;
                 return (
-                  <TableHead key={header.id} className={style ? style : ""}>
+                  <TableHead key={header.id} className={cn(header.column.columnDef.meta?.className)}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -52,9 +36,8 @@ export function DataTable<TData, TValue>({ tableConfig }: { tableConfig: DataTab
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => {
-                  const style = cell.column.columnDef.meta?.className;
                   return (
-                    <TableCell key={cell.id} className={style ? style : ""}>
+                    <TableCell key={cell.id} className={cn(cell.column.columnDef.meta?.className)}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   );
