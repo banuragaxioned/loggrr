@@ -207,3 +207,5 @@ export type Members = {
   status: Status;
   role: Role;
 };
+
+export type pageProps = { params: { team: Tenant["slug"] } };
