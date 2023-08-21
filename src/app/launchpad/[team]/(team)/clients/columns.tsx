@@ -2,13 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import {  Status } from "@prisma/client";
+import { Status } from "@prisma/client";
 
-export type Client=  {
+export type Client = {
   id: number;
   name: string | null | undefined;
-  status:Status;
-}
+  status: Status;
+};
 
 export const columns: ColumnDef<Client>[] = [
   {
