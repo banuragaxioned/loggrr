@@ -60,8 +60,8 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [startDate, setStartDate] = useState<any>(new Date());
-  const [weekend, setWeekend] = useState<boolean>(false);
-  const [billable, setBillable] = useState<string>("totalTime");
+  const [isWeekView, setWeekView] = useState<boolean>(false);
+  const [billable, setBillable] = useState<string>("allEntries");
   const { submitCount, setSubmitCount } = useSubmit();
   const [sortingType, setSortingType] = useState<{ key: number; id: string; active?: number }>({
     key: 0,
@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
     const days = 7;
-    return getDatesInRange(Date.parse(startDate), days, weekend).map((dateObj, i) => {
+    return getDatesInRange(Date.parse(startDate), days, isWeekView).map((dateObj, i) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -206,7 +206,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
             name: project?.projectName.slice(0, 5) + "...",
             title: project?.projectName,
             clientName: project?.clientName,
-            totalTime: project?.totalTime,
+            allEntries: project?.allEntries,
             userName: user.userName,
             billable: project?.billable,
             frequency: project?.frequency,
@@ -248,6 +248,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
       .then((res) => {
         setLoading(100);
         const temp = dataFiltering(res);
+        console.log(temp)
         setData(temp);
         setDefaultData(temp);
       })
@@ -263,8 +264,8 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         </div>
         {/* weekend dropdown */}
         <SingleSelectDropdown
-          setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
-          defaultValue={weekOptions[0]}
+          setOptions={(value: string) => setWeekView(value === "fullWeek" ? true : false)}
+          defaultValue={weekOptions[1]}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Table view"
           options={weekOptions}
