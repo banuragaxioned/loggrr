@@ -1,7 +1,6 @@
 import { Icons } from "@/components/icons";
 import { Tenant, Status, Role, AllocationFrequency } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
-import { Table } from "@tanstack/react-table";
+import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type Allocations = {
   id: number;
