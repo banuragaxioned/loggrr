@@ -45,6 +45,8 @@ export const hoursTypeOptions = [
   { id: 0, name: "Billable", value: "billableTime" },
   { id: 1, name: "Non-billable", value: "nonBillableTime" },
   { id: 2, name: "All Entries", value: "allEntries" },
+]
+
 export const clientStatuses = [
   {
     value: "PUBLISHED",
