@@ -6,7 +6,7 @@ import { Status } from "@prisma/client";
 
 export type Client = {
   id: number;
-  name: string | null | undefined;
+  name: string;
   status: Status;
 };
 
