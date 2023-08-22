@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { UseFormSetValue } from "react-hook-form";
-import { ChevronDown, SearchIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
