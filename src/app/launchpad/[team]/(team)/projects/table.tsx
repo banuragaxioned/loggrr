@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { DataTable } from "@/components/data-table";
+import { DataTableStructure } from "@/components/data-table";
 import { TableProps } from "@/types";
 import {   ColumnFiltersState,
   SortingState,
@@ -27,5 +27,5 @@ export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue
     getSortedRowModel: getSortedRowModel(),
   };
 
-  return <DataTable tableConfig={tableConfig} DataTableToolbar={DataTableToolbar}/>;
+  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar}/>;
 }

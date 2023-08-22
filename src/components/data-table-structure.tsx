@@ -13,7 +13,7 @@ interface DataTableProps<TData, TValue> {
   DataTableToolbar?: React.ComponentType<any>;
 }
 
-export function DataTable<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
+export function DataTableStructure<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -28,7 +28,6 @@ export function DataTable<TData, TValue>({ tableConfig, DataTableToolbar }: Data
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
-                const style = header.column.columnDef.meta?.className;
                 return (
                   <TableHead key={header.id} className={cn(header.column.columnDef.meta?.className)}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
