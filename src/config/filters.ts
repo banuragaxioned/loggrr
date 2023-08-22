@@ -35,3 +35,16 @@ export const roles = [
     icon: Icons.user,
   },
 ];
+
+export const clientStatuses = [
+  {
+    value: "PUBLISHED",
+    label: "Published",
+    icon: Icons.activity,
+  },
+  {
+    value: "ARCHIVED",
+    label: "Archived",
+    icon: Icons.archive,
+  },
+];
