@@ -30,6 +30,7 @@ export const getMembers = async (team: string) => {
       image: member.image,
       status: member.status as Status,
       role: member.Roles.map((userRole) => userRole.role)[0] as Role,
+      tenant: team
     };
   });
 

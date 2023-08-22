@@ -206,6 +206,7 @@ export type Members = {
   image: string | undefined | null;
   status: Status;
   role: Role;
+  tenant: string
 };
 
 export type pageProps = { params: { team: Tenant["slug"] } };
