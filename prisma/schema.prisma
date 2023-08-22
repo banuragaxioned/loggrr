@@ -273,7 +273,7 @@ model UserGroup {
 enum UserStatus {
   ACTIVE
   INACTIVE
-  DELETED
+  DEACTIVATED
 }
 
 // NextAuth-related
