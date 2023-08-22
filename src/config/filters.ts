@@ -47,4 +47,4 @@ export const clientStatuses = [
     label: "Archived",
     icon: Icons.archive,
   },
-]
+];
