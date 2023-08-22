@@ -13,7 +13,7 @@ interface DataTableProps<TData, TValue> {
   DataTableToolbar?: React.ComponentType<any>;
 }
 
-export function DataTable<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
+export function DataTableStructure<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
