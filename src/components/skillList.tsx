@@ -10,7 +10,7 @@ import { levels } from "@/config/skillScore";
 type Scores = {
   id: number;
   name: string;
-  value: number | string;
+  value: number;
 }[];
 
 export function SkillList({ props, currentUser, team }: { props: Scores; currentUser: number; team: Tenant["slug"] }) {
