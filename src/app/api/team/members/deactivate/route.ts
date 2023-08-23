@@ -28,12 +28,12 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const deactivateUser = await db.user.update({
-      where: { id: body.userId },
+    const deactivateUser = await db.usersStatus.updateMany({
+      where: { userId: body.userId, Tenant: {slug: body.team} },
       data: {
-        status: UserStatus.ACTIVE
+         status: UserStatus.DEACTIVATED
       }
-    });
+    })
 
     return new Response(JSON.stringify(deactivateUser));
   } catch (error) {
@@ -41,7 +41,6 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
     }
 
-    console.log(error)
     return new Response(null, { status: 500 });
   }
 }
