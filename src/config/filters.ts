@@ -12,8 +12,8 @@ export const statuses = [
     icon: Icons.archive,
   },
   {
-    value: "DELETED",
-    label: "Deleted",
+    value: "DEACTIVATED",
+    label: "Deactivated",
     icon: Icons.delete,
   },
 ];
