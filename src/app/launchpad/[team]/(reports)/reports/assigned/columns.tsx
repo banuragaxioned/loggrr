@@ -16,7 +16,6 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ row }) => {
-      console.log(row.getCanExpand())
       return (
         <div className="flex items-center gap-x-2">
           {row.getCanExpand() ? (

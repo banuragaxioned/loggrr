@@ -30,6 +30,48 @@ const calculateAllocationTotalTime = (allocations: AllocationDates) => {
   }, 0);
 };
 
+const getFormatedData = (timeArr: any) => {
+  const resultObj: any = {};
+  for (let x in timeArr) {
+    const date = x.split(",")[0];
+    resultObj[date] = timeArr[x];
+  }
+  return resultObj;
+};
+
+const dataFiltering = (data: any) => {
+  const resultantArray: any = [];
+  const notEmptyArr = data.filter((user: any) => user?.userName);
+  notEmptyArr.map((user: any) => {
+    const temp = {
+      id: user?.userId,
+      name: user?.userName.split(" ")[0],
+      title: user?.userName,
+      userAvatar: user?.userAvatar,
+      isProjectAssigned: user?.projects?.length,
+    };
+    resultantArray.push(temp);
+    user?.projects?.length &&
+      user?.projects?.map((project: any, i: number) => {
+        const temp = {
+          id: project?.projectId,
+          userId: user.userId,
+          name: project?.projectName.slice(0, 5) + "...",
+          title: project?.projectName,
+          clientName: project?.clientName,
+          totalTime: project?.totalTime,
+          userName: user.userName,
+          billable: project?.billable,
+          frequency: project?.frequency,
+          isFirst: i === 0 ? true : false,
+          timeAssigned: getFormatedData(project?.allocations),
+        };
+        resultantArray.push(temp);
+      });
+  });
+  return resultantArray;
+};
+
 // create allocation object for each date
 const createAllocationDates = (allocationData: AllocationDate[], endDate: Date | any) => {
   return allocationData.reduce((accumulator, allocation) => {
@@ -165,7 +207,7 @@ export async function POST(req: Request) {
         averageTime: averageTime,
       };
     });
-    return new Response(JSON.stringify(allocationData));
+    return new Response(JSON.stringify(dataFiltering(allocationData)));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });

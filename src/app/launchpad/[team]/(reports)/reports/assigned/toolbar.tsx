@@ -7,18 +7,21 @@ import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
-// import {useSelectedDate} from '@/hooks/useSelectedDate';
+import { Dispatch } from "react";
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
+  startDate:Date;
+  setStartDate:Dispatch<any>|any;
+}
+
+export function DataTableToolbar<TData>({ table,startDate,setStartDate }: DataTableToolbarExtendedProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  // const {startDateContext, setStartDate} = useSelectedDate();
-  // const startDate = useContext(startDateContext);
   //start date validator
-  // const startDateValidator = (date: Date) => date && setStartDate(date);
+  const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <DatePicker date={startDate} setDate={startDateValidator} /> */}
+        <DatePicker date={startDate} setDate={startDateValidator} />
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
