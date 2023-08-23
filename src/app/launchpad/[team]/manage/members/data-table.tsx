@@ -19,10 +19,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { DataTableToolbar } from "./toolbar";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import useToast from "@/hooks/useToast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+}
+
+interface DeactiveUser {
+  id: number,
+  tenant: string
 }
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
@@ -30,6 +37,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const router = useRouter();
+  const showToast = useToast();
 
   const table = useReactTable({
     data,
@@ -52,6 +61,23 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  const updateStatus = async (value: DeactiveUser) => {
+    const response = await fetch("/api/team/members/deactivate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team: value.tenant,
+        userId: value.id,
+      }),
+    });
+
+    if (response?.ok) showToast("Status Updated", "success");
+
+    router.refresh()
+  }
 
   return (
     <>
@@ -76,7 +102,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="group">
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <TableCell key={cell.id} className={cn(cell.column.columnDef.meta?.className)}>
+                    <TableCell key={cell.id} onClick={() => cell.column.id === 'actions' ? updateStatus(row.original as DeactiveUser) : null} className={cn(cell.column.columnDef.meta?.className)}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   );
