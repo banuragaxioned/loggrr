@@ -27,17 +27,18 @@ model Tenant {
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
 
-  Users      User[]       @relation("UserTenants")
-  Client     Client[]
-  Project    Project[]
-  Milestone  Milestone[]
-  Task       Task[]
-  TimeEntry  TimeEntry[]
-  UserGroup  UserGroup[]
-  Allocation Allocation[]
-  Skill      Skill[]
-  SkillScore SkillScore[]
-  UserRole   UserRole[]
+  Users       User[]        @relation("UserTenants")
+  Client      Client[]
+  Project     Project[]
+  Milestone   Milestone[]
+  Task        Task[]
+  TimeEntry   TimeEntry[]
+  UserGroup   UserGroup[]
+  Allocation  Allocation[]
+  Skill       Skill[]
+  SkillScore  SkillScore[]
+  UserRole    UserRole[]
+  UsersStatus UsersStatus[]
 }
 
 model Client {
@@ -276,6 +277,21 @@ enum UserStatus {
   DEACTIVATED
 }
 
+model UsersStatus {
+  id       Int        @id @default(autoincrement())
+  userId   Int
+  tenantId Int
+  status   UserStatus @default(ACTIVE)
+
+  Tenant Tenant @relation(fields: [tenantId], references: [id])
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@unique([status, userId, tenantId])
+  @@index([userId])
+  @@index([tenantId])
+  @@index([userId, tenantId])
+}
+
 // NextAuth-related
 model User {
   id            Int        @id @default(autoincrement())
@@ -287,9 +303,8 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   allocationId  Int?
-  status        UserStatus @default(ACTIVE)
 
-  TenantId      Tenant[]     @relation("UserTenants")
+  TenantId      Tenant[]      @relation("UserTenants")
   UserGroup     UserGroup[]
   accounts      Account[]
   sessions      Session[]
@@ -297,8 +312,9 @@ model User {
   Allocation    Allocation[]
   SkillScore    SkillScore[]
   TimeEntry     TimeEntry[]
-  Project       Project[]    @relation("ProjectMembers")
-  OwnedProjects Project[]    @relation("UserOwnedProjects")
+  Project       Project[]     @relation("ProjectMembers")
+  OwnedProjects Project[]     @relation("UserOwnedProjects")
+  UsersStatus   UsersStatus[]
 
   @@index([allocationId])
 }
