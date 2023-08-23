@@ -60,7 +60,6 @@ export function Table<TData, TValue>({ columns }: TableProps<TData, TValue>) {
     // getAllocation().then(res=>res.json()).then(res=>console.log(res))
   useEffect(()=>{
     getAllocation().then(res=>res.json()).then(res=>setData(res));
-    console.log(data)
   },[startDate])
 
   return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} toolBarProps={{startDate,setStartDate}} />;

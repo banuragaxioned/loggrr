@@ -39,6 +39,25 @@ const getFormatedData = (timeArr: any) => {
   return resultObj;
 };
 
+const getSubRows = (user:any)=> {
+ const subRows = user?.projects?.map((project: any, i: number) => (
+     {
+      id: project?.projectId,
+      userId: user.userId,
+      name: project?.projectName.slice(0, 5) + "...",
+      title: project?.projectName,
+      clientName: project?.clientName,
+      totalTime: project?.totalTime,
+      userName: user.userName,
+      billable: project?.billable,
+      frequency: project?.frequency,
+      isFirst: i === 0 ? true : false,
+      timeAssigned: getFormatedData(project?.allocations),
+    }
+  ));
+  return subRows;
+}
+
 const dataFiltering = (data: any) => {
   const resultantArray: any = [];
   const notEmptyArr = data.filter((user: any) => user?.userName);
@@ -50,24 +69,12 @@ const dataFiltering = (data: any) => {
       userAvatar: user?.userAvatar,
       isProjectAssigned: user?.projects?.length,
     };
-    resultantArray.push(temp);
-    user?.projects?.length &&
-      user?.projects?.map((project: any, i: number) => {
-        const temp = {
-          id: project?.projectId,
-          userId: user.userId,
-          name: project?.projectName.slice(0, 5) + "...",
-          title: project?.projectName,
-          clientName: project?.clientName,
-          totalTime: project?.totalTime,
-          userName: user.userName,
-          billable: project?.billable,
-          frequency: project?.frequency,
-          isFirst: i === 0 ? true : false,
-          timeAssigned: getFormatedData(project?.allocations),
-        };
-        resultantArray.push(temp);
-      });
+    const finalData = user?.projects?.length ?
+    {...temp,
+    subRows:getSubRows(user)
+    } 
+    :temp;
+    resultantArray.push(finalData);
   });
   return resultantArray;
 };
