@@ -17,11 +17,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
-import { ComboboxOptions } from "@/types";
+import { AllUsersWithAllocation } from "@/types";
 import { SingleSelectDropdown } from "../ui/single-select-dropdown";
 import { levels } from "@/config/skillScore";
 
@@ -40,50 +40,23 @@ const formSchema = z.object({
 
 export function AddSKill({
   team,
+  users,
   currentUser,
+  skillsList,
   userSkills
 }: {
   team: string;
+  users: AllUsersWithAllocation[];
   currentUser: number;
+  skillsList: { id: number; name: string }[];
   userSkills: Scores
 }) {
-  const [skillsList, setSkillsList] = useState<ComboboxOptions[] | undefined>()
-  const [usersList, setUsersList] = useState<ComboboxOptions[] | undefined>()
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-
-  const getSkills = async () => {
-    return await fetch("/api/team/skill/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team: team,
-      }),
-    });
-  }
-
-  const getUsers = async () => {
-    return await fetch("/api/team/members", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team: team,
-      }),
-    });
-  }
-
-  useEffect(() => {
-    getSkills().then(res => res.json()).then(res => setSkillsList(res))
-    getUsers().then(res => res.json()).then(res => setUsersList(res))
-  }, [])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const isSkillExist = userSkills.find(skills => skills.skillId === values.skillId)
@@ -127,7 +100,7 @@ export function AddSKill({
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2">
-            {usersList && <FormField
+            <FormField
               control={form.control}
               name="userId"
               render={({ field }) => (
@@ -136,7 +109,7 @@ export function AddSKill({
                   <FormControl className="my-2">
                     <InlineCombobox
                       label="users"
-                      options={usersList}
+                      options={users}
                       setVal={form.setValue}
                       fieldName="userId"
                       icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
@@ -146,8 +119,8 @@ export function AddSKill({
                   <FormMessage />
                 </FormItem>
               )}
-            />}
-            {skillsList && <FormField
+            />
+            <FormField
               control={form.control}
               name="skillId"
               render={({ field }) => (
@@ -165,7 +138,7 @@ export function AddSKill({
                   <FormMessage />
                 </FormItem>
               )}
-            />}
+            />
             <FormField
               control={form.control}
               name="skillScore"

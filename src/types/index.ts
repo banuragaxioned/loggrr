@@ -173,7 +173,7 @@ export type SkillRadar = SkillScore[];
 
 export type ProjectInterval = {};
 
-export interface ComboboxOptions {
+export type ComboboxOptions = {
   id: number;
   name: string | null | undefined;
 };
