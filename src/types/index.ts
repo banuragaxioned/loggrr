@@ -213,7 +213,7 @@ export type pageProps = { params: { team: Tenant["slug"] } };
 
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  data?: TData[];
 }
 
 export interface DataTableToolbarProps<TData> {

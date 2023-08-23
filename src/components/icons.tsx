@@ -81,6 +81,7 @@ export const Icons = {
   spinner: Loader,
   eyeOff: EyeOff,
   chevronRight: ChevronRight,
+  chevronDown:ChevronDown,
   chevronDoubleRight: ChevronsRight,
   chevronLeft: ChevronLeft,
   chevronDoubleLeft: ChevronsLeft,

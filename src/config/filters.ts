@@ -48,3 +48,29 @@ export const clientStatuses = [
     icon: Icons.archive,
   },
 ];
+
+export const entryOptions = [
+  {
+    value: "billable",
+    label: "Billable",
+    icon: Icons.billing,
+  },
+  {
+    value: "nonBillable",
+    label: "Non Billable",
+    icon: Icons.milestone,
+  },
+]
+
+export const viewOptions = [
+  {
+    value: "week",
+    label: "Week",
+    icon: Icons.activity,
+  },
+  {
+    value: "weekDays",
+    label: "Week Days",
+    icon: Icons.archive,
+  },
+]
