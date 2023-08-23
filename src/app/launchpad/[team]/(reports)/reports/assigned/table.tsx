@@ -35,7 +35,7 @@ export function Table<TData, TValue>({ columns }: TableProps<TData, TValue>) {
     onColumnFiltersChange: setColumnFilters,
     getSubRows: (row: { subRows: any; }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
-    paginateExpandedRows: true,
+    paginateExpandedRows: false,
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };

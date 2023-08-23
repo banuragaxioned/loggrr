@@ -182,6 +182,7 @@ export async function POST(req: Request) {
               },
             },
           },
+          orderBy:{name:"asc"}
         },
       },
       orderBy: { name: "asc" },
