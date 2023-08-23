@@ -89,7 +89,7 @@ export type AllocationDates = {
     id: number;
     billableTime: number;
     nonBillableTime: number;
-    totalTime: number;
+    allEntries: number;
     updatedAt: Date;
     frequency?: string;
   };
@@ -105,7 +105,7 @@ export type ProjectAllocation = {
     userName: string | null;
     userAvatar: string;
     averageTime: number;
-    totalTime: number;
+    allEntries: number;
     allocations: AllocationDates;
   }[];
 };
@@ -115,14 +115,14 @@ export type GlobalAllocation = {
   userId: number;
   userName: string | null;
   userAvatar: string;
-  totalTime: number;
+  allEntries: number;
   averageTime: number;
   cumulativeProjectDates: AllocationDates;
   projects: {
     clientName: string;
     projectId: number;
     projectName: string;
-    totalTime: number;
+    allEntries: number;
     allocations: AllocationDates;
   }[];
 };
@@ -166,7 +166,7 @@ export type getAllocation = {
 export type SkillScore = {
   id: number;
   name: string;
-  level: number;
+  value: number;
 };
 
 export type SkillRadar = SkillScore[];

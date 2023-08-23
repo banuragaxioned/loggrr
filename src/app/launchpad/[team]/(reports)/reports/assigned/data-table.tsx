@@ -27,6 +27,7 @@ import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
 import { useSubmit } from "@/hooks/useSubmit";
+import { hoursTypeOptions, weekOptions } from "@/config/filters";
 
 interface DataTableProps<TData, TValue> {
   team: string;
@@ -59,8 +60,8 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [startDate, setStartDate] = useState<any>(new Date());
-  const [weekend, setWeekend] = useState<boolean>(false);
-  const [billable, setBillable] = useState<string>("totalTime");
+  const [isWeekView, setWeekView] = useState<boolean>(false);
+  const [billable, setBillable] = useState<string>("allEntries");
   const { submitCount, setSubmitCount } = useSubmit();
   const [sortingType, setSortingType] = useState<{ key: number; id: string; active?: number }>({
     key: 0,
@@ -76,7 +77,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
   //function to create dynamic columns based on dates
   const getDynamicColumns = () => {
     const days = 7;
-    return getDatesInRange(Date.parse(startDate), days, weekend).map((dateObj, i) => {
+    return getDatesInRange(Date.parse(startDate), days, isWeekView).map((dateObj, i) => {
       return {
         accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
         header: ({}) => {
@@ -205,7 +206,7 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
             name: project?.projectName.slice(0, 5) + "...",
             title: project?.projectName,
             clientName: project?.clientName,
-            totalTime: project?.totalTime,
+            allEntries: project?.allEntries,
             userName: user.userName,
             billable: project?.billable,
             frequency: project?.frequency,
@@ -262,25 +263,20 @@ export function DataTable<TData, TValue>({ team }: DataTableProps<TData, TValue>
         </div>
         {/* weekend dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setWeekend(value === "weekend" ? true : false)}
+          setOptions={(value: string) => setWeekView(value === "fullWeek" ? true : false)}
+          defaultValue={weekOptions[1]}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Table view"
-          selectionOptions={[
-            { title: "Weekend view", value: "weekend" },
-            { title: "Weekdays view", value: "weekdays" },
-          ]}
+          options={weekOptions}
           triggerClassName="w-[220px] 2xl:text-sm"
         />
         {/* time entry type dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setBillable(value)}
+          setOptions={(value: string) => setBillable(value)}
+          defaultValue={hoursTypeOptions[2]}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Entered time type"
-          selectionOptions={[
-            { title: "Billable", value: "billableTime" },
-            { title: "Non-billable", value: "nonBillableTime" },
-            { title: "Total Time", value: "totalTime" },
-          ]}
+          options={hoursTypeOptions}
           triggerClassName="w-[220px] 2xl:text-sm"
         />
       </div>

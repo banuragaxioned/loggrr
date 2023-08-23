@@ -51,7 +51,8 @@ export async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
     return {
       id: skill.id,
       name: skill.Skill.name,
-      level: skill.level,
+      skillId: skill.Skill.id,
+      value: skill.level,
     };
   });
 
