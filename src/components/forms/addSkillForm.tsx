@@ -146,7 +146,7 @@ export function AddSKill({
                 <FormItem className="col-span-2 pt-1">
                   <FormLabel>Skill Score</FormLabel>
                   <FormControl className="my-2">
-                    <SingleSelectDropdown options={levels} defaultValue={levels[0]} setOptions={(value: string) => form.setValue("skillScore", Number(value))} />
+                    <SingleSelectDropdown options={levels} defaultValue={levels[0]} setOptions={(value: string) => form.setValue("skillScore", Number(value))} triggerClassName="mt-2" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
