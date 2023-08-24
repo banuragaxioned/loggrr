@@ -99,7 +99,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="group">
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(row._valuesCache.status === "ACTIVE" && "group")}>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell key={cell.id} onClick={() => cell.column.id === 'actions' ? updateStatus(row.original as DeactiveUser) : null} className={cn(cell.column.columnDef.meta?.className)}>
