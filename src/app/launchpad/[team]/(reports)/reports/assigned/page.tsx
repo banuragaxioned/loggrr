@@ -22,7 +22,7 @@ export default async function Assigned({ params }: pageProps) {
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
           <NewAllocationForm team={team} projects={projects} users={users} />
         </DashboardHeader>
-        <DataTable team={team} />
+        {/* <DataTable team={team} /> */}
         <Table columns={getDynamicColumns} data={[]}/>
       </DashboardShell>
     </>

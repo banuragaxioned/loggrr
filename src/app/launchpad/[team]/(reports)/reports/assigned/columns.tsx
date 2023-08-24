@@ -12,6 +12,15 @@ declare module "@tanstack/table-core" {
   }
 }
 
+const getTotal = (subRows: any, key: string) => {
+  let total = 0;
+  subRows?.length &&
+    subRows?.map((arr: any) => {
+      total += arr.timeAssigned[key] ? arr.timeAssigned[key]["billableTime"] : 0;
+    });
+  return total;
+};
+
 //function to get date between two dates
 const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) => {
   const dates = [];
@@ -45,23 +54,31 @@ const createDynamicColumns = (startDate: Date) => {
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
       cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
-        console.log(row.original)
+        const subRows = row.originalSubRows;
+        const filteredObj = subRows?.find((obj) => obj.timeAssigned[date]);
+        const assignedObj = filteredObj?.timeAssigned[date];
+        const projectId = assignedObj?.id;
+        const isBillable = assignedObj?.billable;
         return (
           <div className="px-0 py-0">
-            <TableInput
-              hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
-              data={{
-                hoursObj: row.subRows,
-                userName: row.original.userName,
-                projectId: row.original.id,
-                userId: row.original.userId,
-                isBillable: row.original.billable,
-                date: date,
-                team: "axioned",
-              }}
-              type={"billable"}
-              setSubmitCount={() => console.log("send")}
-            />
+            {row.subRows.length ? (
+              <span className="block text-center">{getTotal(subRows, date)}</span>
+            ) : (
+              <TableInput
+                hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
+                data={{
+                  hoursObj: assignedObj ? assignedObj : {},
+                  userName: row.original.userName,
+                  projectId: projectId,
+                  userId: row.original.id,
+                  isBillable: isBillable,
+                  date: date,
+                  team: row.original.team,
+                }}
+                type={"billable"}
+                setSubmitCount={() => console.log("send")}
+              />
+            )}
           </div>
         );
       },
@@ -80,7 +97,7 @@ export const getDynamicColumns = (startDate: Date) => {
       cell: ({ row }) => {
         return (
           <div
-            className={`flex items-center gap-x-2 ${row.getCanExpand() || row.depth > 0 ?'':'ml-5'} ${
+            className={`flex items-center gap-x-2 ${row.getCanExpand() || row.depth > 0 ? "" : "ml-5"} ${
               row.depth > 0
                 ? "relative ml-6 before:absolute before:-left-[17px] before:-top-9 before:block  before:h-[54px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                 : ""

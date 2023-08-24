@@ -68,6 +68,7 @@ const dataFiltering = (data: any) => {
       title: user?.userName,
       userAvatar: user?.userAvatar,
       isProjectAssigned: user?.projects?.length,
+      team:user.team
     };
     const finalData = user?.projects?.length ?
     {...temp,
@@ -155,7 +156,7 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const client = await db.user.findMany({
+    const userData = await db.user.findMany({
       where: { TenantId: { some: { slug: body.team } } },
       select: {
         id: true,
@@ -188,7 +189,7 @@ export async function POST(req: Request) {
       orderBy: { name: "asc" },
     });
 
-    const allocationData = client.map((obj, i) => {
+    const allocationData = userData.map((obj, i) => {
       let allocations, totalTime, averageTime;
       return {
         userId: obj.id,
@@ -213,6 +214,7 @@ export async function POST(req: Request) {
         }),
         totalTime: totalTime,
         averageTime: averageTime,
+        team:body.team,
       };
     });
     return new Response(JSON.stringify(dataFiltering(allocationData)));
