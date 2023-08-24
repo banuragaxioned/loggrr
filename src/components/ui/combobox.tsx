@@ -3,16 +3,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { UseFormSetValue } from "react-hook-form";
-import { ChevronDown, SearchIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
 type InlineComboboxProps = {
   options: ComboboxOptions[];
   setVal: UseFormSetValue<AssignFormValues> | any;
-  fieldName: "projectId" | "userId";
+  fieldName: string;
   icon: React.ReactNode;
   label: string;
+  defaultValue?: number;
 };
 
 type ComboBoxProps = {
@@ -144,15 +145,24 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   );
 };
 
-const InlineCombobox = ({ options, setVal, fieldName, icon, label }: InlineComboboxProps) => {
+const InlineCombobox = ({ options, setVal, fieldName, icon, label, defaultValue }: InlineComboboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>();
 
   const handleValueChange = (e: string) => {
     setInputValue(e);
     setOpen(true);
   };
+
+  useEffect(() => {
+    if(defaultValue) {
+      const selectedUser = options.find(option => option.id === defaultValue) 
+      setInputValue(selectedUser?.name ? selectedUser?.name : "")
+      setVal(fieldName, selectedUser?.id)
+    }
+  }, [defaultValue])
+
   return (
     <Command
       className={cn(

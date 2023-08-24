@@ -10,7 +10,7 @@ export function Overview(props: { data: SkillRadar }) {
         <PolarGrid />
         <PolarAngleAxis dataKey="name" />
         <PolarRadiusAxis tick={false} domain={[0, 5]} tickCount={6} />
-        <Radar dataKey="level" fill="hsl(var(--secondary))" fillOpacity={0.6} />
+        <Radar dataKey="value" fill="hsl(var(--secondary))" fillOpacity={0.6} />
         <Tooltip cursor={{ stroke: "hsl(var(--secondary))", strokeWidth: 1 }} />
       </RadarChart>
     </ResponsiveContainer>

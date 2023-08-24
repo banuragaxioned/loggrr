@@ -1,5 +1,6 @@
 import { Icons } from "@/components/icons";
 import { Tenant, Role, AllocationFrequency, UserStatus } from "@prisma/client";
+import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type Allocations = {
   id: number;
@@ -88,7 +89,7 @@ export type AllocationDates = {
     id: number;
     billableTime: number;
     nonBillableTime: number;
-    totalTime: number;
+    allEntries: number;
     updatedAt: Date;
     frequency?: string;
   };
@@ -104,7 +105,7 @@ export type ProjectAllocation = {
     userName: string | null;
     userAvatar: string;
     averageTime: number;
-    totalTime: number;
+    allEntries: number;
     allocations: AllocationDates;
   }[];
 };
@@ -114,14 +115,14 @@ export type GlobalAllocation = {
   userId: number;
   userName: string | null;
   userAvatar: string;
-  totalTime: number;
+  allEntries: number;
   averageTime: number;
   cumulativeProjectDates: AllocationDates;
   projects: {
     clientName: string;
     projectId: number;
     projectName: string;
-    totalTime: number;
+    allEntries: number;
     allocations: AllocationDates;
   }[];
 };
@@ -165,7 +166,7 @@ export type getAllocation = {
 export type SkillScore = {
   id: number;
   name: string;
-  level: number;
+  value: number;
 };
 
 export type SkillRadar = SkillScore[];
@@ -209,3 +210,12 @@ export type Members = {
 };
 
 export type pageProps = { params: { team: Tenant["slug"] } };
+
+export interface TableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
+
+export interface DataTableToolbarProps<TData> {
+  table: Table<TData>;
+}

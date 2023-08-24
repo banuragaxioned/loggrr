@@ -33,7 +33,7 @@ interface DeactiveUser {
   tenant: string
 }
 
-export function DataTable<TData, TValue>({ columns, data, team }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({ columns, data, team }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});

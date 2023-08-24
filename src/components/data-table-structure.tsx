@@ -1,41 +1,28 @@
 "use client";
 
 import * as React from "react";
-import {
-  ColumnDef,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
+import { columns } from "@/app/launchpad/[team]/(reports)/reports/summary/columns";
 import { cn } from "@/lib/utils";
+import { TableProps } from "@/types";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  tableConfig: TableProps<TData, TValue>;
+  DataTableToolbar?: React.ComponentType<any>;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
+export function DataTableStructure<TData, TValue>({ tableConfig, DataTableToolbar }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    ...tableConfig,
   });
 
   return (
     <>
+      {DataTableToolbar && <DataTableToolbar table={table} />}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
