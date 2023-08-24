@@ -14,7 +14,7 @@ import {
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 
-export function Table<TData, TValue>({ columns }: TableProps<TData, TValue>) {
+export function Table<TData, TValue>({ columns }: any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -23,7 +23,7 @@ export function Table<TData, TValue>({ columns }: TableProps<TData, TValue>) {
 
   const tableConfig = {
     data,
-    columns,
+    columns:columns(startDate),
     state: {
       sorting,
       columnFilters,
@@ -60,6 +60,7 @@ export function Table<TData, TValue>({ columns }: TableProps<TData, TValue>) {
     // getAllocation().then(res=>res.json()).then(res=>console.log(res))
   useEffect(()=>{
     getAllocation().then(res=>res.json()).then(res=>setData(res));
+    console.log(data)
   },[startDate])
 
   return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} toolBarProps={{startDate,setStartDate}} />;

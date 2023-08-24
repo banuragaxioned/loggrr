@@ -1,9 +1,10 @@
 "use client";
 
-import { ColumnDef, Column, RowData } from "@tanstack/react-table";
+import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
+import { TableInput } from "@/components/table-input";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -34,14 +35,36 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
 };
 
 //function to create dynamic columns based on dates
-const getDynamicColumns = () => {
+const createDynamicColumns = (startDate: Date) => {
   const days = 7;
-  return getDatesInRange(Date.parse(new Date().toDateString()), days, false).map((dateObj, i) => {
+  return getDatesInRange(startDate, days, false).map((dateObj, i) => {
+    const date = dateObj.dateKey;
     return {
-      accessorKey: `timeAssigned.${dateObj.dateKey}.billable`,
+      accessorKey: `timeAssigned.${dateObj.dateKey}.billableTime`,
       header: ({ column }: { column: Column<any> }) => (
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
+      cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
+        console.log(row.original)
+        return (
+          <div className="px-0 py-0">
+            <TableInput
+              hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
+              data={{
+                hoursObj: row.subRows,
+                userName: row.original.userName,
+                projectId: row.original.id,
+                userId: row.original.userId,
+                isBillable: row.original.billable,
+                date: date,
+                team: "axioned",
+              }}
+              type={"billable"}
+              setSubmitCount={() => console.log("send")}
+            />
+          </div>
+        );
+      },
       meta: {
         className: "w-[13%]",
       },
@@ -49,47 +72,50 @@ const getDynamicColumns = () => {
   });
 };
 
-export const columns: ColumnDef<any>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => {
-      return (
-        <div
-          className={`flex items-center gap-x-2 ${
-            row.depth > 0
-              ? "relative ml-6 before:absolute before:-left-4 before:-top-[34px] before:block  before:h-[52px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
-              : ""
-          }`}
-        >
-          {row.getCanExpand() ? (
-            <button
-              {...{
-                onClick: row.getToggleExpandedHandler(),
-                className: "cursor-pointer",
+export const getDynamicColumns = (startDate: Date) => {
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+      cell: ({ row }) => {
+        return (
+          <div
+            className={`flex items-center gap-x-2 ${row.getCanExpand() || row.depth > 0 ?'':'ml-5'} ${
+              row.depth > 0
+                ? "relative ml-6 before:absolute before:-left-[17px] before:-top-9 before:block  before:h-[54px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                : ""
+            }`}
+          >
+            {row.getCanExpand() ? (
+              <button
+                {...{
+                  onClick: row.getToggleExpandedHandler(),
+                  className: "cursor-pointer",
+                }}
+              >
+                {row.getIsExpanded() ? (
+                  <Icons.chevronDown className="h-4 w-4" />
+                ) : (
+                  <Icons.chevronRight className="h-4 w-4" />
+                )}
+              </button>
+            ) : null}
+            <UserAvatar
+              user={{
+                name: row.original.name ? row.original.name : "",
+                image: row.original.image ? row.original.image : "",
               }}
-            >
-              {row.getIsExpanded() ? (
-                <Icons.chevronDown className="h-4 w-4" />
-              ) : (
-                <Icons.chevronRight className="h-4 w-4" />
-              )}
-            </button>
-          ) : null}
-          <UserAvatar
-            user={{
-              name: row.original.name ? row.original.name : "",
-              image: row.original.image ? row.original.image : "",
-            }}
-            className="z-10 mr-2 inline-block h-5 w-5"
-          />
-          <span>{row.original.name}</span>
-        </div>
-      );
+              className="z-10 mr-2 inline-block h-5 w-5"
+            />
+            <span>{row.original.name}</span>
+          </div>
+        );
+      },
+      meta: {
+        className: "w-[12.5%]",
+      },
     },
-    meta: {
-      className: "w-[12.5%]",
-    },
-  },
-  ...getDynamicColumns(),
-];
+    ...createDynamicColumns(startDate),
+  ];
+  return columns;
+};

@@ -5,7 +5,7 @@ import { getProjectsId, getAllUsers, getAllocations } from "@/server/services/al
 import { NewAllocationForm } from "@/components/forms/allocationForm";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import {columns} from "./columns";
+import {getDynamicColumns} from "./columns";
 import { DataTable } from "./data-table";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default async function Assigned({ params }: pageProps) {
           <NewAllocationForm team={team} projects={projects} users={users} />
         </DashboardHeader>
         <DataTable team={team} />
-        <Table columns={columns} data={[]}/>
+        <Table columns={getDynamicColumns} data={[]}/>
       </DashboardShell>
     </>
   );
