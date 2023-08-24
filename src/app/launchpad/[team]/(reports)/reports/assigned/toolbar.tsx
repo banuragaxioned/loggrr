@@ -10,11 +10,11 @@ import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
-  startDate:Date;
-  setStartDate:Dispatch<any>|any;
+  startDate: Date;
+  setStartDate: Dispatch<any> | any;
 }
 
-export function DataTableToolbar<TData>({ table,startDate,setStartDate }: DataTableToolbarExtendedProps<TData>) {
+export function DataTableToolbar<TData>({ table, startDate, setStartDate }: DataTableToolbarExtendedProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
@@ -28,12 +28,6 @@ export function DataTableToolbar<TData>({ table,startDate,setStartDate }: DataTa
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={viewOptions} />
-        )}
-        {table.getColumn("role") && (
-          <DataTableFacetedFilter column={table.getColumn("role")} title="Role" options={entryOptions} />
-        )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset
