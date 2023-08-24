@@ -19,7 +19,7 @@ const ManageMembers = async ({ params }: pageProps) => {
       <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
         <AddUserInTeam team={team} />
       </DashboardHeader>
-      {data && <DataTable columns={columns} data={data} />}
+      {data && <DataTable columns={columns} data={data} team={team} />}
     </DashboardShell>
   );
 };

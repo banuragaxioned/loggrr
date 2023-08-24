@@ -25,6 +25,7 @@ import useToast from "@/hooks/useToast";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  team: string
 }
 
 interface DeactiveUser {
@@ -32,7 +33,7 @@ interface DeactiveUser {
   tenant: string
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, team }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -69,7 +70,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        team: value.tenant,
+        team,
         userId: value.id,
       }),
     });
