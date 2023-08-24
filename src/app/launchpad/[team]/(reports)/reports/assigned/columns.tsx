@@ -54,24 +54,22 @@ const createDynamicColumns = (startDate: Date) => {
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
       cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
-        const subRows = row.originalSubRows;
-        const filteredObj = subRows?.find((obj) => obj.timeAssigned[date]);
-        const assignedObj = filteredObj?.timeAssigned[date];
-        const projectId = assignedObj?.id;
-        const isBillable = assignedObj?.billable;
+        const subRow = row.original;
+        const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
+        row.depth > 0 && console.log(assignedObj, subRow);
         return (
           <div className="px-0 py-0">
-            {row.subRows.length ? (
-              <span className="block text-center">{getTotal(subRows, date)}</span>
+            {row.subRows.length || row.depth < 1 ? (
+              <span className="block text-center">{getTotal(row.originalSubRows, date)}</span>
             ) : (
               <TableInput
                 hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
                 data={{
                   hoursObj: assignedObj ? assignedObj : {},
-                  userName: row.original.userName,
-                  projectId: projectId,
-                  userId: row.original.id,
-                  isBillable: isBillable,
+                  userName: subRow.userName,
+                  projectId: assignedObj?.id,
+                  userId: subRow.userId,
+                  isBillable: assignedObj?.billable,
                   date: date,
                   team: row.original.team,
                 }}
