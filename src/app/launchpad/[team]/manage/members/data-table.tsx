@@ -64,7 +64,7 @@ export default function DataTable<TData, TValue>({ columns, data, team }: DataTa
   });
 
   const updateStatus = async (value: DeactiveUser) => {
-    const response = await fetch("/api/team/members/deactivate", {
+    const response = await fetch("/api/team/members/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
