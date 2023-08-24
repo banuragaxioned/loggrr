@@ -33,6 +33,7 @@ import {
   Boxes,
   Loader,
   FileText,
+  MinusCircle,
   LucideProps,
 } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
@@ -84,4 +85,5 @@ export const Icons = {
   chevronDoubleRight: ChevronsRight,
   chevronLeft: ChevronLeft,
   chevronDoubleLeft: ChevronsLeft,
+  minusCircle: MinusCircle
 };

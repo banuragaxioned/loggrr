@@ -5,7 +5,7 @@ import { ColumnDef, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
-import { MinusCircle } from "lucide-react";
+import { Icons } from "@/components/icons";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -64,7 +64,7 @@ export const columns: ColumnDef<Members>[] = [
       return (
         <div className="flex gap-3">
           <Button title="Deactivate" className="border-0 bg-inherit p-2">
-            <MinusCircle height={18} width={18} />
+            <Icons.minusCircle height={18} width={18} />
           </Button>
         </div>
       );
