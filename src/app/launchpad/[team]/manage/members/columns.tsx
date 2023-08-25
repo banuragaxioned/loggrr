@@ -18,7 +18,7 @@ declare module "@tanstack/table-core" {
 
 
 
-export const getColumn = (team: string) => {
+export const GetColumn = (team: string) => {
   const showToast = useToast();
   const router = useRouter()
 
@@ -77,22 +77,14 @@ export const getColumn = (team: string) => {
       },
     },
     {
-      accessorKey: "status",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
-      filterFn: "arrIncludesSome",
-      meta: {
-        className: "w-[15%]",
-      },
-    },
-    {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className={cn("flex gap-3 invisible", row.original.status !== "DEACTIVATED" && "group-hover:visible")}>
+          <div className={cn("flex gap-3 invisible", row.original.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
-              title="Deactivate"
+              title="Inactive"
               className={cn("border-0 bg-inherit p-2")}
-              onClick={() => row.original.status === "DEACTIVATED" ? null : updateStatus(row.original.id, team)}
+              onClick={() => row.original.role === "INACTIVE" ? null : updateStatus(row.original.id, team)}
             >
               <Icons.minusCircle height={18} width={18} />
             </Button>

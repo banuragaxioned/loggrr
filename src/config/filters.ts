@@ -1,18 +1,5 @@
 import { Icons } from "@/components/icons";
 
-export const statuses = [
-  {
-    value: "ACTIVE",
-    label: "Active",
-    icon: Icons.activity,
-  },
-  {
-    value: "DEACTIVATED",
-    label: "Deactivated",
-    icon: Icons.delete,
-  },
-];
-
 export const roles = [
   {
     value: "OWNER",
@@ -28,6 +15,11 @@ export const roles = [
     value: "USER",
     label: "User",
     icon: Icons.user,
+  },
+  {
+    value: "INACTIVE",
+    label: "Inactive",
+    icon: Icons.minusCircle,
   },
 ];
 

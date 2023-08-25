@@ -38,7 +38,6 @@ model Tenant {
   Skill       Skill[]
   SkillScore  SkillScore[]
   UserRole    UserRole[]
-  UsersStatus UsersStatus[]
 }
 
 model Client {
@@ -97,6 +96,7 @@ enum Role {
   // ADMIN
   MANAGER
   USER
+  INACTIVE
 }
 
 model Milestone {
@@ -271,26 +271,6 @@ model UserGroup {
   @@index([tenantId])
 }
 
-enum UserStatus {
-  ACTIVE
-  DEACTIVATED
-}
-
-model UsersStatus {
-  id       Int        @id @default(autoincrement())
-  userId   Int
-  tenantId Int
-  status   UserStatus @default(ACTIVE)
-
-  Tenant Tenant @relation(fields: [tenantId], references: [id])
-  User   User   @relation(fields: [userId], references: [id])
-
-  @@unique([status, userId, tenantId])
-  @@index([userId])
-  @@index([tenantId])
-  @@index([userId, tenantId])
-}
-
 // NextAuth-related
 model User {
   id            Int        @id @default(autoincrement())
@@ -313,7 +293,6 @@ model User {
   TimeEntry     TimeEntry[]
   Project       Project[]     @relation("ProjectMembers")
   OwnedProjects Project[]     @relation("UserOwnedProjects")
-  UsersStatus   UsersStatus[]
 
   @@index([allocationId])
 }
