@@ -7,13 +7,8 @@ export const statuses = [
     icon: Icons.activity,
   },
   {
-    value: "INACTIVE",
-    label: "Archived",
-    icon: Icons.archive,
-  },
-  {
-    value: "DELETED",
-    label: "Deleted",
+    value: "DEACTIVATED",
+    label: "Deactivated",
     icon: Icons.delete,
   },
 ];
