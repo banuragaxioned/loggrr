@@ -39,24 +39,22 @@ const getFormatedData = (timeArr: any) => {
   return resultObj;
 };
 
-const getSubRows = (user:any)=> {
- const subRows = user?.projects?.map((project: any, i: number) => (
-     {
-      id: project?.projectId,
-      userId: user.userId,
-      name: project?.projectName.slice(0, 5) + "...",
-      title: project?.projectName,
-      clientName: project?.clientName,
-      totalTime: project?.totalTime,
-      userName: user.userName,
-      billable: project?.billable,
-      frequency: project?.frequency,
-      isFirst: i === 0 ? true : false,
-      timeAssigned: getFormatedData(project?.allocations),
-    }
-  ));
+const getSubRows = (user: any) => {
+  const subRows = user?.projects?.map((project: any, i: number) => ({
+    id: project?.projectId,
+    userId: user.userId,
+    name: project?.projectName.slice(0, 5) + "...",
+    title: project?.projectName,
+    clientName: project?.clientName,
+    totalTime: project?.totalTime,
+    userName: user.userName,
+    billable: project?.billable,
+    frequency: project?.frequency,
+    timeAssigned: getFormatedData(project?.allocations),
+    team: user.team,
+  }));
   return subRows;
-}
+};
 
 const dataFiltering = (data: any) => {
   const resultantArray: any = [];
@@ -68,13 +66,9 @@ const dataFiltering = (data: any) => {
       title: user?.userName,
       userAvatar: user?.userAvatar,
       isProjectAssigned: user?.projects?.length,
-      team:user.team
+      team: user.team,
     };
-    const finalData = user?.projects?.length ?
-    {...temp,
-    subRows:getSubRows(user)
-    } 
-    :temp;
+    const finalData = user?.projects?.length ? { ...temp, subRows: getSubRows(user) } : temp;
     resultantArray.push(finalData);
   });
   return resultantArray;
@@ -183,7 +177,7 @@ export async function POST(req: Request) {
               },
             },
           },
-          orderBy:{name:"asc"}
+          orderBy: { name: "asc" },
         },
       },
       orderBy: { name: "asc" },
@@ -214,7 +208,7 @@ export async function POST(req: Request) {
         }),
         totalTime: totalTime,
         averageTime: averageTime,
-        team:body.team,
+        team: body.team,
       };
     });
     return new Response(JSON.stringify(dataFiltering(allocationData)));

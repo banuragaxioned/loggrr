@@ -5,6 +5,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
 import { TableInput } from "@/components/table-input";
+import { useRouter } from "next/navigation";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -56,7 +57,7 @@ const createDynamicColumns = (startDate: Date) => {
       cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
-        row.depth > 0 && console.log(assignedObj, subRow);
+        // row.depth > 0 && console.log(assignedObj, subRow);
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
@@ -67,11 +68,11 @@ const createDynamicColumns = (startDate: Date) => {
                 data={{
                   hoursObj: assignedObj ? assignedObj : {},
                   userName: subRow.userName,
-                  projectId: assignedObj?.id,
-                  userId: subRow.userId,
-                  isBillable: assignedObj?.billable,
+                  projectId: subRow?.id,
+                  userId: subRow?.userId,
+                  isBillable: subRow?.billable,
                   date: date,
-                  team: row.original.team,
+                  team: subRow?.team,
                 }}
                 type={"billable"}
                 setSubmitCount={() => console.log("send")}
@@ -81,13 +82,13 @@ const createDynamicColumns = (startDate: Date) => {
         );
       },
       meta: {
-        className: "w-[13%]",
+        className: "w-[12.5%]",
       },
     };
   });
 };
 
-export const getDynamicColumns = (startDate: Date) => {
+export const getDynamicColumns = (startDate: Date,weekend:boolean,billable:string) => {
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "name",

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import useToast from "@/hooks/useToast";
 
 export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
-  // console.log(hours,data,type)
+  console.log(hours,data,type)
   const billable = data.hoursObj?.billableTime || 0;
   const nonBillable = data.hoursObj?.nonBillableTime || 0;
   const totaTime = data.hoursObj?.totalTime || 0;

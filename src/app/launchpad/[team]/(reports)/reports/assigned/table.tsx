@@ -20,6 +20,8 @@ export function Table<TData, TValue>({ columns }: any) {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate,setStartDate] = useState(new Date());
   const [data,setData] = useState([]);
+  const [weekend, setWeekend] = useState<boolean>(false);
+  const [billable, setBillable] = useState<string>("totalTime");
 
   const tableConfig = {
     data,
