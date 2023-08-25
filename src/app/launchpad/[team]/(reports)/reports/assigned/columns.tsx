@@ -73,7 +73,6 @@ const createDynamicColumns = (
       cell: ({ row, column }: { row: Row<AssignmentSubRow>; column: Column<Assignment> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
-        console.log(row);
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
