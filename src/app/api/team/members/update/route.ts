@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { UserStatus } from "@prisma/client";
+import { Role } from "@prisma/client";
 
 const deactivateUserSchema = z.object({
   team: z.string().min(1),
@@ -28,10 +28,10 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const deactivateUser = await db.usersStatus.updateMany({
+    const deactivateUser = await db.userRole.updateMany({
       where: { userId: body.userId, Tenant: {slug: body.team} },
       data: {
-         status: UserStatus.DEACTIVATED
+         role: Role.INACTIVE
       }
     })
 
