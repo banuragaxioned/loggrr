@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
@@ -35,12 +33,6 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {isFiltered && (
-          <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
-            Reset
-            <Icons.reset className="ml-2 h-4 w-4" />
-          </Button>
-        )}
         {/* weekend dropdown */}
         <SingleSelectDropdown
           setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
