@@ -2,8 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { entryOptions, viewOptions } from "@/config/filters";
-import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
@@ -13,11 +11,17 @@ import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
   setStartDate: Dispatch<any> | any;
-  setWeekend:Dispatch<any> | any;
-  setBillable:Dispatch<any> | any
+  setWeekend: Dispatch<any> | any;
+  setBillable: Dispatch<any> | any;
 }
 
-export function DataTableToolbar<TData>({ table, startDate, setStartDate,setWeekend,setBillable }: DataTableToolbarExtendedProps<TData>) {
+export function DataTableToolbar<TData>({
+  table,
+  startDate,
+  setStartDate,
+  setWeekend,
+  setBillable,
+}: DataTableToolbarExtendedProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
@@ -37,29 +41,29 @@ export function DataTableToolbar<TData>({ table, startDate, setStartDate,setWeek
             <Icons.reset className="ml-2 h-4 w-4" />
           </Button>
         )}
-           {/* weekend dropdown */}
-        {/* <SingleSelectDropdown
+        {/* weekend dropdown */}
+        <SingleSelectDropdown
           selectionHandler={(value: string) => setWeekend(value === "weekend" ? true : false)}
           contentClassName="[&>div]hover:bg-hover"
-          placeholder="Table view"
+          placeholder="Weekdays"
           selectionOptions={[
-            { title: "Weekend view", value: "weekend" },
-            { title: "Weekdays view", value: "weekdays" },
+            { title: "Weekend", value: "weekend" },
+            { title: "Weekdays", value: "weekdays" },
           ]}
-          triggerClassName="w-[220px] 2xl:text-sm"
-        /> */}
+          triggerClassName="w-[120px] 2xl:text-sm"
+        />
         {/* time entry type dropdown */}
-        {/* <SingleSelectDropdown
+        <SingleSelectDropdown
           selectionHandler={(value: string) => setBillable(value)}
           contentClassName="[&>div]hover:bg-hover"
-          placeholder="Entered time type"
+          placeholder="Billable"
           selectionOptions={[
             { title: "Billable", value: "billableTime" },
-            { title: "Non-billable", value: "nonBillableTime" },
+            { title: "Non-Billable", value: "nonBillableTime" },
             { title: "Total Time", value: "totalTime" },
           ]}
-          triggerClassName="w-[220px] 2xl:text-sm"
-        /> */}
+          triggerClassName="w-[140px] 2xl:text-sm"
+        />
       </div>
     </div>
   );

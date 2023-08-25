@@ -1,11 +1,11 @@
 "use client";
 
-import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
+import { ColumnDef, Column, Row, RowData, sortingFns } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
 import { TableInput } from "@/components/table-input";
-import { useRouter } from "next/navigation";
+import { Dispatch } from "react";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -13,11 +13,11 @@ declare module "@tanstack/table-core" {
   }
 }
 
-const getTotal = (subRows: any, key: string) => {
+const getTotal = (subRows: any, key: string, billable: string) => {
   let total = 0;
   subRows?.length &&
     subRows?.map((arr: any) => {
-      total += arr.timeAssigned[key] ? arr.timeAssigned[key]["billableTime"] : 0;
+      total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
     });
   return total;
 };
@@ -45,23 +45,27 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
 };
 
 //function to create dynamic columns based on dates
-const createDynamicColumns = (startDate: Date) => {
+const createDynamicColumns = (
+  startDate: Date,
+  billable: string,
+  weekend: boolean,
+  setSubmitCount: Dispatch<number>,
+) => {
   const days = 7;
-  return getDatesInRange(startDate, days, false).map((dateObj, i) => {
+  return getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
     const date = dateObj.dateKey;
     return {
-      accessorKey: `timeAssigned.${dateObj.dateKey}.billableTime`,
+      accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
       header: ({ column }: { column: Column<any> }) => (
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
       cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
-        // row.depth > 0 && console.log(assignedObj, subRow);
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
-              <span className="block text-center">{getTotal(row.originalSubRows, date)}</span>
+              <span className="block text-center">{getTotal(row.originalSubRows, date, billable)}</span>
             ) : (
               <TableInput
                 hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
@@ -75,7 +79,7 @@ const createDynamicColumns = (startDate: Date) => {
                   team: subRow?.team,
                 }}
                 type={"billable"}
-                setSubmitCount={() => console.log("send")}
+                setSubmitCount={setSubmitCount}
               />
             )}
           </div>
@@ -88,7 +92,12 @@ const createDynamicColumns = (startDate: Date) => {
   });
 };
 
-export const getDynamicColumns = (startDate: Date,weekend:boolean,billable:string) => {
+export const getDynamicColumns = (
+  startDate: Date,
+  billable: string,
+  weekend: boolean,
+  setSubmitCount: Dispatch<number>,
+) => {
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "name",
@@ -131,7 +140,7 @@ export const getDynamicColumns = (startDate: Date,weekend:boolean,billable:strin
         className: "w-[12.5%]",
       },
     },
-    ...createDynamicColumns(startDate),
+    ...createDynamicColumns(startDate, billable, weekend, setSubmitCount),
   ];
   return columns;
 };
