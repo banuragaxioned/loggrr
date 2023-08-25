@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant, Status, Role, AllocationFrequency } from "@prisma/client";
+import { Tenant, Role, AllocationFrequency, UserStatus } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type Allocations = {
@@ -205,7 +205,7 @@ export type Members = {
   name: string | null | undefined;
   email: string;
   image: string | undefined | null;
-  status: Status;
+  status: UserStatus;
   role: Role;
 };
 
