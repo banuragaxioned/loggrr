@@ -100,8 +100,8 @@ const createDynamicColumns = (
       meta: {
         className: "w-[12%]",
       },
-      enableSorting:true,
-      sortingFn:"alphanumeric"
+      enableSorting: true,
+      sortingFn: "alphanumeric",
     };
   });
   return createdColumns;
