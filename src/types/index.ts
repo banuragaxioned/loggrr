@@ -89,7 +89,7 @@ export type AllocationDates = {
     id: number;
     billableTime: number;
     nonBillableTime: number;
-    allEntries: number;
+    totalTime: number;
     updatedAt: Date;
     frequency?: string;
   };
@@ -218,4 +218,16 @@ export interface TableProps<TData, TValue> {
 
 export interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+}
+
+export interface AssignmentSubRow {
+  billable:boolean;
+clientName:string;
+id:number;
+name:string;
+team:string;
+timeAssigned:AllocationDates[];
+title:string;
+userId:number;
+userName:string;
 }

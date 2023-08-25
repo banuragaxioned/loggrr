@@ -1,11 +1,13 @@
 "use client";
 
-import { ColumnDef, Column, Row, RowData, sortingFns } from "@tanstack/react-table";
+import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
 import { TableInput } from "@/components/table-input";
 import { Dispatch } from "react";
+import { AssignmentSubRow } from "@/types";
+import dayjs from "dayjs";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -13,7 +15,16 @@ declare module "@tanstack/table-core" {
   }
 }
 
-const getTotal = (subRows: any, key: string, billable: string) => {
+interface Assignment {
+  name: string;
+  image: string | null;
+  userId: number;
+  userName: string;
+  title: string;
+  subRows: AssignmentSubRow[] | undefined;
+}
+
+const getTotal = (subRows: AssignmentSubRow[] | undefined, key: string, billable: string) => {
   let total = 0;
   subRows?.length &&
     subRows?.map((arr: any) => {
@@ -23,7 +34,7 @@ const getTotal = (subRows: any, key: string, billable: string) => {
 };
 
 //function to get date between two dates
-const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) => {
+const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean) => {
   const dates = [];
   let start = startDate,
     count = 0;
@@ -39,7 +50,7 @@ const getDatesInRange = (startDate: any, days: number, includeWeekend: boolean) 
       });
       count++;
     }
-    start = new Date(start).setDate(new Date(start).getDate() + 1);
+    start = dayjs(startDate).add(1, "day").toDate();
   }
   return dates;
 };
@@ -50,18 +61,19 @@ const createDynamicColumns = (
   billable: string,
   weekend: boolean,
   setSubmitCount: Dispatch<number>,
-) => {
+): ColumnDef<Assignment>[] | any => {
   const days = 7;
-  return getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
-    const date = dateObj.dateKey;
+  const createdColumns = getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
+    const date: any = dateObj.dateKey;
     return {
       accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
-      header: ({ column }: { column: Column<any> }) => (
+      header: ({ column }: { column: Column<Assignment> }) => (
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
-      cell: ({ row, column }: { row: Row<any>; column: Column<any> }) => {
+      cell: ({ row, column }: { row: Row<AssignmentSubRow>; column: Column<Assignment> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
+        console.log(row);
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
@@ -86,10 +98,13 @@ const createDynamicColumns = (
         );
       },
       meta: {
-        className: "w-[12.5%]",
+        className: "w-[12%]",
       },
+      enableSorting:true,
+      sortingFn:"alphanumeric"
     };
   });
+  return createdColumns;
 };
 
 export const getDynamicColumns = (
@@ -98,7 +113,7 @@ export const getDynamicColumns = (
   weekend: boolean,
   setSubmitCount: Dispatch<number>,
 ) => {
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<Assignment | any>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -107,7 +122,7 @@ export const getDynamicColumns = (
           <div
             className={`flex items-center gap-x-2 ${row.getCanExpand() || row.depth > 0 ? "" : "ml-5"} ${
               row.depth > 0
-                ? "relative ml-6 before:absolute before:-left-[17px] before:-top-9 before:block  before:h-[54px] before:w-4 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
+                ? "relative ml-[60px] before:absolute before:-left-7 before:-top-11 before:block  before:h-[54px] before:w-6 before:rounded-bl-md before:border-b-2 before:border-l-2 before:border-slate-300 before:-indent-[9999px] before:content-['a']"
                 : ""
             }`}
           >
@@ -125,19 +140,23 @@ export const getDynamicColumns = (
                 )}
               </button>
             ) : null}
-            <UserAvatar
-              user={{
-                name: row.original.name ? row.original.name : "",
-                image: row.original.image ? row.original.image : "",
-              }}
-              className="z-10 mr-2 inline-block h-5 w-5"
-            />
-            <span>{row.original.name}</span>
+            {row.depth < 1 && (
+              <UserAvatar
+                user={{
+                  name: row.original.name ? row.original.name : "",
+                  image: row.original.image ? row.original.image : "",
+                }}
+                className="z-10 mr-2 inline-block h-5 w-5"
+              />
+            )}
+            <span title={row.original.title} className="cursor-default">
+              {row.original.name}
+            </span>
           </div>
         );
       },
       meta: {
-        className: "w-[12.5%]",
+        className: "w-[16%]",
       },
     },
     ...createDynamicColumns(startDate, billable, weekend, setSubmitCount),

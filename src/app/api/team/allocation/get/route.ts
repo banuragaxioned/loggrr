@@ -26,7 +26,7 @@ interface AllocationDate {
 
 const calculateAllocationTotalTime = (allocations: AllocationDates) => {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
-    return accumulator + allocations[allocationKey].allEntries;
+    return accumulator + allocations[allocationKey].totalTime;
   }, 0);
 };
 
@@ -64,7 +64,7 @@ const dataFiltering = (data: any) => {
       id: user?.userId,
       name: user?.userName.split(" ")[0],
       title: user?.userName,
-      userAvatar: user?.userAvatar,
+      image: user?.userAvatar,
       isProjectAssigned: user?.projects?.length,
       team: user.team,
     };
@@ -99,7 +99,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -118,7 +118,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -206,7 +206,7 @@ export async function POST(req: Request) {
             allocations: allocations,
           };
         }),
-        allEntries: totalTime,
+        totalTime: totalTime,
         averageTime: averageTime,
         team: body.team,
       };

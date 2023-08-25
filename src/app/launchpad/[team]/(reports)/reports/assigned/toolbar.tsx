@@ -8,9 +8,9 @@ import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
-  setStartDate: Dispatch<any> | any;
-  setWeekend: Dispatch<any> | any;
-  setBillable: Dispatch<any> | any;
+  setStartDate: Dispatch<Date>;
+  setWeekend: Dispatch<boolean>;
+  setBillable: Dispatch<string>;
 }
 
 export function DataTableToolbar<TData>({
@@ -39,7 +39,7 @@ export function DataTableToolbar<TData>({
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Weekdays"
           options={[
-            { id: 1, name: "Weekend", value: "weekend" },
+            { id: 1, name: "Week", value: "weekend" },
             { id: 2, name: "Weekdays", value: "weekdays" },
           ]}
           triggerClassName="w-[120px] 2xl:text-sm"
@@ -48,11 +48,11 @@ export function DataTableToolbar<TData>({
         <SingleSelectDropdown
           setOptions={(value: string) => setBillable(value)}
           contentClassName="[&>div]hover:bg-hover"
-          placeholder="Billable"
+          placeholder="Total Time"
           options={[
+            { id: 1, name: "Total Time", value: "totalTime" },
             { id: 1, name: "Billable", value: "billableTime" },
             { id: 1, name: "Non-Billable", value: "nonBillableTime" },
-            { id: 1, name: "Total Time", value: "totalTime" },
           ]}
           triggerClassName="w-[140px] 2xl:text-sm"
         />

@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch } from "react";
 import { DataTableStructure } from "@/components/data-table-structure";
-import { TableProps } from "@/types";
 import {
+  ColumnDef,
   ColumnFiltersState,
   SortingState,
   getCoreRowModel,
@@ -14,8 +14,18 @@ import {
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
+import { AssignmentSubRow } from "@/types";
 
-export function Table<TData, TValue>({ columns }: any) {
+interface AssignmentTableProps<TData, TValue> {
+  columns: (
+    startDate: Date,
+    billable: string,
+    weekend: boolean,
+    setSubmitCount: Dispatch<number>,
+  ) => ColumnDef<TData, TValue>[];
+}
+
+export function AssignmentTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -37,7 +47,7 @@ export function Table<TData, TValue>({ columns }: any) {
     onSortingChange: setSorting,
     getExpandedRowModel: getExpandedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getSubRows: (row: { subRows: any }) => row.subRows,
+    getSubRows: (row: { subRows: AssignmentSubRow }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
     getFilteredRowModel: getFilteredRowModel(),
