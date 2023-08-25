@@ -7,7 +7,7 @@ import { Allocation } from "@prisma/client";
 
 function calculateAllocationTotalTime(allocations: AllocationDates) {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
-    return accumulator + allocations[allocationKey].totalTime;
+    return accumulator + allocations[allocationKey].allEntries;
   }, 0);
 }
 
@@ -38,7 +38,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        totalTime: billableTime + nonBillableTime,
+        allEntries: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -55,7 +55,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        totalTime: billableTime + nonBillableTime,
+        allEntries: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -159,7 +159,7 @@ export async function getAllocations(input: getAllocation) {
             userName: user.name,
             userAvatar: user.image || `${process.env.BASE_URL}/avatar.png`,
             averageTime: averageTime,
-            totalTime: totalTime,
+            allEntries: totalTime,
             allocations: allocations,
           };
         }),
@@ -207,7 +207,7 @@ export async function getAllocations(input: getAllocation) {
           // create allocation, if allocation date not exist
           if (!isAllocationDateExist) {
             cumulativeProjectDates[allocationKey] = { ...allocation };
-            grandTotalHours += allocation.totalTime; /* calculate all totalTime */
+            grandTotalHours += allocation.allEntries; /* calculate all totalTime */
 
             // stop further execution
             continue;
@@ -216,9 +216,9 @@ export async function getAllocations(input: getAllocation) {
           // if allocation date exist add hours
           cumulativeProjectDates[allocationKey].billableTime += allocation.billableTime;
           cumulativeProjectDates[allocationKey].nonBillableTime += allocation.nonBillableTime;
-          cumulativeProjectDates[allocationKey].totalTime += allocation.totalTime;
+          cumulativeProjectDates[allocationKey].allEntries += allocation.allEntries;
 
-          grandTotalHours += allocation.totalTime; /* calculate all totalTime */
+          grandTotalHours += allocation.allEntries; /* calculate all totalTime */
         }
 
         return {
@@ -226,7 +226,7 @@ export async function getAllocations(input: getAllocation) {
           projectId: project.id,
           projectName: project.name,
           billable: project.billable,
-          totalTime: projectTotalTime,
+          allEntries: projectTotalTime,
           allocations: allocations,
         };
       });
@@ -239,7 +239,7 @@ export async function getAllocations(input: getAllocation) {
         userId: user.id,
         userName: user.name,
         userAvatar: user.image || `${process.env.NEXTAUTH_URL}/avatar.png`,
-        totalTime: grandTotalHours,
+        allEntries: grandTotalHours,
         averageTime: averageHours,
         cumulativeProjectDates: cumulativeProjectDates,
         projects: projectsData,

@@ -43,24 +43,24 @@ export function DataTableToolbar<TData>({
         )}
         {/* weekend dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setWeekend(value === "weekend" ? true : false)}
+          setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Weekdays"
-          selectionOptions={[
-            { title: "Weekend", value: "weekend" },
-            { title: "Weekdays", value: "weekdays" },
+          options={[
+            { id: 1, name: "Weekend", value: "weekend" },
+            { id: 2, name: "Weekdays", value: "weekdays" },
           ]}
           triggerClassName="w-[120px] 2xl:text-sm"
         />
         {/* time entry type dropdown */}
         <SingleSelectDropdown
-          selectionHandler={(value: string) => setBillable(value)}
+          setOptions={(value: string) => setBillable(value)}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Billable"
-          selectionOptions={[
-            { title: "Billable", value: "billableTime" },
-            { title: "Non-Billable", value: "nonBillableTime" },
-            { title: "Total Time", value: "totalTime" },
+          options={[
+            { id: 1, name: "Billable", value: "billableTime" },
+            { id: 1, name: "Non-Billable", value: "nonBillableTime" },
+            { id: 1, name: "Total Time", value: "totalTime" },
           ]}
           triggerClassName="w-[140px] 2xl:text-sm"
         />

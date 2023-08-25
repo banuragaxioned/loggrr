@@ -3,10 +3,11 @@ import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
-const clientCreateSchema = z.object({
-  level: z.number().min(0).max(5),
+const addSkillSchema = z.object({
   team: z.string().min(1),
-  scoreId: z.number().min(0)
+  skillId: z.coerce.number(),
+  userId: z.coerce.number(),
+  skillScore: z.coerce.number(),
 });
 
 export async function POST(req: Request) {
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = clientCreateSchema.parse(json);
+    const body = addSkillSchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
@@ -28,14 +29,28 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const client = await db.skillScore.updateMany({
-      where: { id: body.scoreId },
+    const addSkill = await db.skillScore.create({
       data: {
-        level: body.level,
+        Tenant: {
+          connect: {
+            slug: body.team
+          }
+        },
+        Skill: {
+          connect: {
+            id: body.skillId,
+          },
+        },
+        User: {
+          connect: {
+            id: body.userId
+          }
+        },
+        level: body.skillScore
       },
     });
 
-    return new Response(JSON.stringify(client));
+    return new Response(JSON.stringify(addSkill));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
