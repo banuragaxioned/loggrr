@@ -1,11 +1,11 @@
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
-import { columns } from "./columns";
 import { AddUserInTeam } from "@/components/forms/addUserForm";
 import { getMembers } from "@/server/services/members";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { Table } from "./table";
+import { getColumn } from "./columns";
 
 export const metadata: Metadata = {
   title: `Members`,
@@ -19,7 +19,7 @@ const ManageMembers = async ({ params }: pageProps) => {
       <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
         <AddUserInTeam team={team} />
       </DashboardHeader>
-      {data && <Table columns={columns} data={data} />}
+      {data && <Table columns={getColumn} team={team} data={data} />}
     </DashboardShell>
   );
 };

@@ -8,16 +8,23 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  ColumnDef,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
+interface MemberTableProps<TData, TValue> {
+  data: TData[];
+  team: string;
+  columns: (team: string) => ColumnDef<TData, TValue>[]
+} 
+
+export function Table<TData, TValue>({ data, columns, team }: MemberTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
   const tableConfig = {
     data,
-    columns,
+    columns: columns(team),
     state: {
       sorting,
       columnFilters,
