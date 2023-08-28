@@ -24,13 +24,13 @@ interface Assignment {
   subRows: AllocationDetails[] | undefined;
 }
 
-const getTotal = (subRows: AllocationDetails[] | undefined, key: string, billable: string) => {
+const getTotal = (subRows: AllocationDetails[] | undefined, key: string, billable: string): string => {
   let total = 0;
   subRows?.length &&
     subRows?.map((arr: any) => {
       total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
     });
-  return total;
+  return total.toLocaleString();
 };
 
 //function to get date between two dates
@@ -89,7 +89,7 @@ const createDynamicColumns = (
                   date: date,
                   team: subRow?.team,
                 }}
-                type={"billable"}
+                type={billable}
                 setSubmitCount={setSubmitCount}
               />
             )}
@@ -100,7 +100,6 @@ const createDynamicColumns = (
         className: "w-[12%]",
       },
       enableSorting: true,
-      sortingFn: "alphanumeric",
     };
   });
   return createdColumns;
