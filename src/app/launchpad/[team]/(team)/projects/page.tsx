@@ -1,7 +1,7 @@
 import { getProjects } from "@/server/services/project";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { Table } from "./table";
+import { DataTable } from "./data-table";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { columns } from "./columns";
@@ -19,7 +19,7 @@ export default async function Projects({ params }: pageProps) {
       </DashboardHeader>
       {/* TODO: Update to Advanced Table, with sort (all), select columns to display */}
       {/* TODO: Clicking on the row should take you to the project details page */}
-      <Table columns={columns} data={projectList} />
+      <DataTable columns={columns} data={projectList} />
     </DashboardShell>
   );
 }

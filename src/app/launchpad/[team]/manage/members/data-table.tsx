@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { DataTableStructure } from "@/components/data-table-structure";
 import { TableProps } from "@/types";
@@ -10,9 +9,9 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./toolbar";
+import { DataTableToolbar } from "./data-toolbar";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 

@@ -6,7 +6,7 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
 import { TableInput } from "@/components/table-input";
 import { Dispatch } from "react";
-import { AssignmentSubRow } from "@/types";
+import { AllocationDetails } from "@/types";
 import dayjs from "dayjs";
 
 declare module "@tanstack/table-core" {
@@ -21,10 +21,10 @@ interface Assignment {
   userId: number;
   userName: string;
   title: string;
-  subRows: AssignmentSubRow[] | undefined;
+  subRows: AllocationDetails[] | undefined;
 }
 
-const getTotal = (subRows: AssignmentSubRow[] | undefined, key: string, billable: string) => {
+const getTotal = (subRows: AllocationDetails[] | undefined, key: string, billable: string) => {
   let total = 0;
   subRows?.length &&
     subRows?.map((arr: any) => {
@@ -70,7 +70,7 @@ const createDynamicColumns = (
       header: ({ column }: { column: Column<Assignment> }) => (
         <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
       ),
-      cell: ({ row, column }: { row: Row<AssignmentSubRow>; column: Column<Assignment> }) => {
+      cell: ({ row, column }: { row: Row<AllocationDetails>; column: Column<Assignment> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
         return (

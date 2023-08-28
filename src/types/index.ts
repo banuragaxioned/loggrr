@@ -220,7 +220,7 @@ export interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export interface AssignmentSubRow {
+export interface AllocationDetails {
   billable:boolean;
 clientName:string;
 id:number;

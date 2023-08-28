@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/ui/shell";
-import { AssignmentTable } from "./table";
+import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
@@ -21,7 +21,7 @@ export default async function Assigned({ params }: pageProps) {
         <DashboardHeader heading="Assignments" text="This is a summary current assignments">
           <NewAllocationForm team={team} projects={projects} users={users} />
         </DashboardHeader>
-        <AssignmentTable columns={getDynamicColumns} />
+        <DataTable columns={getDynamicColumns} />
       </DashboardShell>
     </>
   );

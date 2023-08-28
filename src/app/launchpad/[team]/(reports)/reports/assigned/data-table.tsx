@@ -11,10 +11,10 @@ import {
   getExpandedRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./toolbar";
+import { DataTableToolbar } from "./data-toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
-import { AssignmentSubRow } from "@/types";
+import { AllocationDetails } from "@/types";
 
 interface AssignmentTableProps<TData, TValue> {
   columns: (
@@ -25,7 +25,7 @@ interface AssignmentTableProps<TData, TValue> {
   ) => ColumnDef<TData, TValue>[];
 }
 
-export function AssignmentTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -47,7 +47,7 @@ export function AssignmentTable<TData, TValue>({ columns }: AssignmentTableProps
     onSortingChange: setSorting,
     getExpandedRowModel: getExpandedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getSubRows: (row: { subRows: AssignmentSubRow }) => row.subRows,
+    getSubRows: (row: { subRows: AllocationDetails }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
     getFilteredRowModel: getFilteredRowModel(),
