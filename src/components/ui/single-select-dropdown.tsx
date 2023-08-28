@@ -25,12 +25,14 @@ export const SingleSelectDropdown = ({
   placeholder,
   setOptions,
   options,
-  defaultValue
+  defaultValue,
 }: SingleSelectDropdownProps) => {
-  
   return (
     <React.StrictMode>
-      <Select defaultValue={defaultValue ? String(defaultValue?.value) : undefined} onValueChange={(value) => setOptions(value)}>
+      <Select
+        defaultValue={defaultValue ? String(defaultValue?.value) : undefined}
+        onValueChange={(value) => setOptions(value)}
+      >
         <SelectTrigger className={triggerClassName}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

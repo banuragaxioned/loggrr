@@ -85,5 +85,5 @@ export const Icons = {
   chevronDoubleRight: ChevronsRight,
   chevronLeft: ChevronLeft,
   chevronDoubleLeft: ChevronsLeft,
-  minusCircle: MinusCircle
+  minusCircle: MinusCircle,
 };

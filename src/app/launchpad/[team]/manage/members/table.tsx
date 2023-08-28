@@ -18,13 +18,13 @@ import { getColumn } from "./columns";
 interface MemberTableProps<TData> {
   data: TData[];
   team: string;
-} 
+}
 
 export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const showToast = useToast();
-  const router = useRouter()
+  const router = useRouter();
 
   const updateStatus = async (id: number) => {
     const response = await fetch("/api/team/members/update", {
@@ -37,11 +37,11 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
         userId: id,
       }),
     });
-  
+
     if (response?.ok) showToast("Status Updated", "success");
-  
-    router.refresh()
-  }
+
+    router.refresh();
+  };
 
   const tableConfig = {
     data,

@@ -29,7 +29,7 @@ type Scores = {
   id: number;
   name: string;
   value: number;
-  skillId: number,
+  skillId: number;
 }[];
 
 const formSchema = z.object({
@@ -43,13 +43,13 @@ export function AddSKill({
   users,
   currentUser,
   skillsList,
-  userSkills
+  userSkills,
 }: {
   team: string;
   users: AllUsersWithAllocation[];
   currentUser: number;
   skillsList: { id: number; name: string }[];
-  userSkills: Scores
+  userSkills: Scores;
 }) {
   const router = useRouter();
   const showToast = useToast();
@@ -59,7 +59,7 @@ export function AddSKill({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isSkillExist = userSkills.find(skills => skills.skillId === values.skillId)
+    const isSkillExist = userSkills.find((skills) => skills.skillId === values.skillId);
 
     SheetCloseButton.current?.click();
 
@@ -73,7 +73,7 @@ export function AddSKill({
           team: team,
           userId: values.userId,
           skillId: values.skillId,
-          skillScore: values.skillScore
+          skillScore: values.skillScore,
         }),
       });
 
@@ -82,8 +82,7 @@ export function AddSKill({
       }
       showToast("A new skill added", "success");
       router.refresh();
-    }
-    else {
+    } else {
       showToast("Skill already added", "info");
     }
   }
@@ -146,7 +145,12 @@ export function AddSKill({
                 <FormItem className="col-span-2 pt-1">
                   <FormLabel>Skill Score</FormLabel>
                   <FormControl className="my-2">
-                    <SingleSelectDropdown options={levels} defaultValue={levels[0]} setOptions={(value: string) => form.setValue("skillScore", Number(value))} triggerClassName="mt-2" />
+                    <SingleSelectDropdown
+                      options={levels}
+                      defaultValue={levels[0]}
+                      setOptions={(value: string) => form.setValue("skillScore", Number(value))}
+                      triggerClassName="mt-2"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

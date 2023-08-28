@@ -29,11 +29,11 @@ export async function POST(req: Request) {
     }
 
     const deactivateUser = await db.userRole.updateMany({
-      where: { userId: body.userId, Tenant: {slug: body.team} },
+      where: { userId: body.userId, Tenant: { slug: body.team } },
       data: {
-         role: Role.INACTIVE
-      }
-    })
+        role: Role.INACTIVE,
+      },
+    });
 
     return new Response(JSON.stringify(deactivateUser));
   } catch (error) {
