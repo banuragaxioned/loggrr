@@ -21,6 +21,7 @@ export async function GET(request: Request) {
             name: true,
             email: true,
             image: true,
+            status: true,
             Roles: {
               select: {
                 role: true,
@@ -42,6 +43,7 @@ export async function GET(request: Request) {
         name: member.name,
         email: member.email,
         image: member.image,
+        status: member.status,
         role: member.Roles.map((userRole) => userRole.role)[0],
       };
     });
