@@ -19,7 +19,7 @@ type Scores = {
   id: number;
   name: string;
   value: number;
-  skillId: number,
+  skillId: number;
 }[];
 
 export default async function SkillsSummary({ params }: pageProps) {
@@ -34,10 +34,7 @@ export default async function SkillsSummary({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader
-        heading="My Skills"
-        text="This is a summary of your skills that you have been assessed on."
-      >
+      <DashboardHeader heading="My Skills" text="This is a summary of your skills that you have been assessed on.">
         <AddSKill team={params.team} users={users} currentUser={user.id} skillsList={skillsList} userSkills={skills} />
       </DashboardHeader>
       <Overview data={skills} />

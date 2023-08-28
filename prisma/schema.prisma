@@ -96,6 +96,7 @@ enum Role {
   // ADMIN
   MANAGER
   USER
+  INACTIVE
 }
 
 model Milestone {

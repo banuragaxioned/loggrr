@@ -1,23 +1,5 @@
 import { Icons } from "@/components/icons";
 
-export const statuses = [
-  {
-    value: "ACTIVE",
-    label: "Active",
-    icon: Icons.activity,
-  },
-  {
-    value: "INACTIVE",
-    label: "Archived",
-    icon: Icons.archive,
-  },
-  {
-    value: "DELETED",
-    label: "Deleted",
-    icon: Icons.delete,
-  },
-];
-
 export const roles = [
   {
     value: "OWNER",
@@ -34,6 +16,11 @@ export const roles = [
     label: "User",
     icon: Icons.user,
   },
+  {
+    value: "INACTIVE",
+    label: "Inactive",
+    icon: Icons.minusCircle,
+  },
 ];
 
 export const weekOptions = [
@@ -45,7 +32,7 @@ export const hoursTypeOptions = [
   { id: 0, name: "Billable", value: "billableTime" },
   { id: 1, name: "Non-billable", value: "nonBillableTime" },
   { id: 2, name: "All Entries", value: "allEntries" },
-]
+];
 
 export const clientStatuses = [
   {
