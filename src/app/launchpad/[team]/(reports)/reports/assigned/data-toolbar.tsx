@@ -51,8 +51,8 @@ export function DataTableToolbar<TData>({
           placeholder="Total Time"
           options={[
             { id: 1, name: "Total Time", value: "totalTime" },
-            { id: 1, name: "Billable", value: "billableTime" },
-            { id: 1, name: "Non-Billable", value: "nonBillableTime" },
+            { id: 2, name: "Billable", value: "billableTime" },
+            { id: 3, name: "Non-Billable", value: "nonBillableTime" },
           ]}
           triggerClassName="w-[140px] 2xl:text-sm"
         />
