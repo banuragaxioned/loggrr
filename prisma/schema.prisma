@@ -27,17 +27,17 @@ model Tenant {
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
 
-  Users       User[]        @relation("UserTenants")
-  Client      Client[]
-  Project     Project[]
-  Milestone   Milestone[]
-  Task        Task[]
-  TimeEntry   TimeEntry[]
-  UserGroup   UserGroup[]
-  Allocation  Allocation[]
-  Skill       Skill[]
-  SkillScore  SkillScore[]
-  UserRole    UserRole[]
+  Users      User[]       @relation("UserTenants")
+  Client     Client[]
+  Project    Project[]
+  Milestone  Milestone[]
+  Task       Task[]
+  TimeEntry  TimeEntry[]
+  UserGroup  UserGroup[]
+  Allocation Allocation[]
+  Skill      Skill[]
+  SkillScore SkillScore[]
+  UserRole   UserRole[]
 }
 
 model Client {
@@ -273,17 +273,17 @@ model UserGroup {
 
 // NextAuth-related
 model User {
-  id            Int        @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   name          String?
-  email         String     @unique
-  timezone      String     @default("UTC")
+  email         String    @unique
+  timezone      String    @default("UTC")
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   allocationId  Int?
 
-  TenantId      Tenant[]      @relation("UserTenants")
+  TenantId      Tenant[]     @relation("UserTenants")
   UserGroup     UserGroup[]
   accounts      Account[]
   sessions      Session[]
@@ -291,8 +291,8 @@ model User {
   Allocation    Allocation[]
   SkillScore    SkillScore[]
   TimeEntry     TimeEntry[]
-  Project       Project[]     @relation("ProjectMembers")
-  OwnedProjects Project[]     @relation("UserOwnedProjects")
+  Project       Project[]    @relation("ProjectMembers")
+  OwnedProjects Project[]    @relation("UserOwnedProjects")
 
   @@index([allocationId])
 }
