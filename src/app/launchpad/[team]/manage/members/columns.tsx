@@ -6,9 +6,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils";
-import useToast from "@/hooks/useToast";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils"
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -16,29 +14,7 @@ declare module "@tanstack/table-core" {
   }
 }
 
-
-
-export const GetColumn = (team: string) => {
-  const showToast = useToast();
-  const router = useRouter()
-
-  const updateStatus = async (id: number, team: string) => {
-    const response = await fetch("/api/team/members/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team,
-        userId: id,
-      }),
-    });
-  
-    if (response?.ok) showToast("Status Updated", "success");
-  
-    router.refresh()
-  }
-
+export const getColumn = (updateStatus: (id: number) => void) => {
   const columns: ColumnDef<Members>[] = [
     {
       accessorKey: "name",
@@ -84,7 +60,7 @@ export const GetColumn = (team: string) => {
             <Button
               title="Inactive"
               className={cn("border-0 bg-inherit p-2")}
-              onClick={() => row.original.role === "INACTIVE" ? null : updateStatus(row.original.id, team)}
+              onClick={() => row.original.role === "INACTIVE" ? null : updateStatus(row.original.id)}
             >
               <Icons.minusCircle height={18} width={18} />
             </Button>
