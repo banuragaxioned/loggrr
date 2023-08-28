@@ -50,7 +50,7 @@ const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean)
       });
       count++;
     }
-    start = dayjs(startDate).add(1, "day").toDate();
+    start = dayjs(start).add(1, "day").toDate();
   }
   return dates;
 };
