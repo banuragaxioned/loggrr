@@ -24,15 +24,6 @@ interface Assignment {
   subRows: AllocationDetails[] | undefined;
 }
 
-const getTotal = (subRows: AllocationDetails[] | undefined, key: string, billable: string): string => {
-  let total = 0;
-  subRows?.length &&
-    subRows?.map((arr: any) => {
-      total += arr.timeAssigned[key] ? arr.timeAssigned[key][billable] : 0;
-    });
-  return total.toLocaleString();
-};
-
 //function to get date between two dates
 const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean) => {
   const dates = [];
@@ -76,10 +67,10 @@ const createDynamicColumns = (
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
-              <span className="block text-center">{getTotal(row.originalSubRows, date, billable)}</span>
+              <span className="block text-center">{row.renderValue(column.id)}</span>
             ) : (
               <TableInput
-                hours={row.renderValue(column.id) ? row.renderValue(column.id) : 0}
+                hours={row.renderValue(column.id)}
                 data={{
                   hoursObj: assignedObj ? assignedObj : {},
                   userName: subRow.userName,
@@ -99,7 +90,6 @@ const createDynamicColumns = (
       meta: {
         className: "w-[12%]",
       },
-      enableSorting: true,
     };
   });
   return createdColumns;
@@ -124,7 +114,7 @@ export const getDynamicColumns = (
                 : ""
             }`}
           >
-            {row.getCanExpand() ? (
+            {row.getCanExpand() && (
               <button
                 {...{
                   onClick: row.getToggleExpandedHandler(),
@@ -137,7 +127,7 @@ export const getDynamicColumns = (
                   <Icons.chevronRight className="h-4 w-4" />
                 )}
               </button>
-            ) : null}
+            )}
             {row.depth < 1 && (
               <UserAvatar
                 user={{
