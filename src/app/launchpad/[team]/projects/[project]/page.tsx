@@ -8,15 +8,17 @@ import { pageProps, projectProps } from "@/types";
 export default async function Page({ params }: projectProps) {
   const user = await getCurrentUser();
   const { team, project } = params;
-
-  console.log(params, project);
   
-
   if (!user) {
     return notFound();
   }
 
-  const hasAccess = await prisma.project.findMany({
+  const hasAccess = await prisma.project.findUniqueOrThrow({
+    select: {
+      id: true,
+      name: true,
+      status: true,
+    },
     where: {
       Tenant: {
         slug: team,
@@ -25,7 +27,7 @@ export default async function Page({ params }: projectProps) {
     },
   });
 
-  if (hasAccess && hasAccess.length !== 1) {
+  if (!hasAccess) {
     return notFound();
   }
 
@@ -33,7 +35,7 @@ export default async function Page({ params }: projectProps) {
   return (
     <>
       <DashboardShell>
-        <DashboardHeader heading="Project Details page" text="This is your project details page."></DashboardHeader>
+        <DashboardHeader heading={hasAccess.name} text="This is your project details page."></DashboardHeader>
       </DashboardShell>
     </>
   );
