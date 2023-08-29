@@ -37,6 +37,7 @@ const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean)
         date: currentDate.getDate(),
         month: currentDate.toLocaleString("en-us", { month: "short" }),
         day: currentDate.toLocaleString("en-us", { weekday: "short" }),
+        year: currentDate.getFullYear(),
         dateKey,
       });
       count++;
@@ -59,7 +60,15 @@ const createDynamicColumns = (
     return {
       accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
       header: ({ column }: { column: Column<Assignment> }) => (
-        <DataTableColumnHeader column={column} title={`${dateObj.date} ${dateObj.month} ${dateObj.day}`} />
+        <DataTableColumnHeader
+          column={column}
+          child={
+            <span className="flex flex-col items-center justify-center gap-y-1">
+              <span>{`${dateObj.date} ${dateObj.month}`}</span>
+              <span>{dateObj.day}</span>
+            </span>
+          }
+        />
       ),
       cell: ({ row, column }: { row: Row<AllocationDetails>; column: Column<Assignment> }) => {
         const subRow = row.original;
@@ -77,7 +86,7 @@ const createDynamicColumns = (
                   projectId: subRow?.id,
                   userId: subRow?.userId,
                   isBillable: subRow?.billable,
-                  date: date,
+                  date: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
                   team: subRow?.team,
                 }}
                 type={billable}
