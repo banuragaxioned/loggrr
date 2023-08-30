@@ -1,26 +1,21 @@
+import { CurrenUserProps } from "@/types";
 import { create } from "zustand";
 
 // Define the interface of the Global state
 interface CurrentUserState {
-  currentUser: any;
-  fetch: () => void;
+  currentUser: CurrenUserProps | undefined;
   team: string;
   setTeam: (data: string) => void;
+  setCurrentUser: (data: any) => void;
 }
 
 export const useCurrentUserStore = create<CurrentUserState>((set) => ({
-  currentUser: {},
+  currentUser: undefined,
   team: '',
   setTeam(data) {
     set({ team: data })
   },
-  fetch: async () => {
-    const response = await fetch("/api/team/current", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => res.json());
-    set({ currentUser: response });
+  setCurrentUser(data) {
+    set({ currentUser: data })
   },
 }));
