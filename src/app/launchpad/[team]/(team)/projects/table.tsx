@@ -10,10 +10,23 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
+import { useCurrentUserStore } from "@/store/currentuserstore";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
+interface ProjectTableProps<TData, TValue> extends TableProps<TData, TValue> {
+  team: string
+}
+
+export function Table<TData, TValue>({ columns, data, team }: ProjectTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const setTeam = useCurrentUserStore(state => state.setTeam)
+  // const teamss = useCurrentUserStore(state => state.team)
+
+  // console.log(teamss)
+
+  React.useEffect(() => {
+    setTeam(team)
+  }, [team])
 
   const tableConfig = {
     data,
