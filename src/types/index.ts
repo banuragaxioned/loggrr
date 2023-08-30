@@ -209,6 +209,20 @@ export type Members = {
   role: Role;
 };
 
+export interface CurrenUserProps {
+  id: number;
+  timezone: string;
+  tenants: {
+      id: number;
+      name: string;
+      slug: string;
+      role: Role;
+  }[];
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
 export type pageProps = { params: { team: Tenant["slug"] } };
 
 export interface TableProps<TData, TValue> {
