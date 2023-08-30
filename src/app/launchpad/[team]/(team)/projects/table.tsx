@@ -20,9 +20,6 @@ export function Table<TData, TValue>({ columns, data, team }: ProjectTableProps<
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const setTeam = useCurrentUserStore(state => state.setTeam)
-  // const teamss = useCurrentUserStore(state => state.team)
-
-  // console.log(teamss)
 
   React.useEffect(() => {
     setTeam(team)
