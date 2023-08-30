@@ -16,8 +16,8 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   const team = useCurrentUserStore(state => state.team)
   
   useEffect(() => {
-    if (clients.length < 0) fetchClients(team)
-  }, [team])
+    if (clients.length < 1) fetchClients(team)
+  }, [clients, team])
   
   const clientList = clients?.map(client => ({
     label: client.name,
@@ -36,7 +36,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         {table.getColumn("status") && (
           <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
         )}
-        {table.getColumn("clientName") && clientList && (
+        {table.getColumn("clientName") && (
           <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
         )}
         {isFiltered && (

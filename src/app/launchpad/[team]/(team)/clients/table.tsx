@@ -25,8 +25,8 @@ export function Table<TData, TValue>({ columns, team }: ClientTableProps<TData, 
   const [data, fetchClients] = useClientStore(state => [state.clients, state.fetch])
 
   React.useEffect(() => {
-    if (data.length < 0) fetchClients(team)
-  }, [])
+    if (data.length < 1) fetchClients(team)
+  }, [data, team])
 
   const tableConfig = {
     data: data as TData[],
