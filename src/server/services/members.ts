@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { Role, Status } from "@prisma/client";
 
 export const getMembers = async (team: string) => {
   const data = await db.tenant.findUnique({
@@ -28,8 +27,8 @@ export const getMembers = async (team: string) => {
       name: member.name,
       email: member.email,
       image: member.image,
-      status: member.status as Status,
-      role: member.Roles.map((userRole) => userRole.role)[0] as Role,
+      status: member.status,
+      role: member.Roles[0]?.role,
     };
   });
 

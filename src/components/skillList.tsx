@@ -26,7 +26,7 @@ export function SkillList({ props, currentUser, team }: { props: Scores; current
       body: JSON.stringify({
         team: team,
         level: Number(value),
-        scoreId
+        scoreId,
       }),
     });
 
@@ -51,7 +51,11 @@ export function SkillList({ props, currentUser, team }: { props: Scores; current
                 </div>
               </div>
               <div className="ml-auto w-[200px]">
-                <SingleSelectDropdown options={levels} defaultValue={skill} setOptions={(value: string) => Update(value, Number(skill.id))} />
+                <SingleSelectDropdown
+                  options={levels}
+                  defaultValue={skill}
+                  setOptions={(value: string) => Update(value, Number(skill.id))}
+                />
               </div>
             </div>
           ))}

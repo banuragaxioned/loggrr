@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 const clientCreateSchema = z.object({
   level: z.number().min(0).max(5),
   team: z.string().min(1),
-  scoreId: z.number().min(0)
+  scoreId: z.number().min(0),
 });
 
 export async function POST(req: Request) {

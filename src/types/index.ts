@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { Tenant, Status, Role, AllocationFrequency } from "@prisma/client";
+import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type Allocations = {
@@ -175,12 +175,12 @@ export type ProjectInterval = {};
 
 export type ComboboxOptions = {
   id: number;
-  name: string | null | undefined;
+  name?: string | null;
 };
 
 export type AllProjectsWithMembers = {
   id: number;
-  name: string | null | undefined;
+  name?: string | null;
   Members: ComboboxOptions[];
 };
 
@@ -191,20 +191,20 @@ export type AssignFormValues = {
   projectId: number;
   userId: number;
   frequency: AllocationFrequency;
-  enddate?: Date | undefined;
+  enddate?: Date;
 };
 
 export type AllUsersWithAllocation = {
   id: number;
-  name: string | null | undefined;
+  name?: string | null;
   Allocation: { id: number; projectId: number }[];
 };
 
 export type Members = {
   id: number;
-  name: string | null | undefined;
+  name?: string;
   email: string;
-  image: string | undefined | null;
+  image?: string;
   status: Status;
   role: Role;
 };
