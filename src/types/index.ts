@@ -209,7 +209,7 @@ export type Members = {
   role: Role;
 };
 
-export interface CurrenUserProps {
+export type CurrentUserProps = ({
   id: number;
   timezone: string;
   tenants: {
@@ -218,10 +218,11 @@ export interface CurrenUserProps {
       slug: string;
       role: Role;
   }[];
+} & {
   name?: string | null | undefined;
   email?: string | null | undefined;
   image?: string | null | undefined;
-}
+}) | undefined
 
 export type pageProps = { params: { team: Tenant["slug"] } };
 

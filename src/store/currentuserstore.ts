@@ -1,9 +1,9 @@
-import { CurrenUserProps } from "@/types";
+import { CurrentUserProps } from "@/types";
 import { create } from "zustand";
 
 // Define the interface of the Global state
 interface CurrentUserState {
-  currentUser: CurrenUserProps | undefined;
+  currentUser: CurrentUserProps | undefined;
   team: string;
   setTeam: (data: string) => void;
   setCurrentUser: (data: any) => void;
