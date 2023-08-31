@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
-import { useClientStore } from "@/store/clientStore";
+import { useClientStore } from "@/store/useClientStore";
 
 interface ClientTableProps<TData, TValue> {
   team: string

@@ -6,14 +6,14 @@ import { clientStatuses } from "@/config/filters";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
-import { useClientStore } from "@/store/clientStore";
+import { useClientStore } from "@/store/useClientStore";
 import { useEffect } from "react";
-import { useCurrentUserStore } from "@/store/currentuserstore";
+import { useGlobalState } from "@/store/useGlobalStore";
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [clients, fetchClients] = useClientStore(state => [state.clients, state.fetch])
-  const team = useCurrentUserStore(state => state.team)
+  const team = useGlobalState(state => state.team)
   
   useEffect(() => {
     if (clients.length < 1) fetchClients(team)
