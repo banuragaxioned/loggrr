@@ -1,6 +1,5 @@
 import { Status } from "@prisma/client";
 import { create } from "zustand";
-// import { persist } from "zustand/middleware";
 
 // Define the interface of the Global state
 interface ClientState {
