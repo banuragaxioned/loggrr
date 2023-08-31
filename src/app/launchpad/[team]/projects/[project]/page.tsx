@@ -3,7 +3,7 @@ import { DashboardShell } from "@/components/ui/shell";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/server/db";
 import { notFound } from "next/navigation";
-import { pageProps, projectProps } from "@/types";
+import { projectProps } from "@/types";
 
 export default async function Page({ params }: projectProps) {
   const user = await getCurrentUser();
@@ -13,7 +13,7 @@ export default async function Page({ params }: projectProps) {
     return notFound();
   }
 
-  const hasAccess = await prisma.project.findUniqueOrThrow({
+  const hasAccess = await prisma.project.findUnique({
     select: {
       id: true,
       name: true,
@@ -23,14 +23,13 @@ export default async function Page({ params }: projectProps) {
       Tenant: {
         slug: team,
       },
-     id: Number(project),
+     id: +project,
     },
   });
 
   if (!hasAccess) {
     return notFound();
   }
-
 
   return (
     <>
