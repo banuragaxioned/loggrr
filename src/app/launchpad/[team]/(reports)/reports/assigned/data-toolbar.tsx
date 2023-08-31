@@ -4,15 +4,13 @@ import { Input } from "@/components/ui/input";
 import { DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
-import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
-import { DataTableToggler } from "@/components/data-table-toggler";
-import { DataTableVisibilityToggler } from "@/components/data-table-visibility-toggler";
+import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
   setStartDate: Dispatch<Date>;
-  setWeekend: Dispatch<boolean>;
+  setWeekend: Dispatch<string>;
   setBillable: Dispatch<string>;
 }
 
@@ -26,8 +24,26 @@ const weekOptions = [
     value: "weekdays",
     label: "Week Days",
     icon: Icons.activity,
-  }
-]
+  },
+];
+
+const entryTypeOptions = [
+  {
+    value: "totalTime",
+    label: "Total Time",
+    icon: Icons.activity,
+  },
+  {
+    value: "billableTime",
+    label: "Billable",
+    icon: Icons.activity,
+  },
+  {
+    value: "nonBillableTime",
+    label: "Non-Billable",
+    icon: Icons.activity,
+  },
+];
 
 export function DataTableToolbar<TData>({
   table,
@@ -49,31 +65,8 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        {/* <DataTableToggler /> */}
-        <DataTableVisibilityToggler options={weekOptions} title="Table view" columns={table.getAllColumns().slice(1,)}/>
-        {/* weekend dropdown */}
-        {/* <SingleSelectDropdown
-          setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
-          contentClassName="[&>div]hover:bg-hover"
-          placeholder="Weekdays"
-          options={[
-            { id: 1, name: "Week", value: "weekend" },
-            { id: 2, name: "Weekdays", value: "weekdays" },
-          ]}
-          triggerClassName="w-[120px] 2xl:text-sm"
-        /> */}
-        {/* time entry type dropdown */}
-        <SingleSelectDropdown
-          setOptions={(value: string) => setBillable(value)}
-          contentClassName="[&>div]hover:bg-hover"
-          placeholder="Total Time"
-          options={[
-            { id: 1, name: "Total Time", value: "totalTime" },
-            { id: 2, name: "Billable", value: "billableTime" },
-            { id: 3, name: "Non-Billable", value: "nonBillableTime" },
-          ]}
-          triggerClassName="w-[140px] 2xl:text-sm"
-        />
+        <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
+        <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ import dayjs from "dayjs";
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className: string;
-    isWeekend:string;
   }
 }
 
@@ -32,7 +31,7 @@ const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean)
     count = 0;
   while (count < days) {
     const currentDate = new Date(start);
-    // if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+    if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
       const dateKey = currentDate.toISOString().split("T")[0];
       dates.push({
         date: currentDate.getDate(),
@@ -40,10 +39,10 @@ const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean)
         day: currentDate.toLocaleString("en-us", { weekday: "short" }),
         year: currentDate.getFullYear(),
         dateKey,
-        isWeekend:currentDate.getDay() === 0 || currentDate.getDay() === 6 ? "week" : "weekdays"
+        isWeekend: currentDate.getDay() === 0 || currentDate.getDay() === 6 ? "week" : "weekdays",
       });
       count++;
-    // }
+    }
     start = dayjs(start).add(1, "day").toDate();
   }
   return dates;
@@ -75,7 +74,6 @@ const createDynamicColumns = (
       cell: ({ row, column }: { row: Row<AllocationDetails>; column: Column<Assignment> }) => {
         const subRow = row.original;
         const assignedObj = row.depth > 0 ? subRow.timeAssigned[date] : null;
-        console.log(column.getToggleVisibilityHandler())
         return (
           <div className="px-0 py-0">
             {row.subRows.length || row.depth < 1 ? (
@@ -101,7 +99,6 @@ const createDynamicColumns = (
       },
       meta: {
         className: "w-[12%]",
-        isWeekend:dateObj.isWeekend
       },
     };
   });

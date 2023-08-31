@@ -30,13 +30,13 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const [startDate, setStartDate] = useState(new Date());
   const [columnVisibility, setColumnVisibility] = useState({})
   const [data, setData] = useState([]);
-  const [weekend, setWeekend] = useState<boolean>(false);
+  const [weekend, setWeekend] = useState<string>("weekdays");
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
 
   const tableConfig = {
     data,
-    columns: columns(startDate, billable, weekend, setSubmitCount),
+    columns: columns(startDate, billable, weekend==="weekdays" ? false : true, setSubmitCount),
     state: {
       sorting,
       expanded,
