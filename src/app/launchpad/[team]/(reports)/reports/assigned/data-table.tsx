@@ -3,7 +3,6 @@ import { useState, useEffect, Dispatch } from "react";
 import { DataTableStructure } from "@/components/data-table-structure";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   getCoreRowModel,
   getFilteredRowModel,
@@ -27,9 +26,9 @@ interface AssignmentTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
+  const [columnVisibility, setColumnVisibility] = useState({})
   const [data, setData] = useState([]);
   const [weekend, setWeekend] = useState<boolean>(false);
   const [billable, setBillable] = useState<string>("totalTime");
@@ -40,13 +39,13 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
     columns: columns(startDate, billable, weekend, setSubmitCount),
     state: {
       sorting,
-      columnFilters,
       expanded,
+      columnVisibility
     },
     onExpandedChange: setExpanded,
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getExpandedRowModel: getExpandedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getSubRows: (row: { subRows: AllocationDetails }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,

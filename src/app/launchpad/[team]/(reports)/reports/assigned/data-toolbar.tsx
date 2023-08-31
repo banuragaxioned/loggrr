@@ -5,6 +5,9 @@ import { DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 import { SingleSelectDropdown } from "@/components/ui/single-select-dropdown";
+import { DataTableToggler } from "@/components/data-table-toggler";
+import { DataTableVisibilityToggler } from "@/components/data-table-visibility-toggler";
+import { Icons } from "@/components/icons";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
@@ -12,6 +15,19 @@ interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TDa
   setWeekend: Dispatch<boolean>;
   setBillable: Dispatch<string>;
 }
+
+const weekOptions = [
+  {
+    value: "week",
+    label: "Week",
+    icon: Icons.activity,
+  },
+  {
+    value: "weekdays",
+    label: "Week Days",
+    icon: Icons.activity,
+  }
+]
 
 export function DataTableToolbar<TData>({
   table,
@@ -33,8 +49,10 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
+        {/* <DataTableToggler /> */}
+        <DataTableVisibilityToggler options={weekOptions} title="Table view" columns={table.getAllColumns().slice(1,)}/>
         {/* weekend dropdown */}
-        <SingleSelectDropdown
+        {/* <SingleSelectDropdown
           setOptions={(value: string) => setWeekend(value === "weekend" ? true : false)}
           contentClassName="[&>div]hover:bg-hover"
           placeholder="Weekdays"
@@ -43,7 +61,7 @@ export function DataTableToolbar<TData>({
             { id: 2, name: "Weekdays", value: "weekdays" },
           ]}
           triggerClassName="w-[120px] 2xl:text-sm"
-        />
+        /> */}
         {/* time entry type dropdown */}
         <SingleSelectDropdown
           setOptions={(value: string) => setBillable(value)}
