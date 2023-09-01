@@ -7,8 +7,13 @@ import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const clientList = [...new Set(table.options.data.map((client: { clientName: string }) => client.clientName))].map((name: string) => ({
+    label: name,
+    value: name
+  }));
 
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
@@ -21,6 +26,9 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
+        )}
+        {table.getColumn("clientName") && (
+          <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
         )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
