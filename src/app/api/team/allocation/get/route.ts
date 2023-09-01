@@ -8,8 +8,8 @@ import dayjs from "dayjs";
 
 const allocationCreateSchema = z.object({
   team: z.string().min(1),
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
   page: z.coerce.number().min(1),
   pageSize: z.coerce.number().min(1),
 });
@@ -26,8 +26,92 @@ interface AllocationDate {
 
 const calculateAllocationTotalTime = (allocations: AllocationDates) => {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
-    return accumulator + allocations[allocationKey].allEntries;
+    return accumulator + allocations[allocationKey].totalTime;
   }, 0);
+};
+
+const getFormatedData = (timeArr: any) => {
+  const resultObj: any = {};
+  for (let x in timeArr) {
+    const date = x.split(",")[0];
+    resultObj[date] = timeArr[x];
+  }
+  return resultObj;
+};
+
+const getSubRows = (user: any, startDate: Date, endDate: Date) => {
+  const subRows = user?.projects?.map((project: any, i: number) => ({
+    id: project?.projectId,
+    userId: user.userId,
+    name: project?.projectName.slice(0, 5) + "...",
+    title: project?.projectName,
+    clientName: project?.clientName,
+    totalTime: project?.totalTime,
+    userName: user.userName,
+    billable: project?.billable,
+    frequency: project?.frequency,
+    timeAssigned: fillEmptyAllocations(getFormatedData(project?.allocations), startDate, endDate),
+    team: user.team,
+  }));
+  return subRows;
+};
+
+const fillEmptyAllocations = (temp: any, startDate: Date, endDate: Date) => {
+  const finalData = { ...temp };
+  let date: any = startDate;
+  while (date < endDate) {
+    const key = date.toISOString().split("T")[0];
+    if (!finalData[key])
+      finalData[key] = {
+        billableTime: 0,
+        nonBillableTime: 0,
+        totalTime: 0,
+      };
+    date = dayjs(date).add(1, "day").toDate();
+  }
+  return finalData;
+};
+
+const getTotalAssignedTime = (allProjects: any, startDate: Date, endDate: Date) => {
+  const temp: any = {};
+  allProjects.map((project: { allocations: any }) => {
+    const keys = Object.keys(project.allocations);
+    keys.length &&
+      keys.map((key: string) => {
+        const { billableTime, totalTime, nonBillableTime } = project.allocations[key];
+        temp[key]
+          ? (temp[key] = {
+              billableTime: temp[key] ? temp[key].billableTime + billableTime : billableTime,
+              nonBillableTime: temp[key].nonBillableTime + nonBillableTime,
+              totalTime: temp[key].totalTime + totalTime,
+            })
+          : (temp[key] = {
+              billableTime: billableTime,
+              nonBillableTime: nonBillableTime,
+              totalTime: totalTime,
+            });
+      });
+  });
+  return fillEmptyAllocations(temp, startDate, endDate);
+};
+
+const dataFiltering = (data: any, startDate: Date, endDate: Date) => {
+  const resultantArray: any = [];
+  const notEmptyArr = data.filter((user: any) => user?.userName);
+  notEmptyArr.map((user: any) => {
+    const temp = {
+      id: user?.userId,
+      name: user?.userName.split(" ")[0],
+      title: user?.userName,
+      image: user?.userAvatar,
+      isProjectAssigned: user?.projects?.length,
+      team: user.team,
+      timeAssigned: getTotalAssignedTime(user?.projects, startDate, endDate),
+    };
+    const finalData = user?.projects?.length ? { ...temp, subRows: getSubRows(user, startDate, endDate) } : temp;
+    resultantArray.push(finalData);
+  });
+  return resultantArray;
 };
 
 // create allocation object for each date
@@ -55,7 +139,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -74,7 +158,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -106,7 +190,7 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const client = await db.user.findMany({
+    const userData = await db.user.findMany({
       where: { TenantId: { some: { slug: body.team } } },
       select: {
         id: true,
@@ -133,12 +217,13 @@ export async function POST(req: Request) {
               },
             },
           },
+          orderBy: { name: "asc" },
         },
       },
       orderBy: { name: "asc" },
     });
 
-    const allocationData = client.map((obj, i) => {
+    const allocationData = userData.map((obj, i) => {
       let allocations, totalTime, averageTime;
       return {
         userId: obj.id,
@@ -161,11 +246,12 @@ export async function POST(req: Request) {
             allocations: allocations,
           };
         }),
-        allEntries: totalTime,
+        totalTime: totalTime,
         averageTime: averageTime,
+        team: body.team,
       };
     });
-    return new Response(JSON.stringify(allocationData));
+    return new Response(JSON.stringify(dataFiltering(allocationData, body.startDate, body.endDate)));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
