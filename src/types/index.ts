@@ -221,13 +221,13 @@ export interface DataTableToolbarProps<TData> {
 }
 
 export interface AllocationDetails {
-  billable:boolean;
-clientName:string;
-id:number;
-name:string;
-team:string;
-timeAssigned:AllocationDates[];
-title:string;
-userId:number;
-userName:string;
+  billable: boolean;
+  clientName: string;
+  id: number;
+  name: string;
+  team: string;
+  timeAssigned: AllocationDates[];
+  title: string;
+  userId: number;
+  userName: string;
 }

@@ -11,10 +11,14 @@ import { TableProps } from "@/types";
 interface DataTableProps<TData, TValue> {
   tableConfig: TableProps<TData, TValue>;
   DataTableToolbar?: React.ComponentType<any>;
-  toolBarProps?:{};
+  toolBarProps?: {};
 }
 
-export function DataTableStructure<TData, TValue>({ tableConfig, DataTableToolbar,toolBarProps }: DataTableProps<TData, TValue>) {
+export function DataTableStructure<TData, TValue>({
+  tableConfig,
+  DataTableToolbar,
+  toolBarProps,
+}: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -23,7 +27,7 @@ export function DataTableStructure<TData, TValue>({ tableConfig, DataTableToolba
 
   return (
     <>
-      {DataTableToolbar && <DataTableToolbar table={table} {...toolBarProps}/>}
+      {DataTableToolbar && <DataTableToolbar table={table} {...toolBarProps} />}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

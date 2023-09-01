@@ -28,7 +28,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
-  const [columnVisibility, setColumnVisibility] = useState({})
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [data, setData] = useState([]);
   const [weekend, setWeekend] = useState<string>("weekdays");
   const [billable, setBillable] = useState<string>("totalTime");
@@ -36,11 +36,11 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
 
   const tableConfig = {
     data,
-    columns: columns(startDate, billable, weekend==="weekdays" ? false : true, setSubmitCount),
+    columns: columns(startDate, billable, weekend === "weekdays" ? false : true, setSubmitCount),
     state: {
       sorting,
       expanded,
-      columnVisibility
+      columnVisibility,
     },
     onExpandedChange: setExpanded,
     onSortingChange: setSorting,

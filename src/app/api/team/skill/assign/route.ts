@@ -33,8 +33,8 @@ export async function POST(req: Request) {
       data: {
         Tenant: {
           connect: {
-            slug: body.team
-          }
+            slug: body.team,
+          },
         },
         Skill: {
           connect: {
@@ -43,10 +43,10 @@ export async function POST(req: Request) {
         },
         User: {
           connect: {
-            id: body.userId
-          }
+            id: body.userId,
+          },
         },
-        level: body.skillScore
+        level: body.skillScore,
       },
     });
 

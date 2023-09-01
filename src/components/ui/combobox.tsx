@@ -156,12 +156,12 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label, defaultValue 
   };
 
   useEffect(() => {
-    if(defaultValue) {
-      const selectedUser = options.find(option => option.id === defaultValue) 
-      setInputValue(selectedUser?.name ? selectedUser?.name : "")
-      setVal(fieldName, selectedUser?.id)
+    if (defaultValue) {
+      const selectedUser = options.find((option) => option.id === defaultValue);
+      setInputValue(selectedUser?.name ? selectedUser?.name : "");
+      setVal(fieldName, selectedUser?.id);
     }
-  }, [defaultValue])
+  }, [defaultValue]);
 
   return (
     <Command
