@@ -4,7 +4,6 @@ import * as React from "react";
 import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
-import { columns } from "@/app/launchpad/[team]/(reports)/reports/summary/columns";
 import { cn } from "@/lib/utils";
 import { TableProps } from "@/types";
 
@@ -57,7 +56,7 @@ export function DataTableStructure<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                 No results.
               </TableCell>
             </TableRow>

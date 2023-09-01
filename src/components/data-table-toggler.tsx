@@ -1,5 +1,4 @@
 import { useState, Dispatch } from "react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -31,7 +30,7 @@ export function DataTableVisibilityToggler<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button variant="outline" size="sm" className="h-10 border-dashed">
           <Icons.add className="mr-2 h-4 w-4" />
           {title}
           <Separator orientation="vertical" className="mx-2 h-4" />
@@ -49,16 +48,6 @@ export function DataTableVisibilityToggler<TData, TValue>({
               {options.map((option) => {
                 return (
                   <CommandItem onSelect={() => clickHandler(option)}>
-                    <div
-                      className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                        selected.value === option.value
-                          ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible",
-                      )}
-                    >
-                      <Icons.check className={cn("h-4 w-4")} />
-                    </div>
                     {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
                     <span>{option.value}</span>
                   </CommandItem>
