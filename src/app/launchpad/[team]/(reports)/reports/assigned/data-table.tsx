@@ -14,6 +14,7 @@ import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
 import { AllocationDetails } from "@/types";
+import { TableSkeleton } from "@/components/table-skeleton";
 
 interface AssignmentTableProps<TData, TValue> {
   columns: (
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const [weekend, setWeekend] = useState<string>("weekdays");
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
+  const [initialLoad, setInitialLoad] = useState<boolean>(false);
 
   const tableConfig = {
     data,
@@ -74,14 +76,17 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
     getAllocation()
       .then((res) => res.json())
       .then((res) => setData(res))
-      .catch((e) => setData([]));
+      .catch((e) => setData([]))
+      .finally(() => !initialLoad && setInitialLoad(true));
   }, [startDate, submitCount]);
 
-  return (
+  return initialLoad ? (
     <DataTableStructure
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       toolBarProps={{ startDate, setStartDate, setWeekend, setBillable }}
     />
+  ) : (
+    <TableSkeleton />
   );
 }
