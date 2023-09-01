@@ -9,6 +9,7 @@ export type Projects = {
   id: number;
   name: string | null | undefined;
   status: Status;
+  clientName: string;
 };
 
 export const columns: ColumnDef<Projects>[] = [
@@ -23,4 +24,9 @@ export const columns: ColumnDef<Projects>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
   },
+  {
+    accessorKey: "clientName",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Client" />,
+    filterFn: "arrIncludesSome",
+  }
 ];
