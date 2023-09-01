@@ -5,7 +5,7 @@ import { AddUserInTeam } from "@/components/forms/addUserForm";
 import { getMembers } from "@/server/services/members";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
-import { DataTable } from "./data-table";
+import { DataTable } from "./table";
 
 export const metadata: Metadata = {
   title: `Members`,

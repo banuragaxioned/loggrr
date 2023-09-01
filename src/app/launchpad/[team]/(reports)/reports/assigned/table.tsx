@@ -10,7 +10,7 @@ import {
   getExpandedRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./data-toolbar";
+import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
 import { AllocationDetails } from "@/types";

@@ -1,7 +1,7 @@
 import { getProjects } from "@/server/services/project";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { DataTable } from "./data-table";
+import { DataTable } from "./table";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { columns } from "./columns";

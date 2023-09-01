@@ -9,7 +9,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./data-toolbar";
+import { DataTableToolbar } from "./toolbar";
 
 export function DataTable<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);

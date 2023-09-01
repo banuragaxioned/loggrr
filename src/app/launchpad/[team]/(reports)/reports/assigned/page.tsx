@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/ui/shell";
-import { DataTable } from "./data-table";
+import { DataTable } from "./table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectsId, getAllUsers } from "@/server/services/allocation";
 import { NewAllocationForm } from "@/components/forms/allocationForm";
