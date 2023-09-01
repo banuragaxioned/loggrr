@@ -49,7 +49,7 @@ export function DataTableVisibilityToggler<TData, TValue>({
                 return (
                   <CommandItem onSelect={() => clickHandler(option)}>
                     {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
-                    <span>{option.value}</span>
+                    <span>{option.label}</span>
                   </CommandItem>
                 );
               })}
