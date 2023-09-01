@@ -26,7 +26,7 @@ export function DataTableVisibilityToggler<TData, TValue>({
   const [selected, setSelected] = useState<option>(options[0]);
   const clickHandler = (option: option) => {
     setSelected(option);
-    selectionHandler(option.label);
+    selectionHandler(option.value);
   };
   return (
     <Popover>
