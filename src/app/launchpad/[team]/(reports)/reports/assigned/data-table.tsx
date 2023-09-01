@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const { submitCount, setSubmitCount } = useSubmit();
 
   const tableConfig = {
-    data: [],
+    data,
     columns: columns(startDate, billable, weekend === "weekdays" ? false : true, setSubmitCount),
     state: {
       sorting,
