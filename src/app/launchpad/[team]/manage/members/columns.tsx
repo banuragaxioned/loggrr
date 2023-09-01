@@ -56,10 +56,10 @@ export const getColumn = (updateStatus: (id: number) => void) => {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-3", row.original.role !== "INACTIVE" && "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3", row.original.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
               title="Inactive"
-              className={cn("border-0 bg-inherit p-2")}
+              className={cn("h-auto border-0 bg-inherit p-0")}
               onClick={() => (row.original.role === "INACTIVE" ? null : updateStatus(row.original.id))}
             >
               <Icons.minusCircle height={18} width={18} />
