@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Status } from "@prisma/client";
+import Link from "next/link";
 
 export type Projects = {
   id: number;
@@ -14,6 +15,8 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ row }) => 
+    <Link href={`projects/${row.original.id}`}>{row.original.name}</Link>
   },
   {
     accessorKey: "status",
