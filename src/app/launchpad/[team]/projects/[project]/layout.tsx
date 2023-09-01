@@ -6,7 +6,6 @@ import { SidebarNavItem, projectProps } from "@/types";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
- 
 }
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
