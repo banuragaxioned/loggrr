@@ -57,7 +57,7 @@ export function DataTableStructure<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-                No results.
+                No results
               </TableCell>
             </TableRow>
           )}
