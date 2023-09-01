@@ -7,7 +7,7 @@ import { Allocation } from "@prisma/client";
 
 function calculateAllocationTotalTime(allocations: AllocationDates) {
   return Object.keys(allocations).reduce((accumulator, allocationKey) => {
-    return accumulator + allocations[allocationKey].allEntries;
+    return accumulator + allocations[allocationKey].totalTime;
   }, 0);
 }
 
@@ -38,7 +38,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -55,7 +55,7 @@ function createAllocationDates(allocationData: Allocation[], endDate: Date) {
         id: allocation.id,
         billableTime: billableTime,
         nonBillableTime: nonBillableTime,
-        allEntries: billableTime + nonBillableTime,
+        totalTime: billableTime + nonBillableTime,
         updatedAt: allocation.updatedAt,
         frequency: allocation.frequency,
       };
@@ -207,7 +207,7 @@ export async function getAllocations(input: getAllocation) {
           // create allocation, if allocation date not exist
           if (!isAllocationDateExist) {
             cumulativeProjectDates[allocationKey] = { ...allocation };
-            grandTotalHours += allocation.allEntries; /* calculate all totalTime */
+            grandTotalHours += allocation.totalTime; /* calculate all totalTime */
 
             // stop further execution
             continue;
@@ -216,9 +216,9 @@ export async function getAllocations(input: getAllocation) {
           // if allocation date exist add hours
           cumulativeProjectDates[allocationKey].billableTime += allocation.billableTime;
           cumulativeProjectDates[allocationKey].nonBillableTime += allocation.nonBillableTime;
-          cumulativeProjectDates[allocationKey].allEntries += allocation.allEntries;
+          cumulativeProjectDates[allocationKey].totalTime += allocation.totalTime;
 
-          grandTotalHours += allocation.allEntries; /* calculate all totalTime */
+          grandTotalHours += allocation.totalTime; /* calculate all totalTime */
         }
 
         return {
