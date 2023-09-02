@@ -22,6 +22,7 @@ export type DashboardConfig = {
   sidebarProjects: SidebarNavItem[];
   sidebarSkills: SidebarNavItem[];
   sidebarReports: SidebarNavItem[];
+  sidebarProfile: SidebarNavItem[];
 };
 
 export type NavItem = {
@@ -146,7 +147,7 @@ export type Members = {
 
 export type pageProps = { params: { team: Tenant["slug"] } };
 
-export type projectProps = { params: { project: Tenant["slug"],  team: Tenant["slug"]  } };
+export type projectProps = { params: { project: Tenant["slug"]; team: Tenant["slug"] } };
 
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -14,7 +14,7 @@ import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
 import { AllocationDetails } from "@/types";
-import { TableSkeleton } from "@/components/table-skeleton";
+import { TableSkeleton } from "@/components/data-table-skeleton";
 
 interface AssignmentTableProps<TData, TValue> {
   columns: (

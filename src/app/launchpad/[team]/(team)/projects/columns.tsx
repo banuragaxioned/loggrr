@@ -15,8 +15,7 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => 
-    <Link href={`projects/${row.original.id}`}>{row.original.name}</Link>
+    cell: ({ row }) => <Link href={`projects/${row.original.id}`}>{row.original.name}</Link>,
   },
   {
     accessorKey: "status",

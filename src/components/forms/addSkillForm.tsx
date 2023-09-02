@@ -23,7 +23,7 @@ import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { AllUsersWithAllocation } from "@/types";
 import { SingleSelectDropdown } from "../ui/single-select-dropdown";
-import { levels } from "@/config/skillScore";
+import { levels } from "@/config/skills";
 
 type Scores = {
   id: number;
