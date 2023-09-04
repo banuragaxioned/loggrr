@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { getSkills, getUserSkills } from "@/server/services/skill";
-import { Overview } from "@/components/skillWidget";
+import { Overview } from "@/components/charts/skills-radar";
 import { SkillList } from "@/components/skillList";
 import { AddSKill } from "@/components/forms/addSkillForm";
 import type { Metadata } from "next";

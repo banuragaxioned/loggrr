@@ -5,13 +5,15 @@ import { Icons } from "@/components/icons";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
-  title: string;
+  title?: string;
+  child?: React.ReactNode;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
+  child,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
@@ -34,7 +36,8 @@ export function DataTableColumnHeader<TData, TValue>({
         className="h-8 px-0 data-[state=open]:bg-accent"
         onClick={() => clickHandler(column)}
       >
-        <span>{title}</span>
+        {title && <span>{title}</span>}
+        {child}
         {column.getIsSorted() === "desc" ? (
           <Icons.selectDown className="ml-2 h-4 w-4" />
         ) : column.getIsSorted() === "asc" ? (

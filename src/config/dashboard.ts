@@ -12,6 +12,20 @@ export const dashboardConfig: DashboardConfig = {
       disabled: true,
     },
   ],
+  sidebarProfile: [
+    {
+      title: "Account",
+      href: "/account",
+    },
+    {
+      title: "Appearance",
+      href: "/appearance",
+    },
+    {
+      title: "Notifications",
+      href: "/notifications",
+    },
+  ],
   sidebarProjects: [
     {
       title: "Milestones",

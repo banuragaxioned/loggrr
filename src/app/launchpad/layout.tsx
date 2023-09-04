@@ -8,7 +8,7 @@ import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
-import TeamSwitcher from "@/components/teamSwitcher";
+import TeamSwitcher from "@/components/team-switcher";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

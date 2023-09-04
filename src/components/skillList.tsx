@@ -5,7 +5,7 @@ import { Tenant } from "@prisma/client";
 import useToast from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";
-import { levels } from "@/config/skillScore";
+import { levels } from "@/config/skills";
 
 type Scores = {
   id: number;
