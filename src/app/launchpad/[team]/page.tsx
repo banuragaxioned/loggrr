@@ -18,8 +18,8 @@ export default async function Dashboard({ params }: pageProps) {
         Users: {
           some: {
             id: user.id,
-          }
-        }
+          },
+        },
       },
       User: {
         id: user.id,

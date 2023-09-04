@@ -8,7 +8,7 @@ import { projectProps } from "@/types";
 export default async function Page({ params }: projectProps) {
   const user = await getCurrentUser();
   const { team, project } = params;
-  
+
   if (!user) {
     return notFound();
   }
@@ -23,7 +23,7 @@ export default async function Page({ params }: projectProps) {
       Tenant: {
         slug: team,
       },
-     id: +project,
+      id: +project,
     },
   });
 

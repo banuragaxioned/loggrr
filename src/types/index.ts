@@ -2,34 +2,10 @@ import { Icons } from "@/components/icons";
 import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
-export type Allocations = {
-  id: number;
-  date: string;
-  billable: number;
-  nonBillable: number;
-  total: number;
-};
-
-export type Projects = {
-  id: number;
-  name: string;
-  total: number;
-  average: number;
-  dates: Allocations[];
-};
-
 export type UserProfile = {
   name: string | null;
   id: number;
   image: string;
-};
-
-export type AllocationReport = {
-  User: UserProfile & {
-    Projects: Projects[];
-    totalHours: number;
-    averageHours: number;
-  };
 };
 
 export type NavLink = {
@@ -46,6 +22,7 @@ export type DashboardConfig = {
   sidebarProjects: SidebarNavItem[];
   sidebarSkills: SidebarNavItem[];
   sidebarReports: SidebarNavItem[];
+  sidebarProfile: SidebarNavItem[];
 };
 
 export type NavItem = {
@@ -89,7 +66,7 @@ export type AllocationDates = {
     id: number;
     billableTime: number;
     nonBillableTime: number;
-    allEntries: number;
+    totalTime: number;
     updatedAt: Date;
     frequency?: string;
   };
@@ -110,23 +87,6 @@ export type ProjectAllocation = {
   }[];
 };
 
-export type GlobalAllocation = {
-  globalView: boolean;
-  userId: number;
-  userName: string | null;
-  userAvatar: string;
-  allEntries: number;
-  averageTime: number;
-  cumulativeProjectDates: AllocationDates;
-  projects: {
-    clientName: string;
-    projectId: number;
-    projectName: string;
-    allEntries: number;
-    allocations: AllocationDates;
-  }[];
-};
-
 export type Summary = {
   id: number;
   name: string;
@@ -137,30 +97,6 @@ export type Summary = {
   projectOwnerAvatar: string | null;
   budget: number;
   logged: number;
-};
-
-export type Assignment = {
-  id: number;
-  date: Date;
-  endate?: Date | null;
-  billableTime?: number;
-  nonBillableTime?: number;
-  projectId: number;
-  projectName: string;
-  userId: number;
-  userName?: string | null;
-  userImage?: string | null;
-  frequency: string;
-  status: string;
-};
-
-export type getAllocation = {
-  team: string;
-  startDate: Date;
-  endDate: Date;
-  page: number;
-  pageSize: number;
-  projectId?: number;
 };
 
 export type SkillScore = {
@@ -211,7 +147,7 @@ export type Members = {
 
 export type pageProps = { params: { team: Tenant["slug"] } };
 
-export type projectProps = { params: { project: Tenant["slug"],  team: Tenant["slug"]  } };
+export type projectProps = { params: { project: Tenant["slug"]; team: Tenant["slug"] } };
 
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -220,4 +156,16 @@ export interface TableProps<TData, TValue> {
 
 export interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+}
+
+export interface AllocationDetails {
+  billable: boolean;
+  clientName: string;
+  id: number;
+  name: string;
+  team: string;
+  timeAssigned: AllocationDates[];
+  title: string;
+  userId: number;
+  userName: string;
 }
