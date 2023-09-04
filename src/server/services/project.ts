@@ -1,14 +1,37 @@
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 
-export const getMembers = async (slug: string, projectId: number) => {
-  const members = await prisma.project.findMany({
+export const getMembersByProjectId = async (slug: string, projectId: number) => {
+  const data = await prisma.project.findMany({
     where: { Tenant: { slug }, id: +projectId },
     select: {
-      Members: { select: { id: true, name: true, image: true } },
-      Owner: { select: { id: true, name: true, image: true } },
+      Members: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          status: true,
+          Roles: {
+            select: {
+              role: true,
+            },
+          },
+        },
+      },
     },
   });
+
+  const members = data[0]?.Members?.map((value) => {
+      return ({
+        id: value?.id,
+        name: value?.name,
+        email: value?.email,
+        image: value?.image,
+        status: value?.status,
+      });
+    })
+  ;
 
   return members;
 };
