@@ -1,6 +1,6 @@
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
-import { AddUserInTeam } from "@/components/forms/addUserForm";
+import { AddMemberInProject } from "@/components/forms/addProjectMemberForm";
 import { getMembersByProjectId } from "@/server/services/project";
 import type { Metadata } from "next";
 import { projectProps } from "@/types";
@@ -17,7 +17,7 @@ const ManageMembers = async ({ params }: projectProps) => {
   return (
     <DashboardShell>
       <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
-        {/* <AddUserInTeam team={team} /> */}
+        <AddMemberInProject team={team} project={+project} />
       </DashboardHeader>
       {data && <Table team={team} data={data} />}
     </DashboardShell>
