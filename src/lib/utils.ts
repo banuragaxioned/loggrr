@@ -8,7 +8,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function removeDuplicates(array: []) {
-  console.log(array)
-  return [...new Set(array)]
+export function removeDuplicatesFromArray(array: []) {
+  const finalArray : string[] = [];
+  const obj : any = {};
+
+  for (const value of array) {
+    if (!obj[value]) {
+      obj[value] = true;
+      finalArray.push(value);
+    }
+  }
+
+  return finalArray
 }
