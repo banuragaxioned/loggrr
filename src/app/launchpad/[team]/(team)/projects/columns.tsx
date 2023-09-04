@@ -19,13 +19,13 @@ export const columns: ColumnDef<Projects>[] = [
     cell: ({ row }) => <Link href={`projects/${row.original.id}`}>{row.original.name}</Link>,
   },
   {
+    accessorKey: "clientName",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Client" />,
+    filterFn: "arrIncludesSome",
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
   },
-  {
-    accessorKey: "clientName",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Client" />,
-    filterFn: "arrIncludesSome",
-  }
 ];

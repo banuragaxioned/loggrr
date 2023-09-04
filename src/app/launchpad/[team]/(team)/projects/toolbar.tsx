@@ -11,10 +11,12 @@ import { removeDuplicatesFromArray } from "@/lib/utils";
 export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const uniqueClientList = removeDuplicatesFromArray(table.options.data.map((client: { clientName: string }) => client.clientName) as [])
+  const uniqueClientList = removeDuplicatesFromArray(
+    table.options.data.map((client: { clientName: string }) => client.clientName) as [],
+  );
   const clientList = uniqueClientList.map((name: string) => ({
     label: name,
-    value: name
+    value: name,
   }));
 
   return (
