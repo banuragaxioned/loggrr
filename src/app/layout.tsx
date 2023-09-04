@@ -9,6 +9,7 @@ import PHProvider, { Analytics } from "@/components/analytics";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
+import Providers from "./providers";
 
 // Font files can be colocated inside of `pages`
 const fontHeading = localFont({
@@ -40,12 +41,14 @@ export default function RootLayout({
         )}
       >
         <PHProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
-          <Analytics />
-          <TailwindIndicator />
-          <Toaster />
+          <Providers>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+            </ThemeProvider>
+            <Analytics />
+            <TailwindIndicator />
+            <Toaster />
+          </Providers>
         </PHProvider>
       </body>
     </html>

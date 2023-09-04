@@ -70,6 +70,7 @@
     "react-email": "1.9.4",
     "react-hook-form": "^7.46.0",
     "react-hot-toast": "^2.4.1",
+    "react-query": "^3.39.3",
     "recharts": "^2.8.0",
     "tailwind-merge": "^1.14.0",
     "timezone-soft": "^1.4.1",
