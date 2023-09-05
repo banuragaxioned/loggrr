@@ -170,3 +170,12 @@ export interface AllocationDetails {
   userId: number;
   userName: string;
 }
+
+export interface Assignment {
+  name: string;
+  image: string | null;
+  userId: number;
+  userName: string;
+  title: string;
+  subRows: AllocationDetails[] | undefined;
+}

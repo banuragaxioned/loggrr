@@ -9,11 +9,12 @@ import {
   ExpandedState,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
-import { AllocationDetails } from "@/types";
+import { AllocationDetails, Assignment } from "@/types";
 import { TableSkeleton } from "@/components/data-table-skeleton";
 
 interface AssignmentTableProps<TData, TValue> {
@@ -24,6 +25,11 @@ interface AssignmentTableProps<TData, TValue> {
     setSubmitCount: Dispatch<number>,
   ) => ColumnDef<TData, TValue>[];
 }
+
+const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string) => {
+  const regex = new RegExp(filterValue, "ig");
+  return regex.test(row.original.title) || regex.test(row.original.userName);
+};
 
 export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -51,6 +57,8 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
     getSubRows: (row: { subRows: AllocationDetails }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
+    filterFromLeafRows: true,
+    filterFns: { expandingRowFilter },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };

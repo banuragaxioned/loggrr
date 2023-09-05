@@ -55,7 +55,7 @@ export async function getProjects(slug: string) {
     },
   });
 
-  const projectList = projects.map(project => ({
+  const projectList = projects.map((project) => ({
     id: project.id,
     name: project.name,
     billable: project.billable,
@@ -63,8 +63,8 @@ export async function getProjects(slug: string) {
     clientName: project.Client.name,
     owner: project.Owner,
     members: project.Members,
-    status: project.status
-  }))
+    status: project.status,
+  }));
 
   return projectList;
 }
