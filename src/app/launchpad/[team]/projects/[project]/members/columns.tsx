@@ -14,7 +14,7 @@ declare module "@tanstack/table-core" {
   }
 }
 
-export const getColumn = (updateStatus: (id: number) => void) => {
+export const getColumn = (deleteMembers: (id: number, projectId: number) => void) => {
   const columns: ColumnDef<Members>[] = [
     {
       accessorKey: "name",
@@ -53,7 +53,7 @@ export const getColumn = (updateStatus: (id: number) => void) => {
             <Button
               title="Inactive"
               className={cn("border-0 bg-inherit p-2")}
-              onClick={() => (row?.original?.role === "INACTIVE" ? null : updateStatus(row?.original?.id))}
+              onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
             >
               <Icons.minusCircle height={18} width={18} />
             </Button>

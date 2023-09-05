@@ -26,17 +26,22 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
   const showToast = useToast();
   const router = useRouter();
 
-  const updateStatus = async (id: number) => {
-    const response = await fetch("/api/team/members/update", {
+  const deleteMembers = async (id: number, projectId: number) => {
+    console.log(projectId, 'id');
+    const response = await fetch("/api/team/project/members/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         team,
+        projectId: projectId,
         userId: id,
       }),
     });
+
+    
+    
 
     if (response?.ok) showToast("Status Updated", "success");
 
@@ -45,7 +50,7 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
 
   const tableConfig = {
     data,
-    columns: getColumn(updateStatus) as ColumnDef<TData, TValue>[],
+    columns: getColumn(deleteMembers) as ColumnDef<TData, TValue>[],
     state: {
       sorting,
       columnFilters,

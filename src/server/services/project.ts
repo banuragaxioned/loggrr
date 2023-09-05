@@ -29,6 +29,7 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
         email: value?.email,
         image: value?.image,
         status: value?.status,
+        projectId: projectId,
       });
     })
   ;

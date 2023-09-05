@@ -19,7 +19,6 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
-import { Role } from "@prisma/client";
 import { projectProps } from "@/types";
 
 export function AddMemberInProject({ team, project }: { team: string, project: number }) {
@@ -43,7 +42,7 @@ export function AddMemberInProject({ team, project }: { team: string, project: n
       },
       body: JSON.stringify({
         team: team,
-        userrole: Role.USER,
+        projectId: project,
         emailAddress: values.emailAddress,
       }),
     });
