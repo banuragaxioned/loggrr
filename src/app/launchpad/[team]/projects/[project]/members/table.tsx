@@ -27,7 +27,6 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
   const router = useRouter();
 
   const deleteMembers = async (id: number, projectId: number) => {
-    console.log(projectId, 'id');
     const response = await fetch("/api/team/project/members/delete", {
       method: "POST",
       headers: {
@@ -43,7 +42,7 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
     
     
 
-    if (response?.ok) showToast("Status Updated", "success");
+    if (response?.ok) showToast("Member removed", "success");
 
     router.refresh();
   };

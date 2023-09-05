@@ -22,8 +22,6 @@ export async function POST(req: Request) {
     const json = await req.json();
     const body = addUserSchema.parse(json);
 
-    console.log(body, "body");
-
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
     if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
