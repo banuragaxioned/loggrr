@@ -22,6 +22,7 @@ export type DashboardConfig = {
   sidebarProjects: SidebarNavItem[];
   sidebarSkills: SidebarNavItem[];
   sidebarReports: SidebarNavItem[];
+  sidebarProfile: SidebarNavItem[];
 };
 
 export type NavItem = {
@@ -146,6 +147,8 @@ export type Members = {
 
 export type pageProps = { params: { team: Tenant["slug"] } };
 
+export type projectProps = { params: { project: Tenant["slug"]; team: Tenant["slug"] } };
+
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -165,4 +168,13 @@ export interface AllocationDetails {
   title: string;
   userId: number;
   userName: string;
+}
+
+export interface Assignment {
+  name: string;
+  image: string | null;
+  userId: number;
+  userName: string;
+  title: string;
+  subRows: AllocationDetails[] | undefined;
 }

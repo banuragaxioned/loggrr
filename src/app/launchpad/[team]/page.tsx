@@ -15,6 +15,11 @@ export default async function Dashboard({ params }: pageProps) {
     where: {
       Tenant: {
         slug: team,
+        Users: {
+          some: {
+            id: user.id,
+          },
+        },
       },
       User: {
         id: user.id,

@@ -31,7 +31,18 @@ export async function getProjects(slug: string) {
     },
   });
 
-  return projects;
+  const projectList = projects.map((project) => ({
+    id: project.id,
+    name: project.name,
+    billable: project.billable,
+    interval: project.interval,
+    clientName: project.Client.name,
+    owner: project.Owner,
+    members: project.Members,
+    status: project.status,
+  }));
+
+  return projectList;
 }
 
 export async function getProjectSummary(slug: string) {

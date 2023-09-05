@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: This is incomplete
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -20,12 +22,15 @@ import {
 import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+import { ProjectInterval } from "@prisma/client";
 
 const formSchema = z.object({
-  name: z.string().nonempty("Please enter a name"),
+  clientId: z.number().int("Please select a client"),
+  name: z.string().nonempty("Please provide a Project name"),
+  team: z.string().nonempty("Please enter a team"),
 });
 
-export function NewClientForm({ team }: { team: string }) {
+export function NewProjectForm({ team }: { team: string }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -49,7 +54,7 @@ export function NewClientForm({ team }: { team: string }) {
         ownerId: 1,
         startDate: new Date().toISOString(),
         endDate: new Date().toISOString(),
-        interval: "WEEKLY",
+        interval: ProjectInterval.WEEKLY,
       }),
     });
 
@@ -71,7 +76,7 @@ export function NewClientForm({ team }: { team: string }) {
       <SheetContent position="right" size="sm">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new client</SheetTitle>
+            <SheetTitle>Add a new Project</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2">
@@ -80,7 +85,7 @@ export function NewClientForm({ team }: { team: string }) {
               name="name"
               render={({ field }) => (
                 <FormItem className="col-span-2">
-                  <FormLabel>Client name</FormLabel>
+                  <FormLabel>Project name</FormLabel>
                   <FormControl className="my-2">
                     <Input placeholder="Acme Inc." {...field} />
                   </FormControl>
