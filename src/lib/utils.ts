@@ -9,8 +9,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function removeDuplicatesFromArray(array: []) {
-  const finalArray : string[] = [];
-  const obj : any = {};
+  const finalArray: string[] = [];
+  const obj: any = {};
 
   for (const value of array) {
     if (!obj[value]) {
@@ -19,5 +19,5 @@ export function removeDuplicatesFromArray(array: []) {
     }
   }
 
-  return finalArray
+  return finalArray;
 }
