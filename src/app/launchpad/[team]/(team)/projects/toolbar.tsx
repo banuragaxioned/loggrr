@@ -10,9 +10,8 @@ import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 
 export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
- 
   const client = useSearchParams().get("client");
- 
+
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const uniqueClientList = removeDuplicatesFromArray(
@@ -22,7 +21,7 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
     label: name,
     value: name,
   }));
-  client && table.getColumn("clientName")?.setFilterValue(Array(client))
+  client && table.getColumn("clientName")?.setFilterValue(Array(client));
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
       <div className="flex flex-1 items-center space-x-2">

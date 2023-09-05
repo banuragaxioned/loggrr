@@ -84,16 +84,16 @@ export async function getClients(slug: string) {
       id: true,
       name: true,
       status: true,
-      Project:{
-        distinct:"name"
-      }
+      Project: {
+        distinct: "name",
+      },
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  return clients.map((client)=>({...client,Project:client.Project.length}));
+  return clients.map((client) => ({ ...client, Project: client.Project.length }));
 }
 
 export async function getAssignments(slug: string) {

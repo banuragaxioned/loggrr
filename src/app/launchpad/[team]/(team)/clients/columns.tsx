@@ -9,7 +9,7 @@ export type Client = {
   id: number;
   name: string;
   status: Status;
-  Project:number;
+  Project: number;
 };
 
 export const columns: ColumnDef<Client>[] = [
@@ -20,7 +20,15 @@ export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "Project",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Projects No." />,
-    cell:({row})=><Link href={{pathname:"projects",search:`client=${row.original.name}`,}} title="Projects" className="tabular-nums">{row.original.Project}</Link>
+    cell: ({ row }) => (
+      <Link
+        href={{ pathname: "projects", search: `client=${row.original.name}` }}
+        title="Projects"
+        className="tabular-nums"
+      >
+        {row.original.Project}
+      </Link>
+    ),
   },
   {
     accessorKey: "status",
