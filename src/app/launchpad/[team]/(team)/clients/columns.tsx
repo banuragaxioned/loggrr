@@ -19,7 +19,7 @@ export const columns: ColumnDef<Client>[] = [
   },
   {
     accessorKey: "Project",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Projects No." />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Active Projects" />,
     cell: ({ row }) => (
       <Link
         href={{ pathname: "projects", search: `client=${row.original.name}` }}

@@ -8,6 +8,7 @@ import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
   const client = useSearchParams().get("client");
@@ -21,7 +22,9 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
     label: name,
     value: name,
   }));
-  client && table.getColumn("clientName")?.setFilterValue(Array(client));
+  useEffect(() => {
+    client && table.getColumn("clientName")?.setFilterValue(Array(client));
+  }, []);
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
       <div className="flex flex-1 items-center space-x-2">
