@@ -1,8 +1,7 @@
 "use client";
-import { useState, useEffect, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { DataTableStructure } from "@/components/data-table-structure";
 import {
-  ColumnDef,
   SortingState,
   getCoreRowModel,
   getFilteredRowModel,
@@ -15,30 +14,48 @@ import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
 import { AllocationDetails } from "@/types";
 import { TableSkeleton } from "@/components/data-table-skeleton";
+import { UseMutationResult, useMutation } from "@tanstack/react-query";
+import { getDynamicColumns } from "./columns";
 
-interface AssignmentTableProps<TData, TValue> {
-  columns: (
-    startDate: Date,
-    billable: string,
-    weekend: boolean,
-    setSubmitCount: Dispatch<number>,
-  ) => ColumnDef<TData, TValue>[];
+const getAllocation = async (startDate: Date) => {
+  const endDate = dayjs(startDate).add(14, "day").toDate();
+  const response = await fetch("/api/team/allocation/get", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      team: "axioned",
+      startDate,
+      endDate,    
+      page: 1,
+      pageSize: 20,
+    }),
+  });
+
+  if(response.ok) {
+    return response.json()
+  }
 }
 
-export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
   const [columnVisibility, setColumnVisibility] = useState({});
-  const [data, setData] = useState([]);
   const [weekend, setWeekend] = useState<string>("weekdays");
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
-  const [initialLoad, setInitialLoad] = useState<boolean>(false);
+
+  const mutation : UseMutationResult<TData[], unknown, Date, unknown> = useMutation(getAllocation)
+
+  useEffect(() => {
+    mutation.mutate(startDate)
+  }, [startDate, submitCount])
 
   const tableConfig = {
-    data,
-    columns: columns(startDate, billable, weekend === "weekdays" ? false : true, setSubmitCount),
+    data: mutation.data as TData[],
+    columns: getDynamicColumns(startDate, billable, weekend === "weekdays" ? false : true, setSubmitCount),
     state: {
       sorting,
       expanded,
@@ -55,32 +72,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
     getSortedRowModel: getSortedRowModel(),
   };
 
-  //api call to get allocation data
-  const getAllocation = async () => {
-    const endDate = dayjs(startDate).add(14, "day").toDate();
-    return await fetch("/api/team/allocation/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team: "axioned",
-        startDate,
-        endDate,
-        page: 1,
-        pageSize: 20,
-      }),
-    });
-  };
-  useEffect(() => {
-    getAllocation()
-      .then((res) => res.json())
-      .then((res) => setData(res))
-      .catch((e) => setData([]))
-      .finally(() => !initialLoad && setInitialLoad(true));
-  }, [startDate, submitCount]);
-
-  return initialLoad ? (
+  return mutation.isSuccess ? (
     <DataTableStructure
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
