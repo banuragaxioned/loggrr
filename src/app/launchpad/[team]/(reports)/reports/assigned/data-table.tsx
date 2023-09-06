@@ -31,7 +31,7 @@ const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterVal
   return regex.test(row.original.title) || regex.test(row.original.userName);
 };
 
-export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
+export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
@@ -41,6 +41,8 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
   const [initialLoad, setInitialLoad] = useState<boolean>(false);
+
+  const rowClickHandler = (row: Row<Assignment>) => row.depth < 1 && row.toggleExpanded();
 
   const tableConfig = {
     data,
@@ -93,6 +95,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       toolBarProps={{ startDate, setStartDate, setWeekend, setBillable }}
+      rowClickHandler={rowClickHandler}
     />
   ) : (
     <TableSkeleton />

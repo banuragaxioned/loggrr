@@ -24,6 +24,16 @@ export async function getProjects(slug: string) {
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
       Members: { select: { id: true, name: true, image: true } },
+      Milestone: {
+        select: {
+          budget: true,
+        },
+      },
+      TimeEntry: {
+        select: {
+          time: true,
+        },
+      },
       status: true,
     },
     orderBy: {
@@ -37,9 +47,12 @@ export async function getProjects(slug: string) {
     billable: project.billable,
     interval: project.interval,
     clientName: project.Client.name,
-    owner: project.Owner,
+    owner: project.Owner.name,
+    ownerImage: project.Owner.image,
     members: project.Members,
     status: project.status,
+    budget: project.Milestone.map((obj) => obj.budget).reduce((prev, current) => prev + current, 0),
+    logged: project.TimeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
   }));
 
   return projectList;
@@ -84,13 +97,16 @@ export async function getClients(slug: string) {
       id: true,
       name: true,
       status: true,
+      Project: {
+        distinct: "name",
+      },
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  return clients;
+  return clients.map((client) => ({ ...client, Project: client.Project.length }));
 }
 
 export async function getAssignments(slug: string) {

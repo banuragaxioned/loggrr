@@ -116,12 +116,7 @@ export const getDynamicColumns = (
             }`}
           >
             {row.getCanExpand() && (
-              <button
-                {...{
-                  onClick: row.getToggleExpandedHandler(),
-                  className: "cursor-pointer",
-                }}
-              >
+              <button>
                 {row.getIsExpanded() ? (
                   <Icons.chevronDown className="h-4 w-4" />
                 ) : (
