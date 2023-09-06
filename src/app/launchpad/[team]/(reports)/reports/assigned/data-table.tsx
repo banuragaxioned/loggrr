@@ -31,7 +31,7 @@ const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterVal
   return regex.test(row.original.title) || regex.test(row.original.userName);
 };
 
-export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
+export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
