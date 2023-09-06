@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, Row } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/data-table-pagination";
 import { cn } from "@/lib/utils";
@@ -11,12 +11,16 @@ interface DataTableProps<TData, TValue> {
   tableConfig: TableProps<TData, TValue>;
   DataTableToolbar?: React.ComponentType<any>;
   toolBarProps?: {};
+  rowProps?: React.HTMLAttributes<HTMLTableRowElement>;
+  rowClickHandler?: (row: Row<TData>) => void;
 }
 
 export function DataTableStructure<TData, TValue>({
   tableConfig,
   DataTableToolbar,
   toolBarProps,
+  rowProps,
+  rowClickHandler,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
@@ -44,7 +48,13 @@ export function DataTableStructure<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="group">
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="group"
+                {...rowProps}
+                onClick={() => (rowClickHandler ? rowClickHandler(row) : null)}
+              >
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell key={cell.id} className={cn(cell.column.columnDef.meta?.className)}>
