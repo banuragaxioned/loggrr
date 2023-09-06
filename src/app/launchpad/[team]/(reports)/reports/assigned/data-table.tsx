@@ -8,11 +8,12 @@ import {
   ExpandedState,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
-import { AllocationDetails } from "@/types";
+import { AllocationDetails, Assignment } from "@/types";
 import { TableSkeleton } from "@/components/data-table-skeleton";
 import { UseMutationResult, useMutation } from "@tanstack/react-query";
 import { getDynamicColumns } from "./columns";
@@ -27,18 +28,23 @@ const getAllocation = async (startDate: Date) => {
     body: JSON.stringify({
       team: "axioned",
       startDate,
-      endDate,    
+      endDate,
       page: 1,
       pageSize: 20,
     }),
   });
 
-  if(response.ok) {
+  if (response.ok) {
     return response.json()
   }
 }
 
-export function DataTable<TData, TValue>() {
+const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string) => {
+  const regex = new RegExp(filterValue, "ig");
+  return regex.test(row.original.title) || regex.test(row.original.userName);
+};
+
+export function DataTable<TData>() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
@@ -47,7 +53,7 @@ export function DataTable<TData, TValue>() {
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
 
-  const mutation : UseMutationResult<TData[], unknown, Date, unknown> = useMutation(getAllocation)
+  const mutation: UseMutationResult<TData[], unknown, Date, unknown> = useMutation(getAllocation)
 
   useEffect(() => {
     mutation.mutate(startDate)
@@ -68,6 +74,8 @@ export function DataTable<TData, TValue>() {
     getSubRows: (row: { subRows: AllocationDetails }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
+    filterFromLeafRows: true,
+    filterFns: { expandingRowFilter },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };
