@@ -231,3 +231,18 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
     ? await updatedAllocation(requiredAllocation, data, range)
     : await insertAllocation(requiredAllocation, data, range, project, user);
 };
+
+export async function projectAccess(projectId: number) {
+  const hasAccess = await db.project.findUnique({
+    select: {
+      id: true,
+      name: true,
+      status: true,
+    },
+    where: {
+      id: +projectId,
+    },
+  });
+
+  return hasAccess;
+}

@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-// import { ProjectInterval } from "@prisma/client";
+import { ProjectInterval } from "@prisma/client";
 
 const projectCreateSchema = z.object({
   team: z.string().min(1),
@@ -11,7 +11,7 @@ const projectCreateSchema = z.object({
   ownerId: z.number().min(1),
   startDate: z.date(),
   endDate: z.date().optional(),
-//   interval: z.nativeEnum(ProjectInterval),
+  interval: z.nativeEnum(ProjectInterval),
 });
 
 export async function POST(req: Request) {
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
         },
         startdate: body.startDate,
         enddate: body.endDate,
-        // interval: body.interval,
+        interval: body.interval,
       },
     });
 
