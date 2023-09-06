@@ -24,6 +24,22 @@ export const columns: ColumnDef<Projects>[] = [
     filterFn: "arrIncludesSome",
   },
   {
+    accessorKey: "owner",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Project Owner" />,
+    filterFn: "arrIncludesSome",
+  },
+  {
+    accessorKey: "budget",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
+    cell:({row})=><span className="tab">{row.original.budget}</span>,
+    filterFn: "arrIncludesSome",
+  },
+  {
+    accessorKey: "logged",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged Hours " />,
+    filterFn: "arrIncludesSome",
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
