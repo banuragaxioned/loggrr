@@ -24,15 +24,15 @@ export async function getProjects(slug: string) {
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
       Members: { select: { id: true, name: true, image: true } },
-      Milestone:{
-        select:{ 
-          budget:true
-        }
+      Milestone: {
+        select: {
+          budget: true,
+        },
       },
-      TimeEntry:{
-        select:{
-           time:true
-        }
+      TimeEntry: {
+        select: {
+          time: true,
+        },
       },
       status: true,
     },
@@ -48,11 +48,11 @@ export async function getProjects(slug: string) {
     interval: project.interval,
     clientName: project.Client.name,
     owner: project.Owner.name,
-    ownerImage:project.Owner.image,
+    ownerImage: project.Owner.image,
     members: project.Members,
     status: project.status,
-    budget:project.Milestone.map(obj=>obj.budget).reduce((prev,current)=>prev+current,0),
-    logged:project.TimeEntry.map(obj=>obj.time).reduce((prev,current)=>prev+current,0)
+    budget: project.Milestone.map((obj) => obj.budget).reduce((prev, current) => prev + current, 0),
+    logged: project.TimeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
   }));
 
   return projectList;
