@@ -51,7 +51,7 @@ export const columns: ColumnDef<Projects>[] = [
   },
   {
     accessorKey: "logged",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged Hours " />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged " />,
     cell: ({ row }) => <span className="tabular-nums">{row.original.logged}</span>,
     filterFn: "arrIncludesSome",
   },
