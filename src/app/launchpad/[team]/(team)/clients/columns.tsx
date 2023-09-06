@@ -2,7 +2,14 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { Client } from "@/types";
+import { Status } from "@prisma/client";
+
+export type Client = {
+  id: number;
+  name: string;
+  status: Status;
+  Project: number;
+};
 
 export const columns: ColumnDef<Client>[] = [
   {
