@@ -49,10 +49,10 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-3", row?.original?.role !== "INACTIVE" && "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3", row?.original?.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
               title="Inactive"
-              className={cn("border-0 bg-inherit p-2")}
+              className={cn("border-0 bg-inherit h-auto p-0")}
               onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
             >
               <Icons.minusCircle height={18} width={18} />
