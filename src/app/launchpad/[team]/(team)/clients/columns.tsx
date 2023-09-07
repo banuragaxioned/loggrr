@@ -19,6 +19,7 @@ export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "Project",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Active Projects" />,
+    cell: ({ row }) => <span className="w-full block pl-[15%] tabular-nums">{row.original.Project}</span>,
   },
   {
     accessorKey: "status",
