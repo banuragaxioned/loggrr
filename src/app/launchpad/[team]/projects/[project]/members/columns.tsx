@@ -51,7 +51,7 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
         return (
           <div className={cn("invisible flex gap-x-3", row?.original?.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
-              title="Inactive"
+              title="Remove"
               className={cn("border-0 bg-inherit h-auto p-0")}
               onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
             >

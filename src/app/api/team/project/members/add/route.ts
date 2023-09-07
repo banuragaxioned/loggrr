@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 const addUserSchema = z.object({
   team: z.string().min(1),
   projectId: z.number(),
-  emailAddress: z.string().email(),
+  user: z.number().min(1),
 });
 
 export async function POST(req: Request) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     const userDetails = await db.user.findUnique({
       where: {
-        email: body.emailAddress,
+        id: body.user,
         TenantId: {
           some: {
             slug: body.team,
