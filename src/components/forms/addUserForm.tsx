@@ -35,6 +35,8 @@ export function AddUserInTeam({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    SheetCloseButton.current?.click();
+    
     const response = await fetch("/api/team/members/add", {
       method: "POST",
       headers: {
@@ -48,10 +50,7 @@ export function AddUserInTeam({ team }: { team: string }) {
     });
 
     if (response?.ok) showToast("User added", "success");
-    else if (response?.status === 500) showToast("User not exist", "error");
     else showToast("Not added", "warning");
-
-    SheetCloseButton.current?.click();
     router.refresh();
   }
 
