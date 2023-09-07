@@ -234,15 +234,13 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
 
 export async function projectAccess(projectId: number) {
   const hasAccess = await db.project.findUnique({
-    select: {
-      id: true,
-      name: true,
-      status: true,
+    where:{
+      id:projectId
     },
-    where: {
-      id: +projectId,
-    },
-  });
+    select:{
+      name:true
+    }
+  }).catch(e=>null);
 
   return hasAccess;
 }
