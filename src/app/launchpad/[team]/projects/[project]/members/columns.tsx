@@ -20,7 +20,6 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => {
-        
         return (
           <div className="flex items-center gap-x-2">
             <UserAvatar
@@ -52,8 +51,10 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
           <div className={cn("invisible flex gap-x-3", row?.original?.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
               title="Remove"
-              className={cn("border-0 bg-inherit h-auto p-0")}
-              onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
+              className={cn("h-auto border-0 bg-inherit p-0")}
+              onClick={() =>
+                row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId)
+              }
             >
               <Icons.minusCircle height={18} width={18} />
             </Button>

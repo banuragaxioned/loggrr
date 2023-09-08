@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       href: `/projects/${projectId}/members`,
       icon: "user",
     },
-  ]
+  ];
 
   if (!user) {
     return notFound();

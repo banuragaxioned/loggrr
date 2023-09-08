@@ -4,7 +4,7 @@ import { AddMemberInProject } from "@/components/forms/addProjectMemberForm";
 import { getMembersByProjectId } from "@/server/services/project";
 import type { Metadata } from "next";
 import { projectProps } from "@/types";
-import { Table } from "../../../projects/[project]/members/table";
+import { Table } from "./table";
 import { getAllUsers } from "@/server/services/allocation";
 
 export const metadata: Metadata = {

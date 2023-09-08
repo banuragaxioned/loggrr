@@ -22,7 +22,15 @@ import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { AllUsersWithAllocation } from "@/types";
 
-export function AddMemberInProject({ team, project, users }: { team: string, project: number, users:  AllUsersWithAllocation[] }) {
+export function AddMemberInProject({
+  team,
+  project,
+  users,
+}: {
+  team: string;
+  project: number;
+  users: AllUsersWithAllocation[];
+}) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);

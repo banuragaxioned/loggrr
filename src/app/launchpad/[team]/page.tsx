@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 export default async function Dashboard() {
   const user = await getCurrentUser();
-  
+
   if (!user) {
     return notFound();
   }

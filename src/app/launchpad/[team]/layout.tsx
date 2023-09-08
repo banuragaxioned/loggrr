@@ -10,7 +10,7 @@ interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;
 }
 
-export default async function DashboardLayout({ children, params } : DashboardLayoutProps) {
+export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
   const team = params?.team;
 

@@ -23,17 +23,15 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
   });
 
   const members = data[0]?.Members?.map((value) => {
-      return ({
-        id: value?.id,
-        name: value?.name,
-        email: value?.email,
-        image: value?.image,
-        status: value?.status,
-        projectId: projectId,
-      });
-    })
-  ;
-
+    return {
+      id: value?.id,
+      name: value?.name,
+      email: value?.email,
+      image: value?.image,
+      status: value?.status,
+      projectId: projectId,
+    };
+  });
   return members;
 };
 

@@ -13,7 +13,7 @@ export default async function Page({ params }: projectProps) {
     return notFound();
   }
 
-  const projectValue = await projectAccess(Number(project))
+  const projectValue = await projectAccess(Number(project));
 
   if (!projectValue) {
     return notFound();

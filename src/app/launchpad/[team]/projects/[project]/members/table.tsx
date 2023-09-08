@@ -38,7 +38,7 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
         userId: id,
       }),
     });
-    
+
     if (response?.ok) showToast("Member removed", "success");
 
     router.refresh();
