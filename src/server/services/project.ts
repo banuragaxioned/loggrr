@@ -1,14 +1,38 @@
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 
-export const getMembers = async (slug: string, projectId: number) => {
-  const members = await prisma.project.findMany({
+export const getMembersByProjectId = async (slug: string, projectId: number) => {
+  const data = await prisma.project.findMany({
     where: { Tenant: { slug }, id: +projectId },
     select: {
-      Members: { select: { id: true, name: true, image: true } },
-      Owner: { select: { id: true, name: true, image: true } },
+      Members: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          status: true,
+          Roles: {
+            select: {
+              role: true,
+            },
+          },
+        },
+      },
     },
   });
+
+  const members = data[0]?.Members?.map((value) => {
+      return ({
+        id: value?.id,
+        name: value?.name,
+        email: value?.email,
+        image: value?.image,
+        status: value?.status,
+        projectId: projectId,
+      });
+    })
+  ;
 
   return members;
 };
@@ -207,3 +231,18 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
     ? await updatedAllocation(requiredAllocation, data, range)
     : await insertAllocation(requiredAllocation, data, range, project, user);
 };
+
+export async function projectAccess(projectId: number) {
+  const hasAccess = await db.project.findUnique({
+    select: {
+      id: true,
+      name: true,
+      status: true,
+    },
+    where: {
+      id: +projectId,
+    },
+  });
+
+  return hasAccess;
+}

@@ -15,9 +15,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
   return (
     <>
-      <div>
-        <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
-      </div>
+      <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
     </>
   );
 }
