@@ -38,7 +38,7 @@ export const columns: ColumnDef<Projects>[] = [
           }}
           className="z-10 mr-2 inline-block h-5 w-5"
         />
-        <span className="cursor-default">{row.original.name}</span>
+        <span className="cursor-default">{row.original.owner}</span>
       </div>
     ),
     filterFn: "arrIncludesSome",
