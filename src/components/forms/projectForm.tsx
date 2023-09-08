@@ -23,6 +23,7 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectInterval } from "@prisma/client";
+import { Client,AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({
   clientId: z.number().int("Please select a client"),
@@ -30,7 +31,14 @@ const formSchema = z.object({
   team: z.string().nonempty("Please enter a team"),
 });
 
-export function NewProjectForm({ team }: { team: string }) {
+interface NewProjectFormProps {
+  team: string,
+  userList:AllUsersWithAllocation[],
+  clientList:Client[],
+
+}
+
+export function NewProjectForm({ team }: NewProjectFormProps) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
