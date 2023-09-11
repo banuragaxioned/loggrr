@@ -8,12 +8,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
+import { Projects } from "./columns";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue>) {
+export function Table<TData, TValue>({ columns, data }: TableProps<Projects, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+
+  const rowClickHandler = (row: Row<Projects>) => location.assign(`projects/${row.original.id}`);
 
   const tableConfig = {
     data,
@@ -29,5 +33,12 @@ export function Table<TData, TValue>({ columns, data }: TableProps<TData, TValue
     getSortedRowModel: getSortedRowModel(),
   };
 
-  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} />;
+  return (
+    <DataTableStructure
+      tableConfig={tableConfig}
+      DataTableToolbar={DataTableToolbar}
+      rowClickHandler={rowClickHandler}
+      rowProps={{ className: "cursor-pointer hover:bg-hover" }}
+    />
+  );
 }

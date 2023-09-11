@@ -6,22 +6,13 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Icons } from "@/components/icons";
 import { TableInput } from "@/components/table-input";
 import { Dispatch } from "react";
-import { AllocationDetails } from "@/types";
+import { AllocationDetails, Assignment } from "@/types";
 import dayjs from "dayjs";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className: string;
   }
-}
-
-interface Assignment {
-  name: string;
-  image: string | null;
-  userId: number;
-  userName: string;
-  title: string;
-  subRows: AllocationDetails[] | undefined;
 }
 
 //function to get date between two dates
@@ -125,12 +116,7 @@ export const getDynamicColumns = (
             }`}
           >
             {row.getCanExpand() && (
-              <button
-                {...{
-                  onClick: row.getToggleExpandedHandler(),
-                  className: "cursor-pointer",
-                }}
-              >
+              <button>
                 {row.getIsExpanded() ? (
                   <Icons.chevronDown className="h-4 w-4" />
                 ) : (
@@ -156,6 +142,7 @@ export const getDynamicColumns = (
       meta: {
         className: "w-[16%]",
       },
+      filterFn: "expandingRowFilter",
     },
     ...createDynamicColumns(startDate, billable, weekend, setSubmitCount),
   ];

@@ -146,7 +146,8 @@ export type Members = {
   userGroup: {
     id: number,
     name: string
-  }[]
+  }[];
+  projectId: number;
 };
 
 export type pageProps = { params: { team: Tenant["slug"] } };
@@ -172,4 +173,13 @@ export interface AllocationDetails {
   title: string;
   userId: number;
   userName: string;
+}
+
+export interface Assignment {
+  name: string;
+  image: string | null;
+  userId: number;
+  userName: string;
+  title: string;
+  subRows: AllocationDetails[] | undefined;
 }

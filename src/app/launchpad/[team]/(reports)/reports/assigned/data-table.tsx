@@ -9,11 +9,12 @@ import {
   ExpandedState,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "@/hooks/useSubmit";
-import { AllocationDetails } from "@/types";
+import { AllocationDetails, Assignment } from "@/types";
 import { TableSkeleton } from "@/components/data-table-skeleton";
 
 interface AssignmentTableProps<TData, TValue> {
@@ -25,7 +26,12 @@ interface AssignmentTableProps<TData, TValue> {
   ) => ColumnDef<TData, TValue>[];
 }
 
-export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData, TValue>) {
+const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string) => {
+  const regex = new RegExp(filterValue, "ig");
+  return regex.test(row.original.title) || regex.test(row.original.userName);
+};
+
+export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [startDate, setStartDate] = useState(new Date());
@@ -35,6 +41,8 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
   const [billable, setBillable] = useState<string>("totalTime");
   const { submitCount, setSubmitCount } = useSubmit();
   const [initialLoad, setInitialLoad] = useState<boolean>(false);
+
+  const rowClickHandler = (row: Row<Assignment>) => row.depth < 1 && row.toggleExpanded();
 
   const tableConfig = {
     data,
@@ -51,6 +59,8 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
     getSubRows: (row: { subRows: AllocationDetails }) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
+    filterFromLeafRows: true,
+    filterFns: { expandingRowFilter },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };
@@ -85,6 +95,7 @@ export function DataTable<TData, TValue>({ columns }: AssignmentTableProps<TData
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       toolBarProps={{ startDate, setStartDate, setWeekend, setBillable }}
+      rowClickHandler={rowClickHandler}
     />
   ) : (
     <TableSkeleton />

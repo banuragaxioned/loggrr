@@ -18,16 +18,25 @@ import {
 import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "../ui/input";
-import { Role } from "@prisma/client";
+import { InlineCombobox } from "../ui/combobox";
+import { Icons } from "../icons";
+import { AllUsersWithAllocation } from "@/types";
 
-export function AddUserInTeam({ team }: { team: string }) {
+export function AddMemberInProject({
+  team,
+  project,
+  users,
+}: {
+  team: string;
+  project: number;
+  users: AllUsersWithAllocation[];
+}) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
-    emailAddress: z.string().email("This is not a valid email."),
+    user: z.number().min(1),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,22 +44,23 @@ export function AddUserInTeam({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    SheetCloseButton.current?.click();
-
-    const response = await fetch("/api/team/members/add", {
+    const response = await fetch("/api/team/project/members/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         team: team,
-        userrole: Role.USER,
-        emailAddress: values.emailAddress,
+        projectId: project,
+        user: values.user,
       }),
     });
 
     if (response?.ok) showToast("User added", "success");
+    else if (response?.status === 500) showToast("User not exist", "error");
     else showToast("Not added", "warning");
+
+    SheetCloseButton.current?.click();
     router.refresh();
   }
 
@@ -73,12 +83,18 @@ export function AddUserInTeam({ team }: { team: string }) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
-              name="emailAddress"
+              name="user"
               render={({ field }) => (
                 <FormItem className="col-span-2">
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <Input type="string" placeholder="Enter email address" {...field} />
+                    <InlineCombobox
+                      label="users"
+                      options={users}
+                      setVal={form.setValue}
+                      fieldName="user"
+                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

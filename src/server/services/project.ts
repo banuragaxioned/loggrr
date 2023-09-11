@@ -1,15 +1,37 @@
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 
-export const getMembers = async (slug: string, projectId: number) => {
-  const members = await prisma.project.findMany({
+export const getMembersByProjectId = async (slug: string, projectId: number) => {
+  const data = await prisma.project.findMany({
     where: { Tenant: { slug }, id: +projectId },
     select: {
-      Members: { select: { id: true, name: true, image: true } },
-      Owner: { select: { id: true, name: true, image: true } },
+      Members: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          status: true,
+          Roles: {
+            select: {
+              role: true,
+            },
+          },
+        },
+      },
     },
   });
 
+  const members = data[0]?.Members?.map((value) => {
+    return {
+      id: value?.id,
+      name: value?.name,
+      email: value?.email,
+      image: value?.image,
+      status: value?.status,
+      projectId: projectId,
+    };
+  });
   return members;
 };
 
@@ -24,6 +46,16 @@ export async function getProjects(slug: string) {
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
       Members: { select: { id: true, name: true, image: true } },
+      Milestone: {
+        select: {
+          budget: true,
+        },
+      },
+      TimeEntry: {
+        select: {
+          time: true,
+        },
+      },
       status: true,
     },
     orderBy: {
@@ -31,16 +63,19 @@ export async function getProjects(slug: string) {
     },
   });
 
-  const projectList = projects.map(project => ({
+  const projectList = projects.map((project) => ({
     id: project.id,
     name: project.name,
     billable: project.billable,
     interval: project.interval,
     clientName: project.Client.name,
-    owner: project.Owner,
+    owner: project.Owner.name,
+    ownerImage: project.Owner.image,
     members: project.Members,
-    status: project.status
-  }))
+    status: project.status,
+    budget: project.Milestone.map((obj) => obj.budget).reduce((prev, current) => prev + current, 0),
+    logged: project.TimeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
+  }));
 
   return projectList;
 }
@@ -84,13 +119,16 @@ export async function getClients(slug: string) {
       id: true,
       name: true,
       status: true,
+      Project: {
+        distinct: "name",
+      },
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  return clients;
+  return clients.map((client) => ({ ...client, Project: client.Project.length }));
 }
 
 export async function getAssignments(slug: string) {
@@ -191,3 +229,18 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
     ? await updatedAllocation(requiredAllocation, data, range)
     : await insertAllocation(requiredAllocation, data, range, project, user);
 };
+
+export async function projectAccess(projectId: number) {
+  const hasAccess = await db.project.findUnique({
+    select: {
+      id: true,
+      name: true,
+      status: true,
+    },
+    where: {
+      id: +projectId,
+    },
+  });
+
+  return hasAccess;
+}
