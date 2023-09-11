@@ -179,3 +179,10 @@ export interface Assignment {
   title: string;
   subRows: AllocationDetails[] | undefined;
 }
+
+export type Client = {
+  id: number;
+  name: string;
+  status: Status;
+  Project: number;
+};
