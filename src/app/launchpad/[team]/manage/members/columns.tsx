@@ -34,14 +34,32 @@ export const getColumn = (updateStatus: (id: number) => void) => {
         );
       },
       meta: {
-        className: "w-[30%]",
+        className: "w-[25%]",
       },
     },
     {
       accessorKey: "email",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       meta: {
-        className: "w-[30%]",
+        className: "w-[25%]",
+      },
+    },
+    {
+      accessorKey: "userGroup",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="User Group" />,
+      cell: ({ row }) => {
+        const options = row.original.userGroup;
+        return (
+          <div>
+            {options.length === 0 && <span>Add in group</span>}
+            {options.length > 0 && <span>{options[0].name}</span>}
+            {options.length === 2 && <span> | {options[1].name}</span>}
+            {options.length > 2 && <span> + {options.length - 1} more</span>}
+          </div>
+        );
+      },
+      meta: {
+        className: "w-[25%]",
       },
     },
     {

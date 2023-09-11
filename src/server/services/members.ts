@@ -16,6 +16,12 @@ export const getMembers = async (team: string) => {
               role: true,
             },
           },
+          UserGroup: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
         },
       },
     },
@@ -29,6 +35,7 @@ export const getMembers = async (team: string) => {
       image: member.image,
       status: member.status,
       role: member.Roles[0]?.role,
+      userGroup: member.UserGroup
     };
   });
 

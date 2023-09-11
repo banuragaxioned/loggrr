@@ -143,6 +143,10 @@ export type Members = {
   image?: string;
   status: Status;
   role: Role;
+  userGroup: {
+    id: number,
+    name: string
+  }[]
 };
 
 export type pageProps = { params: { team: Tenant["slug"] } };
