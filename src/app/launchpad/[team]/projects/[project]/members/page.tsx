@@ -8,7 +8,7 @@ import { Table } from "./table";
 import { getAllUsers } from "@/server/services/allocation";
 
 export const metadata: Metadata = {
-  title: `Members`,
+  title: `Project members`,
 };
 
 const ManageMembers = async ({ params }: projectProps) => {
@@ -18,7 +18,7 @@ const ManageMembers = async ({ params }: projectProps) => {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Members" text={`This is a list of all the member in your team`}>
+      <DashboardHeader heading="Project members" text={`This is a list of all the member in your project`}>
         <AddMemberInProject team={team} project={+project} users={users} />
       </DashboardHeader>
       {data && <Table team={team} data={data} />}
