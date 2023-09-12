@@ -27,7 +27,6 @@ import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { ProjectInterval } from "@prisma/client";
-import { AllocationFrequency } from "@prisma/client";
 
 const formSchema = z.object({
   client: z.number().int("Please select a client"),
@@ -35,7 +34,6 @@ const formSchema = z.object({
   owner: z.number().int("Please select a Owner name"),
   budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a Budget"),
   date: z.coerce.date(),
-  frequency: z.nativeEnum(AllocationFrequency),
   enddate: z.coerce.date().optional(),
   billable: z.any(),
   interval: z.number().int("Please select a interval"),
@@ -54,9 +52,6 @@ export function NewProjectForm({ team, userList, clientList }: NewProjectFormPro
   const [isOngoing, setOngoing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      frequency: AllocationFrequency.DAY,
-    },
   });
 
   const intervalList = Object.values(ProjectInterval).map((value, i) => ({ id: i, name: value }));
