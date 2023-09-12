@@ -101,7 +101,7 @@ export function NewProjectForm({ team, userList, clientList }: NewProjectFormPro
             <SheetTitle>Add a new Project</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
             <FormField
               control={form.control}
               name="name"
