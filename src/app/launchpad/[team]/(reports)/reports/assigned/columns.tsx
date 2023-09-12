@@ -91,6 +91,7 @@ const createDynamicColumns = (
       meta: {
         className: "w-[12%]",
       },
+      filterFn: "expandingColFilter",
     };
   });
   return createdColumns;
