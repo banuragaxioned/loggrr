@@ -136,6 +136,11 @@ export type AllUsersWithAllocation = {
   Allocation: { id: number; projectId: number }[];
 };
 
+export interface UserGroup {
+  id: number,
+  name: string
+}
+
 export type Members = {
   id: number;
   name?: string;
@@ -143,10 +148,7 @@ export type Members = {
   image?: string;
   status: Status;
   role: Role;
-  userGroup: {
-    id: number,
-    name: string
-  }[]
+  userGroup: UserGroup[]
   projectId: number;
 };
 
@@ -182,9 +184,4 @@ export interface Assignment {
   userName: string;
   title: string;
   subRows: AllocationDetails[] | undefined;
-}
-
-export interface UserGroup {
-  id: number,
-  name: string
 }
