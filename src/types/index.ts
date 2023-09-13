@@ -143,6 +143,10 @@ export type Members = {
   image?: string;
   status: Status;
   role: Role;
+  userGroup: {
+    id: number,
+    name: string
+  }[]
   projectId: number;
 };
 
@@ -178,4 +182,9 @@ export interface Assignment {
   userName: string;
   title: string;
   subRows: AllocationDetails[] | undefined;
+}
+
+export interface UserGroup {
+  id: number,
+  name: string
 }
