@@ -20,9 +20,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Client, AllUsersWithAllocation } from "@/types";
 import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { CalendarDateRangePicker } from "@/components/datePicker";
@@ -41,15 +40,15 @@ const formSchema = z.object({
 
 interface NewProjectFormProps {
   team: string;
-  userList: AllUsersWithAllocation[];
-  clientList: Client[];
 }
 
-export function NewProjectForm({ team, userList, clientList }: NewProjectFormProps) {
+export function NewProjectForm({ team }: NewProjectFormProps) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [isOngoing, setOngoing] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [users, setUsers] = useState([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -85,6 +84,25 @@ export function NewProjectForm({ team, userList, clientList }: NewProjectFormPro
     router.refresh();
   }
 
+  useEffect(() => {
+    const urlList = [
+      { url: "/api/team/client/get", handler: setClients, method: "POST", body: JSON.stringify({ team }) },
+      { url: "/api/team/users/get", handler: setUsers, method: "POST", body: JSON.stringify({ team }) },
+    ];
+    urlList.map((obj) => {
+      fetch(obj.url, {
+        method: obj.method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: obj.body,
+      })
+        .then((res) => res.json())
+        .then((res) => obj.handler(res))
+        .catch((e) => obj.handler([]));
+    });
+  }, []);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -119,7 +137,7 @@ export function NewProjectForm({ team, userList, clientList }: NewProjectFormPro
                   <FormControl className="mt-2">
                     <InlineCombobox
                       label="Client"
-                      options={clientList}
+                      options={clients}
                       setVal={form.setValue}
                       fieldName="client"
                       icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
@@ -138,7 +156,7 @@ export function NewProjectForm({ team, userList, clientList }: NewProjectFormPro
                   <FormControl className="mt-2">
                     <InlineCombobox
                       label="Owner"
-                      options={userList}
+                      options={users}
                       setVal={form.setValue}
                       fieldName="owner"
                       icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
