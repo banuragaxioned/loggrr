@@ -26,13 +26,15 @@ interface MultipleSelectProps<TData, TValue> {
   title?: string;
   selectedValues: Options[];
   options: Options[];
+  onSelect: (isSelected: boolean, selectedOption: Options) => void
 }
 
 export function MultipleSelect<TData, TValue>({
   label,
   title,
   options,
-  selectedValues
+  selectedValues,
+  onSelect
 }: MultipleSelectProps<TData, TValue>) {
 
   return (
@@ -65,7 +67,7 @@ export function MultipleSelect<TData, TValue>({
               {options.map((option) => {
                 const isSelected = selectedValues.find((values) => values.id === option.id);
                 return (
-                  <CommandItem key={option.value}>
+                  <CommandItem key={option.value} onSelect={() => onSelect(!!isSelected, option)}>
                     <div
                       className={cn(
                         "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
