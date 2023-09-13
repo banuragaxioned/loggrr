@@ -191,3 +191,5 @@ interface Skills {
   level: number,
   skill: string,
 }
+
+export type METHODS = "GET" | "POST" | "PUT" | "DELETE"
