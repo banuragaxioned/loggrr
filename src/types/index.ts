@@ -184,4 +184,10 @@ export interface Assignment {
   userName: string;
   title: string;
   subRows: AllocationDetails[] | undefined;
+  skills?: Skills[];
+}
+
+interface Skills {
+  level: number,
+  skill: string,
 }

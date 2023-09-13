@@ -6,6 +6,7 @@ import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
@@ -52,6 +53,19 @@ export function DataTableToolbar<TData>({
   setWeekend,
   setBillable,
 }: DataTableToolbarExtendedProps<TData>) {
+
+  let skillValues: Array<any> = [];
+
+  const skillList = table.getRowModel().rows.map((item: any) => {
+    item.original.skills.map((value: any) => {
+      !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) && skillValues.push({
+        label: value.skill,
+        value: value.skill
+      })
+    }
+    )
+  })
+
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
@@ -67,6 +81,7 @@ export function DataTableToolbar<TData>({
         />
         <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
+        <DataTableFacetedFilter options={skillValues} title="Skills" column={table.getAllColumns()[1]} />
       </div>
     </div>
   );

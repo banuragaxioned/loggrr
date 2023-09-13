@@ -31,6 +31,10 @@ const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterVal
   return regex.test(row.original.title) || regex.test(row.original.userName);
 };
 
+const skillFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string[]) => {
+  return filterValue.filter((item: any) => row.original.skills?.find((ele) => ele.skill === item)).length > 0
+};
+
 export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -60,7 +64,7 @@ export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
     filterFromLeafRows: true,
-    filterFns: { expandingRowFilter },
+    filterFns: { expandingRowFilter, skillFilter },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };
