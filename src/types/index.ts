@@ -178,10 +178,10 @@ export interface Assignment {
   userName: string;
   title: string;
   subRows: AllocationDetails[] | undefined;
-  skills?: SKills[];
+  skills?: Skills[];
 }
 
-interface SKills {
+interface Skills {
   level: number,
   skill: string,
 }
