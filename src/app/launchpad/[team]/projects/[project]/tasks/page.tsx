@@ -4,14 +4,14 @@ import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
-  title: `Manage Project`,
+  title: `Manage Tasks`,
 };
 
 export default async function Page({ params }: pageProps) {
   return (
     <>
       <DashboardShell>
-        <DashboardHeader heading="Project tasks" text="Manage your tasks here"></DashboardHeader>
+        <DashboardHeader heading="Project Tasks" text="Manage your tasks here"></DashboardHeader>
       </DashboardShell>
     </>
   );

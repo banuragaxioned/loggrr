@@ -22,8 +22,6 @@ export default async function Projects({ params }: pageProps) {
       <DashboardHeader heading="Projects" text="This is all your projects">
         <NewProjectForm team={team} clientList={clientList} userList={userList} />
       </DashboardHeader>
-      {/* TODO: Update to Advanced Table, with sort (all), select columns to display */}
-      {/* TODO: Clicking on the row should take you to the project details page */}
       <Table columns={columns} data={projectList} />
     </DashboardShell>
   );

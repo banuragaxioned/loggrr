@@ -1,6 +1,4 @@
 import { DashboardShell } from "@/components/ui/shell";
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import { DashboardHeader } from "@/components/ui/header";
 import { getProjectSummary } from "@/server/services/project";
 import type { Metadata } from "next";
@@ -15,8 +13,8 @@ export default async function Page({ params }: pageProps) {
   const data = await getProjectSummary(team);
   return (
     <DashboardShell>
-      <DashboardHeader heading="Reports"></DashboardHeader>
-      <DataTable columns={columns} data={data} />
+      <DashboardHeader heading="Summary"></DashboardHeader>
+      Coming soon
     </DashboardShell>
   );
 }
