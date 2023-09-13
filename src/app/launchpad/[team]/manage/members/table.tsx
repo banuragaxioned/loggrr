@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { getColumn } from "./columns";
+import { fetchResponse } from "@/lib/utils";
 
 interface MemberTableProps<TData> {
   data: TData[];
@@ -28,25 +29,40 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
   const router = useRouter();
 
   const updateStatus = async (id: number) => {
-    const response = await fetch("/api/team/members/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team,
-        userId: id,
-      }),
-    });
+    const body = JSON.stringify({
+      team,
+      userId: id,
+    })
+
+    const path = "/api/team/members/update";
+
+    const response = await fetchResponse(path, "POST", body)
 
     if (response?.ok) showToast("Status Updated", "success");
 
     router.refresh();
-  };
+  }
+
+  const updateUserGroup = async (isSelected: boolean, options: { id: number }, id:number) => {
+    const body = JSON.stringify({
+      team,
+      addUserGroup: isSelected ? undefined : options.id,
+      removeUserGroup: isSelected ? options.id : undefined,
+      userId: id
+    });
+
+    const path = "/api/team/members/usergroup/update"
+
+    const response = await fetchResponse(path, "POST", body)
+
+    if (response?.ok) showToast(`User ${isSelected ? 'removed from group' : 'added in group'}`, "success");
+
+    router.refresh();
+  }
 
   const tableConfig = {
     data,
-    columns: getColumn({updateStatus, userGroup}) as ColumnDef<TData, TValue>[],
+    columns: getColumn({ updateStatus, userGroup, updateUserGroup }) as ColumnDef<TData, TValue>[],
     state: {
       sorting,
       columnFilters,

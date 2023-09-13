@@ -6,7 +6,7 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, debounce } from "@/lib/utils";
 import { UserGroup } from "@/types";
 import { MultipleSelect } from "@/components/multiple-select";
 
@@ -19,9 +19,10 @@ declare module "@tanstack/table-core" {
 interface GetColumn {
   updateStatus: (id: number) => void,
   userGroup: UserGroup[]
+  updateUserGroup: (isSelected: boolean, options: { id: number }, id: number) => void
 }
 
-export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
+export const getColumn = ({updateStatus, userGroup, updateUserGroup}: GetColumn)  => {
 
   const userGroupList = userGroup.map(option => ({
     id: option.id,
@@ -68,7 +69,7 @@ export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
           value: option.name
         }));
         return (
-          <MultipleSelect options={userGroupList} selectedValues={selectedGroups} title="group" label="Add in a group"/>
+          <MultipleSelect onSelect={(isSelected, selectedOption) => debounce(() => updateUserGroup(isSelected, selectedOption, row.original.id), 200)()} options={userGroupList} selectedValues={selectedGroups} title="group" label="Add in a group"/>
         );
       },
       meta: {
