@@ -22,12 +22,14 @@ interface Options {
 }
 
 interface MultipleSelectProps<TData, TValue> {
+  label: string
   title?: string;
   selectedValues: Options[];
   options: Options[];
 }
 
 export function MultipleSelect<TData, TValue>({
+  label,
   title,
   options,
   selectedValues
@@ -37,14 +39,14 @@ export function MultipleSelect<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border">
-          {selectedValues?.length > 0 ? selectedValues[0].label : 'Add in a group'}
+          {selectedValues?.length > 0 ? selectedValues[0].label : label}
           {selectedValues?.length > 0 && (
             <>
               {selectedValues.length > 1 && <Separator orientation="vertical" className="mx-2 h-4" />}
               <div className="hidden space-x-1 lg:flex">
                 {selectedValues.length > 1 ? (
                   <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                    {selectedValues.length - 1} groups
+                    {selectedValues.length - 1} {title}
                   </Badge>
                 ) : (
                   options
@@ -62,9 +64,9 @@ export function MultipleSelect<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
-          <CommandInput placeholder={title} />
+          <CommandInput placeholder={`Search ${title}`} />
           <CommandList>
-            <CommandEmpty>No groups found.</CommandEmpty>
+            <CommandEmpty>No {title} found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.find((values) => values.id === option.id);

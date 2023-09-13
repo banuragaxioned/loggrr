@@ -60,7 +60,7 @@ export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
     },
     {
       accessorKey: "userGroup",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="User Group" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Groups" />,
       cell: ({ row }) => {
         const selectedGroups = row.original.userGroup.map(option => ({
           id: option.id,
@@ -68,7 +68,7 @@ export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
           value: option.name
         }));
         return (
-          <MultipleSelect options={userGroupList} selectedValues={selectedGroups} title="Search Group"/>
+          <MultipleSelect options={userGroupList} selectedValues={selectedGroups} title="group" label="Add in a group"/>
         );
       },
       meta: {
