@@ -39,27 +39,21 @@ export function MultipleSelect<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border">
-          {selectedValues?.length > 0 ? selectedValues[0].label : label}
-          {selectedValues?.length > 0 && (
+          {selectedValues?.length > 0 ? (
             <>
-              {selectedValues.length > 1 && <Separator orientation="vertical" className="mx-2 h-4" />}
-              <div className="hidden space-x-1 lg:flex">
-                {selectedValues.length > 1 ? (
-                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                    {selectedValues.length - 1} {title}
-                  </Badge>
-                ) : (
-                  options
-                    .filter((option) => selectedValues.includes(option))
-                    .map((option) => (
-                      <Badge variant="secondary" key={option.value} className="rounded-sm px-1 font-normal">
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
-            </>
-          )}
+              {selectedValues[0].label}
+              {selectedValues?.length > 1 && (
+                <>
+                  <Separator orientation="vertical" className="mx-2 h-4" />
+                  <div className="hidden space-x-1 lg:flex">
+                    <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                      {selectedValues.length - 1} {title}
+                    </Badge>
+                  </div>
+                </>
+              )}
+            </>)
+            : label}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
