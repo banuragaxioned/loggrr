@@ -20,12 +20,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { ProjectInterval } from "@prisma/client";
+import { Client, AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({
   client: z.number().int("Please select a client"),
@@ -40,15 +41,15 @@ const formSchema = z.object({
 
 interface NewProjectFormProps {
   team: string;
+  clients: Client[];
+  users: AllUsersWithAllocation[];
 }
 
-export function NewProjectForm({ team }: NewProjectFormProps) {
+export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [isOngoing, setOngoing] = useState(false);
-  const [clients, setClients] = useState([]);
-  const [users, setUsers] = useState([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -83,25 +84,6 @@ export function NewProjectForm({ team }: NewProjectFormProps) {
     showToast("A new Client was created", "success");
     router.refresh();
   }
-
-  useEffect(() => {
-    const urlList = [
-      { url: "/api/team/client/get", handler: setClients, method: "POST", body: JSON.stringify({ team }) },
-      { url: "/api/team/users/get", handler: setUsers, method: "POST", body: JSON.stringify({ team }) },
-    ];
-    urlList.map((obj) => {
-      fetch(obj.url, {
-        method: obj.method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: obj.body,
-      })
-        .then((res) => res.json())
-        .then((res) => obj.handler(res))
-        .catch((e) => obj.handler([]));
-    });
-  }, []);
 
   return (
     <Sheet>

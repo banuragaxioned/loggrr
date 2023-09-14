@@ -5,7 +5,7 @@ import { Table } from "./table";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { columns } from "./columns";
-import { NewProjectForm } from "@/components/forms/projectForm";
+import { AddProject } from "@/components/add-project";
 
 export const metadata: Metadata = {
   title: `Projects`,
@@ -17,7 +17,7 @@ export default async function Projects({ params }: pageProps) {
   return (
     <DashboardShell>
       <DashboardHeader heading="Projects" text="This is all your projects">
-        <NewProjectForm team={team} />
+        <AddProject team={team} />
       </DashboardHeader>
       <Table columns={columns} data={projectList} />
     </DashboardShell>
