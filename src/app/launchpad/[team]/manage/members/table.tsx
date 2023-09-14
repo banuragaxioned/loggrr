@@ -19,7 +19,7 @@ import { fetchResponse } from "@/lib/utils";
 interface MemberTableProps<TData> {
   data: TData[];
   team: string;
-  userGroup: UserGroup[]
+  userGroup: UserGroup[];
 }
 
 export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps<TData>) {

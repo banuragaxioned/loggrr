@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const ManageMembers = async ({ params }: pageProps) => {
   const { team } = params;
   const data = await getMembers(team);
-  const userGroup = await getUserGroup(team)
+  const userGroup = await getUserGroup(team);
 
   return (
     <DashboardShell>

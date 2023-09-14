@@ -32,7 +32,7 @@ const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterVal
 };
 
 const skillFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string[]) => {
-  return filterValue.filter((item: any) => row.original.skills?.find((ele) => ele.skill === item)).length > 0
+  return filterValue.filter((item: any) => row.original.skills?.find((ele) => ele.skill === item)).length > 0;
 };
 
 export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {

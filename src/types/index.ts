@@ -137,8 +137,8 @@ export type AllUsersWithAllocation = {
 };
 
 export interface UserGroup {
-  id: number,
-  name: string
+  id: number;
+  name: string;
 }
 
 export type Members = {
@@ -148,7 +148,7 @@ export type Members = {
   image?: string;
   status: Status;
   role: Role;
-  userGroup: UserGroup[]
+  userGroup: UserGroup[];
   projectId: number;
 };
 
@@ -188,8 +188,8 @@ export interface Assignment {
 }
 
 interface Skills {
-  level: number,
-  skill: string,
+  level: number;
+  skill: string;
 }
 
 export type METHODS = "GET" | "POST" | "PUT" | "DELETE"
