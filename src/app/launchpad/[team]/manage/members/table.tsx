@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { DataTableStructure } from "@/components/data-table-structure";
-import { TableProps } from "@/types";
+import { UserGroup } from "@/types";
 import useToast from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import {
@@ -18,9 +18,10 @@ import { getColumn } from "./columns";
 interface MemberTableProps<TData> {
   data: TData[];
   team: string;
+  userGroup: UserGroup[]
 }
 
-export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
+export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const showToast = useToast();
@@ -45,7 +46,7 @@ export function Table<TData, TValue>({ data, team }: MemberTableProps<TData>) {
 
   const tableConfig = {
     data,
-    columns: getColumn(updateStatus) as ColumnDef<TData, TValue>[],
+    columns: getColumn({updateStatus, userGroup}) as ColumnDef<TData, TValue>[],
     state: {
       sorting,
       columnFilters,

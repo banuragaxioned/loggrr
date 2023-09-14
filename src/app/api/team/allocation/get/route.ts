@@ -107,6 +107,7 @@ const dataFiltering = (data: any, startDate: Date, endDate: Date) => {
       isProjectAssigned: user?.projects?.length,
       team: user.team,
       timeAssigned: getTotalAssignedTime(user?.projects, startDate, endDate),
+      skills: user.skills,
     };
     const finalData = user?.projects?.length ? { ...temp, subRows: getSubRows(user, startDate, endDate) } : temp;
     resultantArray.push(finalData);
@@ -219,6 +220,16 @@ export async function POST(req: Request) {
           },
           orderBy: { name: "asc" },
         },
+        SkillScore: {
+          select: {
+            level: true,
+            Skill: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
       orderBy: { name: "asc" },
     });
@@ -229,6 +240,12 @@ export async function POST(req: Request) {
         userId: obj.id,
         userName: obj.name,
         userAvatar: obj.image,
+        skills: obj.SkillScore.map((item) => {
+          return {
+            level: item.level,
+            skill: item.Skill.name,
+          };
+        }),
         projects: obj.Project.map((project) => {
           allocations = createAllocationDates(
             project.Allocation.filter(
