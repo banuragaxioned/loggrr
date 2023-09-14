@@ -7,6 +7,8 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { UserGroup } from "@/types";
+import { MultipleSelect } from "@/components/multiple-select";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -14,7 +16,19 @@ declare module "@tanstack/table-core" {
   }
 }
 
-export const getColumn = (updateStatus: (id: number) => void) => {
+interface GetColumn {
+  updateStatus: (id: number) => void,
+  userGroup: UserGroup[]
+}
+
+export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
+
+  const userGroupList = userGroup.map(option => ({
+    id: option.id,
+    value: option.name,
+    label: option.name
+  }))
+
   const columns: ColumnDef<Members>[] = [
     {
       accessorKey: "name",
@@ -34,14 +48,31 @@ export const getColumn = (updateStatus: (id: number) => void) => {
         );
       },
       meta: {
-        className: "w-[30%]",
+        className: "w-[25%]",
       },
     },
     {
       accessorKey: "email",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       meta: {
-        className: "w-[30%]",
+        className: "w-[25%]",
+      },
+    },
+    {
+      accessorKey: "userGroup",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Groups" />,
+      cell: ({ row }) => {
+        const selectedGroups = row.original.userGroup.map(option => ({
+          id: option.id,
+          label: option.name,
+          value: option.name
+        }));
+        return (
+          <MultipleSelect options={userGroupList} selectedValues={selectedGroups} title="group" label="Add in a group"/>
+        );
+      },
+      meta: {
+        className: "w-[25%]",
       },
     },
     {
