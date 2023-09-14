@@ -1,7 +1,5 @@
 "use client";
 
-// TODO: This is incomplete
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -202,7 +200,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                     Billable
                   </FormLabel>
                   <FormControl className="my-2">
-                    <Input placeholder="billable" {...field} type="checkbox" id="billable" className="h-4 w-4" />
+                    <Input placeholder="billable" {...field} type="checkbox" id="billable" className="h-4 w-4 p-0" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
