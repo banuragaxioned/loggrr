@@ -20,8 +20,8 @@ export const getMembers = async (team: string) => {
             select: {
               id: true,
               name: true,
-            }
-          }
+            },
+          },
         },
       },
     },
@@ -35,21 +35,21 @@ export const getMembers = async (team: string) => {
       image: member.image,
       status: member.status,
       role: member.Roles[0]?.role,
-      userGroup: member.UserGroup
+      userGroup: member.UserGroup,
     };
   });
 
   return members;
 };
 
-export const getUserGroup = async(team: string) => {
+export const getUserGroup = async (team: string) => {
   const data = await db.userGroup.findMany({
     where: { Tenant: { slug: team } },
     select: {
       id: true,
       name: true,
-    }
-  })
+    },
+  });
 
-  return data
-} 
+  return data;
+};

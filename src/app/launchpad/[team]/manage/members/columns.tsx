@@ -17,17 +17,16 @@ declare module "@tanstack/table-core" {
 }
 
 interface GetColumn {
-  updateStatus: (id: number) => void,
-  userGroup: UserGroup[]
+  updateStatus: (id: number) => void;
+  userGroup: UserGroup[];
 }
 
-export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
-
-  const userGroupList = userGroup.map(option => ({
+export const getColumn = ({ updateStatus, userGroup }: GetColumn) => {
+  const userGroupList = userGroup.map((option) => ({
     id: option.id,
     value: option.name,
-    label: option.name
-  }))
+    label: option.name,
+  }));
 
   const columns: ColumnDef<Members>[] = [
     {
@@ -62,13 +61,18 @@ export const getColumn = ({updateStatus, userGroup}: GetColumn)  => {
       accessorKey: "userGroup",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Groups" />,
       cell: ({ row }) => {
-        const selectedGroups = row.original.userGroup.map(option => ({
+        const selectedGroups = row.original.userGroup.map((option) => ({
           id: option.id,
           label: option.name,
-          value: option.name
+          value: option.name,
         }));
         return (
-          <MultipleSelect options={userGroupList} selectedValues={selectedGroups} title="group" label="Add in a group"/>
+          <MultipleSelect
+            options={userGroupList}
+            selectedValues={selectedGroups}
+            title="group"
+            label="Add in a group"
+          />
         );
       },
       meta: {
