@@ -18,7 +18,7 @@ import { getColumn } from "./columns";
 interface MemberTableProps<TData> {
   data: TData[];
   team: string;
-  userGroup: UserGroup[]
+  userGroup: UserGroup[];
 }
 
 export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps<TData>) {
@@ -46,7 +46,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
 
   const tableConfig = {
     data,
-    columns: getColumn({updateStatus, userGroup}) as ColumnDef<TData, TValue>[],
+    columns: getColumn({ updateStatus, userGroup }) as ColumnDef<TData, TValue>[],
     state: {
       sorting,
       columnFilters,

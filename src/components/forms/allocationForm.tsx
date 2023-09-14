@@ -20,7 +20,7 @@ import {
 import useToast from "@/hooks/useToast";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AllocationFrequency, Tenant } from "@prisma/client";
+import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";

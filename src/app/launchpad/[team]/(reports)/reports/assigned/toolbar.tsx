@@ -53,18 +53,17 @@ export function DataTableToolbar<TData>({
   setWeekend,
   setBillable,
 }: DataTableToolbarExtendedProps<TData>) {
-
   let skillValues: Array<any> = [];
 
   const skillList = table.getRowModel().rows.map((item: any) => {
     item.original.skills.map((value: any) => {
-      !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) && skillValues.push({
-        label: value.skill,
-        value: value.skill
-      })
-    }
-    )
-  })
+      !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
+        skillValues.push({
+          label: value.skill,
+          value: value.skill,
+        });
+    });
+  });
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
