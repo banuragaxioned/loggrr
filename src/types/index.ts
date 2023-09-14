@@ -191,3 +191,10 @@ interface Skills {
   level: number;
   skill: string;
 }
+
+export type Client = {
+  id: number;
+  name: string;
+  status: Status;
+  Project: number;
+};

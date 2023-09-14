@@ -1,12 +1,12 @@
-import { getProjects } from "@/server/services/project";
+import type { Metadata } from "next";
+import { getProjects, getClients } from "@/server/services/project";
+import { getAllUsers } from "@/server/services/allocation";
+import { NewProjectForm } from "@/components/forms/projectForm";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { Table } from "./table";
-import type { Metadata } from "next";
 import { pageProps } from "@/types";
+import { Table } from "./table";
 import { columns } from "./columns";
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: `Projects`,
@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 export default async function Projects({ params }: pageProps) {
   const { team } = params;
   const projectList = await getProjects(team);
+  const clients = await getClients(team);
+  const users = await getAllUsers(team);
+
   return (
     <DashboardShell>
       <DashboardHeader heading="Projects" text="This is all your projects">
-        <Link href="clients" rel="noreferrer" className={buttonVariants({ variant: "outline" })}>
-          Manage Clients
-        </Link>
-        {/* TODO: Add Project Form here */}
+        <NewProjectForm clients={clients} users={users} team={team} />
       </DashboardHeader>
       <Table columns={columns} data={projectList} />
     </DashboardShell>
