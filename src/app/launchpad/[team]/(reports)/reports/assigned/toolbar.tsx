@@ -1,12 +1,13 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { DataTableToolbarProps } from "@/types";
+import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { removeDuplicatesFromArray } from "@/lib/utils";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
@@ -52,25 +53,32 @@ export function DataTableToolbar<TData>({
   setStartDate,
   setWeekend,
   setBillable,
-}: DataTableToolbarExtendedProps<TData>) {
-  let skillValues: Array<any> = [];
+}: DataTableToolbarExtendedProps<Assignment>) {
 
-  const skillList = table.getRowModel().rows.map((item: any) => {
-    item.original.skills.map((value: any) => {
-      !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
-        skillValues.push({
-          label: value.skill,
-          value: value.skill,
-        });
-    });
-  });
+  const flattedSkillArray = table.options.data.flatMap((assign) => assign.skills)
+
+  const uniqueSkillList = removeDuplicatesFromArray(flattedSkillArray.map(skillList => skillList?.skill) as [])
+
+  const skillList = uniqueSkillList.map(skill => ({
+    label: skill,
+    value: skill
+  }))
+
+  const flattedGroupArray = table.options.data.flatMap((assign) => assign.usergroup)
+
+  const uniqueGroupList = removeDuplicatesFromArray(flattedGroupArray.map(group => group?.name) as [])
+
+  const groupList = uniqueGroupList.map(group => ({
+    label: group,
+    value: group
+  }))
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 flex-wrap items-center space-x-2 space-y-2">
         <DatePicker date={startDate} setDate={startDateValidator} />
         <Input
           placeholder="Filter names..."
@@ -80,7 +88,8 @@ export function DataTableToolbar<TData>({
         />
         <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
-        <DataTableFacetedFilter options={skillValues} title="Skills" column={table.getAllColumns()[1]} />
+        <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />
+        <DataTableFacetedFilter options={groupList} title="Groups" column={table.getAllColumns()[2]} />
       </div>
     </div>
   );

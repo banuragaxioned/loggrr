@@ -49,6 +49,8 @@ const createDynamicColumns = (
   const days = 7;
   const createdColumns = getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
     const date: any = dateObj.dateKey;
+    const col1 = startDate.toISOString().split("T")[0];
+    const col2 = dayjs(startDate).add(1, 'day').toISOString().split("T")[0];
     return {
       accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
       header: ({ column }: { column: Column<Assignment> }) => (
@@ -91,7 +93,7 @@ const createDynamicColumns = (
       meta: {
         className: "w-[12%]",
       },
-      filterFn: "skillFilter",
+      filterFn: dateObj.dateKey === col1 ? 'skillFilter' : dateObj.dateKey === col2 ? 'groupFilter' : null,
     };
   });
   return createdColumns;
