@@ -35,6 +35,7 @@ import {
   FileText,
   MinusCircle,
   LucideProps,
+  Edit,
 } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
@@ -87,4 +88,5 @@ export const Icons = {
   chevronDoubleLeft: ChevronsLeft,
   chevronDown: ChevronDown,
   minusCircle: MinusCircle,
+  edit: Edit,
 };

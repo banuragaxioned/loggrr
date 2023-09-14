@@ -4,9 +4,11 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
 const clientCreateSchema = z.object({
-  level: z.number().min(0).max(5),
+  level: z.number().min(0).max(5).optional(),
   team: z.string().min(1),
-  scoreId: z.number().min(0),
+  scoreId: z.number().min(0).optional(),
+  id: z.number(),
+  name: z.string().min(1),
 });
 
 export async function POST(req: Request) {
@@ -28,12 +30,19 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const client = await db.skillScore.updateMany({
+    const client = await body.name ? db.skillScore.updateMany({
       where: { id: body.scoreId },
       data: {
         level: body.level,
       },
-    });
+    }) : db.skill.update({
+      where: {
+        id: body.id
+      },
+      data: {
+        name: body.name,
+      }
+    }); 
 
     return new Response(JSON.stringify(client));
   } catch (error) {
