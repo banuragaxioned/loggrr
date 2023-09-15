@@ -3,11 +3,12 @@
 import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
-import { Dispatch } from "react";
+import { Dispatch, useEffect } from "react";
 import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
 interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
   startDate: Date;
@@ -55,7 +56,9 @@ export function DataTableToolbar<TData>({
   setBillable,
 }: DataTableToolbarExtendedProps<Assignment>) {
 
-  const flattedSkillArray = table.options.data.flatMap((assign) => assign.skills)
+  const group = useSearchParams().get("group");
+
+  const flattedSkillArray = table.getRowModel().rows.flatMap(row => row.original.skills)
 
   const uniqueSkillList = removeDuplicatesFromArray(flattedSkillArray.map(skillList => skillList?.skill) as [])
 
@@ -72,6 +75,10 @@ export function DataTableToolbar<TData>({
     label: group,
     value: group
   }))
+
+  useEffect(() => {
+    group && table.getAllColumns()[2].setFilterValue([group])
+  }, [group])
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
