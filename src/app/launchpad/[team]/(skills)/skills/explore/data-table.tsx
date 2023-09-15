@@ -17,23 +17,32 @@ import { SkillsList, skillName } from "./columns";
 
 interface MemberTableProps<TData> {
   skills: TData[];
+  team: string;
 }
 
-export function DataTable<TData, TValue>({ skills }: MemberTableProps<SkillsList>) {
+export interface SkillUpdate {
+  id: number,
+  updatedValue: string
+}
+
+export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<SkillsList>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [isEditing, setIsEditing] = React.useState<SkillUpdate>({ id: 0, updatedValue: ''});
   const showToast = useToast();
   const router = useRouter();
 
-  const editSkillNames = async (id: number, name: string) => {
+  const editSkillNames = async () => {
+    
     const response = await fetch("/api/team/skill/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-       id, 
-       name,
+       id: isEditing.id, 
+       name: isEditing.updatedValue,
+       team,
       }),
     });
 
@@ -44,7 +53,7 @@ export function DataTable<TData, TValue>({ skills }: MemberTableProps<SkillsList
 
   const tableConfig = {
     data: skills,
-    columns: skillName(editSkillNames),
+    columns: skillName(editSkillNames, isEditing, setIsEditing),
     state: {
       sorting,
       columnFilters,

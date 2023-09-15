@@ -30,19 +30,21 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const client = await body.name ? db.skillScore.updateMany({
-      where: { id: body.scoreId },
-      data: {
-        level: body.level,
-      },
-    }) : db.skill.update({
-      where: {
-        id: body.id
-      },
-      data: {
-        name: body.name,
-      }
-    }); 
+    const client = body?.name
+      ? await db.skill.update({
+          where: {
+            id: body?.id,
+          },
+          data: {
+            name: body?.name,
+          },
+        })
+      : await db.skillScore.updateMany({
+          where: { id: body?.scoreId },
+          data: {
+            level: body?.level,
+          },
+        });
 
     return new Response(JSON.stringify(client));
   } catch (error) {

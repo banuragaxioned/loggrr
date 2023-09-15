@@ -20,7 +20,7 @@ export default async function SkillsSummary({ params }: pageProps) {
       <DashboardHeader heading="All Skills" text="These are all the skills that are on our radar.">
         <NewSkillForm team={team} />
       </DashboardHeader>
-      <DataTable skills={skills} />
+      <DataTable skills={skills} team={team} />
         
     </DashboardShell>
   );
