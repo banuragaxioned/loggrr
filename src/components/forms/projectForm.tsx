@@ -180,12 +180,15 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
+           <div>
+           <FormLabel className="basis-full">Budget</FormLabel>
+           <div className="">
+           <FormField
               control={form.control}
               name="budget"
               render={({ field }) => (
                 <FormItem className="col-span-2">
-                  <FormLabel>Budget</FormLabel>
+                  <FormLabel>Billable</FormLabel>
                   <FormControl className="mt-2">
                     <Input placeholder="Budget" {...field} type="number" />
                   </FormControl>
@@ -193,21 +196,21 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
+             <FormField
               control={form.control}
-              name="billable"
+              name="budget"
               render={({ field }) => (
-                <FormItem className="col-span-2 mb-4 flex items-center gap-x-2">
-                  <FormLabel htmlFor="billable" className="cursor-pointer">
-                    Billable
-                  </FormLabel>
-                  <FormControl className="my-2">
-                    <Input placeholder="billable" {...field} type="checkbox" id="billable" className="h-4 w-4 p-0" />
+                <FormItem className="col-span-2">
+                  <FormLabel>Non Billable</FormLabel>
+                  <FormControl className="mt-2">
+                    <Input placeholder="Budget" {...field} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+           </div>
+           </div>
             <SheetFooter className="gap-x-4">
               <Button type="submit" variant="secondary">
                 Submit
