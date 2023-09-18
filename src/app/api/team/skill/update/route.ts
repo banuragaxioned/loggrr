@@ -29,11 +29,11 @@ export async function POST(req: Request) {
     }
 
     const client = await db.skillScore.updateMany({
-          where: { id: body?.scoreId },
-          data: {
-            level: body?.level,
-          },
-        });
+      where: { id: body?.scoreId },
+      data: {
+        level: body?.level,
+      },
+    });
 
     return new Response(JSON.stringify(client));
   } catch (error) {

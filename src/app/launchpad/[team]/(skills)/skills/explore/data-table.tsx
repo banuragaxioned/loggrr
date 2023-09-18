@@ -20,28 +20,27 @@ interface MemberTableProps<TData> {
 }
 
 export interface SkillUpdate {
-  id: number,
-  updatedValue: string
+  id: number;
+  updatedValue: string;
 }
 
 export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<SkillsList>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [isEditing, setIsEditing] = React.useState<SkillUpdate>({ id: 0, updatedValue: ''});
+  const [isEditing, setIsEditing] = React.useState<SkillUpdate>({ id: 0, updatedValue: "" });
   const showToast = useToast();
   const router = useRouter();
 
   const editSkillNames = async () => {
-    
     const response = await fetch("/api/team/skill/edit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-       id: isEditing.id, 
-       name: isEditing.updatedValue,
-       team,
+        id: isEditing.id,
+        name: isEditing.updatedValue,
+        team,
       }),
     });
 

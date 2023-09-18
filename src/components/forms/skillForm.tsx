@@ -84,7 +84,7 @@ export function NewSkillForm({ team }: { team: string }) {
               )}
             />
             <SheetFooter>
-              <Button type="submit" variant="secondary" className="mt-2 mr-3">
+              <Button type="submit" variant="secondary" className="mr-3 mt-2">
                 Submit
               </Button>
               <SheetClose asChild>

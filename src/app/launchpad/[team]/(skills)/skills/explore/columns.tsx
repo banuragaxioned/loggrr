@@ -13,51 +13,53 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 // You can use a Zod schema here if you want.
 
 export interface SkillsList {
-  id: number,
-  name: string,
-  edit?: string,
+  id: number;
+  name: string;
+  edit?: string;
 }
 
 export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, setIsEditing: Dispatch<SkillUpdate>) {
-
   const columns: ColumnDef<SkillsList>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Skills" />,
       cell: ({ row }) => {
-        return (
-          (isEditing?.id === row.original.id ? <Input defaultValue={row.original.name} onBlur={(e) => setIsEditing({ id: row.original.id, updatedValue: e.target.value })} className="w-auto h-auto" /> : row.original.name)
-        )
-      }
+        return isEditing?.id === row.original.id ? (
+          <Input
+            defaultValue={row.original.name}
+            onBlur={(e) => setIsEditing({ id: row.original.id, updatedValue: e.target.value })}
+            className="h-auto w-auto"
+          />
+        ) : (
+          row.original.name
+        );
+      },
     },
     {
       id: "edit",
       cell: ({ row }: { row: any }) => {
-
         return (
           <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
-            {
-              isEditing?.id === row.original.id ?
-                <Button
-                  title="Save"
-                  className={cn("h-auto border-0 bg-inherit p-0")}
-                  onClick={() => {
-                    editSkillNames()
-                    setIsEditing({ id: 0, updatedValue: '' })
-                  }}
-                >
-                  <Icons.save height={18} width={18} />
-                </Button> :
-                <Button
-                  title="Edit"
-                  className={cn("h-auto border-0 bg-inherit p-0")}
-                  onClick={() =>
-                    setIsEditing({ id: row.original.id, updatedValue: '' })
-                  }
-                >
-                  <Icons.edit height={18} width={18} />
-                </Button>
-            }
+            {isEditing?.id === row.original.id ? (
+              <Button
+                title="Save"
+                className={cn("h-auto border-0 bg-inherit p-0")}
+                onClick={() => {
+                  editSkillNames();
+                  setIsEditing({ id: 0, updatedValue: "" });
+                }}
+              >
+                <Icons.save height={18} width={18} />
+              </Button>
+            ) : (
+              <Button
+                title="Edit"
+                className={cn("h-auto border-0 bg-inherit p-0")}
+                onClick={() => setIsEditing({ id: row.original.id, updatedValue: "" })}
+              >
+                <Icons.edit height={18} width={18} />
+              </Button>
+            )}
           </div>
         );
       },
@@ -68,5 +70,3 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
   ];
   return columns;
 }
-
-
