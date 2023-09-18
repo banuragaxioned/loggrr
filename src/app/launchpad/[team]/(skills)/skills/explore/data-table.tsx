@@ -46,7 +46,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
       }),
     });
 
-    if (response?.ok) showToast("Member removed", "success");
+    if (response?.ok) showToast("Skill name updated", "success");
 
     router.refresh();
   };

@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown } from "lucide-react";
-import { Summary } from "@/types";
+import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
@@ -51,7 +50,7 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
             {
               isEditing?.id === row.original.id ?
                 <Button
-                  title="add"
+                  title="Save"
                   className={cn("h-auto border-0 bg-inherit p-0")}
                   onClick={() => {
                     editSkillNames()
@@ -60,7 +59,7 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
 
                   }
                 >
-                  <Icons.add height={18} width={18} />
+                  <Icons.save height={18} width={18} />
                 </Button> :
                 <Button
                   title="Edit"
