@@ -56,7 +56,7 @@ export function DataTableToolbar<TData>({
   let skillValues: Array<any> = [];
 
   const skillList = table.getRowModel().rows.map((item: any) => {
-    item.original.skills.map((value: any) => {
+    item?.original?.skills?.map((value: any) => {
       !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
         skillValues.push({
           label: value.skill,

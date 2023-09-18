@@ -193,3 +193,10 @@ interface Skills {
 }
 
 export type METHODS = "GET" | "POST" | "PUT" | "DELETE"
+
+export type Client = {
+  id: number;
+  name: string;
+  status: Status;
+  Project: number;
+};
