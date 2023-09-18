@@ -55,9 +55,7 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
                   onClick={() => {
                     editSkillNames()
                     setIsEditing({ id: 0, updatedValue: '' })
-                  }
-
-                  }
+                  }}
                 >
                   <Icons.save height={18} width={18} />
                 </Button> :

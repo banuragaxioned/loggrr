@@ -34,7 +34,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
 
   const editSkillNames = async () => {
     
-    const response = await fetch("/api/team/skill/update", {
+    const response = await fetch("/api/team/skill/edit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
       }),
     });
 
-    if (response?.ok) showToast("Skill name updated", "success");
+    if (response?.ok) showToast("Skill updated", "success");
 
     router.refresh();
   };
