@@ -1,10 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { roles } from "@/config/filters";
-import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
-import { Icons } from "@/components/icons";
 import { DataTableToolbarProps } from "@/types";
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {

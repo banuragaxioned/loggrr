@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Dispatch } from "react";
 import { SkillUpdate } from "./data-table";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -23,18 +23,7 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
   const columns: ColumnDef<SkillsList>[] = [
     {
       accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="link"
-            className="text-slate-500"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Skills
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Skills" />,
       cell: ({ row }) => {
         return (
           (isEditing?.id === row.original.id ? <Input defaultValue={row.original.name} onBlur={(e) => setIsEditing({ id: row.original.id, updatedValue: e.target.value })} className="w-auto h-auto" /> : row.original.name)
