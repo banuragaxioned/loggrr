@@ -79,12 +79,14 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
 
     form.reset();
     SheetCloseButton.current?.click();
-    showToast("A new Client was created", "success");
+    showToast("A new Project was created", "success");
     router.refresh();
   }
 
+  const handleOpenChange = (e: boolean) => e && form.reset();
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
       </SheetTrigger>
