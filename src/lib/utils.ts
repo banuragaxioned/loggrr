@@ -33,16 +33,13 @@ export async function fetchResponse(path:string, method: METHODS, body: BodyInit
   });
 }
 
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  delay: number
-): T {
-  let timeoutId: number;
+export function debounce(func: (...args: any[]) => void, delay: number) {
+  let timeoutId: NodeJS.Timeout;
 
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+  return function (...args: any[]) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
-      func.apply(this, args);
-    }, delay) as any; // Use `as any` to satisfy the type system
-  } as T;
+      func(...args);
+    }, delay);
+  };
 }
