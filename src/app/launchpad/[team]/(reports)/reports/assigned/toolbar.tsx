@@ -65,6 +65,8 @@ export function DataTableToolbar<TData>({
     });
   });
 
+  const sortedSkills = skillValues?.sort((a: any, b: any) => a.value?.localeCompare(b.value));
+
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
@@ -80,7 +82,7 @@ export function DataTableToolbar<TData>({
         />
         <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
-        <DataTableFacetedFilter options={skillValues} title="Skills" column={table.getAllColumns()[1]} />
+        <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
     </div>
   );
