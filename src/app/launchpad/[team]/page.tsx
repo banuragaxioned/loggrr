@@ -2,9 +2,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/session";
 
 import { notFound } from "next/navigation";
+import { TimeEntryForm } from "@/components/forms/timeEntryForm";
+import { pageProps } from "@/types";
 
-export default async function Dashboard() {
+export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
+  const { team } = params;
 
   if (!user) {
     return notFound();
@@ -16,7 +19,7 @@ export default async function Dashboard() {
         {/* Horizontal Calendar and date picker */}
         <Skeleton className="h-16 w-full" />
         {/* Time Entry Combobox */}
-        <Skeleton className="h-24 w-full" />
+        <TimeEntryForm team={team}/>
         {/* Time Entries */}
         <Skeleton className="h-80 w-full" />
       </main>
