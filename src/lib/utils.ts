@@ -1,6 +1,5 @@
 // Source: https://ui.shadcn.com/docs/installation#add-a-cn-helper
 
-import { METHODS } from "@/types";
 import type { ClassValue } from "clsx";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -21,16 +20,6 @@ export function removeDuplicatesFromArray(array: []) {
   }
 
   return finalArray;
-}
-
-export async function serviceCall(path:string, method: METHODS, body: BodyInit | null | undefined) {
-  return await fetch(path, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body,
-  });
 }
 
 export function debounce(func: (...args: any[]) => void, delay: number) {

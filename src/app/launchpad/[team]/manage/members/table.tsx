@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { getColumn } from "./columns";
-import { serviceCall } from "@/lib/utils";
 
 interface MemberTableProps<TData> {
   data: TData[];
@@ -29,14 +28,16 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
   const router = useRouter();
 
   const updateStatus = async (id: number) => {
-    const body = JSON.stringify({
-      team,
-      userId: id,
+    const response = await fetch("/api/team/members/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team,
+        userId: id,
+      })
     })
-
-    const path = "/api/team/members/update";
-
-    const response = await serviceCall(path, "POST", body)
 
     if (response?.ok) showToast("Status Updated", "success");
 
@@ -44,16 +45,18 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
   }
 
   const updateUserGroup = async (isSelected: boolean, options: { id: number }, id:number) => {
-    const body = JSON.stringify({
-      team,
-      addUserGroup: isSelected ? undefined : options.id,
-      removeUserGroup: isSelected ? options.id : undefined,
-      userId: id
-    });
-
-    const path = "/api/team/members/usergroup/update"
-
-    const response = await serviceCall(path, "POST", body)
+    const response = await fetch("/api/team/members/usergroup/", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team,
+        addUserGroup: isSelected ? undefined : options.id,
+        removeUserGroup: isSelected ? options.id : undefined,
+        userId: id
+      })
+    })
 
     if (response?.ok) showToast(`User ${isSelected ? 'removed from group' : 'added in group'}`, "success");
 
