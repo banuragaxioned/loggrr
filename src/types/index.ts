@@ -192,8 +192,6 @@ interface Skills {
   skill: string;
 }
 
-export type METHODS = "GET" | "POST" | "PUT" | "DELETE"
-
 export type Client = {
   id: number;
   name: string;
