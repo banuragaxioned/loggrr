@@ -14,7 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { getColumn } from "./columns";
-import { fetchResponse } from "@/lib/utils";
+import { serviceCall } from "@/lib/utils";
 
 interface MemberTableProps<TData> {
   data: TData[];
@@ -36,7 +36,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
 
     const path = "/api/team/members/update";
 
-    const response = await fetchResponse(path, "POST", body)
+    const response = await serviceCall(path, "POST", body)
 
     if (response?.ok) showToast("Status Updated", "success");
 
@@ -53,7 +53,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
 
     const path = "/api/team/members/usergroup/update"
 
-    const response = await fetchResponse(path, "POST", body)
+    const response = await serviceCall(path, "POST", body)
 
     if (response?.ok) showToast(`User ${isSelected ? 'removed from group' : 'added in group'}`, "success");
 

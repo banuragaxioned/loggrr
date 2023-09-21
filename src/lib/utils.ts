@@ -23,7 +23,7 @@ export function removeDuplicatesFromArray(array: []) {
   return finalArray;
 }
 
-export async function fetchResponse(path:string, method: METHODS, body: BodyInit | null | undefined) {
+export async function serviceCall(path:string, method: METHODS, body: BodyInit | null | undefined) {
   return await fetch(path, {
     method,
     headers: {
