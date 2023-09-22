@@ -54,7 +54,7 @@ export function DataTableToolbar<TData>({
   setWeekend,
   setBillable,
 }: DataTableToolbarExtendedProps<Assignment>) {
-  let skillValues: Array<any> = [];
+  let skillValues: Array<{value:string,label:string}> = [];
 
   const skillList = table.getRowModel().rows.map((item: Row<Assignment>) => {
     item?.original?.skills?.map((value: {skill:string}) => {
