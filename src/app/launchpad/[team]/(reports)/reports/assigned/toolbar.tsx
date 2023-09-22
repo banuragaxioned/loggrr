@@ -54,7 +54,7 @@ export function DataTableToolbar<TData>({
   setWeekend,
   setBillable,
 }: DataTableToolbarExtendedProps<Assignment>) {
-  let skillValues: Array<{value:string,label:string}> = [];
+  let skillValues: Array<{value:string, label:string}> = [];
 
   const skillList = table.getRowModel().rows.map((item: Row<Assignment>) => {
     item?.original?.skills?.map((value: {skill:string}) => {
@@ -66,7 +66,7 @@ export function DataTableToolbar<TData>({
     });
   });
 
-  const sortedSkills = skillValues?.sort((a: any, b: any) => a.value?.localeCompare(b.value));
+  const sortedSkills = skillValues.sort((a: {value: string}, b: {value: string}) => a.value.localeCompare(b.value));
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
