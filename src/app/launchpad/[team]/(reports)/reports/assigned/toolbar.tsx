@@ -1,14 +1,15 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { DataTableToolbarProps } from "@/types";
+import {  Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import {Row} from "@tanstack/react-table";
 
-interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
+interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   startDate: Date;
   setStartDate: Dispatch<Date>;
   setWeekend: Dispatch<string>;
@@ -52,11 +53,11 @@ export function DataTableToolbar<TData>({
   setStartDate,
   setWeekend,
   setBillable,
-}: DataTableToolbarExtendedProps<TData>) {
+}: DataTableToolbarExtendedProps<Assignment>) {
   let skillValues: Array<any> = [];
 
-  const skillList = table.getRowModel().rows.map((item: any) => {
-    item?.original?.skills?.map((value: any) => {
+  const skillList = table.getRowModel().rows.map((item: Row<Assignment>) => {
+    item?.original?.skills?.map((value: {skill:string}) => {
       !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
         skillValues.push({
           label: value.skill,
