@@ -52,8 +52,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       },
       body: JSON.stringify({
         team,
-        addUserGroup: isSelected ? undefined : options.id,
-        removeUserGroup: isSelected ? options.id : undefined,
+        groupId: options.id,
         userId: id
       })
     })

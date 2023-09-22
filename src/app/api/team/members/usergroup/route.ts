@@ -5,8 +5,7 @@ import { db } from "@/lib/db";
 
 const updateUserGroupSchema = z.object({
   team: z.string().min(1),
-  addUserGroup: z.number().optional(),
-  removeUserGroup: z.number().optional(),
+  groupId: z.number().min(1),
   userId: z.number().min(1)
 });
 
@@ -31,28 +30,18 @@ export async function PATCH(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    let userGroup;
+    const isInGroup = await db.user.findUnique({
+      where: { id: body.userId, UserGroup: { some: { id: body.groupId } } }
+    })
 
-    if(body.addUserGroup) {
-      userGroup = await db.user.update({
-        where: { id: body.userId },
-        data: {
-          UserGroup: {
-            connect: { id: body.addUserGroup }
-          }
-        },
-      });
-    } else if (body.removeUserGroup) {
-      userGroup = await db.user.update({
-        where: { id: body.userId },
-        data: {
-          UserGroup: {
-            disconnect: { id: body.removeUserGroup }
-          }
-        },
-      });
-    }
-
+    const userGroup = await db.user.update({
+      where: { id: body.userId },
+      data: {
+        UserGroup: {
+          [isInGroup ? 'disconnect' : 'connect'] : { id: body.groupId }
+        }
+      },
+    });
 
     return new Response(JSON.stringify(userGroup));
   } catch (error) {
