@@ -21,23 +21,34 @@ const formSchema = z.object({
   billable: z.boolean(),
 });
 
+type Milestone = {
+  id: number;
+  name: string;
+};
+
+interface Project {
+  id: number;
+  name: string;
+  Milestone: Milestone[];
+}
+
 interface TimeEntryFormProps {
   team: string;
-  projects: any;
+  projects: Project[];
 }
 
 export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
-  const [projectMilestone, setprojectmilestone] = useState([]);
+  const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       billable: false,
     },
   });
-
+  console.log(projects);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch("/api/team/entry", {
       method: "POST",
@@ -78,7 +89,10 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
                   setVal={form.setValue}
                   fieldName="project"
                   selectHandler={(id) =>
-                    setprojectmilestone(projects.find((project: any) => project.id === id)?.Milestone)
+                    setprojectmilestone((prev) => {
+                      const milestone = projects.find((project) => project.id === id)?.Milestone;
+                      return milestone ? milestone : [];
+                    })
                   }
                   icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                 />
