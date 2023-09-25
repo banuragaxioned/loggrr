@@ -44,7 +44,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
     router.refresh();
   }
 
-  const updateUserGroup = async (isSelected: boolean, options: { id: number }, id:number) => {
+  const updateUserGroup = async (options: { id: number }[], id:number) => {
     const response = await fetch("/api/team/members/usergroup/", {
       method: "PATCH",
       headers: {
@@ -52,14 +52,14 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       },
       body: JSON.stringify({
         team,
-        groupId: options.id,
+        groups: options,
         userId: id
       })
     })
 
-    if (response?.ok) showToast(`User ${isSelected ? 'removed from group' : 'added in group'}`, "success");
+    if (response?.ok) showToast('User group updated', "success");
 
-    router.refresh();
+    router.refresh()
   }
 
   const tableConfig = {

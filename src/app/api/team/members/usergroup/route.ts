@@ -2,10 +2,13 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
+import { getDifferenceBetweenTwoArray } from "@/lib/utils";
+
+const groupSchema = z.object({ id: z.number() })
 
 const updateUserGroupSchema = z.object({
   team: z.string().min(1),
-  groupId: z.number().min(1),
+  groups: z.array(groupSchema),
   userId: z.number().min(1)
 });
 
@@ -30,20 +33,45 @@ export async function PATCH(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const isInGroup = await db.user.findUnique({
-      where: { id: body.userId, UserGroup: { some: { id: body.groupId } } }
+    const connectedGroups = await db.user.findMany({
+      where: { id: body.userId },
+      select: {
+        UserGroup: {
+          select: {
+            id: true,
+          }
+        }
+      }
     })
 
-    const userGroup = await db.user.update({
-      where: { id: body.userId },
-      data: {
-        UserGroup: {
-          [isInGroup ? 'disconnect' : 'connect'] : { id: body.groupId }
-        }
-      },
-    });
+    const flatConnectedGroups = connectedGroups[0].UserGroup
 
-    return new Response(JSON.stringify(userGroup));
+    let updatedUserGroupIds;
+
+    let isConnect = false;
+
+    if (flatConnectedGroups.length > body.groups.length) {
+      isConnect = false;
+      updatedUserGroupIds = getDifferenceBetweenTwoArray(flatConnectedGroups, body.groups);
+    } else {
+      isConnect = true;
+      updatedUserGroupIds = getDifferenceBetweenTwoArray(body.groups, flatConnectedGroups);
+    }
+
+    const updateUserGroup = updatedUserGroupIds.map(async (group) => {
+      const userGroup = await db.user.update({
+        where: { id: body.userId },
+        data: {
+          UserGroup: {
+            [isConnect ? 'connect' : 'disconnect']: { id: group.id }
+          }
+        },
+      });
+
+      return userGroup;
+    })
+
+    return new Response(JSON.stringify(updateUserGroup));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
