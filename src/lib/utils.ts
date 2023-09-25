@@ -33,6 +33,6 @@ export function debounce(func: (...args: any[]) => void, delay: number) {
   };
 }
 
-export function findDifferenceBetweenTwoArray(bigArray: any[], smallArray: any[]){
+export function getDifferenceBetweenTwoArray(bigArray: any[], smallArray: any[]){
   return bigArray.filter(obj1 => !smallArray.some(obj2 => obj1.id === obj2.id))
 }
