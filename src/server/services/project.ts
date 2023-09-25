@@ -245,29 +245,31 @@ export async function projectAccess(projectId: number) {
   return hasAccess;
 }
 
-
-export const projectsAssignedToMember = async(slug:string,userId:number)=> {
+export const projectsAssignedToMember = async (slug: string, userId: number) => {
   const projects = await db.project.findMany({
-    where:{
-      Tenant:{
-        slug:slug
+    where: {
+      Tenant: {
+        slug: slug,
       },
-      Members:{
-        some:{
-          id:userId
-        }
+      Members: {
+        some: {
+          id: userId,
+        },
       },
     },
-    select:{
-       id:true,
-       name:true,
-       Milestone:{
-        select:{
-          id:true,
-          name:true,
-        }
-       },
-    }
+    select: {
+      id: true,
+      name: true,
+      Milestone: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
-  return projects.map(project=>({...project,Milestone:project.Milestone.map(milestone=>({id:milestone.id,name:milestone.name}))}));
-}
+  return projects.map((project) => ({
+    ...project,
+    Milestone: project.Milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
+  }));
+};

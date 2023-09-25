@@ -4,12 +4,12 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
 const clientCreateSchema = z.object({
-  team:z.string().min(1),
-  project:z.number(),
-  milestone:z.number(),
+  team: z.string().min(1),
+  project: z.number(),
+  milestone: z.number(),
   time: z.number(),
-  comments:z.string().min(1),
-  billable:z.boolean(),
+  comments: z.string().min(1),
+  billable: z.boolean(),
 });
 
 export async function POST(req: Request) {
@@ -33,16 +33,16 @@ export async function POST(req: Request) {
     //schema goes here
 
     const timeEntry = await db.timeEntry.create({
-      data:{
-        time:body?.time,
-        comments:body?.comments,
-        milestoneId:body?.milestone,
-        userId:user.id,
-        projectId:body?.project,
-        date:new Date(),
-        tenantId:user.tenants.filter(tenant=>tenant.slug === body.team)[0].id,
-      }
-    })
+      data: {
+        time: body?.time,
+        comments: body?.comments,
+        milestoneId: body?.milestone,
+        userId: user.id,
+        projectId: body?.project,
+        date: new Date(),
+        tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
+      },
+    });
 
     return new Response(JSON.stringify(timeEntry));
   } catch (error) {

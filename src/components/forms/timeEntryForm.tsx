@@ -64,7 +64,7 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}  className="mx-auto my-2 flex w-3/5 flex-col gap-y-1">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto my-2 flex w-3/5 flex-col gap-y-1">
         <FormField
           control={form.control}
           name="project"
@@ -109,12 +109,12 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
         <div className="mb-2 flex gap-x-4">
           <div>
             <FormLabel className="basis-auto">Time</FormLabel>
-            <div className="relative mt-2 flex rounded-md border-[1px]">
-              <FormField
-                control={form.control}
-                name="time"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
+            <FormField
+              control={form.control}
+              name="time"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <div className="relative mt-2 flex rounded-md border-[1px]">
                     <FormControl>
                       <Input
                         placeholder="Time"
@@ -123,12 +123,12 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
                         className="w-20 border-none  outline-none focus:ring-0"
                       />
                     </FormControl>
-                    <FormMessage className="absolute -bottom-5" />
-                  </FormItem>
-                )}
-              />
-              <span className="block h-full bg-hover p-2 text-center text-neutral-400">Hours</span>
-            </div>
+                    <span className="block h-full bg-hover p-2 text-center text-neutral-400">Hours</span>
+                  </div>
+                  <FormMessage className="relative -bottom-0 w-full" />
+                </FormItem>
+              )}
+            />
           </div>
           <FormField
             control={form.control}

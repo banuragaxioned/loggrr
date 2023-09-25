@@ -13,8 +13,8 @@ export default async function Dashboard({ params }: pageProps) {
   if (!user) {
     return notFound();
   }
-  
-  const projects = await projectsAssignedToMember(team,user.id)
+
+  const projects = await projectsAssignedToMember(team, user.id);
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
@@ -22,7 +22,7 @@ export default async function Dashboard({ params }: pageProps) {
         {/* Horizontal Calendar and date picker */}
         <Skeleton className="h-16 w-full" />
         {/* Time Entry Combobox */}
-        <TimeEntryForm team={team} projects = {projects}/>
+        <TimeEntryForm team={team} projects={projects} />
         {/* Time Entries */}
         <Skeleton className="h-80 w-full" />
       </main>

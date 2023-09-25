@@ -14,7 +14,7 @@ type InlineComboboxProps = {
   icon: React.ReactNode;
   label: string;
   defaultValue?: number;
-  selectHandler?:(id:number)=>void
+  selectHandler?: (id: number) => void;
 };
 
 type ComboBoxProps = {
@@ -146,7 +146,15 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   );
 };
 
-const InlineCombobox = ({ options, setVal, fieldName, icon, label, defaultValue,selectHandler }: InlineComboboxProps) => {
+const InlineCombobox = ({
+  options,
+  setVal,
+  fieldName,
+  icon,
+  label,
+  defaultValue,
+  selectHandler,
+}: InlineComboboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>();
@@ -202,7 +210,7 @@ const InlineCombobox = ({ options, setVal, fieldName, icon, label, defaultValue,
                         if (option.name) setInputValue(option.name);
                         setVal(fieldName, option.id);
                         setOpen(false);
-                        selectHandler && selectHandler(option.id)
+                        selectHandler && selectHandler(option.id);
                       }}
                       className={"cursor-pointer py-1.5 pl-8 pr-2"}
                     >
