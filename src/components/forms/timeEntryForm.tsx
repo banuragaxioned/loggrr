@@ -16,7 +16,7 @@ import { Icons } from "../icons";
 const formSchema = z.object({
   project: z.number().int("Please select a Project"),
   milestone: z.number().int("Please select a Milestone"),
-  time: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a time"),
+  time: z.string().regex(new RegExp(/^([1-9]\d*(\.)\d{0,2}|0?(\.)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/), "Please enter time"),
   comments: z.string().nonempty("Please add comments"),
   billable: z.boolean(),
 });
@@ -29,7 +29,7 @@ type Milestone = {
 interface Project {
   id: number;
   name: string;
-  Milestone: Milestone[];
+  milestone?: Milestone[];
 }
 
 interface TimeEntryFormProps {
@@ -50,7 +50,7 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/team/entry", {
+    const response = await fetch("/api/team/time-entry", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
                   fieldName="project"
                   selectHandler={(id) =>
                     setprojectmilestone((prev) => {
-                      const milestone = projects.find((project) => project.id === id)?.Milestone;
+                      const milestone = projects.find((project) => project.id === id)?.milestone;
                       return milestone ? milestone : [];
                     })
                   }

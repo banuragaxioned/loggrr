@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/session";
 import { notFound } from "next/navigation";
 import { TimeEntryForm } from "@/components/forms/timeEntryForm";
 import { pageProps } from "@/types";
-import { projectsAssignedToMember } from "@/server/services/project";
+import {getProjectSummary } from "@/server/services/project";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -14,7 +14,7 @@ export default async function Dashboard({ params }: pageProps) {
     return notFound();
   }
 
-  const projects = await projectsAssignedToMember(team, user.id);
+  const projects = await getProjectSummary(team,user.id);
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
