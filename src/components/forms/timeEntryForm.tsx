@@ -48,7 +48,7 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
       billable: false,
     },
   });
-  console.log(projects);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch("/api/team/entry", {
       method: "POST",
