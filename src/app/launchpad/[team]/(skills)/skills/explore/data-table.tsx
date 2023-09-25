@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { SkillsList, skillName } from "./columns";
+import { useRef } from "react";
 
 interface MemberTableProps<TData> {
   skills: TData[];
@@ -27,19 +28,21 @@ export interface SkillUpdate {
 export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<SkillsList>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [isEditing, setIsEditing] = React.useState<SkillUpdate>({ id: 0, updatedValue: "" });
+  const [isEditing, setIsEditing] = React.useState<number>(0);
   const showToast = useToast();
   const router = useRouter();
 
-  const editSkillNames = async () => {
+  const refButton = useRef<HTMLButtonElement>(null);
+
+  const editSkillNames = async (id: number, value: string) => {
     const response = await fetch("/api/team/skill/edit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: isEditing.id,
-        name: isEditing.updatedValue,
+        id: id,
+        name: value,
         team,
       }),
     });
@@ -47,11 +50,12 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
     if (response?.ok) showToast("Skill updated", "success");
 
     router.refresh();
+    setIsEditing(0);
   };
 
   const tableConfig = {
     data: skills,
-    columns: skillName(editSkillNames, isEditing, setIsEditing),
+    columns: skillName(editSkillNames, isEditing, setIsEditing, refButton),
     state: {
       sorting,
       columnFilters,

@@ -18,35 +18,43 @@ export interface SkillsList {
   edit?: string;
 }
 
-export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, setIsEditing: Dispatch<SkillUpdate>) {
+export function skillName(editSkillNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any) {
+
   const columns: ColumnDef<SkillsList>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Skills" />,
       cell: ({ row }) => {
-        return isEditing?.id === row.original.id ? (
+        return isEditing === row.original.id ? (
           <Input
             defaultValue={row.original.name}
-            onBlur={(e) => setIsEditing({ id: row.original.id, updatedValue: e.target.value })}
-            className="h-auto w-auto"
+            ref={refButton}
+            className="h-auto w-auto py-1"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                editSkillNames(isEditing, refButton?.current?.value);
+              }
+            }}
           />
         ) : (
-          row.original.name
+          <span className="flex rounded-md border border-transparent bg-primary px-3 text-sm text-primary-foreground placeholder:opacity-75 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-0 h-auto w-auto py-1 border-c">
+            {row.original.name}
+          </span>
         );
       },
     },
     {
       id: "edit",
-      cell: ({ row }: { row: any }) => {
+      cell: ({ row }) => {
         return (
           <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
-            {isEditing?.id === row.original.id ? (
+            {isEditing === row.original.id ? (
               <Button
                 title="Save"
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 onClick={() => {
-                  editSkillNames();
-                  setIsEditing({ id: 0, updatedValue: "" });
+                  setIsEditing(row.original.id)
+                  editSkillNames(isEditing, refButton?.current?.value);
                 }}
               >
                 <Icons.save height={18} width={18} />
@@ -55,7 +63,7 @@ export function skillName(editSkillNames: () => void, isEditing: SkillUpdate, se
               <Button
                 title="Edit"
                 className={cn("h-auto border-0 bg-inherit p-0")}
-                onClick={() => setIsEditing({ id: row.original.id, updatedValue: "" })}
+                onClick={() => setIsEditing(row.original.id)}
               >
                 <Icons.edit height={18} width={18} />
               </Button>
