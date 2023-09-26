@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { TimeEntryForm } from "@/components/forms/timeEntryForm";
 import { pageProps } from "@/types";
 import {getProjectSummary } from "@/server/services/project";
+import { TimeEntriesList } from "@/components/time-entries-list";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -24,7 +25,7 @@ export default async function Dashboard({ params }: pageProps) {
         {/* Time Entry Combobox */}
         <TimeEntryForm team={team} projects={projects} />
         {/* Time Entries */}
-        <Skeleton className="h-80 w-full" />
+        <TimeEntriesList userId={user.id} team={team}/>
       </main>
       <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
