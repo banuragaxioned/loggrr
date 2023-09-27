@@ -31,6 +31,9 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
             ref={refButton}
             className="h-auto w-auto py-1"
             onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setIsEditing(0);
+              }
               if (e.key === 'Enter') {
                 editSkillNames(isEditing, refButton?.current?.value);
               }
