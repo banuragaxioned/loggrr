@@ -33,7 +33,7 @@ export function DataTableColumnHeader<TData, TValue>({
       <Button
         variant="ghost"
         size="sm"
-        className="h-8 px-0 data-[state=open]:bg-accent"
+        className="h-8 p-3 data-[state=open]:bg-accent"
         onClick={() => clickHandler(column)}
       >
         {title && <span>{title}</span>}
