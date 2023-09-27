@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { getDifferenceBetweenTwoArray } from "@/lib/utils";
 
 const groupSchema = z.object({ id: z.number() })
 
@@ -33,7 +32,7 @@ export async function PATCH(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const connectedGroups = await db.user.findMany({
+    const connectedGroups = await db.user.findUnique({
       where: { id: body.userId },
       select: {
         UserGroup: {
@@ -44,18 +43,24 @@ export async function PATCH(req: Request) {
       }
     })
 
-    const flatConnectedGroups = connectedGroups[0].UserGroup
+    if(!connectedGroups) {
+      return new Response('User not found', { status: 403 })
+    }
+
+    const flatConnectedGroups = connectedGroups.UserGroup
 
     let updatedUserGroupIds;
 
     let isConnect = false;
 
+    const difference = (bigArray: {id: number}[], smallArray: {id: number}[]) => bigArray.filter(obj1 => !smallArray.some(obj2 => obj1.id === obj2.id))
+
     if (flatConnectedGroups.length > body.groups.length) {
       isConnect = false;
-      updatedUserGroupIds = getDifferenceBetweenTwoArray(flatConnectedGroups, body.groups);
+      updatedUserGroupIds = difference(flatConnectedGroups, body.groups);
     } else {
       isConnect = true;
-      updatedUserGroupIds = getDifferenceBetweenTwoArray(body.groups, flatConnectedGroups);
+      updatedUserGroupIds = difference(body.groups, flatConnectedGroups);
     }
 
     const updateUserGroup = updatedUserGroupIds.map(async (group) => {
