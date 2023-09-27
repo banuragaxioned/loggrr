@@ -39,7 +39,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       })
     })
 
-    if (response?.ok) showToast("Status Updated", "success");
+    if (response.ok) showToast("Status Updated", "success");
 
     router.refresh();
   }
@@ -57,7 +57,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       })
     })
 
-    if (response?.ok) showToast('User group updated', "success");
+    if (response.ok) showToast('User group updated', "success");
 
     router.refresh()
   }
