@@ -18,7 +18,7 @@ export interface SkillsList {
   edit?: string;
 }
 
-export function skillName(editSkillNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any) {
+export function skillName(editSkillNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any, deleteSkillNames: (id: number) => void) {
 
   const columns: ColumnDef<SkillsList>[] = [
     {
@@ -71,6 +71,29 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
                 <Icons.edit height={18} width={18} />
               </Button>
             )}
+          </div>
+        );
+      },
+      meta: {
+        className: "w-[10%]",
+      },
+    },
+    {
+      id: "edit",
+      cell: ({ row }) => {
+        return (
+          <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
+          
+              <Button
+                title="Save"
+                className={cn("h-auto border-0 bg-inherit p-0")}
+                onClick={() => {
+                  deleteSkillNames(row.original.id);
+                }}
+              >
+                <Icons.delete height={18} width={18} />
+              </Button>
+            
           </div>
         );
       },

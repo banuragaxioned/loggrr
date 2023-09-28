@@ -53,9 +53,27 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
     setIsEditing(0);
   };
 
+  const deleteSkillNames = async (id: number) => {
+    const response = await fetch("/api/team/skill/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        team,
+      }),
+    });
+
+    if (response?.ok) showToast("Skill updated", "success");
+
+    router.refresh();
+    setIsEditing(0);
+  };
+
   const tableConfig = {
     data: skills,
-    columns: skillName(editSkillNames, isEditing, setIsEditing, refButton),
+    columns: skillName(editSkillNames, isEditing, setIsEditing, refButton, deleteSkillNames),
     state: {
       sorting,
       columnFilters,
@@ -67,5 +85,5 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
     getSortedRowModel: getSortedRowModel(),
   };
 
-  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} />;
+  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} rowProps={{className: "hover:bg-hover"}} />;
 }
