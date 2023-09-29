@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
+import { current } from "tailwindcss/colors";
 
 const clientCreateSchema = z.object({
   team: z.string().min(1),
@@ -88,14 +89,29 @@ export async function GET(req:Request) {
        id:true,
        billable:true,
        comments:true,
-       milestoneId:true,
-       projectId:true,
+       Project:{
+         select:{
+          id:true,
+          name:true
+         }
+       },
+       Milestone:{
+        select:{
+          id:true,
+          name:true
+        }
+       },
        taskId:true,
        time:true,
        date:true
-      }
+      },
+      orderBy:{
+        projectId:"asc"
+      },
     });
-
+    console.log(response.reduce((prev,current)=>{
+      prev.find((project?))
+    },[]))
     return new Response(JSON.stringify(response));
   } catch (error) {
     if (error instanceof z.ZodError) {

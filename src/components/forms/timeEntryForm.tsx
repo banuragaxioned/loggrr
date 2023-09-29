@@ -74,6 +74,8 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
   }
 
   return (
+    <>
+  <h2 className="mx-auto w-3/5">Add a new entry</h2>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto my-2 flex w-3/5 flex-col gap-y-1">
         <FormField
@@ -181,5 +183,6 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
         </div>
       </form>
     </Form>
+    </>
   );
 }
