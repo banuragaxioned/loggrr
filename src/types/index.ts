@@ -199,12 +199,6 @@ export type Client = {
   Project: number;
 };
 
-
-type Project = {
-  id:number;
-  name:string;
-}
-
 type MilestoneData = {
   id:number;
   billable:boolean;
@@ -218,4 +212,15 @@ export interface TimeEntryData {
   project:Project;
   total:number;
   data:MilestoneData[]
+}
+
+ export type Milestone = {
+  id: number;
+  name: string;
+};
+
+export interface Project {
+  id: number;
+  name: string;
+  milestone?: Milestone[];
 }

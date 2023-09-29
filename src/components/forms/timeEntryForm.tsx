@@ -1,15 +1,13 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Dispatch, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
-
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import useToast from "@/hooks/useToast";
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Project,Milestone } from "@/types";
 import { InlineCombobox } from "../ui/combobox";
 import { Icons } from "../icons";
 
@@ -21,23 +19,13 @@ const formSchema = z.object({
   billable: z.boolean(),
 });
 
-type Milestone = {
-  id: number;
-  name: string;
-};
-
-interface Project {
-  id: number;
-  name: string;
-  milestone?: Milestone[];
-}
-
 interface TimeEntryFormProps {
   team: string;
   projects: Project[];
+  submitCounter:Dispatch<(prev:number)=>number>;
 }
 
-export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
+export function TimeEntryForm({ team, projects,submitCounter }: TimeEntryFormProps) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -68,7 +56,7 @@ export function TimeEntryForm({ team, projects }: TimeEntryFormProps) {
     if (!response?.ok) {
       return showToast("Something went wrong.", "warning");
     }
-
+    submitCounter((prev)=>prev+1)
     form.reset();
     showToast("A new Project was created", "success");
   }

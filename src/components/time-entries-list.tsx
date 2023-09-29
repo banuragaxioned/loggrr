@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { TimeEntryData } from "@/types";
@@ -6,9 +5,10 @@ import { TimeEntryData } from "@/types";
 interface TimeEntriesListProps {
   userId: number;
   team: string;
+  submitCount:number;
 }
 
-export const TimeEntriesList = ({ userId, team }: TimeEntriesListProps) => {
+export const TimeEntriesList = ({ userId, team,submitCount }: TimeEntriesListProps) => {
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
   const [entries, setEntries] = useState<{ data: TimeEntryData[]; status: number }>({ data: [], status: 0 });
   const getEntries = fetch(`/api/team/time-entry?team=${team}&date=${new Date()}`, {
@@ -23,7 +23,7 @@ export const TimeEntriesList = ({ userId, team }: TimeEntriesListProps) => {
       .then((res) => res.json())
       .then((res) => setEntries({ data: res, status: 1 }))
       .catch((e) => setEntries({ data: [], status: -1 }));
-  }, []);
+  }, [submitCount]);
 
   return (
     <div className="mx-auto flex w-3/5 flex-col gap-y-4">
@@ -39,14 +39,14 @@ export const TimeEntriesList = ({ userId, team }: TimeEntriesListProps) => {
                 <div>
                   <div className="flex w-full justify-between">
                     <h4 className="font-medium">{entryData?.project?.name}</h4>
-                    <span>{entryData?.total}Hrs</span>
+                    <span>{entryData?.total} Hrs</span>
                   </div>
                   {/* milestone data */}
                   {entryData?.data?.map((data, i) => (
                     <div className="rounded-md bg-slate-50 p-4 mb-2 last:mb-0" key={i}>
                       <div className="flex justify-between">
                         <p className="font-medium">{data?.milestone?.name}</p>
-                        <span>{data?.billable ? "billable" : "non-billable"}</span>
+                        <span className="capitalize">{data?.billable ? "billable" : "non-billable"}</span>
                       </div>
                       <div className="flex justify-between">
                         <p>{data?.comments}</p>

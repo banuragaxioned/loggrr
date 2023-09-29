@@ -1,11 +1,9 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { getCurrentUser } from "@/lib/session";
-
 import { notFound } from "next/navigation";
-import { TimeEntryForm } from "@/components/forms/timeEntryForm";
-import { pageProps } from "@/types";
 import {getProjectSummary } from "@/server/services/project";
-import { TimeEntriesList } from "@/components/time-entries-list";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TimeEntry } from "@/components/time-entry";
+import { getCurrentUser } from "@/lib/session";
+import { pageProps } from "@/types";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -22,10 +20,7 @@ export default async function Dashboard({ params }: pageProps) {
       <main className="col-span-9 flex flex-col gap-4">
         {/* Horizontal Calendar and date picker */}
         <Skeleton className="h-16 w-full" />
-        {/* Time Entry Combobox */}
-        <TimeEntryForm team={team} projects={projects} />
-        {/* Time Entries */}
-        <TimeEntriesList userId={user.id} team={team}/>
+        <TimeEntry team={team} projects={projects}  userId={user.id}/>
       </main>
       <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}

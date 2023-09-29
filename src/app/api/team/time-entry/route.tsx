@@ -32,12 +32,12 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
     //schema goes here
-
     const timeEntry = await db.timeEntry.create({
       data: {
-        time: body?.time,
+        time: body?.time*100,
         comments: body?.comments,
         milestoneId: body?.milestone,
+        billable:body?.billable,
         userId: user.id,
         projectId: body?.project,
         date: new Date(),
@@ -112,12 +112,12 @@ export async function GET(req:Request) {
 
   const restructuredData = response.reduce((prev:Array<TimeEntryData>,current)=>{
     const project = {...current?.Project};
-    const data = {id:current?.id,billable:current?.billable,time:current?.time,milestone:current?.Milestone,comments:current?.comments};
+    const data = {id:current?.id,billable:current?.billable,time:current?.time/100,milestone:current?.Milestone,comments:current?.comments};
     let index  =  prev.findIndex((obj)=>obj?.project?.id === project?.id );
     if(index > -1){
       prev[index]?.data.push(data);
-      prev[index].total+=current?.time;
-    } else prev?.push({project:current?.Project,data:[data],total:current?.time});
+      prev[index].total+=current?.time/100;
+    } else prev?.push({project:current?.Project,data:[data],total:current?.time/100});
 
     return prev;
     },[])
