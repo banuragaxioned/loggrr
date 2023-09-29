@@ -57,7 +57,11 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 onClick={() => {
                   setIsEditing(row.original.id)
-                  editSkillNames(isEditing, refButton?.current?.value);
+                  if(row.original.name !== refButton?.current?.value) {
+                    editSkillNames(isEditing, refButton?.current?.value);
+                  } else {
+                    setIsEditing(0)
+                  }
                 }}
               >
                 <Icons.save height={18} width={18} />
