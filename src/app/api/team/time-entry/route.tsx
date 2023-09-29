@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { current } from "tailwindcss/colors";
+import { TimeEntryData } from "@/types";
 
 const clientCreateSchema = z.object({
   team: z.string().min(1),
@@ -109,10 +109,20 @@ export async function GET(req:Request) {
         projectId:"asc"
       },
     });
-    console.log(response.reduce((prev,current)=>{
-      prev.find((project?))
-    },[]))
-    return new Response(JSON.stringify(response));
+
+  const restructuredData = response.reduce((prev:Array<TimeEntryData>,current)=>{
+    const project = {...current?.Project};
+    const data = {id:current?.id,billable:current?.billable,time:current?.time,milestone:current?.Milestone,comments:current?.comments};
+    let index  =  prev.findIndex((obj)=>obj?.project?.id === project?.id );
+    if(index > -1){
+      prev[index]?.data.push(data);
+      prev[index].total+=current?.time;
+    } else prev?.push({project:current?.Project,data:[data],total:current?.time});
+
+    return prev;
+    },[])
+
+    return new Response(JSON.stringify(restructuredData));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });

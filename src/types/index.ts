@@ -198,3 +198,24 @@ export type Client = {
   status: Status;
   Project: number;
 };
+
+
+type Project = {
+  id:number;
+  name:string;
+}
+
+type MilestoneData = {
+  id:number;
+  billable:boolean;
+  time:number;
+  milestone:Project;
+  comments:string|null;
+  taskId?:number;
+}
+
+export interface TimeEntryData {
+  project:Project;
+  total:number;
+  data:MilestoneData[]
+}
