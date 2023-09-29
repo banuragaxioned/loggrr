@@ -65,10 +65,9 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
       }),
     });
 
-    if (response?.ok) showToast("Skill updated", "success");
+    if (response?.ok) showToast("Skill deleted", "success");
 
     router.refresh();
-    setIsEditing(0);
   };
 
   const tableConfig = {
@@ -85,5 +84,5 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
     getSortedRowModel: getSortedRowModel(),
   };
 
-  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} rowProps={{className: "hover:bg-hover"}} />;
+  return <DataTableStructure tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} />;
 }

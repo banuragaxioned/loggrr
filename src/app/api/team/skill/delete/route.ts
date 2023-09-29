@@ -27,6 +27,12 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
+    const checkUserSkill = await db.skillScore.deleteMany({
+      where: {
+        skillId: body?.id,
+      },
+    });
+
     const client = await db.skill.delete({
       where: {
         id: body?.id,

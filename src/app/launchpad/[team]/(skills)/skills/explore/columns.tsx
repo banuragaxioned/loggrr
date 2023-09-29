@@ -40,7 +40,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
             }}
           />
         ) : (
-          <span className="flex rounded-md border border-transparent bg-primary px-3 text-sm text-primary-foreground placeholder:opacity-75 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-0 h-auto w-auto py-1 border-c">
+          <span className="flex rounded-md border border-transparent px-3 text-sm h-auto w-auto py-1">
             {row.original.name}
           </span>
         );
@@ -79,13 +79,12 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
       },
     },
     {
-      id: "edit",
+      id: "delete",
       cell: ({ row }) => {
         return (
           <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
-          
               <Button
-                title="Save"
+                title="Delete"
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 onClick={() => {
                   deleteSkillNames(row.original.id);

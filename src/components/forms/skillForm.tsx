@@ -54,7 +54,7 @@ export function NewSkillForm({ team }: { team: string }) {
 
     form.reset();
     SheetCloseButton.current?.click();
-    showToast("A new Client was created", "success");
+    showToast("A new Skill was created", "success");
     router.refresh();
   }
 
