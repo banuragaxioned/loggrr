@@ -4,6 +4,7 @@ import { TimeEntryForm } from "./forms/timeEntryForm";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./datePicker";
+import {TimeLogForm} from "./forms/timelogForm";
 import { Project } from "@/types";
 
 interface TimeEntryProps {
@@ -23,7 +24,8 @@ export const TimeEntry = ({team,projects,userId}:TimeEntryProps)=> {
             </div>
             <h2 className="flex justify-between px-5 py-2">Time logged for the day <span>0.0</span></h2>
         </div>
-        <TimeEntryForm team={team} projects={projects} submitCounter={setSubmitCount}/>
+        <TimeLogForm team={team} projects={projects} submitCounter={setSubmitCount}/>
+        {/* <TimeEntryForm team={team} projects={projects} submitCounter={setSubmitCount}/> */}
         <TimeEntriesList userId={userId} team={team} submitCount={submitCount}/>
         </>
     )

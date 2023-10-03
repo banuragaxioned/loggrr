@@ -17,12 +17,12 @@ type FormData = {
   loggedHours: number | undefined;
   isBillable: boolean;
 };
-type Props = {
+type TimeLogFormProps = {
   formData: FormData | undefined;
   handleFormData: (data: FormData) => void;
 };
 
-const TimeLogForm = ({ formData, handleFormData }: Props) => {
+export const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
@@ -504,16 +504,6 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             selectedItem={selectedProject}
             handleSelect={handleSelectedProject}
           />
-          {/* <Dropdown
-            tabIndex={2}
-            group
-            icon={<Icons.project className={`h-4 w-4`} />}
-            label="Project"
-            options={projectList}
-            searchable
-            onSelected={(option: string) => handleSelectedProject(option)}
-            defaultValue={selectedProject}
-          /> */}
           <ComboBox
             tabIndex={3}
             group
@@ -524,20 +514,8 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
             selectedItem={selectedMilestone}
             handleSelect={(option: string) => setSelectedMilestone(option)}
             disable={!selectedProject}
-            // autoOpen={!!(selectedProject && !selectedMilestone)}
           />
           {
-            /* <Dropdown
-            tabIndex={3}
-            icon={<Icons.milestone className={`h-4 w-4`} />}
-            label="Milestone"
-            options={milestoneList}
-            searchable
-            onSelected={(option: string) => setSelectedMilestone(option)}
-            defaultValue={selectedMilestone}
-            disable={!selectedProject}
-            autoOpen={!!(selectedProject && !selectedMilestone)}
-          />*/
             <ComboBox
               tabIndex={4}
               searchable
@@ -547,20 +525,7 @@ const TimeLogForm = ({ formData, handleFormData }: Props) => {
               selectedItem={selectedTask}
               handleSelect={(option: string) => setSelectedTask(option)}
               disable={!(selectedProject && selectedMilestone)}
-              // autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}
             />
-            /*
-          <Dropdown
-            tabIndex={4}
-            icon={<Icons.task className={`h-4 w-4`} />}
-            label="Task"
-            options={taskList}
-            searchable
-            onSelected={(option: string) => setSelectedTask(option)}
-            defaultValue={selectedTask}
-            disable={!(selectedProject && selectedMilestone)}
-            autoOpen={!!(selectedProject && selectedMilestone && !selectedTask)}
-          /> */
           }
         </div>
         {canClear && (
