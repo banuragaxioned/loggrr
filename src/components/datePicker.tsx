@@ -29,6 +29,26 @@ export const DatePicker = ({ date, setDate }: any) => {
   );
 };
 
+
+export const ClassicDatePicker = ({ date, setDate }: any) => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn("py-0 px-2 flex")}
+        >
+          <CalendarIcon className="h-5 w-6" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+
 export function CalendarDateRangePicker({
   setVal,
   isOngoing,
