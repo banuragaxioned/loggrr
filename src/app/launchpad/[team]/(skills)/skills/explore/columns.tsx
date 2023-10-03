@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Dispatch } from "react";
-import { SkillUpdate } from "./data-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
 // This type is used to define the shape of our data.
@@ -50,7 +49,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
       id: "edit",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")}>
             {isEditing === row.original.id ? (
               <Button
                 title="Save"
@@ -86,7 +85,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
       id: "delete",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")}>
               <Button
                 title="Delete"
                 className={cn("h-auto border-0 bg-inherit p-0")}

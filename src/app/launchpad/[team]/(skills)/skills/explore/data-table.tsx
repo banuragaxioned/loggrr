@@ -9,7 +9,6 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  ColumnDef,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { SkillsList, skillName } from "./columns";
