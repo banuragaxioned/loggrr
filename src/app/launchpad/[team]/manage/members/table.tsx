@@ -36,17 +36,35 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       body: JSON.stringify({
         team,
         userId: id,
-      }),
-    });
+      })
+    })
 
-    if (response?.ok) showToast("Status Updated", "success");
+    if (response.ok) showToast("Status Updated", "success");
 
     router.refresh();
-  };
+  }
+
+  const updateUserGroup = async (options: { id: number }[], id:number) => {
+    const response = await fetch("/api/team/members/usergroup/", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team,
+        groups: options,
+        userId: id
+      })
+    })
+
+    if (response.ok) showToast('User group updated', "success");
+
+    router.refresh()
+  }
 
   const tableConfig = {
     data,
-    columns: getColumn({ updateStatus, userGroup }) as ColumnDef<TData, TValue>[],
+    columns: getColumn({ updateStatus, userGroup, updateUserGroup }) as ColumnDef<TData, TValue>[],
     state: {
       sorting,
       columnFilters,
