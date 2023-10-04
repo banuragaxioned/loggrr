@@ -82,12 +82,13 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle onClick={(e) => {
-          const element = e.target as Element;
-          const dataState = element.getAttribute("data-state");
-          setWeekend(dataState === 'off' ? "week" : "weekdays")
-        }
-        }>
+        <Toggle className="data-[state=on]:bg-[#5048e5] data-[state=on]:text-white data-[state=on]:border-[#5048e5] border rounded-md" 
+          onClick={(e) => {
+            const element = e.target as Element;
+            const dataState = element.getAttribute("data-state");
+            setWeekend(dataState === 'off' ? "week" : "weekdays")
+          }}
+        >
           Week
         </Toggle>
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
