@@ -92,6 +92,7 @@ export async function getProjectSummary(slug: string, userId?: number) {
       Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
       TimeEntry: { select: { id: true, time: true, projectId: true } },
       Members: { select: { id: true, name: true } },
+      Task:{select:{id:true,name:true}}
     },
     orderBy: {
       name: "asc",
@@ -100,7 +101,7 @@ export async function getProjectSummary(slug: string, userId?: number) {
 
   return userId ? summary
     .filter((project) => project.Members.find((member) => member.id === userId))
-    .map((project) => ({ id: project.id, name: project.name, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})) }))
+    .map((project) => ({ id: project.id, name: project.name, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})),task:project.Task.map((task)=>({id:task.id,name:task.name})) }))
   : summary.map((project) => ({
     id: project.id,
     name: project.name,

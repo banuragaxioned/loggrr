@@ -223,4 +223,5 @@ export interface Project {
   id: number;
   name: string;
   milestone?: Milestone[];
+  task?:Milestone[];
 }

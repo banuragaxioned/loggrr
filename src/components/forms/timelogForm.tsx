@@ -1,14 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useCallback, useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
-
 import { Button } from "@/components/ui/button";
-
-// static data
-import { clients } from "../../lib/tempData";
-
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
+import { Project, Milestone } from "@/types";
 
 type FormData = {
   project: string | undefined;
@@ -17,24 +13,37 @@ type FormData = {
   loggedHours: number | undefined;
   isBillable: boolean;
 };
-type TimeLogFormProps = {
-  formData: FormData | undefined;
-  handleFormData: (data: FormData) => void;
+interface TimelogProps {
+  team: string;
+  projects: Project[];
+  submitCounter: Dispatch<(prev: number) => number>;
+}
+
+type DropdownData = {
+  project:Milestone;
+  milestone:Milestone|undefined;
+  task:Milestone|undefined;
+}
+
+//list item jsx
+const renderList = (x: any) => {
+  return (
+    <>
+      <span className="text-info-light dark:text-zinc-400">{x?.clientName}</span> / <span>{x?.projectName}</span> /{" "}
+      <span>{x?.milestoneName}</span> / <span>{x?.taskName}</span>
+    </>
+  );
 };
 
-export const TimeLogForm = ({ formData, handleFormData }: Props) => {
+export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [myProject, setMyProject] = useState<any>([]);
-  const [orgProject, setOrgProject] = useState<any>([]);
-  const [allProjects, setAllProjects] = useState<any>([]);
   const [projectArr, setProjectArr] = useState<any>([]);
   const [projectList, setProjectList] = useState<any>([]);
-  const [milestoneList, setMilestoneList] = useState<any>([]);
   const [taskList, setTaskList] = useState<any>([]);
   const [selected, setSelected] = useState<any>([]);
-  const [selectedProject, setSelectedProject] = useState<string | undefined>();
+  const [selectedProject, setSelectedProject] = useState<Project>();
   const [selectedMilestone, setSelectedMilestone] = useState<string | undefined>();
   const [selectedTask, setSelectedTask] = useState<string | undefined>();
   const [isAllDropDownSelect, setAllDropDownSelect] = useState(false);
@@ -50,8 +59,6 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const [milestoneErr, setMilestoneErr] = useState<boolean>(false);
   const [taskErr, setTaskErr] = useState<boolean>(false);
   const [timeErr, setTimeErr] = useState<boolean>(false);
-
-  const userId = 12;
   const inputRef = useRef<any>();
   const inputParentRef = useRef<HTMLDivElement>(null);
   const checkobxRef = useRef<HTMLButtonElement | null>(null);
@@ -59,196 +66,11 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
   const commentParentRef = useRef<HTMLDivElement>(null);
   const timeLogFormRef = useRef<any>();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  //my states
+  const [selectedData,setSelectedData] = useState<DropdownData>();
+  const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
 
-  useEffect(() => {
-    let tempArr: any = [];
-
-    clients.forEach((client) => {
-      const clientName = client.clientName;
-      client.projects.forEach((project) => {
-        const projectName = project.title;
-        const membersId = project?.members?.map((x) => x.id);
-        project.milestone.forEach((mlt) => {
-          const milestoneName = mlt.title;
-          project.tasks.forEach((task) => {
-            if (task.milestoneId === mlt.id) {
-              const taskName = task.title;
-              const projectDetails = {
-                clientName,
-                projectName,
-                milestoneName,
-                taskName,
-                membersId,
-              };
-              tempArr.push(projectDetails);
-            }
-          });
-        });
-      });
-    });
-    setAllProjects(tempArr);
-  }, []);
-
-  useEffect(() => {
-    let tempRecentlyUsedArr: Array<any> = [];
-    allProjects?.map((arr: any, i: number) => {
-      const projectDetails = {
-        clientName: arr.clientName,
-        projectName: arr.projectName,
-        milestoneName: arr.milestoneName,
-        taskName: arr.taskName,
-      };
-
-      if (i < 3) tempRecentlyUsedArr.push(projectDetails);
-
-      const isMember = arr?.membersId?.findIndex((x: any) => x === userId) !== -1;
-      if (isMember) {
-        setMyProject((prev: Array<any>) => [...prev, projectDetails]);
-      } else {
-        setOrgProject((prev: Array<any>) => [...prev, projectDetails]);
-      }
-    });
-    setRecentlyUsedArr([
-      {
-        projectType: "Recently used",
-        projectList: tempRecentlyUsedArr,
-      },
-    ]);
-  }, [allProjects]);
-
-  useEffect(() => {
-    const tempMyProjectList: any = [];
-    const tempOrgWideProjectList: any = [];
-
-    myProject.map((project: any) => {
-      !tempMyProjectList.includes(project.projectName) && tempMyProjectList.push(project.projectName);
-    });
-
-    orgProject.map((project: any) => {
-      !tempOrgWideProjectList.includes(project.projectName) && tempOrgWideProjectList.push(project.projectName);
-    });
-
-    setProjectList([
-      {
-        groupHeading: "My Projects",
-        group: tempMyProjectList,
-      },
-      {
-        groupHeading: "Org Wide Projects",
-        group: tempOrgWideProjectList,
-      },
-    ]);
-
-    setProjectArr([
-      {
-        projectType: "My Project",
-        projectList: myProject,
-      },
-      {
-        projectType: "Org Wide Project",
-        projectList: orgProject,
-      },
-    ]);
-  }, [myProject, orgProject]);
-
-  useEffect(() => {
-    clients?.map((client: any) => {
-      client?.projects?.map((project: any) => {
-        if (selectedProject?.toLowerCase() === project?.title?.toLowerCase()) {
-          setMilestoneList([
-            {
-              group: project?.milestone?.map((x: any) => x?.title),
-            },
-          ]);
-          let mltId: string;
-          project?.milestone?.map((mlt: any) => {
-            if (mlt?.title?.toLowerCase() === selectedMilestone?.toLowerCase()) mltId = mlt.id;
-          });
-          let tempTaskList: any = [];
-          project?.tasks?.map((tsk: any) => {
-            if (mltId === tsk.milestoneId) {
-              !tempTaskList.includes(tsk?.title) && tempTaskList.push(tsk?.title);
-              setTaskList([
-                {
-                  group: tempTaskList,
-                },
-              ]);
-            }
-          });
-        }
-      });
-    });
-  }, [selectedProject, selectedMilestone]);
-
-  useEffect(() => {
-    if (selected) {
-      setSearch("");
-      inputRef.current?.blur();
-      setFocus(false);
-    }
-
-    if (selected?.projectName && selected?.milestoneName && selected?.taskName && selected) {
-      setAllDropDownSelect(true);
-      commentRef?.current?.focus();
-    } else {
-      setCommentFocus(false);
-      setAllDropDownSelect(false);
-    }
-  }, [selected]);
-
-  useEffect(() => {
-    setFilledData({
-      ...selected,
-      timeLogged: timeLogged,
-      billable,
-      comment: commentText,
-    });
-  }, [selected, timeLogged, billable, commentText]);
-
-  useEffect(() => {
-    setSelected({ projectName: selectedProject, milestoneName: selectedMilestone, taskName: selectedTask });
-  }, [selectedProject, selectedMilestone, selectedTask]);
-
-  useEffect(() => {
-    setProjectErr((prev: boolean) => prev && !!selectedProject);
-  }, [selectedProject]);
-
-  useEffect(() => {
-    setMilestoneErr((prev: boolean) => prev && !!selectedMilestone);
-  }, [selectedMilestone]);
-
-  useEffect(() => {
-    setTaskErr((prev: boolean) => prev && !!selectedTask);
-  }, [selectedTask]);
-
-  useEffect(() => {
-    if (filledData) {
-      setClear(
-        (filledData?.projectName ||
-          filledData?.milestoneName ||
-          filledData?.taskName ||
-          filledData?.timeLogged.length !== 0 ||
-          filledData?.comment?.length > 0) &&
-          selected,
-      );
-      setSubmit(
-        filledData?.projectName &&
-          filledData?.milestoneName &&
-          filledData?.taskName &&
-          filledData?.timeLogged.length !== 0,
-      );
-    }
-  }, [filledData, selected]);
-
-  const renderList = (x: any) => {
-    return (
-      <>
-        <span className="text-info-light dark:text-zinc-400">{x?.clientName}</span> / <span>{x?.projectName}</span> /{" "}
-        <span>{x?.milestoneName}</span> / <span>{x?.taskName}</span>
-      </>
-    );
-  };
-
+  //list mapper
   const renderGroup = (arr: any) => {
     return arr?.map((x: any, i: any) => {
       return (
@@ -290,6 +112,7 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
     }
   };
 
+  //submit handler
   const handleSubmit = (e: any) => {
     if (!isFocus) {
       e.preventDefault();
@@ -306,17 +129,11 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
           if (decimalResult <= 12) setTimeLogged(decimalResult.toString());
         }
         handleClearForm();
-        handleFormData({
-          project: selectedProject,
-          milestone: selectedMilestone,
-          task: selectedTask,
-          loggedHours: Number(timeLogged),
-          isBillable: billable,
-        });
       }
     }
   };
 
+  //clear method
   const handleTimeLogCancel = () => {
     if (canClear) {
       setTimeErr(false);
@@ -352,24 +169,27 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
     setSelectedTask(project?.taskName);
   };
 
+  //project selection handler
   const handleSelectedProject = useCallback(
-    (value: string) => {
-      setSelectedProject(value);
-      setSelectedMilestone((prev) => {
-        if (milestoneList.indexOf(prev) === -1) return "";
+    (projectName:string) =>{
+      const selectedProject = projects.filter((project) => project.name.toLocaleLowerCase() === projectName.toLocaleLowerCase())[0];
+      console.log(selectedProject)
+      setprojectmilestone((prev) => {
+        const milestone = selectedProject?.milestone;
+        return milestone ? milestone : [];
       });
-      setSelectedTask((prev) => {
-        if (taskList.indexOf(prev) === -1) return "";
-      });
-    },
-    [milestoneList, taskList],
+      setSelectedData({project:{id:selectedProject.id,name:selectedProject?.name},milestone:undefined,task:undefined})
+    }
+    ,[selectedProject],
   );
 
+  //search focus handler
   const openSearch = () => {
     inputRef.current?.focus();
     setFocus(true);
   };
 
+  //focus handler
   const handleFocus = useCallback(
     (e: any) => {
       if (
@@ -384,13 +204,6 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
     [activeDropdown, dropdownRef],
   );
 
-  useEffect(() => {
-    document.addEventListener("click", handleFocus);
-    return () => {
-      document.removeEventListener("click", handleFocus);
-    };
-  }, [isFocus, handleFocus]);
-
   return (
     <div
       ref={timeLogFormRef}
@@ -398,9 +211,9 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
         isFocus
           ? "border-brand-light ring-brand-light shadow-lg ring-1 ring-offset-0"
           : "border-borderColor-light dark:border-borderColor-dark"
-      } border-box z-[3] mx-auto my-5 w-[690px] rounded-xl border bg-white dark:bg-transparent`}
+      } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
-      <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.keyCode === 13 && handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}>
         <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
@@ -494,26 +307,25 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
         } bg-info-dark flex items-center justify-between rounded-b-xl px-5 py-[10px] dark:bg-zinc-900`}
       >
         <div ref={dropdownRef} className="inline-flex items-center gap-x-2.5 text-xs">
+          {/* drop down */}
           <ComboBox
             tabIndex={2}
-            group
             searchable
             icon={<Icons.project className={`h-4 w-4`} />}
-            options={projectList}
-            label={selectedProject || "Project"}
-            selectedItem={selectedProject}
-            handleSelect={handleSelectedProject}
+            options={projects}
+            label={selectedData?.project?.name || "Project"}
+            selectedItem={selectedData?.project?.name}
+            handleSelect={(option)=>handleSelectedProject(option)}
           />
           <ComboBox
             tabIndex={3}
-            group
             searchable
             icon={<Icons.milestone className={`h-4 w-4`} />}
-            options={milestoneList}
-            label={selectedMilestone || "Milestone"}
-            selectedItem={selectedMilestone}
-            handleSelect={(option: string) => setSelectedMilestone(option)}
-            disable={!selectedProject}
+            options={projectMilestone}
+            label={selectedData?.project?.name || "Milestone"}
+            selectedItem={selectedData?.milestone?.name}
+            handleSelect={(option) => setSelectedMilestone(option)}
+            disable={!selectedData?.project?.id}
           />
           {
             <ComboBox
@@ -524,7 +336,7 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
               label={selectedTask || "Task"}
               selectedItem={selectedTask}
               handleSelect={(option: string) => setSelectedTask(option)}
-              disable={!(selectedProject && selectedMilestone)}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id)}
             />
           }
         </div>
@@ -545,5 +357,3 @@ export const TimeLogForm = ({ formData, handleFormData }: Props) => {
     </div>
   );
 };
-
-export default TimeLogForm;
