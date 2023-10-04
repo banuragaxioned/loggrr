@@ -82,7 +82,14 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle onClick={(e:React.MouseEvent<HTMLButtonElement>) => setWeekend(e.target?.getAttribute("data-state") === 'off' ? "week" : "weekdays")}>Week</Toggle>
+        <Toggle onClick={(e) => {
+          const element = e.target as Element;
+          const dataState = element.getAttribute("data-state");
+          setWeekend(dataState === 'off' ? "week" : "weekdays")
+        }
+        }>
+          Week
+        </Toggle>
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
         <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
