@@ -3,7 +3,7 @@ import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
-const clientCreateSchema = z.object({
+const skillScoreSchema = z.object({
   level: z.number().min(0).max(5),
   team: z.string().min(1),
   scoreId: z.number().min(0),
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = clientCreateSchema.parse(json);
+    const body = skillScoreSchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
@@ -29,9 +29,9 @@ export async function POST(req: Request) {
     }
 
     const client = await db.skillScore.updateMany({
-      where: { id: body.scoreId },
+      where: { id: body?.scoreId },
       data: {
-        level: body.level,
+        level: body?.level,
       },
     });
 
