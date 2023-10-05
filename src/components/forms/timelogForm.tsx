@@ -1,4 +1,4 @@
-import React, { Dispatch, useCallback, useEffect, useRef, useState } from "react";
+import React, { Dispatch, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
@@ -6,45 +6,48 @@ import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 
-type FormData = {
-  project: string | undefined;
-  milestone: string | undefined;
-  task: string | undefined;
-  loggedHours: number | undefined;
-  isBillable: boolean;
-};
 interface TimelogProps {
   team: string;
   projects: Project[];
   submitCounter: Dispatch<(prev: number) => number>;
 }
 
-type DropdownData = {
-  project:Milestone;
-  milestone:Milestone|undefined;
-  task:Milestone|undefined;
+type SelectedData = {
+  project?:Milestone;
+  milestone?:Milestone;
+  task?:Milestone;
+}
+
+interface ReferenceObject {
+  tenant:string;
+  project?:string;
+  milestone?:string;
+  task?:string;
 }
 
 //list item jsx
 const renderList = (x: any) => {
   return (
     <>
-      <span className="text-info-light dark:text-zinc-400">{x?.clientName}</span> / <span>{x?.projectName}</span> /{" "}
-      <span>{x?.milestoneName}</span> / <span>{x?.taskName}</span>
+      <span className="text-info-light dark:text-zinc-400">{x?.tenant}</span> / <span>{x?.project}</span> /{" "}
+      <span>{x?.milestone}</span> / <span>{x?.task}</span>
     </>
   );
 };
+
+const getRecent = ()=> {
+  const storage = localStorage.getItem('loggr-recent');
+  return storage ? JSON.parse(storage) : [];
+}
+
+const setRecent = (arr:ReferenceObject[])=> localStorage.setItem('loggr-recent',JSON.stringify(arr))
 
 export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => {
   const [search, setSearch] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [projectArr, setProjectArr] = useState<any>([]);
-  const [projectList, setProjectList] = useState<any>([]);
-  const [taskList, setTaskList] = useState<any>([]);
   const [selected, setSelected] = useState<any>([]);
   const [selectedProject, setSelectedProject] = useState<Project>();
-  const [selectedMilestone, setSelectedMilestone] = useState<string | undefined>();
   const [selectedTask, setSelectedTask] = useState<string | undefined>();
   const [isAllDropDownSelect, setAllDropDownSelect] = useState(false);
   const [filledData, setFilledData] = useState<any>();
@@ -67,8 +70,10 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   const timeLogFormRef = useRef<any>();
   const dropdownRef = useRef<HTMLDivElement>(null);
   //my states
-  const [selectedData,setSelectedData] = useState<DropdownData>();
+  const [selectedData,setSelectedData] = useState<SelectedData>();
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
+  const [projectTask, setprojectTask] = useState<Milestone[]>([]);
+  const [recentlyUsed,setRecentlyUsed] = useState<ReferenceObject[]>(getRecent());
 
   //list mapper
   const renderGroup = (arr: any) => {
@@ -79,13 +84,13 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
           heading={x.projectType}
           className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
         >
-          {x.projectList.map((project: any, innerI: any) => {
+          {x.map((obj: any, innerI: any) => {
             return (
               <div key={innerI}>
                 <Command.Item
                   className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${project?.clientName} / ${project?.projectName} / ${project?.milestoneName} / ${project?.taskName}`}
-                  onSelect={() => isFocus && handleProjectSelect(project)}
+                  value={`${obj?.tenant} / ${obj?.projectName} / ${obj?.milestoneName} / ${obj?.taskName}`}
+                  onSelect={() => isFocus && handleProjectSelect(obj)}
                 >
                   {renderList(project)}
                 </Command.Item>
@@ -101,8 +106,6 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
     setCommentText("");
     setFocus(false);
     setSelected(null);
-    setSelectedMilestone(undefined);
-    setSelectedProject(undefined);
     setSelectedTask(undefined);
     setTimeLogged("");
     setBillable(false);
@@ -165,44 +168,47 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
 
   const handleProjectSelect = (project: any) => {
     setSelectedProject(project?.projectName);
-    setSelectedMilestone(project?.milestoneName);
+    // setSelectedMilestone(project?.milestoneName);
     setSelectedTask(project?.taskName);
   };
 
-  //project selection handler
-  const handleSelectedProject = useCallback(
-    (projectName:string) =>{
-      const selectedProject = projects.filter((project) => project.name.toLocaleLowerCase() === projectName.toLocaleLowerCase())[0];
-      console.log(selectedProject)
-      setprojectmilestone((prev) => {
-        const milestone = selectedProject?.milestone;
-        return milestone ? milestone : [];
-      });
-      setSelectedData({project:{id:selectedProject.id,name:selectedProject?.name},milestone:undefined,task:undefined})
-    }
-    ,[selectedProject],
-  );
+//project select handler callback
+const projectCallback = (selected:Project)=>{
+  setprojectmilestone((prev) => {
+    const milestone = selected?.milestone;
+    return milestone ? milestone : [];
+  });
+  setprojectTask((prev) => {
+    const task = selected?.task;
+    return task ? task : [];
+  })
+  setSelectedData({project:{id:selected.id,name:selected?.name}})
+}
+
+//milestone select handler callback
+const milestoneCallback = (selected:Milestone)=>setSelectedData((prev)=>({...prev,milestone:selected}));
+
+//task callback
+const taskCallback = (selected:Milestone)=> {
+  const data:SelectedData = {...selectedData,task:selected}
+  setSelectedData(data);
+  const selectedObj = {tenant:team,project:data?.project?.name,milestone:data?.milestone?.name,task:data?.task?.name};
+  const arr = recentlyUsed.length < 2 ? [selectedObj,...recentlyUsed] : [selectedObj,...recentlyUsed.slice(0,1)];
+  setRecentlyUsed(arr);  
+  setRecent(arr);
+};
+
+//common select handler
+const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|Project)=>void) =>{
+  const selected = arr.filter((obj) => obj.name.toLocaleLowerCase() === name.toLocaleLowerCase())[0];
+  callback(selected);
+}
 
   //search focus handler
   const openSearch = () => {
     inputRef.current?.focus();
     setFocus(true);
   };
-
-  //focus handler
-  const handleFocus = useCallback(
-    (e: any) => {
-      if (
-        !(
-          inputParentRef.current?.contains(e.target) ||
-          activeDropdown?.current?.contains(e.target) ||
-          dropdownRef?.current?.contains(e.target)
-        )
-      )
-        setFocus(false);
-    },
-    [activeDropdown, dropdownRef],
-  );
 
   return (
     <div
@@ -294,7 +300,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
             }`}
           >
             <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
-            {search?.length > 0 ? renderGroup(projectArr) : renderGroup(recentlyUsedArr)}
+            {search?.length > 0 ? renderGroup(recentlyUsed) : renderGroup(recentlyUsedArr)}
           </Command.List>
         </Command>
       </form>
@@ -315,7 +321,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
             options={projects}
             label={selectedData?.project?.name || "Project"}
             selectedItem={selectedData?.project?.name}
-            handleSelect={(option)=>handleSelectedProject(option)}
+            handleSelect={(option)=>selectHandler(option,projects,projectCallback)}
           />
           <ComboBox
             tabIndex={3}
@@ -324,7 +330,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
             options={projectMilestone}
             label={selectedData?.project?.name || "Milestone"}
             selectedItem={selectedData?.milestone?.name}
-            handleSelect={(option) => setSelectedMilestone(option)}
+            handleSelect={(option) => selectHandler(option,projectMilestone,milestoneCallback)}
             disable={!selectedData?.project?.id}
           />
           {
@@ -332,10 +338,10 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               tabIndex={4}
               searchable
               icon={<Icons.task className={`h-4 w-4`} />}
-              options={taskList}
-              label={selectedTask || "Task"}
-              selectedItem={selectedTask}
-              handleSelect={(option: string) => setSelectedTask(option)}
+              options={projectTask}
+              label={selectedData?.task?.name || "Task"}
+              selectedItem={selectedData?.task?.name}
+              handleSelect={(option: string) => selectHandler(option,projectTask,taskCallback)}
               disable={!(selectedData?.project?.id && selectedData?.milestone?.id)}
             />
           }
