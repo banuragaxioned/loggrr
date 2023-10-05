@@ -9,8 +9,10 @@ import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import {Row} from "@tanstack/react-table";
+import { Toggle } from "@/components/ui/toggle";
 
-interface DataTableToolbarExtendedProps<TData> extends DataTableToolbarProps<TData> {
+interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   startDate: Date;
   setStartDate: Dispatch<Date>;
   setWeekend: Dispatch<string>;
@@ -79,8 +81,6 @@ export function DataTableToolbar<TData>({
   useEffect(() => {
     group && table.getAllColumns()[2].setFilterValue([group])
   }, [group])
-
-  const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
@@ -93,7 +93,15 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
+        <Toggle className="data-[state=on]:bg-[#5048e5] data-[state=on]:text-white data-[state=on]:border-[#5048e5] border rounded-md" 
+          onClick={(e) => {
+            const element = e.target as Element;
+            const dataState = element.getAttribute("data-state");
+            setWeekend(dataState === 'off' ? "week" : "weekdays")
+          }}
+        >
+          Week
+        </Toggle>
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
         <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />
         <DataTableFacetedFilter options={groupList} title="Groups" column={table.getAllColumns()[2]} />

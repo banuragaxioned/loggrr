@@ -45,7 +45,7 @@ export function MainNav({ items }: MainNavProps) {
                   key={index}
                   href={"/launchpad" + "/" + params.team + item.href}
                   className={cn(
-                    "flex items-center text-lg font-semibold text-zinc-600 hover:text-zinc-950 dark:text-zinc-100 sm:text-sm",
+                    "flex items-center text-lg font-medium text-zinc-600 hover:text-zinc-950 dark:text-zinc-100 sm:text-sm",
                     item.disabled && "cursor-not-allowed opacity-80",
                   )}
                 >
