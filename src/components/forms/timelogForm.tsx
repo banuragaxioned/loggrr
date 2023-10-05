@@ -18,19 +18,16 @@ type SelectedData = {
   task?:Milestone;
 }
 
-interface ReferenceObject {
+interface ReferenceObject extends SelectedData {
   tenant:string;
-  project?:string;
-  milestone?:string;
-  task?:string;
 }
 
 //list item jsx
 const renderList = (x: any) => {
   return (
     <>
-      <span className="text-info-light dark:text-zinc-400">{x?.tenant}</span> / <span>{x?.project}</span> /{" "}
-      <span>{x?.milestone}</span> / <span>{x?.task}</span>
+      <span className="text-info-light dark:text-zinc-400">{x?.tenant}</span> / <span>{x?.project.name}</span> /{" "}
+      <span>{x?.milestone.name}</span> / <span>{x?.task.name}</span>
     </>
   );
 };
@@ -77,26 +74,24 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
 
   //list mapper
   const renderGroup = (arr: any) => {
-    return arr?.map((x: any, i: any) => {
+    return arr?.map((obj: any, i: any) => {
       return (
         <Command.Group
           key={i}
-          heading={x.projectType}
+          heading={obj.projectType}
           className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
         >
-          {x.map((obj: any, innerI: any) => {
-            return (
-              <div key={innerI}>
+             {
+               <div key={i}>
                 <Command.Item
                   className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${obj?.tenant} / ${obj?.projectName} / ${obj?.milestoneName} / ${obj?.taskName}`}
-                  onSelect={() => isFocus && handleProjectSelect(obj)}
+                  value={`${obj?.tenant} / ${obj?.project.name} / ${obj?.milestone.name} / ${obj?.task.name}`}
+                  onSelect={() => isFocus && setSelectedData(obj)}
                 >
-                  {renderList(project)}
+                  {renderList(obj)}
                 </Command.Item>
               </div>
-            );
-          })}
+             }
         </Command.Group>
       );
     });
@@ -166,12 +161,6 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
     return result;
   };
 
-  const handleProjectSelect = (project: any) => {
-    setSelectedProject(project?.projectName);
-    // setSelectedMilestone(project?.milestoneName);
-    setSelectedTask(project?.taskName);
-  };
-
 //project select handler callback
 const projectCallback = (selected:Project)=>{
   setprojectmilestone((prev) => {
@@ -192,8 +181,8 @@ const milestoneCallback = (selected:Milestone)=>setSelectedData((prev)=>({...pre
 const taskCallback = (selected:Milestone)=> {
   const data:SelectedData = {...selectedData,task:selected}
   setSelectedData(data);
-  const selectedObj = {tenant:team,project:data?.project?.name,milestone:data?.milestone?.name,task:data?.task?.name};
-  const arr = recentlyUsed.length < 2 ? [selectedObj,...recentlyUsed] : [selectedObj,...recentlyUsed.slice(0,1)];
+  const selectedObj = {tenant:team,project:data?.project,milestone:data?.milestone,task:data?.task};
+  const arr = recentlyUsed.length < 3 ? [selectedObj,...recentlyUsed] : [selectedObj,...recentlyUsed.slice(0,1)];
   setRecentlyUsed(arr);  
   setRecent(arr);
 };
@@ -300,7 +289,7 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
             }`}
           >
             <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
-            {search?.length > 0 ? renderGroup(recentlyUsed) : renderGroup(recentlyUsedArr)}
+            {search?.length > 0 ? renderGroup(recentlyUsed) : renderGroup(recentlyUsed)}
           </Command.List>
         </Command>
       </form>
