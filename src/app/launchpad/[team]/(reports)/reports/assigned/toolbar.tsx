@@ -1,13 +1,13 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {  Assignment, DataTableToolbarProps } from "@/types";
+import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
 import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
-import {Row} from "@tanstack/react-table";
+import { Row } from "@tanstack/react-table";
 import { Toggle } from "@/components/ui/toggle";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
@@ -15,38 +15,9 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   setStartDate: Dispatch<Date>;
   setWeekend: Dispatch<string>;
   setBillable: Dispatch<string>;
+  billable: string;
+  weekend: string;
 }
-
-const weekOptions = [
-  {
-    value: "week",
-    label: "Week",
-    icon: Icons.activity,
-  },
-  {
-    value: "weekdays",
-    label: "Week Days",
-    icon: Icons.activity,
-  },
-];
-
-const entryTypeOptions = [
-  {
-    value: "totalTime",
-    label: "Total Time",
-    icon: Icons.activity,
-  },
-  {
-    value: "billableTime",
-    label: "Billable",
-    icon: Icons.activity,
-  },
-  {
-    value: "nonBillableTime",
-    label: "Non-Billable",
-    icon: Icons.activity,
-  },
-];
 
 export function DataTableToolbar<TData>({
   table,
@@ -54,11 +25,13 @@ export function DataTableToolbar<TData>({
   setStartDate,
   setWeekend,
   setBillable,
+  billable,
+  weekend,
 }: DataTableToolbarExtendedProps<Assignment>) {
-  let skillValues: Array<{value:string, label:string}> = [];
+  let skillValues: Array<{ value: string, label: string }> = [];
 
   const skillList = table.getRowModel().rows.map((item: Row<Assignment>) => {
-    item?.original?.skills?.map((value: {skill:string}) => {
+    item?.original?.skills?.map((value: { skill: string }) => {
       !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
         skillValues.push({
           label: value.skill,
@@ -67,7 +40,12 @@ export function DataTableToolbar<TData>({
     });
   });
 
-  const sortedSkills = skillValues.sort((a: {value: string}, b: {value: string}) => a.value.localeCompare(b.value));
+  const sortedSkills = skillValues.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+
+  const entryOptionClick = () => {
+    const nextValue = billable === 'totalTime' ? 'billableTime' : billable === 'billableTime' ? 'nonBillableTime' : 'totalTime';
+    setBillable(nextValue);
+  };
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
@@ -82,16 +60,20 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle className="data-[state=on]:bg-[#5048e5] data-[state=on]:text-white data-[state=on]:border-[#5048e5] border rounded-md" 
+        <Toggle className="border rounded-md"
           onClick={(e) => {
             const element = e.target as Element;
             const dataState = element.getAttribute("data-state");
             setWeekend(dataState === 'off' ? "week" : "weekdays")
           }}
         >
-          Week
+          {weekend === 'weekdays' ? 'Week Days' : 'Week'}
         </Toggle>
-        <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
+        <Toggle className=" border rounded-md"
+          onClick={entryOptionClick}
+        >
+          {billable === "totalTime" ? 'Total Time' : billable === "billableTime" ? 'Billable' : 'Non-Billable'}
+        </Toggle>
         <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
     </div>
