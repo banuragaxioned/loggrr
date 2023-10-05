@@ -75,7 +75,7 @@ export function NewSkillForm({ team }: { team: string }) {
               name="name"
               render={({ field }) => (
                 <FormItem className="col-span-2">
-                  <FormLabel>Client name</FormLabel>
+                  <FormLabel>Skill name</FormLabel>
                   <FormControl className="my-2">
                     <Input placeholder="Karaoke 🎤" {...field} />
                   </FormControl>
