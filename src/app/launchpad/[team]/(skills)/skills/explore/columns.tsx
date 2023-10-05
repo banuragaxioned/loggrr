@@ -15,6 +15,7 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 export interface SkillsList {
   id: number;
   name: string;
+  users: number;
   edit?: string;
 }
 
@@ -45,6 +46,14 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
           </span>
         );
       },
+      meta: {
+        className: "w-[45%]"
+      }
+    },
+    {
+      accessorKey: "users",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Users" />,
+      cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.users}</span>,
     },
     {
       id: "edit",
