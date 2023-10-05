@@ -6,9 +6,9 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, debounce } from "@/lib/utils";
 import { UserGroup } from "@/types";
-import { MultipleSelect } from "@/components/multiple-select";
+import { InlineSelect } from "@/components/inline-select";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -17,16 +17,18 @@ declare module "@tanstack/table-core" {
 }
 
 interface GetColumn {
-  updateStatus: (id: number) => void;
-  userGroup: UserGroup[];
+  updateStatus: (id: number) => void,
+  userGroup: UserGroup[]
+  updateUserGroup: (options: { id: number }[], id: number) => void
 }
 
-export const getColumn = ({ updateStatus, userGroup }: GetColumn) => {
-  const userGroupList = userGroup.map((option) => ({
+export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColumn) => {
+
+  const userGroupList = userGroup.map(option => ({
     id: option.id,
-    value: option.name,
     label: option.name,
-  }));
+    value: option.name,
+  }))
 
   const columns: ColumnDef<Members>[] = [
     {
@@ -61,13 +63,14 @@ export const getColumn = ({ updateStatus, userGroup }: GetColumn) => {
       accessorKey: "userGroup",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Groups" />,
       cell: ({ row }) => {
-        const selectedGroups = row.original.userGroup.map((option) => ({
+        const selectedGroups = row.original.userGroup.map(option => ({
           id: option.id,
           label: option.name,
-          value: option.name,
+          value: option.name
         }));
         return (
-          <MultipleSelect
+          <InlineSelect
+            onSelect={(selectedOption) => debounce(() => updateUserGroup(selectedOption, row.original.id), 200)()}
             options={userGroupList}
             selectedValues={selectedGroups}
             title="group"

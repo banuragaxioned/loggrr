@@ -8,6 +8,7 @@ import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
 import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import {Row} from "@tanstack/react-table";
+import { Toggle } from "@/components/ui/toggle";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   startDate: Date;
@@ -81,7 +82,15 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <DataTableVisibilityToggler options={weekOptions} title="View" selectionHandler={setWeekend} />
+        <Toggle className="data-[state=on]:bg-[#5048e5] data-[state=on]:text-white data-[state=on]:border-[#5048e5] border rounded-md" 
+          onClick={(e) => {
+            const element = e.target as Element;
+            const dataState = element.getAttribute("data-state");
+            setWeekend(dataState === 'off' ? "week" : "weekdays")
+          }}
+        >
+          Week
+        </Toggle>
         <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
         <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
