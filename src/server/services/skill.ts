@@ -14,11 +14,27 @@ export async function getSkills(team: Tenant["slug"]) {
       },
     },
   });
+  
+  const users = await db.skillScore.findMany({
+    where: { Tenant: { slug: team } },
+    select: {
+      skillId: true,
+      User: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  })
 
   const flatResponse = response.map((skill) => {
+    const filteredUser = users.filter((user) => skill.id === user.skillId)
+
     return {
       id: skill.id,
       name: skill.name,
+      users: filteredUser.length
     };
   });
 
