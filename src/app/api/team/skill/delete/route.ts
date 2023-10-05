@@ -8,7 +8,7 @@ const editSkillSchema = z.object({
   id: z.number(),
 });
 
-export async function POST(req: Request) {
+export async function DELETE(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -29,17 +29,17 @@ export async function POST(req: Request) {
 
     const checkUserSkill = await db.skillScore.deleteMany({
       where: {
-        skillId: body?.id,
+        skillId: body.id,
       },
     });
 
-    const client = await db.skill.delete({
+    const skillName = await db.skill.delete({
       where: {
         id: body?.id,
       },
     });
 
-    return new Response(JSON.stringify(client));
+    return new Response(JSON.stringify(skillName));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });

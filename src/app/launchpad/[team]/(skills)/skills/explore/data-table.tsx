@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
 
   const deleteSkillNames = async (id: number) => {
     const response = await fetch("/api/team/skill/delete", {
-      method: "POST",
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
