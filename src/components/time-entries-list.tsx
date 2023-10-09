@@ -5,10 +5,10 @@ import { TimeEntryData } from "@/types";
 interface TimeEntriesListProps {
   userId: number;
   team: string;
-  submitCount:number;
+  submitCount: number;
 }
 
-export const TimeEntriesList = ({ userId, team,submitCount }: TimeEntriesListProps) => {
+export const TimeEntriesList = ({ userId, team, submitCount }: TimeEntriesListProps) => {
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
   const [entries, setEntries] = useState<{ data: TimeEntryData[]; status: number }>({ data: [], status: 0 });
   const getEntries = fetch(`/api/team/time-entry?team=${team}&date=${new Date()}`, {
@@ -27,7 +27,9 @@ export const TimeEntriesList = ({ userId, team,submitCount }: TimeEntriesListPro
 
   return (
     <div className="mx-auto flex w-3/5 flex-col gap-y-4">
-      <h3 className="flex justify-between">Total Logged Hours <span>{entries?.data?.reduce((total,obj)=>total+obj?.total,0)} Hrs</span></h3>
+      <h3 className="flex justify-between">
+        Total Logged Hours <span>{entries?.data?.reduce((total, obj) => total + obj?.total, 0)} Hrs</span>
+      </h3>
       <ul className="flex w-full flex-col gap-y-2">
         {entries?.status === 0 ? (
           <Skeleton className="h-20 w-full" />
@@ -37,13 +39,13 @@ export const TimeEntriesList = ({ userId, team,submitCount }: TimeEntriesListPro
               <li key={i}>
                 {/* project name  */}
                 <div>
-                  <div className="flex w-full justify-between">
+                  <div className="flex w-full justify-between bg-background">
                     <h4 className="font-medium">{entryData?.project?.name}</h4>
-                    <span>{entryData?.total} Hrs</span>
+                    <span className="text-black">{entryData?.total} Hrs</span>
                   </div>
                   {/* milestone data */}
                   {entryData?.data?.map((data, i) => (
-                    <div className="rounded-md bg-slate-50 p-4 mb-2 last:mb-0" key={i}>
+                    <div className="mb-2 rounded-md bg-background bg-slate-50 p-4 text-black last:mb-0" key={i}>
                       <div className="flex justify-between">
                         <p className="font-medium">{data?.milestone?.name}</p>
                         <span className="capitalize">{data?.billable ? "billable" : "non-billable"}</span>

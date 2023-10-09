@@ -224,4 +224,5 @@ export interface Project {
   name: string;
   milestone?: Milestone[];
   task?:Milestone[];
+  client?:Milestone;
 }

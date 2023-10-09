@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import {getProjectSummary } from "@/server/services/project";
+import {getProjectSummary,getAllUserProjects } from "@/server/services/project";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TimeEntry } from "@/components/time-entry";
 import { getCurrentUser } from "@/lib/session";
@@ -13,13 +13,13 @@ export default async function Dashboard({ params }: pageProps) {
     return notFound();
   }
 
-  const projects = await getProjectSummary(team,user.id);
+  const projects = await getAllUserProjects(user.id);
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-9 flex flex-col gap-4">
         {/* Horizontal Calendar and date picker */}
-        <TimeEntry team={team} projects={projects}  userId={user.id}/>
+        <TimeEntry team={team} projects={projects ? projects : []}  userId={user.id}/>
       </main>
       <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}

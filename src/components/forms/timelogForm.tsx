@@ -1,4 +1,4 @@
-import React, { Dispatch, useRef, useState } from "react";
+import React, { ChangeEvent, Dispatch, ReactHTMLElement, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
@@ -13,13 +13,17 @@ interface TimelogProps {
 }
 
 type SelectedData = {
-  project?:Milestone;
-  milestone?:Milestone;
-  task?:Milestone;
-}
+  client?: Milestone;
+  project?: Milestone;
+  milestone?: Milestone;
+  task?: Milestone;
+  comment?: string;
+  time?: string;
+  billable?: boolean;
+};
 
 interface ReferenceObject extends SelectedData {
-  tenant:string;
+  tenant: string;
 }
 
 //list item jsx
@@ -32,29 +36,20 @@ const renderList = (x: any) => {
   );
 };
 
-const getRecent = ()=> {
-  const storage = localStorage.getItem('loggr-recent');
+const getRecent = () => {
+  const storage = localStorage.getItem("loggr-recent");
   return storage ? JSON.parse(storage) : [];
-}
+};
 
-const setRecent = (arr:ReferenceObject[])=> localStorage.setItem('loggr-recent',JSON.stringify(arr))
+const setRecent = (arr: ReferenceObject[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
 export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => {
-  const [search, setSearch] = useState<string>("");
-  const [commentText, setCommentText] = useState<string>("");
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [selected, setSelected] = useState<any>([]);
-  const [selectedProject, setSelectedProject] = useState<Project>();
-  const [selectedTask, setSelectedTask] = useState<string | undefined>();
-  const [isAllDropDownSelect, setAllDropDownSelect] = useState(false);
   const [filledData, setFilledData] = useState<any>();
-  const [billable, setBillable] = useState(false);
   const [timeLogged, setTimeLogged] = useState<string>("");
-  const [recentlyUsedArr, setRecentlyUsedArr] = useState<any>([]);
   const [canSubmit, setSubmit] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
-  const [activeDropdown, setActiveDropDown] = useState<any>();
   const [projectErr, setProjectErr] = useState<boolean>(false);
   const [milestoneErr, setMilestoneErr] = useState<boolean>(false);
   const [taskErr, setTaskErr] = useState<boolean>(false);
@@ -67,10 +62,12 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   const timeLogFormRef = useRef<any>();
   const dropdownRef = useRef<HTMLDivElement>(null);
   //my states
-  const [selectedData,setSelectedData] = useState<SelectedData>();
+  const [selectedData, setSelectedData] = useState<SelectedData>();
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const [projectTask, setprojectTask] = useState<Milestone[]>([]);
-  const [recentlyUsed,setRecentlyUsed] = useState<ReferenceObject[]>(getRecent());
+  const [recentlyUsed, setRecentlyUsed] = useState<ReferenceObject[]>(getRecent());
+  const [suggestions, setSuggestions] = useState<ReferenceObject[]>([]);
+  const timeInputRef = useRef<any>();
 
   //list mapper
   const renderGroup = (arr: any) => {
@@ -81,34 +78,27 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
           heading={obj.projectType}
           className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
         >
-             {
-               <div key={i}>
-                <Command.Item
-                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${obj?.tenant} / ${obj?.project.name} / ${obj?.milestone.name} / ${obj?.task.name}`}
-                  onSelect={() => isFocus && setSelectedData(obj)}
-                >
-                  {renderList(obj)}
-                </Command.Item>
-              </div>
-             }
+          {
+            <div key={i}>
+              <Command.Item
+                className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
+                value={`${obj?.tenant} / ${obj?.project.name} / ${obj?.milestone.name} / ${obj?.task.name}`}
+                onSelect={() => {
+                  isFocus && setSelectedData(obj);
+                  setFocus(false);
+                  setClear(true);
+                }}
+              >
+                {renderList(obj)}
+              </Command.Item>
+            </div>
+          }
         </Command.Group>
       );
     });
   };
 
-  const handleClearForm = () => {
-    setCommentText("");
-    setFocus(false);
-    setSelected(null);
-    setSelectedTask(undefined);
-    setTimeLogged("");
-    setBillable(false);
-    setActiveDropDown(undefined);
-    if (!!checkobxRef.current) {
-      checkobxRef.current.dataset.state = "off";
-    }
-  };
+  const handleClearForm = () => setSelectedData({});
 
   //submit handler
   const handleSubmit = (e: any) => {
@@ -142,15 +132,13 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
     }
   };
 
-  const handleLoggedTimeInput = (e: any) => {
-    let time = e?.target?.value;
-    setTimeErr(time.length === 0);
+  const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/[^0-9.:]/);
     if (!numberPattern.test(time) && time.length < 5) {
       if (time.indexOf(":") === -1 && time.indexOf(".") === -1) {
-        if (time.length <= 2) setTimeLogged(time);
+        if (time.length <= 2) setSelectedData((prev) => ({ ...prev, time: time }));
       } else {
-        if (time.length <= 4) setTimeLogged(time);
+        if (time.length <= 4) setSelectedData((prev) => ({ ...prev, time: time }));
       }
     }
   };
@@ -161,42 +149,55 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
     return result;
   };
 
-//project select handler callback
-const projectCallback = (selected:Project)=>{
-  setprojectmilestone((prev) => {
-    const milestone = selected?.milestone;
-    return milestone ? milestone : [];
-  });
-  setprojectTask((prev) => {
-    const task = selected?.task;
-    return task ? task : [];
-  })
-  setSelectedData({project:{id:selected.id,name:selected?.name}})
-}
+  //project select handler callback
+  const projectCallback = (selected: Project) => {
+    setprojectmilestone((prev) => {
+      const milestone = selected?.milestone;
+      return milestone ? milestone : [];
+    });
+    setprojectTask((prev) => {
+      const task = selected?.task;
+      return task ? task : [];
+    });
+    setSelectedData({ project: { id: selected.id, name: selected?.name } });
+  };
 
-//milestone select handler callback
-const milestoneCallback = (selected:Milestone)=>setSelectedData((prev)=>({...prev,milestone:selected}));
+  //milestone select handler callback
+  const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
 
-//task callback
-const taskCallback = (selected:Milestone)=> {
-  const data:SelectedData = {...selectedData,task:selected}
-  setSelectedData(data);
-  const selectedObj = {tenant:team,project:data?.project,milestone:data?.milestone,task:data?.task};
-  const arr = recentlyUsed.length < 3 ? [selectedObj,...recentlyUsed] : [selectedObj,...recentlyUsed.slice(0,1)];
-  setRecentlyUsed(arr);  
-  setRecent(arr);
-};
+  //task callback
+  const taskCallback = (selected: Milestone) => {
+    const data: SelectedData = { ...selectedData, task: selected };
+    setSelectedData(data);
+    const selectedObj = { tenant: team, project: data?.project, milestone: data?.milestone, task: data?.task };
+    const arr = recentlyUsed.length < 3 ? [selectedObj, ...recentlyUsed] : [selectedObj, ...recentlyUsed.slice(0, 1)];
+    setRecentlyUsed(arr);
+    setRecent(arr);
+    setFocus(false);
+    setClear(true);
+  };
 
-//common select handler
-const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|Project)=>void) =>{
-  const selected = arr.filter((obj) => obj.name.toLocaleLowerCase() === name.toLocaleLowerCase())[0];
-  callback(selected);
-}
+  //common select handler
+  const selectHandler = (name: string, arr: Milestone[], callback: (selected: Milestone | Project) => void) => {
+    const selected = arr.filter((obj) => obj.name.toLocaleLowerCase() === name.toLocaleLowerCase())[0];
+    callback(selected);
+  };
 
   //search focus handler
   const openSearch = () => {
     inputRef.current?.focus();
     setFocus(true);
+  };
+
+  //set comment
+  const setCommentText = (str: string) => setSelectedData((prev) => ({ ...prev, comment: str }));
+
+  const setSearch = (str: string) => {
+    const suggestionArr = projects.filter(
+      (project) => project.client?.name.toLowerCase().includes(str.toLocaleLowerCase()),
+    );
+    console.log(suggestionArr);
+    setSuggestions(suggestionArr);
   };
 
   return (
@@ -217,7 +218,7 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
             } flex items-center rounded-t-xl border-b px-[18px] py-[7px]`}
           >
-            {isAllDropDownSelect ? (
+            {selectedData?.milestone && selectedData?.project && selectedData?.task ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
                 <Icons.comment
                   onClick={() => setCommentFocus(true)}
@@ -228,8 +229,8 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
                   ref={commentRef}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
-                  value={commentText}
-                  onChange={(e: any) => setCommentText(e.target.value)}
+                  value={selectedData?.comment}
+                  onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
                 />
@@ -244,7 +245,6 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
                   placeholder="Select or start typing"
                   onFocus={() => setFocus(true)}
                   onClick={(e) => e.stopPropagation()}
-                  value={search}
                   onValueChange={setSearch}
                 />
               </div>
@@ -258,15 +258,19 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
                   ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light ring-1"
                   : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
               } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none focus:ring-1 focus:ring-offset-0 dark:bg-transparent`}
-              value={timeLogged}
-              onChangeCapture={handleLoggedTimeInput}
+              value={selectedData?.time}
+              onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+              ref={timeInputRef}
             />
             <Toggle
               tabIndex={7}
               ref={checkobxRef}
               variant="outline"
               size="sm"
-              className="border-borderColor-light focus:border-brand-light focus:ring-brand-light data-[state=on]:text-billable-light dark:border-borderColor-dark ml-3 px-1.5 hover:bg-transparent focus:ring-1 focus:ring-offset-0 data-[state=on]:bg-transparent"
+              onClick={() => setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))}
+              className={`border-borderColor-light ${
+                selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
+              } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
             >
               <Icons.dollar className="h-6 w-6" />
             </Toggle>
@@ -274,8 +278,8 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
               variant="secondary"
               size="sm"
               type="submit"
-              disabled={!canSubmit}
-              tabIndex={canSubmit ? 8 : -1}
+              disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task)}
+              tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
               className={`border-brand-light bg-brand-light disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Submit
@@ -289,7 +293,7 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
             }`}
           >
             <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
-            {search?.length > 0 ? renderGroup(recentlyUsed) : renderGroup(recentlyUsed)}
+            {inputRef?.current?.value.length > 0 ? renderGroup(suggestions) : renderGroup(recentlyUsed)}
           </Command.List>
         </Command>
       </form>
@@ -310,7 +314,7 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
             options={projects}
             label={selectedData?.project?.name || "Project"}
             selectedItem={selectedData?.project?.name}
-            handleSelect={(option)=>selectHandler(option,projects,projectCallback)}
+            handleSelect={(option) => selectHandler(option, projects, projectCallback)}
           />
           <ComboBox
             tabIndex={3}
@@ -319,7 +323,7 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
             options={projectMilestone}
             label={selectedData?.project?.name || "Milestone"}
             selectedItem={selectedData?.milestone?.name}
-            handleSelect={(option) => selectHandler(option,projectMilestone,milestoneCallback)}
+            handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
             disable={!selectedData?.project?.id}
           />
           {
@@ -330,24 +334,22 @@ const selectHandler = (name:string,arr:Milestone[],callback:(selected:Milestone|
               options={projectTask}
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
-              handleSelect={(option: string) => selectHandler(option,projectTask,taskCallback)}
+              handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
               disable={!(selectedData?.project?.id && selectedData?.milestone?.id)}
             />
           }
         </div>
-        {canClear && (
-          <Button
-            tabIndex={9}
-            variant="primary"
-            onClick={handleTimeLogCancel}
-            size="sm"
-            type="button"
-            disabled={!canClear}
-            className={`border-borderColor-light bg-background-light text-content-light hover:border-info-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark border px-[12px] py-[7px] text-xs leading-none focus:ring-1 dark:bg-transparent`}
-          >
-            Clear
-          </Button>
-        )}
+        <Button
+          tabIndex={9}
+          variant="primary"
+          onClick={handleTimeLogCancel}
+          size="sm"
+          type="submit"
+          disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
+          className={`border-borderColor-light bg-background-light text-content-light hover:border-info-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark border px-[12px] py-[7px] text-xs leading-none focus:ring-1 dark:bg-transparent`}
+        >
+          Clear
+        </Button>
       </div>
     </div>
   );
