@@ -279,7 +279,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               size="sm"
               type="submit"
               disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task)}
-              tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
+              tabIndex={(selectedData?.comment && selectedData?.time && selectedData?.task) ? 8 : -1}
               className={`border-brand-light bg-brand-light disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Submit
