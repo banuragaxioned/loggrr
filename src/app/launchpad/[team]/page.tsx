@@ -13,7 +13,8 @@ export default async function Dashboard() {
       userId: user?.id,
     },
     select: {
-      billableTime: true
+      billableTime: true,
+      nonBillableTime: true,
     }
   })
 
@@ -26,12 +27,12 @@ export default async function Dashboard() {
     }
   })
 
-  // Add all the billable time if user present in more than 1 project
+  // Add all allocated billable and non-billable time
   function sumArray(sum: number, num: number): number {
     return sum + num;
   }
 
-  const overallAllocatedTime = userTimeAllocated.map((item) => item.billableTime).reduce(sumArray);
+  const overallAllocatedTime = userTimeAllocated.map((item) => item.billableTime + item.nonBillableTime).reduce(sumArray);
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce(sumArray);
 
   if (!user) {
