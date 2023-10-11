@@ -9,8 +9,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
+import { GetSetDateProps } from "@/types";
 
-export const DatePicker = ({ date, setDate }: any) => {
+export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -30,7 +31,7 @@ export const DatePicker = ({ date, setDate }: any) => {
 };
 
 
-export const ClassicDatePicker = ({ date, setDate }: any) => {
+export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>

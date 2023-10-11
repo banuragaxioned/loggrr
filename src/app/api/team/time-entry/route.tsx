@@ -31,10 +31,11 @@ export async function POST(req: Request) {
     if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
+    console.log("data here")
     //schema goes here
     const timeEntry = await db.timeEntry.create({
       data: {
-        time: body?.time*100,
+        time: body?.time,
         comments: body?.comments,
         milestoneId: body?.milestone,
         billable:body?.billable,
@@ -44,7 +45,6 @@ export async function POST(req: Request) {
         tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
       },
     });
-
     return new Response(JSON.stringify(timeEntry));
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -92,7 +92,7 @@ export async function GET(req:Request) {
        Project:{
          select:{
           id:true,
-          name:true
+          name:true,
          }
        },
        Milestone:{

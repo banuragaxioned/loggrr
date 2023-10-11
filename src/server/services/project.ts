@@ -267,5 +267,5 @@ export const getAllUserProjects = async(userId:number)=> {
     }
    },
   });
-  return projects?.Project.map((project) => ({ id: project.id, name: project.name, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})),task:project.Task.map((task)=>({id:task.id,name:task.name})),client:project.Client }))
+  return projects?.Project.map((project) => ({ id: project.id, name: project.name,billable:project.billable, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})),task:project.Task.map((task)=>({id:task.id,name:task.name})),client:project.Client }))
 }

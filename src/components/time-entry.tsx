@@ -15,12 +15,13 @@ interface TimeEntryProps {
 
 export const TimeEntry = ({team,projects,userId}:TimeEntryProps)=> {
     const [submitCount,setSubmitCount] = useState<number>(0);
+    const [date,setDate] = useState<Date>(new Date());
     return (
         <>
         <div className="border-slate-300 rounded-sm ">
             <div className="p-4 border-b-slate-300 flex justify-between">
-            <ClassicDatePicker />
-            <InlineDatePicker  />
+            <ClassicDatePicker date={date} setDate={setDate}/>
+            <InlineDatePicker  date={date} setDate={setDate}/>
             </div>
             <h2 className="flex justify-between px-5 py-2">Time logged for the day <span>0.0</span></h2>
         </div>

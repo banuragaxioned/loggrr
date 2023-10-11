@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { GetSetDateProps } from "@/types";
 
 const getDates = (date: Date) => {
   let arr = [],
@@ -11,11 +12,8 @@ const getDates = (date: Date) => {
   return arr;
 };
 
-export const InlineDatePicker = () => {
+export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
   const [dates, setDates] = useState<Date[]>(getDates(new Date()));
-  const [selected, setSelected] = useState<string>(
-    new Date().toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" }),
-  );
   const clickHandler = (date: Date) => setDates(getDates(date));
 
   return (
@@ -29,15 +27,15 @@ export const InlineDatePicker = () => {
           <ChevronLeft />
         </Button>
       </li>
-      {dates.map((date, i) => {
-        const dateString = date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+      {dates.map((dateInArr, i) => {
+        const dateString = dateInArr.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
         const [day, month, dateNum] = dateString.replace(",", "").split(" ");
         return (
           <li
             key={i}
-            onClick={() => setSelected(dateString)}
+            onClick={() => setDate(dateInArr)}
             className={`flex basis-[23%] cursor-pointer items-center justify-center px-2 py-1 text-center ${
-              selected === dateString
+              dateString === date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" })
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
             }`}

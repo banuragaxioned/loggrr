@@ -1,3 +1,4 @@
+import { Dispatch } from "react";
 import { Icons } from "@/components/icons";
 import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
@@ -225,4 +226,9 @@ export interface Project {
   milestone?: Milestone[];
   task?:Milestone[];
   client?:Milestone;
+}
+
+export interface GetSetDateProps {
+  date:Date;
+  setDate:Dispatch<Date>|any;
 }

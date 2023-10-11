@@ -26,7 +26,7 @@ export const TimeEntriesList = ({ userId, team, submitCount }: TimeEntriesListPr
   }, [submitCount]);
 
   return (
-    <div className="mx-auto flex w-3/5 flex-col gap-y-4">
+    <div className="mx-auto flex w-full flex-col gap-y-4">
       <h3 className="flex justify-between">
         Total Logged Hours <span>{entries?.data?.reduce((total, obj) => total + obj?.total, 0)} Hrs</span>
       </h3>

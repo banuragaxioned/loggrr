@@ -1,10 +1,11 @@
-import React, { ChangeEvent, Dispatch, ReactHTMLElement, useRef, useState } from "react";
+import React, { Dispatch, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
+import useToast from "@/hooks/useToast";
 
 interface TimelogProps {
   team: string;
@@ -22,15 +23,11 @@ type SelectedData = {
   billable?: boolean;
 };
 
-interface ReferenceObject extends SelectedData {
-  tenant: string;
-}
-
 //list item jsx
 const renderList = (x: any) => {
   return (
     <>
-      <span className="text-info-light dark:text-zinc-400">{x?.tenant}</span> / <span>{x?.project.name}</span> /{" "}
+      <span className="text-info-light dark:text-zinc-400">{x?.client.name}</span> / <span>{x?.project.name}</span> /{" "}
       <span>{x?.milestone.name}</span> / <span>{x?.task.name}</span>
     </>
   );
@@ -41,18 +38,12 @@ const getRecent = () => {
   return storage ? JSON.parse(storage) : [];
 };
 
-const setRecent = (arr: ReferenceObject[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
+const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
 export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [filledData, setFilledData] = useState<any>();
-  const [timeLogged, setTimeLogged] = useState<string>("");
-  const [canSubmit, setSubmit] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
-  const [projectErr, setProjectErr] = useState<boolean>(false);
-  const [milestoneErr, setMilestoneErr] = useState<boolean>(false);
-  const [taskErr, setTaskErr] = useState<boolean>(false);
   const [timeErr, setTimeErr] = useState<boolean>(false);
   const inputRef = useRef<any>();
   const inputParentRef = useRef<HTMLDivElement>(null);
@@ -61,12 +52,13 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   const commentParentRef = useRef<HTMLDivElement>(null);
   const timeLogFormRef = useRef<any>();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const showToast = useToast();
   //my states
   const [selectedData, setSelectedData] = useState<SelectedData>();
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const [projectTask, setprojectTask] = useState<Milestone[]>([]);
-  const [recentlyUsed, setRecentlyUsed] = useState<ReferenceObject[]>(getRecent());
-  const [suggestions, setSuggestions] = useState<ReferenceObject[]>([]);
+  const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>(getRecent());
+  const [suggestions, setSuggestions] = useState<SelectedData[]>([]);
   const timeInputRef = useRef<any>();
 
   //list mapper
@@ -82,7 +74,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
             <div key={i}>
               <Command.Item
                 className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                value={`${obj?.tenant} / ${obj?.project.name} / ${obj?.milestone.name} / ${obj?.task.name}`}
+                value={`${obj?.client.name} / ${obj?.project.name} / ${obj?.milestone.name} / ${obj?.task.name}`}
                 onSelect={() => {
                   isFocus && setSelectedData(obj);
                   setFocus(false);
@@ -101,35 +93,24 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   const handleClearForm = () => setSelectedData({});
 
   //submit handler
-  const handleSubmit = (e: any) => {
-    if (!isFocus) {
-      e.preventDefault();
-      setProjectErr(filledData?.projectName?.length === 0);
-      setMilestoneErr(filledData?.milestoneName?.length === 0);
-      setTaskErr(filledData?.taskName?.length === 0);
-      setTimeErr(filledData?.timeLogged.length === 0);
-
-      if (canSubmit) {
-        if (timeLogged.indexOf(":") === -1) {
-          if (parseInt(timeLogged, 10) <= 12) setTimeLogged(timeLogged);
-        } else if (timeLogged.indexOf(":") === 1) {
-          const decimalResult = hoursToDecimal(timeLogged);
-          if (decimalResult <= 12) setTimeLogged(decimalResult.toString());
-        }
-        handleClearForm();
-      }
-    }
-  };
-
-  //clear method
-  const handleTimeLogCancel = () => {
-    if (canClear) {
-      setTimeErr(false);
-      setProjectErr(false);
-      setMilestoneErr(false);
-      setTaskErr(false);
-      handleClearForm();
-    }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const response = await fetch("/api/team/time-entry", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team,
+        project: selectedData?.project?.id,
+        milestone: selectedData?.milestone?.id,
+        time: Number(selectedData?.time) * 60,
+        comments: selectedData?.comment,
+        billable: selectedData?.billable ? true : false,
+      }),
+    });
+    response.ok ? showToast("Time entry added", "success") : showToast("Something went wrong,try again", "warning");
+    handleClearForm();
   };
 
   const handleLoggedTimeInput = (time: string) => {
@@ -159,7 +140,10 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
       const task = selected?.task;
       return task ? task : [];
     });
-    setSelectedData({ project: { id: selected.id, name: selected?.name } });
+    setSelectedData({
+      client: selected?.client,
+      project: { id: selected.id, name: selected?.name, billable: selected?.billable },
+    });
   };
 
   //milestone select handler callback
@@ -169,7 +153,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   const taskCallback = (selected: Milestone) => {
     const data: SelectedData = { ...selectedData, task: selected };
     setSelectedData(data);
-    const selectedObj = { tenant: team, project: data?.project, milestone: data?.milestone, task: data?.task };
+    const selectedObj = { client: data?.client, project: data?.project, milestone: data?.milestone, task: data?.task };
     const arr = recentlyUsed.length < 3 ? [selectedObj, ...recentlyUsed] : [selectedObj, ...recentlyUsed.slice(0, 1)];
     setRecentlyUsed(arr);
     setRecent(arr);
@@ -192,11 +176,27 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   //set comment
   const setCommentText = (str: string) => setSelectedData((prev) => ({ ...prev, comment: str }));
 
+  //search suggestion
   const setSearch = (str: string) => {
-    const suggestionArr = projects.filter(
-      (project) => project.client?.name.toLowerCase().includes(str.toLocaleLowerCase()),
-    );
-    console.log(suggestionArr);
+    const matchedArr = projects
+      .filter((project) => project.client?.name.toLowerCase().includes(str.toLocaleLowerCase()))
+      .map((project) => ({
+        client: project?.client,
+        project: { id: project?.id, name: project?.name, billable: project.billable },
+        milestone: project?.milestone,
+        task: project?.task,
+      }));
+
+    const suggestionArr = matchedArr.reduce((prev: SelectedData[], current) => {
+      const temp: SelectedData[] = [];
+      current.milestone?.map(
+        (milestone) =>
+          current.task?.map((task) =>
+            temp.push({ client: current?.client, project: current.project, milestone, task }),
+          ),
+      );
+      return [...prev, ...temp];
+    }, []);
     setSuggestions(suggestionArr);
   };
 
@@ -267,7 +267,10 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               ref={checkobxRef}
               variant="outline"
               size="sm"
-              onClick={() => setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))}
+              onClick={() =>
+                selectedData?.project?.billable &&
+                setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+              }
               className={`border-borderColor-light ${
                 selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
               } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
@@ -279,8 +282,8 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               size="sm"
               type="submit"
               disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task)}
-              tabIndex={(selectedData?.comment && selectedData?.time && selectedData?.task) ? 8 : -1}
-              className={`border-brand-light bg-brand-light disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
+              tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
+              className={`disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Submit
             </Button>
@@ -292,7 +295,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
-            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
+            {/* <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty> */}
             {inputRef?.current?.value.length > 0 ? renderGroup(suggestions) : renderGroup(recentlyUsed)}
           </Command.List>
         </Command>
@@ -315,6 +318,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
             label={selectedData?.project?.name || "Project"}
             selectedItem={selectedData?.project?.name}
             handleSelect={(option) => selectHandler(option, projects, projectCallback)}
+            disable={!selectedData?.client?.id}
           />
           <ComboBox
             tabIndex={3}
@@ -342,7 +346,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
         <Button
           tabIndex={9}
           variant="primary"
-          onClick={handleTimeLogCancel}
+          onClick={handleClearForm}
           size="sm"
           type="submit"
           disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
