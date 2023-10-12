@@ -16,9 +16,9 @@ export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
   const [dates, setDates] = useState<Date[]>(getDates(new Date()));
   const clickHandler = (date: Date) => setDates(getDates(date));
 
-  useEffect(() => {
-    clickHandler(date);
-  }, [date]);
+  // useEffect(() => {
+  //   clickHandler(date);
+  // }, [date]);
 
   return (
     <ul className="flex w-11/12 gap-x-2 text-neutral-500">

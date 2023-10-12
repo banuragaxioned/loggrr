@@ -19,6 +19,7 @@ export type EntryData = { data: TimeEntryData[]; status: number }
 export const TimeEntry = ({team,projects,userId}:TimeEntryProps)=> {
     const [submitCount,setSubmitCount] = useState<number>(0);
     const [date,setDate] = useState<Date>(new Date());
+    const [dateRangeArr,setDateRangeArr] = useState<Date[]>([])
     //0 = loading, 1 = loaded with success , -1 = failed to fetch
     const [entries, setEntries] = useState<EntryData>({ data: [], status: 0 });
     const getEntries = fetch(`/api/team/time-entry?team=${team}&date=${date}`, {
@@ -37,8 +38,8 @@ export const TimeEntry = ({team,projects,userId}:TimeEntryProps)=> {
   
     return (
         <div className="w-11/12 mx-auto">
-        <div className="border-slate-300 rounded-sm">
-            <div className="p-4 border-b-slate-300 flex justify-between">
+        <div className="border-slate-300 border-[1px] rounded-xl">
+            <div className="p-4 border-b-slate-300 border-b-[1px] flex justify-between">
             <ClassicDatePicker date={date} setDate={setDate}/>
             <InlineDatePicker  date={date} setDate={setDate}/>
             </div>
