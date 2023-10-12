@@ -2,8 +2,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentUser } from "@/lib/session";
 
 import { notFound } from "next/navigation";
-import { Card, Text, Flex, CategoryBar } from "@tremor/react";
+import {
+  Card, 
+  Text, 
+  Flex, 
+  CategoryBar, 
+  TabList,
+  Tab,
+  TabGroup,
+  TabPanels,
+  TabPanel,
+  ProgressBar,
+} from "@tremor/react";
 import { db } from "@/lib/db";
+import { Grid } from "lucide-react";
 
 export default async function Dashboard() {
   const user = await getCurrentUser();
@@ -15,6 +27,11 @@ export default async function Dashboard() {
     select: {
       billableTime: true,
       nonBillableTime: true,
+      Project: {
+        select: {
+          name: true
+        }
+      }
     }
   })
 
@@ -23,9 +40,31 @@ export default async function Dashboard() {
       userId: user?.id
     },
     select: {
-      time: true
+      time: true,
+      Project: {
+        select: {
+          name: true,
+        }
+      }
     }
   })
+
+  const val = userTimeAllocated.map((item) => {
+    return item.Project.name;
+   })
+   
+  const time = userTimeEntry.map((items) => {
+    return items.Project.name
+  }) 
+
+   console.log(val, 'val');
+   console.log(time, 'time');
+
+   console.log(userTimeEntry);
+   
+   
+ 
+   
 
   // Add all allocated billable and non-billable time
   function sumArray(sum: number, num: number): number {
@@ -49,10 +88,11 @@ export default async function Dashboard() {
         {/* Time Entries */}
         <Skeleton className="h-80 w-full" />
       </main>
-      <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-1/4">
-        {/* Quick stats (% of time logged in the last week) */}
+      <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-2/5">
+
         <div className="flex flex-col items-center gap-4">
           <Card className="w-60 mx-auto p-4 pb-6">
+            {/* Quick stats (% of time logged) */}
             <Text className="pb-5 text-base font-semibold">Logged hours</Text>
             <Flex>
               <Text className="text-sm pb-4"><span className="text-3xl font-semibold">{overallEntryTime}</span> / {overallAllocatedTime}h</Text>
@@ -63,6 +103,32 @@ export default async function Dashboard() {
               markerValue={overallEntryTime / overallAllocatedTime * 100}
               className="mt-3 text-sm"
             />
+            {/* Time Insights (breakdown of time based on projects) */}
+            <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
+            <TabGroup>
+              <TabList className="">
+                <Tab>Projects</Tab>
+                <Tab>Assigned</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <div className="mt-8">
+                  <Text className="w-full font-semibold text-black leading-5">Product</Text>
+                    <Flex className="items-center mt-3">
+                      <ProgressBar value={45} color="indigo" className="mr-4" />
+                      <Text className="text-gray-500 text-sm font-normal">10%</Text>
+                    </Flex>
+                  </div>
+                </TabPanel>
+                <TabPanel>
+                  <div className="mt-10">
+                    <Flex className="mt-4">
+                      <Text className="w-full">Product Z</Text>
+                    </Flex>
+                  </div>
+                </TabPanel>
+              </TabPanels>
+            </TabGroup>
           </Card>
         </div>
         {/* Time Insights (breakdown of time over the last week) */}
