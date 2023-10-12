@@ -4,13 +4,14 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 import { TimeEntryData } from "@/types";
 
-const clientCreateSchema = z.object({
+const TimeEntrySchema = z.object({
   team: z.string().min(1),
   project: z.number(),
   milestone: z.number(),
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
+  date: z.string(),
 });
 
 export async function POST(req: Request) {
@@ -24,24 +25,23 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = clientCreateSchema.parse(json);
+    const body = TimeEntrySchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
     if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
-    console.log("data here")
     //schema goes here
     const timeEntry = await db.timeEntry.create({
       data: {
         time: body?.time,
         comments: body?.comments,
         milestoneId: body?.milestone,
-        billable:body?.billable,
+        billable: body?.billable,
         userId: user.id,
         projectId: body?.project,
-        date: new Date(),
+        date: new Date(body.date),
         tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
       },
     });
@@ -55,12 +55,15 @@ export async function POST(req: Request) {
   }
 }
 
-
-export async function GET(req:Request) {
-
+export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
   const date = searchParams.get("date");
+  const dateStr = new Date(date ? date : "").toLocaleDateString("en-us", {
+    day: "2-digit",
+    month: "short",
+    weekday: "short",
+  });
 
   try {
     const session = await getServerSession(authOptions);
@@ -70,7 +73,7 @@ export async function GET(req:Request) {
     }
 
     const { user } = session;
-    
+
     // check if the user has permission to the current team/tenant id if not return 403
     // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
     if (user.tenants.filter((tenant) => tenant.slug === team).length === 0) {
@@ -78,49 +81,56 @@ export async function GET(req:Request) {
     }
     //schema goes here
     const response = await db.timeEntry.findMany({
-      where:{
-        userId:user.id,
-        // date:date ? date :"",
-        Tenant:{
-          slug:team ? team : ""
-        }
+      where: {
+        userId: user.id,
+        Tenant: {
+          slug: team ? team : "",
+        },
       },
-      select:{
-       id:true,
-       billable:true,
-       comments:true,
-       Project:{
-         select:{
-          id:true,
-          name:true,
-         }
-       },
-       Milestone:{
-        select:{
-          id:true,
-          name:true
-        }
-       },
-       taskId:true,
-       time:true,
-       date:true
+      select: {
+        id: true,
+        billable: true,
+        comments: true,
+        Project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        Milestone: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        taskId: true,
+        time: true,
+        date: true,
       },
-      orderBy:{
-        projectId:"asc"
+      orderBy: {
+        projectId: "asc",
       },
     });
 
-  const restructuredData = response.reduce((prev:Array<TimeEntryData>,current)=>{
-    const project = {...current?.Project};
-    const data = {id:current?.id,billable:current?.billable,time:current?.time/100,milestone:current?.Milestone,comments:current?.comments};
-    let index  =  prev.findIndex((obj)=>obj?.project?.id === project?.id );
-    if(index > -1){
-      prev[index]?.data.push(data);
-      prev[index].total+=current?.time/100;
-    } else prev?.push({project:current?.Project,data:[data],total:current?.time/100});
+    const restructuredData = response.reduce((prev: Array<TimeEntryData>, current) => {
+      const check =
+        current.date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" }) === dateStr;
+      const project = { ...current?.Project };
+      const data = {
+        id: current?.id,
+        billable: current?.billable,
+        time: current?.time / 100,
+        milestone: current?.Milestone,
+        comments: current?.comments,
+      };
+      let index = prev.findIndex((obj) => obj?.project?.id === project?.id);
+      if (index > -1 && check) {
+        prev[index]?.data.push(data);
+        prev[index].total += current?.time / 100;
+      } else check && prev?.push({ project: current?.Project, data: [data], total: current?.time / 100 });
 
-    return prev;
-    },[])
+      return prev;
+    }, []);
 
     return new Response(JSON.stringify(restructuredData));
   } catch (error) {

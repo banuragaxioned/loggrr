@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,10 @@ const getDates = (date: Date) => {
 export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
   const [dates, setDates] = useState<Date[]>(getDates(new Date()));
   const clickHandler = (date: Date) => setDates(getDates(date));
+
+  useEffect(() => {
+    clickHandler(date);
+  }, [date]);
 
   return (
     <ul className="flex w-11/12 gap-x-2 text-neutral-500">
@@ -40,7 +44,8 @@ export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
                 : ""
             }`}
           >
-            {dateNum} {day} {month}
+            <span>{dateNum} {day} {month}</span>
+            <span className={`-indent-[9999px] w-2 h-2 ml-1 bg-red-600 rounded-full`}>text</span>
           </li>
         );
       })}

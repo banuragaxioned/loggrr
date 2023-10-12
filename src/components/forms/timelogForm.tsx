@@ -7,15 +7,23 @@ import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 import useToast from "@/hooks/useToast";
 
+interface ProjectSummaryWithBillable extends Project {
+  billable: boolean;
+}
 interface TimelogProps {
   team: string;
-  projects: Project[];
+  projects: ProjectSummaryWithBillable[];
   submitCounter: Dispatch<(prev: number) => number>;
+  date: Date;
+}
+
+interface ProjectWithBillable extends Milestone {
+  billable?: boolean;
 }
 
 type SelectedData = {
   client?: Milestone;
-  project?: Milestone;
+  project?: ProjectWithBillable;
   milestone?: Milestone;
   task?: Milestone;
   comment?: string;
@@ -40,7 +48,7 @@ const getRecent = () => {
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => {
+export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
@@ -92,7 +100,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
 
   const handleClearForm = () => setSelectedData({});
 
-  //submit handler
+  //submit handler 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const response = await fetch("/api/team/time-entry", {
@@ -107,9 +115,13 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
         time: Number(selectedData?.time) * 60,
         comments: selectedData?.comment,
         billable: selectedData?.billable ? true : false,
+        date:new Date(date)
       }),
     });
-    response.ok ? showToast("Time entry added", "success") : showToast("Something went wrong,try again", "warning");
+    if(response.ok ) {
+      showToast("Time entry added", "success") ;
+      submitCounter((prev)=>prev+1);
+    }else showToast("Something went wrong,try again", "warning");
     handleClearForm();
   };
 
@@ -131,7 +143,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   };
 
   //project select handler callback
-  const projectCallback = (selected: Project) => {
+  const projectCallback = (selected:ProjectSummaryWithBillable) => {
     setprojectmilestone((prev) => {
       const milestone = selected?.milestone;
       return milestone ? milestone : [];
@@ -162,7 +174,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
   };
 
   //common select handler
-  const selectHandler = (name: string, arr: Milestone[], callback: (selected: Milestone | Project) => void) => {
+  const selectHandler = (name: string, arr: Milestone[], callback: any) => {
     const selected = arr.filter((obj) => obj.name.toLocaleLowerCase() === name.toLocaleLowerCase())[0];
     callback(selected);
   };
@@ -216,7 +228,7 @@ export const TimeLogForm = ({ team, projects, submitCounter }: TimelogProps) => 
               commentFocus
                 ? "ring-brand-light rounded-b-sm border-white ring-2 ring-offset-0 dark:border-transparent"
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
-            } flex items-center rounded-t-xl border-b px-[18px] py-[7px]`}
+            } flex items-center rounded-t-xl border-b px-[18px] py-[7px] justify-between`}
           >
             {selectedData?.milestone && selectedData?.project && selectedData?.task ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">

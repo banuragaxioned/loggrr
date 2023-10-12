@@ -204,9 +204,18 @@ type MilestoneData = {
   id:number;
   billable:boolean;
   time:number;
-  milestone:Project;
+  milestone:Milestone;
   comments:string|null;
   taskId?:number;
+}
+
+export interface Project {
+  billable: boolean;
+  id: number;
+  name: string;
+  milestone?: Milestone[];
+  task?:Milestone[];
+  client?:Milestone;
 }
 
 export interface TimeEntryData {
@@ -218,15 +227,8 @@ export interface TimeEntryData {
  export type Milestone = {
   id: number;
   name: string;
+  billable?:boolean;
 };
-
-export interface Project {
-  id: number;
-  name: string;
-  milestone?: Milestone[];
-  task?:Milestone[];
-  client?:Milestone;
-}
 
 export interface GetSetDateProps {
   date:Date;

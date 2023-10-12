@@ -1,30 +1,7 @@
-import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
-import { TimeEntryData } from "@/types";
+import { EntryData } from "./time-entry";
 
-interface TimeEntriesListProps {
-  userId: number;
-  team: string;
-  submitCount: number;
-}
-
-export const TimeEntriesList = ({ userId, team, submitCount }: TimeEntriesListProps) => {
-  //0 = loading, 1 = loaded with success , -1 = failed to fetch
-  const [entries, setEntries] = useState<{ data: TimeEntryData[]; status: number }>({ data: [], status: 0 });
-  const getEntries = fetch(`/api/team/time-entry?team=${team}&date=${new Date()}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  useEffect(() => {
-    getEntries
-      .then((res) => res.json())
-      .then((res) => setEntries({ data: res, status: 1 }))
-      .catch((e) => setEntries({ data: [], status: -1 }));
-  }, [submitCount]);
-
+export const TimeEntriesList = ({ entries }: { entries: EntryData }) => {
   return (
     <div className="mx-auto flex w-full flex-col gap-y-4">
       <h3 className="flex justify-between">
