@@ -2,17 +2,18 @@ import { Skeleton } from "./ui/skeleton";
 import { EntryData } from "./time-entry";
 
 export const TimeEntriesList = ({ entries }: { entries: EntryData }) => {
+
   return (
     <div className="mx-auto flex w-full flex-col gap-y-4">
       <h3 className="flex justify-between">
-        Total Logged Hours <span>{entries?.data?.reduce((total, obj) => total + obj?.total, 0)} Hrs</span>
+        Total Logged Hours <span>{entries?.dayTotal} Hrs</span>
       </h3>
-      <ul className="flex w-full flex-col gap-y-2">
+      <ul className="flex w-full flex-col gap-y-2 overflow-y-auto max-h-60">
         {entries?.status === 0 ? (
           <Skeleton className="h-20 w-full" />
         ) : entries?.status > 0 ? (
-          entries?.data?.length ? (
-            entries.data.map((entryData, i) => (
+          entries?.projectsLog?.length ? (
+            entries.projectsLog.map((entryData, i) => (
               <li key={i}>
                 {/* project name  */}
                 <div>

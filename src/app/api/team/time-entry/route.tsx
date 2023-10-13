@@ -58,12 +58,12 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const date = searchParams.get("date");
-  const dateStr = new Date(date ? date : "").toLocaleDateString("en-us", {
+  const dates = searchParams.get("dates");
+  const dateStrs:string[] = dates && JSON.parse(dates)?.map((date:Date)=>new Date(date).toLocaleDateString("en-us", {
     day: "2-digit",
     month: "short",
     weekday: "short",
-  });
+  }));
 
   try {
     const session = await getServerSession(authOptions);
@@ -112,9 +112,9 @@ export async function GET(req: Request) {
       },
     });
 
-    const restructuredData = response.reduce((prev: Array<TimeEntryData>, current) => {
-      const check =
-        current.date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" }) === dateStr;
+    const restructuredData = response.reduce((prev:any, current) => {
+      const currentDateStr = current.date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+      const check = dateStrs.includes(currentDateStr) ;
       const project = { ...current?.Project };
       const data = {
         id: current?.id,
@@ -123,14 +123,18 @@ export async function GET(req: Request) {
         milestone: current?.Milestone,
         comments: current?.comments,
       };
-      let index = prev.findIndex((obj) => obj?.project?.id === project?.id);
-      if (index > -1 && check) {
-        prev[index]?.data.push(data);
-        prev[index].total += current?.time / 100;
+      if(check && prev[currentDateStr]) {
+        const previous = prev[currentDateStr];
+        let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
+        if (index > -1) {
+        previous.projectsLog[index]?.data.push(data);
+        previous.projectsLog[index].total += current?.time / 100;
+        previous.dayTotal += current.time /100;
       } else check && prev?.push({ project: current?.Project, data: [data], total: current?.time / 100 });
-
+      }else if(check) prev[currentDateStr] = {dayTotal:current?.time / 100,projectsLog:[{ project: current?.Project, data: [data], total: current?.time / 100 }]}
+     
       return prev;
-    }, []);
+    }, {});
 
     return new Response(JSON.stringify(restructuredData));
   } catch (error) {

@@ -1,24 +1,26 @@
-import { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import { useEffect, useState,Dispatch } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { GetSetDateProps } from "@/types";
+import { getDates } from "./time-entry";
+import dayjs from "dayjs";
 
-const getDates = (date: Date) => {
-  let arr = [],
-    i = -2;
-  for (i; i < 3; i++) arr.push(dayjs(date).add(i, "day").toDate());
-  return arr;
-};
+interface InlineDateProps extends GetSetDateProps {
+  setDateRangeArr:Dispatch<Date[]>;
+  entries:any
+}
 
-export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
+export const InlineDatePicker = ({ date, setDate,setDateRangeArr,entries }: InlineDateProps) => {
   const [dates, setDates] = useState<Date[]>(getDates(new Date()));
   const clickHandler = (date: Date) => setDates(getDates(date));
 
-  // useEffect(() => {
-  //   clickHandler(date);
-  // }, [date]);
+  useEffect(() => {
+    if(!dates.includes(date)) {
+      clickHandler(date);
+      setDateRangeArr(getDates(date));
+    }
+  }, [date]);
 
   return (
     <ul className="flex w-11/12 gap-x-2 text-neutral-500">
@@ -34,6 +36,7 @@ export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
       {dates.map((dateInArr, i) => {
         const dateString = dateInArr.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
         const [day, month, dateNum] = dateString.replace(",", "").split(" ");
+        const loggedTime = entries[dateString]?.dayTotal;
         return (
           <li
             key={i}
@@ -45,7 +48,7 @@ export const InlineDatePicker = ({ date, setDate }: GetSetDateProps) => {
             }`}
           >
             <span>{dateNum} {day} {month}</span>
-            <span className={`-indent-[9999px] w-2 h-2 ml-1 bg-red-600 rounded-full`}>text</span>
+            { loggedTime && <span className={`-indent-[9999px] w-2 h-2 ml-1 ${loggedTime >= 8 ? "bg-green-600": loggedTime >= 4 ?"bg-orange-600":"bg-red-600"} rounded-full`}>text</span>}
           </li>
         );
       })}

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, Ref, RefAttributes, SetStateAction, useEffect, useRef, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
@@ -32,18 +32,20 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
 
 
 export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
+  const buttonRef = useRef<any>()
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn("py-0 px-2 flex")}
+          ref={buttonRef}
         >
           <CalendarIcon className="h-5 w-6" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+        <Calendar mode="single" selected={date} onSelect={(select)=>{setDate(select);buttonRef.current?.click()}} initialFocus />
       </PopoverContent>
     </Popover>
   );

@@ -1,4 +1,4 @@
-import React, { Dispatch, useRef, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
@@ -65,7 +65,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
   const [selectedData, setSelectedData] = useState<SelectedData>();
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const [projectTask, setprojectTask] = useState<Milestone[]>([]);
-  const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>(getRecent());
+  const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>([]);
   const [suggestions, setSuggestions] = useState<SelectedData[]>([]);
   const timeInputRef = useRef<any>();
 
@@ -112,7 +112,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
         team,
         project: selectedData?.project?.id,
         milestone: selectedData?.milestone?.id,
-        time: Number(selectedData?.time) * 60,
+        time: Number(selectedData?.time) * 100,
         comments: selectedData?.comment,
         billable: selectedData?.billable ? true : false,
         date:new Date(date)
@@ -136,11 +136,11 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
     }
   };
 
-  const hoursToDecimal = (val: string) => {
-    const arr = val.split(":");
-    const result = parseInt(arr[0], 10) * 1 + parseInt(arr[1], 10) / 60;
-    return result;
-  };
+  // const hoursToDecimal = (val: string) => {
+  //   const arr = val.split(":");
+  //   const result = parseInt(arr[0], 10) * 1 + parseInt(arr[1], 10) / 60;
+  //   return result;
+  // };
 
   //project select handler callback
   const projectCallback = (selected:ProjectSummaryWithBillable) => {
@@ -211,6 +211,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
     }, []);
     setSuggestions(suggestionArr);
   };
+
+  useEffect(()=>{
+    setRecentlyUsed(getRecent())
+  },[]);
 
   return (
     <div
