@@ -27,11 +27,7 @@ export async function DELETE(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const skillName = await db.skill.delete({
-      where: {
-        id: body.id,
-      },
-    });
+    await db.skill.delete({ where: { id: body.id } });
 
     return new Response(null, { status: 204 });
   } catch (error) {
