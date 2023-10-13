@@ -4,8 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch } from "react";
-import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
-import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { Row } from "@tanstack/react-table";
 import { Toggle } from "@/components/ui/toggle";
@@ -60,7 +58,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle className="border rounded-md"
+        <Toggle className="data-[state=on]:bg-indigo-600 data-[state=on]:text-white data-[state=on]:border-indigo-600 border rounded-md"
           onClick={(e) => {
             const element = e.target as Element;
             const dataState = element.getAttribute("data-state");
@@ -69,11 +67,11 @@ export function DataTableToolbar<TData>({
         >
           {weekend === 'weekdays' ? 'Week Days' : 'Week'}
         </Toggle>
-        <Toggle className=" border rounded-md"
+        <button className={`border rounded-md h-10 px-3 ${billable === "totalTime" ? 'bg-transparent hover:text-slate-500' : billable === "billableTime" ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-indigo-600 border-indigo-600 text-white'}`}
           onClick={entryOptionClick}
         >
           {billable === "totalTime" ? 'Total Time' : billable === "billableTime" ? 'Billable' : 'Non-Billable'}
-        </Toggle>
+        </button>
         <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
     </div>
