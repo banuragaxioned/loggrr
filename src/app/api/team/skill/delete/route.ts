@@ -27,19 +27,13 @@ export async function DELETE(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const checkUserSkill = await db.skillScore.deleteMany({
-      where: {
-        skillId: body.id,
-      },
-    });
-
     const skillName = await db.skill.delete({
       where: {
-        id: body?.id,
+        id: body.id,
       },
     });
 
-    return new Response(JSON.stringify(skillName));
+    return new Response(null, { status: 204 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
