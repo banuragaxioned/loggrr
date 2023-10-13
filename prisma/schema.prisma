@@ -218,7 +218,7 @@ model SkillScore {
   updatedAt DateTime @updatedAt
 
   Tenant Tenant @relation(fields: [tenantId], references: [id])
-  Skill  Skill  @relation(fields: [skillId], references: [id])
+  Skill  Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
   User   User   @relation(fields: [userId], references: [id])
 
   @@index([tenantId])
