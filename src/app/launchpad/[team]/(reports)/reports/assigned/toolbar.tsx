@@ -38,12 +38,32 @@ export function DataTableToolbar<TData>({
     });
   });
 
-  const sortedSkills = skillValues.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
-
-  const entryOptionClick = () => {
-    const nextValue = billable === 'totalTime' ? 'billableTime' : billable === 'billableTime' ? 'nonBillableTime' : 'totalTime';
-    setBillable(nextValue);
+  const entryOptionClick: Record<string, { value: string; label: string, next: string, class: string }> = {
+    totalTime: {
+      value: "totalTime",
+      label: "Total Time",
+      next: "billableTime",
+      class: "bg-transparent hover:text-slate-500"
+    },
+    billableTime: {
+      value: "billableTime",
+      label: "Billable",
+      next: "nonBillableTime",
+      class: "bg-indigo-500 border-indigo-500 text-white",
+    },
+    nonBillableTime: {
+      value: "nonBillableTime",
+      label: "Non-Billable",
+      next: "totalTime",
+      class: "bg-indigo-600 border-indigo-600 text-white"
+    },
   };
+
+  const handleEntryTime = (data: { next: string }) => {
+    setBillable(data.next)
+  };
+
+  const sortedSkills = skillValues.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
 
   const isFiltered = table.getState().columnFilters.length > 0;
   //start date validator
@@ -67,10 +87,8 @@ export function DataTableToolbar<TData>({
         >
           {weekend === 'weekdays' ? 'Week Days' : 'Week'}
         </Toggle>
-        <button className={`border rounded-md h-10 px-3 ${billable === "totalTime" ? 'bg-transparent hover:text-slate-500' : billable === "billableTime" ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-indigo-600 border-indigo-600 text-white'}`}
-          onClick={entryOptionClick}
-        >
-          {billable === "totalTime" ? 'Total Time' : billable === "billableTime" ? 'Billable' : 'Non-Billable'}
+        <button onClick={() => handleEntryTime(entryOptionClick[billable])} className={`border rounded-md h-10 px-3 ${entryOptionClick[billable].class}`}>
+          {entryOptionClick[billable].label}
         </button>
         <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
       </div>
