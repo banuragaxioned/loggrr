@@ -52,7 +52,6 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
   const [isFocus, setFocus] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
-  const [timeErr, setTimeErr] = useState<boolean>(false);
   const inputRef = useRef<any>();
   const inputParentRef = useRef<HTMLDivElement>(null);
   const checkobxRef = useRef<HTMLButtonElement | null>(null);
@@ -68,6 +67,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
   const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>([]);
   const [suggestions, setSuggestions] = useState<SelectedData[]>([]);
   const timeInputRef = useRef<any>();
+  const [errors, setErrors] = useState({});
 
   //list mapper
   const renderGroup = (arr: any) => {
@@ -98,12 +98,21 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
     });
   };
 
-  const handleClearForm = () => setSelectedData({});
+  const hoursToDecimal = (val: string) => {
+    const arr = val.split(":");
+    const result =  `${arr[0]}.${arr[1]}`;
+    return result;
+  };
 
-  //submit handler 
+  const handleClearForm = () => {
+    setSelectedData({});
+    timeInputRef.current.value = "";
+  };
+
+  //submit handler
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const response = await fetch("/api/team/time-entry", {
+    const response =  await fetch("/api/team/time-entry", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,38 +121,30 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
         team,
         project: selectedData?.project?.id,
         milestone: selectedData?.milestone?.id,
-        time: Number(selectedData?.time) * 100,
+        time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 100,
         comments: selectedData?.comment,
         billable: selectedData?.billable ? true : false,
-        date:new Date(date)
+        task: selectedData?.task?.id,
+        date: new Date(date),
       }),
     });
-    if(response.ok ) {
-      showToast("Time entry added", "success") ;
-      submitCounter((prev)=>prev+1);
-    }else showToast("Something went wrong,try again", "warning");
+    if (response.ok) {
+      showToast("Time entry added", "success");
+      submitCounter((prev) => prev + 1);
+    } else showToast("Something went wrong,try again", "warning");
     handleClearForm();
   };
 
   const handleLoggedTimeInput = (time: string) => {
-    const numberPattern = new RegExp(/[^0-9.:]/);
-    if (!numberPattern.test(time) && time.length < 5) {
-      if (time.indexOf(":") === -1 && time.indexOf(".") === -1) {
-        if (time.length <= 2) setSelectedData((prev) => ({ ...prev, time: time }));
-      } else {
-        if (time.length <= 4) setSelectedData((prev) => ({ ...prev, time: time }));
-      }
-    }
+    const numberPattern = new RegExp(/[^0-9.:{1,5}]/);
+    if (!numberPattern.test(time)) {
+      setSelectedData((prev) => ({ ...prev, time: time }));
+      setErrors((prev) => ({ ...prev, time: false }));
+    } else setErrors((prev) => ({ ...prev, time: true }));
   };
 
-  // const hoursToDecimal = (val: string) => {
-  //   const arr = val.split(":");
-  //   const result = parseInt(arr[0], 10) * 1 + parseInt(arr[1], 10) / 60;
-  //   return result;
-  // };
-
   //project select handler callback
-  const projectCallback = (selected:ProjectSummaryWithBillable) => {
+  const projectCallback = (selected: ProjectSummaryWithBillable) => {
     setprojectmilestone((prev) => {
       const milestone = selected?.milestone;
       return milestone ? milestone : [];
@@ -190,8 +191,9 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
 
   //search suggestion
   const setSearch = (str: string) => {
+    const [clientName, projectName, milestoneName, taskName] = str.trim().split(":");
     const matchedArr = projects
-      .filter((project) => project.client?.name.toLowerCase().includes(str.toLocaleLowerCase()))
+      .filter((project) => project.client?.name.toLowerCase().includes(clientName.toLocaleLowerCase()))
       .map((project) => ({
         client: project?.client,
         project: { id: project?.id, name: project?.name, billable: project.billable },
@@ -209,12 +211,13 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
       );
       return [...prev, ...temp];
     }, []);
+
     setSuggestions(suggestionArr);
   };
 
-  useEffect(()=>{
-    setRecentlyUsed(getRecent())
-  },[]);
+  useEffect(() => {
+    setRecentlyUsed(getRecent());
+  }, []);
 
   return (
     <div
@@ -232,7 +235,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
               commentFocus
                 ? "ring-brand-light rounded-b-sm border-white ring-2 ring-offset-0 dark:border-transparent"
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
-            } flex items-center rounded-t-xl border-b px-[18px] py-[7px] justify-between`}
+            } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
           >
             {selectedData?.milestone && selectedData?.project && selectedData?.task ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
@@ -246,7 +249,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
                   value={selectedData?.comment}
-                  onChange={(e) => setCommentText(e.target.value)}
+                  onChange={(e) => setCommentText(e.target.value.trim())}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
                 />
@@ -270,10 +273,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
               type="text"
               placeholder="7:30"
               className={`${
-                timeErr
-                  ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light ring-1"
+                errors?.time
+                  ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light ring-1 px-4"
                   : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
-              } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none focus:ring-1 focus:ring-offset-0 dark:bg-transparent`}
+              } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
               value={selectedData?.time}
               onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
               ref={timeInputRef}
@@ -297,7 +300,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
               variant="secondary"
               size="sm"
               type="submit"
-              disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task)}
+              disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task && !errors.time)}
               tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
               className={`disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
@@ -305,13 +308,16 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
             </Button>
           </div>
           <Command.List
-            className={`w-[calc(100%)] ${
+            className={`z-10 w-[calc(100%)] ${
               isFocus ? "border-brand-light" : "border-borderColor-light dark:border-borderColor-dark"
             } text-content-light overflow-y-hidden bg-white transition-all duration-200 ease-in hover:overflow-y-auto dark:bg-transparent ${
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
-            {/* <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty> */}
+            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
+            {inputRef?.current?.value.length < 1 && (
+              <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
+            )}
             {inputRef?.current?.value.length > 0 ? renderGroup(suggestions) : renderGroup(recentlyUsed)}
           </Command.List>
         </Command>
@@ -320,7 +326,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
       <div
         className={`${
           isFocus
-            ? "border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark border-t "
+            ? "border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark border-t"
             : "border-borderColor-light dark:border-borderColor-dark border-t-0"
         } bg-info-dark flex items-center justify-between rounded-b-xl px-5 py-[10px] dark:bg-zinc-900`}
       >

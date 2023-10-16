@@ -12,6 +12,7 @@ const TimeEntrySchema = z.object({
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
+  task:z.number().min(1)
 });
 
 export async function POST(req: Request) {
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
         userId: user.id,
         projectId: body?.project,
         date: new Date(body.date),
+        taskId:body?.task,
         tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
       },
     });
@@ -95,6 +97,12 @@ export async function GET(req: Request) {
           select: {
             id: true,
             name: true,
+            Client:{
+              select:{
+                id:true,
+                name:true
+              }
+            }
           },
         },
         Milestone: {
@@ -103,7 +111,12 @@ export async function GET(req: Request) {
             name: true,
           },
         },
-        taskId: true,
+        Task:{
+          select:{
+            id:true,
+            name:true
+          }
+        },
         time: true,
         date: true,
       },
@@ -121,6 +134,7 @@ export async function GET(req: Request) {
         billable: current?.billable,
         time: current?.time / 100,
         milestone: current?.Milestone,
+        task:current?.Task,
         comments: current?.comments,
       };
       if(check && prev[currentDateStr]) {
