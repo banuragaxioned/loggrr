@@ -71,6 +71,7 @@ module.exports = {
           },
           background: {
             DEFAULT: "#ffffff", // white
+            subtle: "#E2E8F0"
           },
           border: {
             DEFAULT: "#CBD5E1", // gray-200
@@ -80,6 +81,7 @@ module.exports = {
           },
           content: {
             DEFAULT: "#374151", // gray-500
+            subtle: "#31C48D"
           },
         },
         "dark-tremor": {

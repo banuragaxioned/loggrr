@@ -13,8 +13,8 @@ import {
   TabPanels,
   TabPanel,
   ProgressBar,
+  MarkerBar,
 } from "@tremor/react";
-import { Grid } from "lucide-react";
 import { db } from "@/lib/db";
 
 export default async function Dashboard() {
@@ -33,6 +33,7 @@ export default async function Dashboard() {
       nonBillableTime: true,
       Project: {
         select: {
+          id: true,
           name: true
         }
       }
@@ -47,26 +48,16 @@ export default async function Dashboard() {
       time: true,
       Project: {
         select: {
+          id: true,
           name: true,
         }
       }
     }
   })
 
-  const val = userTimeAllocated.map((item) => {
-    return item.Project.name;
-   })
-   
-  const time = userTimeEntry.map((items) => {
-    return items.Project.name
-  }) 
-
-   console.log(val, 'val');
-   console.log(time, 'time');
-
-   console.log(userTimeEntry);
-  
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
+
+
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
@@ -101,18 +92,22 @@ export default async function Dashboard() {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <div className="mt-8">
-                  <Text className="w-full font-semibold text-black leading-5">Product</Text>
-                    <Flex className="items-center mt-3">
-                      <ProgressBar value={45} color="indigo" className="mr-4" />
-                      <Text className="text-gray-500 text-sm font-normal">10%</Text>
-                    </Flex>
-                  </div>
+                  {userTimeEntry.map((item, i) => (
+                    <div className="mt-8" key={i}>
+                      <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                      <Flex className="items-center mt-3">
+                        <ProgressBar value={45} color="indigo" className="mr-4" />
+                        <Text className="text-gray-500 text-sm font-normal">{item.time}%</Text>
+                      </Flex>
+                    </div>
+                  ))}
                 </TabPanel>
                 <TabPanel>
-                  <div className="mt-10">
-                    <Flex className="mt-4">
-                      <Text className="w-full">Product Z</Text>
+                  <div className="mt-8">
+                  <Text className="w-full font-semibold text-black leading-5">Project</Text>
+                    <Flex className="items-center mt-3">
+                      <MarkerBar value={45} minValue={0} maxValue={65} color="slate" className="mr-4" />
+                      <Text className="text-gray-500 text-sm font-normal">10%</Text>
                     </Flex>
                   </div>
                 </TabPanel>
