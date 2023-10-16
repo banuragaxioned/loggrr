@@ -14,15 +14,19 @@ import {
   TabPanel,
   ProgressBar,
 } from "@tremor/react";
-import { db } from "@/lib/db";
 import { Grid } from "lucide-react";
+import { db } from "@/lib/db";
 
 export default async function Dashboard() {
   const user = await getCurrentUser();
 
+  if (!user) {
+    return notFound();
+  }
+
   const userTimeAllocated = await db.allocation.findMany({
     where: {
-      userId: user?.id,
+      userId: user.id,
     },
     select: {
       billableTime: true,
@@ -37,7 +41,7 @@ export default async function Dashboard() {
 
   const userTimeEntry = await db.timeEntry.findMany({
     where: {
-      userId: user?.id
+      userId: user.id
     },
     select: {
       time: true,
@@ -61,22 +65,8 @@ export default async function Dashboard() {
    console.log(time, 'time');
 
    console.log(userTimeEntry);
-   
-   
- 
-   
-
-  // Add all allocated billable and non-billable time
-  function sumArray(sum: number, num: number): number {
-    return sum + num;
-  }
-
-  const overallAllocatedTime = userTimeAllocated.map((item) => item.billableTime + item.nonBillableTime).reduce(sumArray);
-  const overallEntryTime = userTimeEntry.map((item) => item.time).reduce(sumArray);
-
-  if (!user) {
-    return notFound();
-  }
+  
+  const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
@@ -92,15 +82,14 @@ export default async function Dashboard() {
 
         <div className="flex flex-col items-center gap-4">
           <Card className="w-60 mx-auto p-4 pb-6">
-            {/* Quick stats (% of time logged) */}
             <Text className="pb-5 text-base font-semibold">Logged hours</Text>
             <Flex>
-              <Text className="text-sm pb-4"><span className="text-3xl font-semibold">{overallEntryTime}</span> / {overallAllocatedTime}h</Text>
+              <Text className="text-sm pb-4"><span className="text-3xl font-semibold">{overallEntryTime}</span> / 40h</Text>
             </Flex>
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={overallEntryTime / overallAllocatedTime * 100}
+              markerValue={overallEntryTime / 40 * 100}
               className="mt-3 text-sm"
             />
             {/* Time Insights (breakdown of time based on projects) */}

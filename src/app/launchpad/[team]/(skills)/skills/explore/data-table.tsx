@@ -9,7 +9,6 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  ColumnDef,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { SkillsList, skillName } from "./columns";
@@ -53,9 +52,26 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
     setIsEditing(0);
   };
 
+  const deleteSkillNames = async (id: number) => {
+    const response = await fetch("/api/team/skill/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        team,
+      }),
+    });
+
+    if (response?.ok) showToast("Skill deleted", "success");
+
+    router.refresh();
+  };
+
   const tableConfig = {
     data: skills,
-    columns: skillName(editSkillNames, isEditing, setIsEditing, refButton),
+    columns: skillName(editSkillNames, isEditing, setIsEditing, refButton, deleteSkillNames),
     state: {
       sorting,
       columnFilters,

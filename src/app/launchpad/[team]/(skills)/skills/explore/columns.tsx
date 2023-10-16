@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Dispatch } from "react";
-import { SkillUpdate } from "./data-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 
 // This type is used to define the shape of our data.
@@ -18,7 +17,7 @@ export interface SkillsList {
   edit?: string;
 }
 
-export function skillName(editSkillNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any) {
+export function skillName(editSkillNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any, deleteSkillNames: (id: number) => void) {
 
   const columns: ColumnDef<SkillsList>[] = [
     {
@@ -40,7 +39,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
             }}
           />
         ) : (
-          <span className="flex rounded-md border border-transparent bg-primary px-3 text-sm text-primary-foreground placeholder:opacity-75 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-0 h-auto w-auto py-1 border-c">
+          <span className="flex rounded-md border border-transparent px-3 text-sm h-auto w-auto py-1">
             {row.original.name}
           </span>
         );
@@ -50,14 +49,18 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
       id: "edit",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-x-3", "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")}>
             {isEditing === row.original.id ? (
               <Button
                 title="Save"
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 onClick={() => {
                   setIsEditing(row.original.id)
-                  editSkillNames(isEditing, refButton?.current?.value);
+                  if(row.original.name !== refButton?.current?.value) {
+                    editSkillNames(isEditing, refButton?.current?.value);
+                  } else {
+                    setIsEditing(0)
+                  }
                 }}
               >
                 <Icons.save height={18} width={18} />
@@ -71,6 +74,28 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
                 <Icons.edit height={18} width={18} />
               </Button>
             )}
+          </div>
+        );
+      },
+      meta: {
+        className: "w-[10%]",
+      },
+    },
+    {
+      id: "delete",
+      cell: ({ row }) => {
+        return (
+          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")}>
+              <Button
+                title="Delete"
+                className={cn("h-auto border-0 bg-inherit p-0")}
+                onClick={() => {
+                  deleteSkillNames(row.original.id);
+                }}
+              >
+                <Icons.delete height={18} width={18} />
+              </Button>
+            
           </div>
         );
       },

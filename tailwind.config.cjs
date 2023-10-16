@@ -62,6 +62,7 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Tremor package style config start 
         tremor: {
           // light mode
           brand: {
@@ -111,6 +112,7 @@ module.exports = {
         "dark-tremor-card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
         "dark-tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       },
+      // Tremor package style config end
       fontFamily: {
         sans: ["var(--font-primary)", ...fontFamily.sans],
         heading: ["var(--font-heading)", ...fontFamily.sans],
@@ -119,6 +121,7 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // tremor border radius style
         "tremor-small": "0.375rem",
         "tremor-default": "0.5rem",
         "tremor-full": "9999px",
@@ -139,6 +142,7 @@ module.exports = {
       },
     },
   },
+  // tremor safelist
   safelist: [
     {
       pattern:
