@@ -56,6 +56,7 @@ export default async function Dashboard() {
   })
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
+  
 
 
 
@@ -92,24 +93,28 @@ export default async function Dashboard() {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  {userTimeEntry.map((item, i) => (
+                  {userTimeEntry.length === 0 ? <p>Log your hours</p> : userTimeEntry.map((item, i) => (
                     <div className="mt-8" key={i}>
                       <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
                       <Flex className="items-center mt-3">
-                        <ProgressBar value={45} color="indigo" className="mr-4" />
-                        <Text className="text-gray-500 text-sm font-normal">{item.time}%</Text>
+                        <ProgressBar value={item.time} color="indigo" className="mr-4" />
+                        <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 40 * 100)}%</Text>
                       </Flex>
                     </div>
                   ))}
+
                 </TabPanel>
                 <TabPanel>
-                  <div className="mt-8">
-                  <Text className="w-full font-semibold text-black leading-5">Project</Text>
-                    <Flex className="items-center mt-3">
-                      <MarkerBar value={45} minValue={0} maxValue={65} color="slate" className="mr-4" />
-                      <Text className="text-gray-500 text-sm font-normal">10%</Text>
-                    </Flex>
-                  </div>
+                  {userTimeAllocated.map((item, i) => (
+                    <div className="mt-8" key={i}>
+                      <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                      <Flex className="items-center mt-3">
+                        <MarkerBar value={40} minValue={0} markerTooltip={`45 hr`} maxValue={65} color="slate" className="mr-4" />
+                        <Text className="text-gray-500 text-sm font-normal">20h</Text>
+                      </Flex>
+                    </div>
+                  ))}
+
                 </TabPanel>
               </TabPanels>
             </TabGroup>
