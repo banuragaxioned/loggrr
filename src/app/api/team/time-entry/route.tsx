@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
-import { TimeEntryData } from "@/types";
+import { TimeEntryDataObj } from "@/types";
 
 const TimeEntrySchema = z.object({
   team: z.string().min(1),
@@ -12,7 +12,7 @@ const TimeEntrySchema = z.object({
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
-  task:z.number().min(1)
+  task: z.number().min(1),
 });
 
 export async function POST(req: Request) {
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         userId: user.id,
         projectId: body?.project,
         date: new Date(body.date),
-        taskId:body?.task,
+        taskId: body?.task,
         tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
       },
     });
@@ -61,11 +61,15 @@ export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
   const dates = searchParams.get("dates");
-  const dateStrs:string[] = dates && JSON.parse(dates)?.map((date:Date)=>new Date(date).toLocaleDateString("en-us", {
-    day: "2-digit",
-    month: "short",
-    weekday: "short",
-  }));
+  const dateStrs: string[] =
+    dates &&
+    JSON.parse(dates)?.map((date: Date) =>
+      new Date(date).toLocaleDateString("en-us", {
+        day: "2-digit",
+        month: "short",
+        weekday: "short",
+      }),
+    );
 
   try {
     const session = await getServerSession(authOptions);
@@ -97,12 +101,12 @@ export async function GET(req: Request) {
           select: {
             id: true,
             name: true,
-            Client:{
-              select:{
-                id:true,
-                name:true
-              }
-            }
+            Client: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         Milestone: {
@@ -111,11 +115,11 @@ export async function GET(req: Request) {
             name: true,
           },
         },
-        Task:{
-          select:{
-            id:true,
-            name:true
-          }
+        Task: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
         time: true,
         date: true,
@@ -125,28 +129,37 @@ export async function GET(req: Request) {
       },
     });
 
-    const restructuredData = response.reduce((prev:any, current) => {
-      const currentDateStr = current.date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
-      const check = dateStrs.includes(currentDateStr) ;
+    const restructuredData = response.reduce((prev: TimeEntryDataObj, current) => {
+      const currentDateStr = current.date.toLocaleDateString("en-us", {
+        day: "2-digit",
+        month: "short",
+        weekday: "short",
+      });
+      const check = dateStrs.includes(currentDateStr);
       const project = { ...current?.Project };
       const data = {
-        id: current?.id,
-        billable: current?.billable,
-        time: current?.time / 100,
-        milestone: current?.Milestone,
-        task:current?.Task,
-        comments: current?.comments,
+        id: current.id,
+        billable: current.billable,
+        time: current.time / 100,
+        milestone: current.Milestone,
+        task: current.Task,
+        comments: current.comments,
       };
-      if(check && prev[currentDateStr]) {
+      if (check && prev[currentDateStr]) {
         const previous = prev[currentDateStr];
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
         if (index > -1) {
-        previous.projectsLog[index]?.data.push(data);
-        previous.projectsLog[index].total += current?.time / 100;
-        previous.dayTotal += current.time /100;
-      } else check && prev?.push({ project: current?.Project, data: [data], total: current?.time / 100 });
-      }else if(check) prev[currentDateStr] = {dayTotal:current?.time / 100,projectsLog:[{ project: current?.Project, data: [data], total: current?.time / 100 }]}
-     
+          const project = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
+          previous.projectsLog[index]?.data.push(data);
+          previous.projectsLog[index].total += current?.time / 100;
+          previous.dayTotal += current.time / 100;
+        } else check && previous.projectsLog?.push({ project: project, data: [data], total: current?.time / 100 });
+      } else if (check)
+        prev[currentDateStr] = {
+          dayTotal: current?.time / 100,
+          projectsLog: [{ project: project, data: [data], total: current?.time / 100 }],
+        };
+
       return prev;
     }, {});
 

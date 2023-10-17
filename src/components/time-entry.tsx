@@ -5,7 +5,7 @@ import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./datePicker";
 import { TimeLogForm } from "./forms/timelogForm";
 import { Project } from "@/types";
-import { TimeEntryData } from "@/types";
+import { TimeEntryDataObj } from "@/types";
 import dayjs from "dayjs";
 
 interface TimeEntryProps {
@@ -14,9 +14,10 @@ interface TimeEntryProps {
   userId: number;
 }
 
-export const getDateStr = (date: Date) => date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+export const getDateStr = (date: Date) =>
+  date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
 
-export type EntryData = { data: TimeEntryData[]; status: number };
+export type EntryData = { data: TimeEntryDataObj; status: number };
 
 export const getDates = (date: Date) => {
   let arr = [],
@@ -30,7 +31,7 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
-  const [entries, setEntries] = useState<EntryData>({ data: [], status: 0 });
+  const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
 
   const apiCall = () =>
     fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
@@ -41,11 +42,11 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
     })
       .then((res) => res.json())
       .then((res) => setEntries({ data: res, status: 1 }))
-      .catch((e) => setEntries({ data: [], status: -1 }));
+      .catch((e) => setEntries({ data: {}, status: -1 }));
 
   useEffect(() => {
     apiCall();
-    console.log(getDateStr(date))
+    console.log(getDateStr(date));
   }, [submitCount, !dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0]);
 
   return (
@@ -63,8 +64,8 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
       <TimeEntriesList
         entries={{
           ...entries.data[getDateStr(new Date(date))],
-          status: entries.status,
         }}
+        status={entries.status}
       />
     </div>
   );

@@ -1,34 +1,62 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/icons";
 
 interface Options {
   id: number;
-  label: string;
   value: string;
+  label: string;
 }
 
-interface MultipleSelectProps<TData, TValue> {
+interface InlineSelectProps<TData, TValue> {
   label: string;
   title?: string;
   selectedValues: Options[];
   options: Options[];
+  onSelect: (selectedOption: Options[]) => void;
 }
 
-export function MultipleSelect<TData, TValue>({
+export function InlineSelect<TData, TValue>({
   label,
   title,
   options,
   selectedValues,
-}: MultipleSelectProps<TData, TValue>) {
+  onSelect,
+}: InlineSelectProps<TData, TValue>) {
+  const [selected, setSelected] = useState<Options[]>(selectedValues);
+  const [isValueUpdated, setValueUpdated] = useState(false)
+
+  const handleSelect = (isSelected: boolean, option: Options) => {
+    isSelected ? setSelected(prev => prev.filter(opt => option.id !== opt.id)) : setSelected((prev) => [...prev, option]);
+  };
+
+  useEffect(() => {
+    let valueUpdated = false;
+
+    if(selected.length !== selectedValues.length) {
+      valueUpdated = true
+    } else {
+      selected.map(value => valueUpdated = selectedValues.some(prevVal => value.id !== prevVal.id))
+    }
+    setValueUpdated(valueUpdated)
+  }, [selected])
+
   return (
-    <Popover>
+    <Popover onOpenChange={(e) => !e && setSelected(selectedValues)}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border">
           {selectedValues?.length > 0 ? (
@@ -57,9 +85,9 @@ export function MultipleSelect<TData, TValue>({
             <CommandEmpty>No {title} found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                const isSelected = selectedValues.find((values) => values.id === option.id);
+                const isSelected = selected.find((values) => values.id === option.id);
                 return (
-                  <CommandItem key={option.value}>
+                  <CommandItem key={option.value} onSelect={() => handleSelect(!!isSelected, option)}>
                     <div
                       className={cn(
                         "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
@@ -73,6 +101,14 @@ export function MultipleSelect<TData, TValue>({
                 );
               })}
             </CommandGroup>
+            {(isValueUpdated) && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>Update</CommandItem>
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

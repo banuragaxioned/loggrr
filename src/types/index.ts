@@ -200,17 +200,8 @@ export type Client = {
   Project: number;
 };
 
-type MilestoneData = {
-  id:number;
-  billable:boolean;
-  time:number;
-  milestone:Milestone;
-  comments:string|null;
-  taskId?:number;
-}
-
 export interface Project {
-  billable: boolean;
+  billable?: boolean;
   id: number;
   name: string;
   milestone?: Milestone[];
@@ -218,10 +209,28 @@ export interface Project {
   client?:Milestone;
 }
 
-export interface TimeEntryData {
+type TimeEntryProperties = {
+  id:number,
+  milestone:Milestone;
+  task:Milestone|null;
+  comments: string | null;
+  billable:boolean;
+  time:number;
+}
+
+interface ProjectLog {
   project:Project;
   total:number;
-  data:MilestoneData[]
+  data:TimeEntryProperties[];
+}
+
+export interface TimeEntryData {
+  projectsLog:ProjectLog[];
+  dayTotal:number;
+}
+
+export interface TimeEntryDataObj {
+  [key:string]:TimeEntryData
 }
 
  export type Milestone = {
