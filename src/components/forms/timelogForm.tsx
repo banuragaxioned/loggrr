@@ -81,7 +81,6 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
         obj.task && (
           <Command.Group
             key={i}
-            heading={obj.project.name}
             className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
           >
             {
@@ -105,11 +104,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
     });
   };
 
-  const hoursToDecimal = (val: string) => {
-    const arr = val.split(":");
-    const result = `${arr[0]}.${arr[1]}`;
-    return result;
-  };
+  const hoursToDecimal = (val: string) => Number(val.replace(":","."));
 
   const handleClearForm = () => {
     setSelectedData({});
