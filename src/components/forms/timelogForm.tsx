@@ -129,7 +129,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
         project: selectedData?.project?.id,
         milestone: selectedData?.milestone?.id,
         time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 100,
-        comments: selectedData?.comment,
+        comments: selectedData?.comment?.trim(),
         billable: selectedData?.billable ? true : false,
         task: selectedData?.task?.id,
         date: new Date(date),
@@ -256,7 +256,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
                   value={selectedData?.comment}
-                  onChange={(e) => setCommentText(e.target.value.trim())}
+                  onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
                 />
