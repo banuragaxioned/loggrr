@@ -145,19 +145,19 @@ export async function GET(req: Request) {
         task: current.Task,
         comments: current.comments,
       };
+      const projectObj = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
       if (check && prev[currentDateStr]) {
         const previous = prev[currentDateStr];
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
         if (index > -1) {
-          const project = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
           previous.projectsLog[index]?.data.push(data);
           previous.projectsLog[index].total += current?.time / 100;
           previous.dayTotal += current.time / 100;
-        } else check && previous.projectsLog?.push({ project: project, data: [data], total: current?.time / 100 });
+        } else check && previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 100 });
       } else if (check)
         prev[currentDateStr] = {
           dayTotal: current?.time / 100,
-          projectsLog: [{ project: project, data: [data], total: current?.time / 100 }],
+          projectsLog: [{ project: projectObj, data: [data], total: current?.time / 100 }],
         };
 
       return prev;

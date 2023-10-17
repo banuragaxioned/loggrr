@@ -46,7 +46,6 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
 
   useEffect(() => {
     apiCall();
-    console.log(getDateStr(date));
   }, [submitCount, !dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0]);
 
   return (
