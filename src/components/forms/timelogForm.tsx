@@ -123,7 +123,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
         team,
         project: selectedData?.project?.id,
         milestone: selectedData?.milestone?.id,
-        time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 100,
+        time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 60,
         comments: selectedData?.comment?.trim(),
         billable: selectedData?.billable ? true : false,
         task: selectedData?.task?.id,

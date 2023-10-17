@@ -140,7 +140,7 @@ export async function GET(req: Request) {
       const data = {
         id: current.id,
         billable: current.billable,
-        time: current.time / 100,
+        time: current.time / 60,
         milestone: current.Milestone,
         task: current.Task,
         comments: current.comments,
@@ -151,13 +151,13 @@ export async function GET(req: Request) {
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
         if (index > -1) {
           previous.projectsLog[index]?.data.push(data);
-          previous.projectsLog[index].total += current?.time / 100;
-          previous.dayTotal += current.time / 100;
-        } else check && previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 100 });
+          previous.projectsLog[index].total += current?.time / 60;
+          previous.dayTotal += current.time / 60;
+        } else check && previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
       } else if (check)
         prev[currentDateStr] = {
-          dayTotal: current?.time / 100,
-          projectsLog: [{ project: projectObj, data: [data], total: current?.time / 100 }],
+          dayTotal: current?.time / 60,
+          projectsLog: [{ project: projectObj, data: [data], total: current?.time / 60 }],
         };
 
       return prev;
