@@ -1,7 +1,9 @@
+import { notFound } from "next/navigation";
+import { getProjectSummary, getAllUserProjects } from "@/server/services/project";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TimeEntry } from "@/components/time-entry";
 import { getCurrentUser } from "@/lib/session";
 
-import { notFound } from "next/navigation";
 import {
   Card, 
   Text, 
@@ -15,10 +17,12 @@ import {
   ProgressBar,
   MarkerBar,
 } from "@tremor/react";
+import { pageProps } from "@/types";
 import { db } from "@/lib/db";
 
-export default async function Dashboard() {
+export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
+  const { team } = params;
 
   if (!user) {
     return notFound();
@@ -50,18 +54,19 @@ export default async function Dashboard() {
     }
   })
 
+  const projects = await getAllUserProjects(user.id);
+  
   const userTimeEntry = await db.timeEntry.findMany({
     where: {
-      userId: user.id
+      userId: user.id,
     },
     select: {
       time: true,
       Project: {
         select: {
-          id: true,
           name: true,
         }
-      }
+      },
     }
   })
 
@@ -69,26 +74,25 @@ export default async function Dashboard() {
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
-      <main className="col-span-9 flex flex-col gap-4">
+      <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
-        <Skeleton className="h-16 w-full" />
-        {/* Time Entry Combobox */}
-        <Skeleton className="h-24 w-full" />
-        {/* Time Entries */}
-        <Skeleton className="h-80 w-full" />
+        <TimeEntry team={team} projects={projects ? projects : []} userId={user.id} />
       </main>
-      <aside className="col-span-3 m-2 hidden space-y-12 lg:block lg:basis-2/5">
 
+      <aside className="col-span-12 m-2 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
+        {/* Quick stats (% of time logged in the last week) */}
         <div className="flex flex-col items-center gap-4">
-          <Card className="w-60 mx-auto p-4 pb-6">
+          <Card className="mx-auto w-60 p-4 pb-6">
             <Text className="pb-5 text-base font-semibold">Logged hours</Text>
             <Flex>
-              <Text className="text-sm pb-4"><span className="text-3xl font-semibold">{overallEntryTime}</span> / 40h</Text>
+              <Text className="pb-4 text-sm">
+                <span className="text-3xl font-semibold">{overallEntryTime}</span> / 40h
+              </Text>
             </Flex>
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={overallEntryTime / 40 * 100}
+              markerValue={(overallEntryTime / 40) * 100}
               className="mt-3 text-sm"
             />
             {/* Time Insights (breakdown of time based on projects) */}
