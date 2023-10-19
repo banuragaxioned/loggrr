@@ -209,7 +209,7 @@ export interface Project {
   client?:Milestone;
 }
 
-type TimeEntryProperties = {
+export interface TimeEntryProperties {
   id:number,
   milestone:Milestone;
   task:Milestone|null;

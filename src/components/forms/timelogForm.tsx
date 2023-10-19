@@ -6,20 +6,23 @@ import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 import useToast from "@/hooks/useToast";
+import { EditReferenceObj } from "../time-entry";
 
 interface TimelogProps {
   team: string;
   projects: Project[];
   submitCounter: Dispatch<(prev: number) => number>;
   date: Date;
+  edit:EditReferenceObj;
+  setEdit:Dispatch<EditReferenceObj>
 }
 
-type SelectedData = {
+export type SelectedData = {
   client?: Milestone;
   project?: Project;
-  milestone?: Milestone;
-  task?: Milestone;
-  comment?: string;
+  milestone?: Milestone|null;
+  task?: Milestone|null;
+  comment?: string|null;
   time?: string;
   billable?: boolean;
 };
@@ -50,7 +53,7 @@ const getRecent = () => {
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProps) => {
+export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
@@ -250,7 +253,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
                   ref={commentRef}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
-                  value={selectedData?.comment}
+                  value={selectedData?.comment ? selectedData?.comment :""}
                   onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
@@ -306,7 +309,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date }: TimelogProp
               tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
               className={`disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
-              Submit
+              {edit.isEditing ? "Save" :"Submit"}
             </Button>
           </div>
           <Command.List

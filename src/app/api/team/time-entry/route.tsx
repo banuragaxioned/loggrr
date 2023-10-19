@@ -172,3 +172,39 @@ export async function GET(req: Request) {
     return new Response(null, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  const searchParams = new URL(req.url).searchParams;
+  const team = searchParams.get("team");
+  const id = searchParams.get("id");
+
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new Response("Unauthorized", { status: 403 });
+    }
+
+    const { user } = session;
+    // check if the user has permission to the current team/tenant id if not return 403
+    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
+    if (user.tenants.filter((tenant) => tenant.slug === team).length === 0) {
+      return new Response("Unauthorized", { status: 403 });
+    }
+    //schema goes here
+    const query = await db.timeEntry.delete({
+      where:{
+        id:id ? Number(id) : -1
+      }
+    })
+
+    return new Response(JSON.stringify(query));
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify(error.issues), { status: 422 });
+    }
+
+    return new Response(null, { status: 500 });
+  }
+}
+
