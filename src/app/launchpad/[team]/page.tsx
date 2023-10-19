@@ -19,6 +19,7 @@ import {
 } from "@tremor/react";
 import { pageProps } from "@/types";
 import { db } from "@/lib/db";
+import { Icons } from "@/components/icons";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -82,8 +83,14 @@ export default async function Dashboard({ params }: pageProps) {
       <aside className="col-span-12 m-2 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
         <div className="flex flex-col items-center gap-4">
-          <Card className="mx-auto w-60 p-4 pb-6">
-            <Text className="pb-5 text-base font-semibold">Logged hours</Text>
+          <Card className="mx-auto w-full p-4 pb-6">
+            <Flex className="font-semibold items-center">
+              <Text className="pb-5 text-base bg-gradient-to-r from-green-to-red">Logged hours</Text>
+              <Text className="text-[#6B7280] text-xs flex items-center pb-5">
+                <Icons.calendar className="ml-2 h-4 w-4 mr-[5px]" />
+                This week
+              </Text>
+            </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
                 <span className="text-3xl font-semibold">{overallEntryTime}</span> / 40h
