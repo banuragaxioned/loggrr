@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./datePicker";
@@ -19,6 +19,7 @@ interface TimeEntryProps {
 export interface EditReferenceObj {
   obj: SelectedData | {};
   isEditing: boolean;
+  id: number;
 }
 
 export const getDateStr = (date: Date) =>
@@ -37,14 +38,16 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
   const [submitCount, setSubmitCount] = useState<number>(0);
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
-  const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false });
+  const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
   const showToast = useToast();
 
-  const editHandler = (obj: SelectedData) => {
-    setEdit({ obj, isEditing: edit.isEditing ? false : true });
+  const editHandler = (obj: SelectedData, id: number) => {
+    setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
   };
+
+  const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
   const getApiCall = () =>
     fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
@@ -77,14 +80,44 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
 
   const editApiCall = () =>
     fetch(`/api/team/time-entry`, {
-      method: "DELETE",
+      method: "UPDATE",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ id: 1 }),
     })
       .then((res) => res.json())
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
+
+  //submit handler
+  const submitHandler = async (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => {
+    e.preventDefault();
+    const defaultBodyObj = {
+      team,
+      project: selectedData?.project?.id,
+      milestone: selectedData?.milestone?.id,
+      time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 60,
+      comments: selectedData?.comment?.trim(),
+      billable: selectedData?.billable ? true : false,
+      task: selectedData?.task?.id,
+      date: new Date(date),
+    };
+
+    const response = await fetch("/api/team/time-entry", {
+      method: `${edit.isEditing ? "PUT" : "POST"}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(edit.isEditing ? { ...defaultBodyObj, id: edit.id } : defaultBodyObj),
+    });
+    if (response.ok) {
+      showToast("Entry Updated", "success");
+      setSubmitCount((prev) => prev + 1);
+      edit.isEditing && setEdit((prev) => ({ ...prev, isEditing: false }));
+    } else showToast("Something went wrong,try again", "warning");
+    clearForm();
+  };
 
   useEffect(() => {
     getApiCall();
@@ -108,6 +141,7 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
         date={date}
         edit={edit}
         setEdit={setEdit}
+        submitHandler={submitHandler}
       />
       <TimeEntriesList
         entries={{

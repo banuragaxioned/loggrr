@@ -8,15 +8,6 @@ import { Project, Milestone } from "@/types";
 import useToast from "@/hooks/useToast";
 import { EditReferenceObj } from "../time-entry";
 
-interface TimelogProps {
-  team: string;
-  projects: Project[];
-  submitCounter: Dispatch<(prev: number) => number>;
-  date: Date;
-  edit:EditReferenceObj;
-  setEdit:Dispatch<EditReferenceObj>
-}
-
 export type SelectedData = {
   client?: Milestone;
   project?: Project;
@@ -26,6 +17,17 @@ export type SelectedData = {
   time?: string;
   billable?: boolean;
 };
+
+interface TimelogProps {
+  team: string;
+  projects: Project[];
+  submitCounter: Dispatch<(prev: number) => number>;
+  date: Date;
+  edit:EditReferenceObj;
+  setEdit:Dispatch<EditReferenceObj>;
+  submitHandler:(e:FormEvent,clearForm:Function,selectedData?:SelectedData)=>void
+}
+
 
 type ErrorsObj = {
   time?: boolean;
@@ -53,7 +55,7 @@ const getRecent = () => {
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }: TimelogProps) => {
+export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,submitHandler }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
   const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
@@ -107,45 +109,14 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
     });
   };
 
-  const hoursToDecimal = (val: string) => Number(val.replace(":","."));
-
   const handleClearForm = () => {
     setSelectedData({});
     if (timeInputRef.current) timeInputRef.current.value = "";
   };
 
-  //submit handler
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const response = await fetch("/api/team/time-entry", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team,
-        project: selectedData?.project?.id,
-        milestone: selectedData?.milestone?.id,
-        time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 60,
-        comments: selectedData?.comment?.trim(),
-        billable: selectedData?.billable ? true : false,
-        task: selectedData?.task?.id,
-        date: new Date(date),
-      }),
-    });
-    if (response.ok) {
-      showToast("Time entry added", "success");
-      submitCounter((prev) => prev + 1);
-    } else showToast("Something went wrong,try again", "warning");
-    handleClearForm();
-  };
-
   const handleLoggedTimeInput = (time: string) => {
-    const numberPattern = new RegExp(/[^0-9.:{1,5}]/);
-    if (!numberPattern.test(time)) {
+    const numberPattern = new RegExp(/^[\-]{0,1}[0-9]+[\.\:][0-9]+|[\-]{0,1}[0-9]+$/,"g");
       setSelectedData((prev) => ({ ...prev, time: time }));
-      setErrors((prev) => ({ ...prev, time: false }));
-    } else setErrors((prev) => ({ ...prev, time: true }));
   };
 
   //project select handler callback
@@ -223,6 +194,11 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
   useEffect(() => {
     setRecentlyUsed(getRecent());
   }, []);
+  
+  useEffect(()=>{
+    console.log(edit.obj)
+    setSelectedData(edit.obj)
+  },[edit.isEditing === true])
 
   return (
     <div
@@ -233,7 +209,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
           : "border-borderColor-light dark:border-borderColor-dark"
       } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
-      <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}>
+      <form onSubmit={(e) => submitHandler(e,handleClearForm,selectedData)} onKeyDown={(e) => e.key === "Enter" && submitHandler(e,handleClearForm,selectedData)}>
         <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
@@ -253,7 +229,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
                   ref={commentRef}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
-                  value={selectedData?.comment ? selectedData?.comment :""}
+                  value={selectedData?.comment ? selectedData.comment :""}
                   onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
@@ -307,7 +283,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
               type="submit"
               disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task && !errors?.time)}
               tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-              className={`disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
+              className={`disabled:hover:bg-brand-light min-w-[75px] ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {edit.isEditing ? "Save" :"Submit"}
             </Button>

@@ -9,7 +9,7 @@ interface TimeEntries {
   entries: TimeEntryData;
   status: number;
   deleteHandler:(id:number)=>void;
-  editHandler:(obj:SelectedData)=>void,
+  editHandler:(obj:SelectedData,id:number)=>void,
   edit:EditReferenceObj
 }
 
@@ -24,17 +24,18 @@ export const TimeEntriesList = ({ entries, status,deleteHandler,editHandler,edit
             <li key={i}>
               {/* project name  */}
               <div>
-                <div className="flex w-full justify-between bg-background">
+                <div className="flex w-full justify-between bg-background p-4">
                   <h3 className="flex gap-x-1 font-medium">
                     {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
                   </h3>
-                  <span className="text-black text-primary-foreground">{entryData?.total} Hrs</span>
+                  <span className="text-black font-bold text-primary-foreground">{entryData?.total} Hrs</span>
                 </div>
                 {/* milestone data */}
                 {entryData?.data?.map((data, i) => {
                   const projectObj = {id:entryData.project.id,name:entryData.project.name,billable:entryData.project.billable}
                   const tempObj = {
                     ...data,
+                    comment:data.comments,
                     client: entryData.project.client,
                     project: projectObj,
                     time: `${data.time}`,
@@ -65,7 +66,7 @@ export const TimeEntriesList = ({ entries, status,deleteHandler,editHandler,edit
                       <span className="font-semibold">{data?.time.toFixed(2)}</span>
                       {data?.billable && <span className="capitalize text-success">billable</span>}
                       <div className="flex gap-x-2 md:invisible md:group-hover:visible">
-                        <Button className="rounded-md p-2" onClick={()=>editHandler(tempObj)}>
+                        <Button className="rounded-md p-2" onClick={()=>editHandler(tempObj,data.id)}>
                         {edit.isEditing ? <Icons.reset className="w-4 h-4"/> :<Icons.edit className="w-4 h-4"/> }
                         </Button>
                         <Button className="rounded-md p-2" onClick={()=>deleteHandler(data.id)}>
