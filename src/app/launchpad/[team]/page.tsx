@@ -34,7 +34,17 @@ export default async function Dashboard() {
       Project: {
         select: {
           id: true,
-          name: true
+          name: true,
+        }
+      },
+      User: {
+        select: {
+          TimeEntry: {
+            select: {
+              projectId: true,
+              time: true,
+            }
+          }
         }
       }
     }
@@ -56,9 +66,6 @@ export default async function Dashboard() {
   })
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
-  
-
-
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
@@ -102,19 +109,21 @@ export default async function Dashboard() {
                       </Flex>
                     </div>
                   ))}
-
                 </TabPanel>
                 <TabPanel>
-                  {userTimeAllocated.map((item, i) => (
-                    <div className="mt-8" key={i}>
-                      <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
-                      <Flex className="items-center mt-3">
-                        <MarkerBar value={40} minValue={0} markerTooltip={`45 hr`} maxValue={65} color="slate" className="mr-4" />
-                        <Text className="text-gray-500 text-sm font-normal">20h</Text>
-                      </Flex>
-                    </div>
-                  ))}
+                  {userTimeAllocated.map((item, i) => {
+                    const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce((acc, current) => acc + current.time, 0);
 
+                    return (
+                      <div className="mt-8" key={i}>
+                        <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                        <Flex className="items-center mt-3">
+                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4" />
+                          <Text className="text-gray-500 text-sm font-normal">{entryValue}h</Text>
+                        </Flex>
+                      </div>
+                    )
+                  })}
                 </TabPanel>
               </TabPanels>
             </TabGroup>
