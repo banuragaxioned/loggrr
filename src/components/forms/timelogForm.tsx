@@ -196,9 +196,8 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
   }, []);
   
   useEffect(()=>{
-    console.log(edit.obj)
-    setSelectedData(edit.obj)
-  },[edit.isEditing === true])
+    edit.isEditing ? setSelectedData(edit.obj) : handleClearForm()
+  },[edit.isEditing])
 
   return (
     <div

@@ -78,18 +78,6 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
     getApiCall();
   }, [submitCount, !dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0]);
 
-  const editApiCall = () =>
-    fetch(`/api/team/time-entry`, {
-      method: "UPDATE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: 1 }),
-    })
-      .then((res) => res.json())
-      .then((res) => console.log(res))
-      .catch((e) => console.log(e));
-
   //submit handler
   const submitHandler = async (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => {
     e.preventDefault();
@@ -131,7 +119,7 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
         <h2 className="flex justify-between px-5 py-2">
-          Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal}</span>
+          Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
         </h2>
       </div>
       <TimeLogForm

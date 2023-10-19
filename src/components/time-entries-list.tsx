@@ -28,7 +28,7 @@ export const TimeEntriesList = ({ entries, status,deleteHandler,editHandler,edit
                   <h3 className="flex gap-x-1 font-medium">
                     {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
                   </h3>
-                  <span className="text-black font-bold text-primary-foreground">{entryData?.total} Hrs</span>
+                  <span className="text-black font-bold text-primary-foreground">{entryData?.total.toFixed(2)} Hrs</span>
                 </div>
                 {/* milestone data */}
                 {entryData?.data?.map((data, i) => {
