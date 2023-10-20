@@ -10,7 +10,6 @@ interface MarkerBarProps {
 }
 
 export function MarkerBar({ value, minValue, maxValue, className }: MarkerBarProps) {
-  console.log(value, minValue, maxValue);
 
   const getGreenBarWidth = () => {
     if (maxValue > value) return value + 2
