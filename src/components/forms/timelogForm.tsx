@@ -168,7 +168,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
   const setSearch = (str: string) => {
     const [clientName, projectName, milestoneName, taskName] = str.trim().split("/");
     const matchedArr = projects
-      .filter((project) => project.client?.name.toLowerCase().includes(clientName.trim().toLocaleLowerCase()) )
+      .filter((project) => project.client?.name.toLowerCase().includes(clientName.trim().toLocaleLowerCase()))
       .map((project) => ({
         client: project?.client,
         project: { id: project?.id, name: project?.name, billable: project.billable },
@@ -247,6 +247,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
                   onFocus={() => setFocus(true)}
                   onClick={(e) => e.stopPropagation()}
                   onValueChange={setSearch}
+                  onBlur={() => setTimeout(() => setFocus(false), 125)}
                 />
               </div>
             )}
