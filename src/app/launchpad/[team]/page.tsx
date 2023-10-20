@@ -15,11 +15,11 @@ import {
   TabPanels,
   TabPanel,
   ProgressBar,
-  MarkerBar,
 } from "@tremor/react";
 import { pageProps } from "@/types";
 import { db } from "@/lib/db";
 import { Icons } from "@/components/icons";
+import { MarkerBar } from "@/components/marker-bar";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -129,7 +129,7 @@ export default async function Dashboard({ params }: pageProps) {
                       <div className="mt-8" key={i}>
                         <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
                         <Flex className="items-center mt-3">
-                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4" />
+                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4 relative w-full bg-slate-200 rounded-md" />
                           <Text className="text-gray-500 text-sm font-normal">{entryValue}h</Text>
                         </Flex>
                       </div>
