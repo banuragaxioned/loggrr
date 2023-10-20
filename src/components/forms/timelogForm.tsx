@@ -5,15 +5,14 @@ import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
-import useToast from "@/hooks/useToast";
 import { EditReferenceObj } from "../time-entry";
 
 export type SelectedData = {
   client?: Milestone;
   project?: Project;
-  milestone?: Milestone|null;
-  task?: Milestone|null;
-  comment?: string|null;
+  milestone?: Milestone | null;
+  task?: Milestone | null;
+  comment?: string | null;
   time?: string;
   billable?: boolean;
 };
@@ -23,11 +22,10 @@ interface TimelogProps {
   projects: Project[];
   submitCounter: Dispatch<(prev: number) => number>;
   date: Date;
-  edit:EditReferenceObj;
-  setEdit:Dispatch<EditReferenceObj>;
-  submitHandler:(e:FormEvent,clearForm:Function,selectedData?:SelectedData)=>void
+  edit: EditReferenceObj;
+  setEdit: Dispatch<EditReferenceObj>;
+  submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
 }
-
 
 type ErrorsObj = {
   time?: boolean;
@@ -55,9 +53,8 @@ const getRecent = () => {
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,submitHandler }: TimelogProps) => {
+export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit, submitHandler }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputParentRef = useRef<HTMLDivElement>(null);
@@ -66,9 +63,8 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
   const commentParentRef = useRef<HTMLDivElement>(null);
   const timeLogFormRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const showToast = useToast();
   //my states
-  const [selectedData, setSelectedData] = useState<SelectedData>();
+  const [selectedData, setSelectedData] = useState<SelectedData>({});
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const [projectTask, setprojectTask] = useState<Milestone[]>([]);
   const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>([]);
@@ -94,9 +90,8 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
                   className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
                   value={`${obj.client.name} / ${obj.project.name} / ${obj.milestone.name} / ${obj.task.name}`}
                   onSelect={() => {
-                    isFocus && setSelectedData(obj);
+                    isFocus && setSelectedData({ ...selectedData, ...obj });
                     setFocus(false);
-                    setClear(true);
                   }}
                 >
                   {renderList(obj)}
@@ -114,9 +109,13 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
     if (timeInputRef.current) timeInputRef.current.value = "";
   };
 
+  const formValidator = () =>
+    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.task && !errors?.time;
+
   const handleLoggedTimeInput = (time: string) => {
-    const numberPattern = new RegExp(/^[\-]{0,1}[0-9]+[\.\:][0-9]+|[\-]{0,1}[0-9]+$/,"g");
-      setSelectedData((prev) => ({ ...prev, time: time }));
+    const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
+    numberPattern.test(time) ? setErrors({ ...errors, time: false }) : setErrors({ ...errors, time: true });
+    setSelectedData({ ...selectedData, time: time });
   };
 
   //project select handler callback
@@ -130,6 +129,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
       return task ? task : [];
     });
     setSelectedData({
+      ...selectedData,
       client: selected?.client,
       project: { id: selected.id, name: selected?.name, billable: selected?.billable },
     });
@@ -147,7 +147,6 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
     setRecentlyUsed(arr);
     setRecent(arr);
     setFocus(false);
-    setClear(true);
   };
 
   //common select handler
@@ -163,13 +162,13 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
   };
 
   //set comment
-  const setCommentText = (str: string) => setSelectedData((prev) => ({ ...prev, comment: str }));
+  const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
   //search suggestion
   const setSearch = (str: string) => {
-    const [clientName, projectName, milestoneName, taskName] = str.trim().split(":");
+    const [clientName, projectName, milestoneName, taskName] = str.trim().split("/");
     const matchedArr = projects
-      .filter((project) => project.client?.name.toLowerCase().includes(clientName.toLocaleLowerCase()))
+      .filter((project) => project.client?.name.toLowerCase().includes(clientName.trim().toLocaleLowerCase()) )
       .map((project) => ({
         client: project?.client,
         project: { id: project?.id, name: project?.name, billable: project.billable },
@@ -194,10 +193,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
   useEffect(() => {
     setRecentlyUsed(getRecent());
   }, []);
-  
-  useEffect(()=>{
-    edit.isEditing ? setSelectedData(edit.obj) : handleClearForm()
-  },[edit.isEditing])
+
+  useEffect(() => {
+    edit.isEditing ? setSelectedData(edit.obj) : handleClearForm();
+  }, [edit.isEditing]);
 
   return (
     <div
@@ -208,7 +207,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
           : "border-borderColor-light dark:border-borderColor-dark"
       } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
-      <form onSubmit={(e) => submitHandler(e,handleClearForm,selectedData)} onKeyDown={(e) => e.key === "Enter" && submitHandler(e,handleClearForm,selectedData)}>
+      <form
+        onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
+        onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
+      >
         <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
@@ -228,7 +230,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
                   ref={commentRef}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
-                  value={selectedData?.comment ? selectedData.comment :""}
+                  value={selectedData?.comment ? selectedData.comment : ""}
                   onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
@@ -254,7 +256,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
               placeholder="7:30"
               className={`${
                 errors?.time
-                  ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light px-4 ring-1"
+                  ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                   : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
               } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
               value={selectedData?.time}
@@ -280,11 +282,11 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit,s
               variant="secondary"
               size="sm"
               type="submit"
-              disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task && !errors?.time)}
+              disabled={!formValidator()}
               tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-              className={`disabled:hover:bg-brand-light min-w-[75px] ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
+              className={`disabled:hover:bg-brand-light ml-[12px] min-w-[75px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
-              {edit.isEditing ? "Save" :"Submit"}
+              {edit.isEditing ? "Save" : "Submit"}
             </Button>
           </div>
           <Command.List

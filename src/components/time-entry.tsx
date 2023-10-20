@@ -108,14 +108,14 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
   };
 
   useEffect(() => {
-    getApiCall();
-  }, [submitCount, !dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0]);
+    (!dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0 )&& getApiCall();
+  }, [submitCount,dates]);
 
   return (
     <div className="mx-auto w-11/12">
       <div className="rounded-xl border-[1px] border-slate-300">
         <div className="flex justify-between border-b-[1px] border-b-slate-300 p-4">
-          <ClassicDatePicker date={date} setDate={setDate} />
+          <ClassicDatePicker date={date} setDate={setDate} /> 
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
         <h2 className="flex justify-between px-5 py-2">
