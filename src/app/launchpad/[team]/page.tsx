@@ -3,23 +3,22 @@ import { getProjectSummary, getAllUserProjects } from "@/server/services/project
 import { Skeleton } from "@/components/ui/skeleton";
 import { TimeEntry } from "@/components/time-entry";
 import { getCurrentUser } from "@/lib/session";
-
+import { pageProps } from "@/types";
+import { db } from "@/lib/db";
 import {
-  Card, 
-  Text, 
-  Flex, 
-  CategoryBar, 
+  Card,
+  Text,
+  Flex,
+  CategoryBar,
   TabList,
   Tab,
   TabGroup,
   TabPanels,
   TabPanel,
   ProgressBar,
-  MarkerBar,
 } from "@tremor/react";
-import { pageProps } from "@/types";
-import { db } from "@/lib/db";
 import { Icons } from "@/components/icons";
+import { MarkerBar } from "@/components/marker-bar";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -54,9 +53,8 @@ export default async function Dashboard({ params }: pageProps) {
       }
     }
   })
-
   const projects = await getAllUserProjects(user.id);
-  
+
   const userTimeEntry = await db.timeEntry.findMany({
     where: {
       userId: user.id,
@@ -77,9 +75,8 @@ export default async function Dashboard({ params }: pageProps) {
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
-        <TimeEntry team={team} projects={projects ? projects : []} userId={user.id} />
+        <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
-
       <aside className="col-span-12 m-2 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
         <div className="flex flex-col items-center gap-4">
@@ -124,12 +121,11 @@ export default async function Dashboard({ params }: pageProps) {
                 <TabPanel>
                   {userTimeAllocated.map((item, i) => {
                     const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce((acc, current) => acc + current.time, 0);
-
                     return (
                       <div className="mt-8" key={i}>
                         <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
                         <Flex className="items-center mt-3">
-                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4" />
+                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4 relative w-full bg-slate-200 rounded-md" />
                           <Text className="text-gray-500 text-sm font-normal">{entryValue}h</Text>
                         </Flex>
                       </div>

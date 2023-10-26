@@ -5,27 +5,26 @@ import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
-import useToast from "@/hooks/useToast";
 import { EditReferenceObj } from "../time-entry";
-
-interface TimelogProps {
-  team: string;
-  projects: Project[];
-  submitCounter: Dispatch<(prev: number) => number>;
-  date: Date;
-  edit:EditReferenceObj;
-  setEdit:Dispatch<EditReferenceObj>
-}
 
 export type SelectedData = {
   client?: Milestone;
   project?: Project;
-  milestone?: Milestone|null;
-  task?: Milestone|null;
-  comment?: string|null;
+  milestone?: Milestone | null;
+  task?: Milestone | null;
+  comment?: string | null;
   time?: string;
   billable?: boolean;
 };
+
+interface TimelogProps {
+  team: string;
+  projects: Project[];
+  date: Date;
+  edit: EditReferenceObj;
+  setEdit: Dispatch<EditReferenceObj>;
+  submitHandler: (e: FormEvent, clearForm: Function, recentlyUsed: SelectedData[], selectedData?: SelectedData) => void;
+}
 
 type ErrorsObj = {
   time?: boolean;
@@ -34,14 +33,11 @@ type ErrorsObj = {
 //list item jsx
 const renderList = (obj: SelectedData) => {
   return (
-    obj.milestone &&
     obj.project &&
-    obj.client &&
-    obj.task && (
-      <>
-        <span className="text-info-light dark:text-zinc-400">{obj.client.name}</span> / <span>{obj.project.name}</span>{" "}
-        / <span>{obj.milestone.name}</span> / <span>{obj.task.name}</span>
-      </>
+    obj.client && (
+      <span className="text-info-light dark:text-zinc-400">{`${obj.client.name} / ${obj.project.name} ${
+        obj.milestone?.name ? `/${obj.milestone.name}` : ""
+      } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}</span>
     )
   );
 };
@@ -51,22 +47,17 @@ const getRecent = () => {
   return storage ? JSON.parse(storage) : [];
 };
 
-const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
-
-export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }: TimelogProps) => {
+export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
-  const [canClear, setClear] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputParentRef = useRef<HTMLDivElement>(null);
   const checkobxRef = useRef<HTMLButtonElement>(null);
   const commentRef = useRef<HTMLInputElement>(null);
   const commentParentRef = useRef<HTMLDivElement>(null);
   const timeLogFormRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const showToast = useToast();
   //my states
-  const [selectedData, setSelectedData] = useState<SelectedData>();
+  const [selectedData, setSelectedData] = useState<SelectedData>({});
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const [projectTask, setprojectTask] = useState<Milestone[]>([]);
   const [recentlyUsed, setRecentlyUsed] = useState<SelectedData[]>([]);
@@ -78,10 +69,8 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
   const renderGroup = (arr: SelectedData[]) => {
     return arr?.map((obj, i: number) => {
       return (
-        obj.milestone &&
         obj.project &&
-        obj.client &&
-        obj.task && (
+        obj.client && (
           <Command.Group
             key={i}
             className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
@@ -89,12 +78,13 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
             {
               <div key={i}>
                 <Command.Item
-                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${obj.client.name} / ${obj.project.name} / ${obj.milestone.name} / ${obj.task.name}`}
+                  className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
+                  value={`${obj.client.name} / ${obj.project.name} ${
+                    obj.milestone?.name ? `/${obj.milestone.name}` : ""
+                  } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
                   onSelect={() => {
-                    isFocus && setSelectedData(obj);
-                    setFocus(false);
-                    setClear(true);
+                    setSelectedData(obj);
+                    setFocus(false)
                   }}
                 >
                   {renderList(obj)}
@@ -107,45 +97,20 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
     });
   };
 
-  const hoursToDecimal = (val: string) => Number(val.replace(":","."));
-
   const handleClearForm = () => {
     setSelectedData({});
     if (timeInputRef.current) timeInputRef.current.value = "";
+    if (commentRef.current) commentRef.current.value = "";
+    setRecentlyUsed(getRecent());
   };
 
-  //submit handler
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const response = await fetch("/api/team/time-entry", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        team,
-        project: selectedData?.project?.id,
-        milestone: selectedData?.milestone?.id,
-        time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 60,
-        comments: selectedData?.comment?.trim(),
-        billable: selectedData?.billable ? true : false,
-        task: selectedData?.task?.id,
-        date: new Date(date),
-      }),
-    });
-    if (response.ok) {
-      showToast("Time entry added", "success");
-      submitCounter((prev) => prev + 1);
-    } else showToast("Something went wrong,try again", "warning");
-    handleClearForm();
-  };
+  const formValidator = () =>
+    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.project && !errors?.time;
 
   const handleLoggedTimeInput = (time: string) => {
-    const numberPattern = new RegExp(/[^0-9.:{1,5}]/);
-    if (!numberPattern.test(time)) {
-      setSelectedData((prev) => ({ ...prev, time: time }));
-      setErrors((prev) => ({ ...prev, time: false }));
-    } else setErrors((prev) => ({ ...prev, time: true }));
+    const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
+    numberPattern.test(time) ? setErrors({ ...errors, time: false }) : setErrors({ ...errors, time: true });
+    setSelectedData({ ...selectedData, time: time });
   };
 
   //project select handler callback
@@ -159,6 +124,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
       return task ? task : [];
     });
     setSelectedData({
+      ...selectedData,
       client: selected?.client,
       project: { id: selected.id, name: selected?.name, billable: selected?.billable },
     });
@@ -171,12 +137,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
   const taskCallback = (selected: Milestone) => {
     const data: SelectedData = { ...selectedData, task: selected };
     setSelectedData(data);
-    const selectedObj = { client: data?.client, project: data?.project, milestone: data?.milestone, task: data?.task };
-    const arr = recentlyUsed.length < 3 ? [selectedObj, ...recentlyUsed] : [selectedObj, ...recentlyUsed.slice(0, 1)];
-    setRecentlyUsed(arr);
-    setRecent(arr);
-    setFocus(false);
-    setClear(true);
+    setFocus(false)
   };
 
   //common select handler
@@ -192,37 +153,66 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
   };
 
   //set comment
-  const setCommentText = (str: string) => setSelectedData((prev) => ({ ...prev, comment: str }));
+  const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
+
+  const getFormattedSuggestion = (current: Project, milestone?: Milestone, task?: Milestone) => ({
+    client: current?.client,
+    project: { id: current?.id, name: current?.name, billable: current.billable },
+    milestone: milestone,
+    task: task,
+  });
+
+  const getCombination = (current: Project) => {
+    const temp: SelectedData[] = [];
+    current.milestone?.map((milestone) => {
+      current?.task?.map((task) => temp.push(getFormattedSuggestion(current, milestone, task)));
+    });
+    return temp;
+  };
 
   //search suggestion
   const setSearch = (str: string) => {
-    const [clientName, projectName, milestoneName, taskName] = str.trim().split(":");
-    const matchedArr = projects
-      .filter((project) => project.client?.name.toLowerCase().includes(clientName.toLocaleLowerCase()))
-      .map((project) => ({
-        client: project?.client,
-        project: { id: project?.id, name: project?.name, billable: project.billable },
-        milestone: project?.milestone,
-        task: project?.task,
-      }));
-
-    const suggestionArr = matchedArr.reduce((prev: SelectedData[], current) => {
-      const temp: SelectedData[] = [];
-      current.milestone?.map(
-        (milestone) =>
-          current.task?.map((task) =>
-            temp.push({ client: current?.client, project: current.project, milestone, task }),
-          ),
-      );
-      return [...prev, ...temp];
+    const [clientName, projectName, milestoneName, taskName] = str.toLowerCase().trim().split("/");
+    const suggestionArr2 = projects.reduce((prev: SelectedData[], current) => {
+      const check1 = current.client?.name.toLowerCase().includes(clientName) ? current : null;
+      const check2 = projectName ? (check1?.name.toLowerCase().includes(projectName) ? current : null) : current;
+      const milestoneObj = check2?.milestone?.find((obj) => obj.name.toLowerCase().includes(milestoneName));
+      const taskObj = milestoneObj && check2?.task?.find((obj) => obj.name.toLowerCase().includes(taskName));
+      const [isTask, isMilestone] = [current.task, current.milestone];
+      const check3 =
+        check2 &&
+        (milestoneName
+          ? milestoneObj
+            ? isTask?.length
+              ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
+              : [getFormattedSuggestion(current, milestoneObj)]
+            : null
+          : isMilestone?.length
+          ? isTask?.length
+            ? getCombination(current)
+            : isMilestone.map((obj) => getFormattedSuggestion(current, obj))
+          : null);
+      const check4 =
+        check3 &&
+        (taskName
+          ? taskObj
+            ? [getFormattedSuggestion(current, milestoneObj, taskObj)]
+            : null
+          : isTask?.length && milestoneObj
+          ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
+          : check3);
+      return check4 ? [...prev, ...check4] : prev;
     }, []);
-
-    setSuggestions(suggestionArr);
+    setSuggestions(suggestionArr2);
   };
 
   useEffect(() => {
     setRecentlyUsed(getRecent());
   }, []);
+
+  useEffect(() => {
+    edit.isEditing ? setSelectedData(edit.obj) : handleClearForm();
+  }, [edit.isEditing]);
 
   return (
     <div
@@ -233,7 +223,12 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
           : "border-borderColor-light dark:border-borderColor-dark"
       } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
-      <form onSubmit={(e) => handleSubmit(e)} onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}>
+      <form
+        onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
+        onKeyDown={(e) =>
+          e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)
+        }
+      >
         <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
@@ -242,7 +237,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
             } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
           >
-            {selectedData?.milestone && selectedData?.project && selectedData?.task ? (
+            {selectedData?.project ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
                 <Icons.comment
                   onClick={() => setCommentFocus(true)}
@@ -253,14 +248,14 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
                   ref={commentRef}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment about what you..."
-                  value={selectedData?.comment ? selectedData?.comment :""}
+                  value={selectedData?.comment ? selectedData.comment : ""}
                   onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setCommentFocus(true)}
                   onBlur={() => setCommentFocus(false)}
                 />
               </div>
             ) : (
-              <div ref={inputParentRef} className="flex basis-[70%] items-center">
+              <div className="flex basis-[70%] items-center">
                 <Icons.search onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
                 <Command.Input
                   tabIndex={1}
@@ -270,6 +265,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
                   onFocus={() => setFocus(true)}
                   onClick={(e) => e.stopPropagation()}
                   onValueChange={setSearch}
+                  onBlur={(e) => {
+                    e.target.value = "";
+                    setTimeout(() =>setFocus(false), 125)
+                  }}
                 />
               </div>
             )}
@@ -279,7 +278,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
               placeholder="7:30"
               className={`${
                 errors?.time
-                  ? "border-danger-light ring-danger-light focus:border-danger-light focus:ring-danger-light px-4 ring-1"
+                  ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                   : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
               } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
               value={selectedData?.time}
@@ -295,7 +294,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
                 selectedData?.project?.billable &&
                 setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
               }
-              className={`border-borderColor-light ${
+              className={`border-borderColor-light ${selectedData?.project?.billable ? "" : "opacity-30"} ${
                 selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
               } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
             >
@@ -305,11 +304,11 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
               variant="secondary"
               size="sm"
               type="submit"
-              disabled={!(selectedData?.comment && selectedData?.time && selectedData?.task && !errors?.time)}
+              disabled={!formValidator()}
               tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-              className={`disabled:hover:bg-brand-light ml-[12px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
+              className={`disabled:hover:bg-brand-light ml-[12px] min-w-[75px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
             >
-              {edit.isEditing ? "Save" :"Submit"}
+              {edit.isEditing ? "Save" : "Submit"}
             </Button>
           </div>
           <Command.List
@@ -319,10 +318,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
-            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length < 1 && (
               <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
-            )}
+              )}
+              <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length > 0
               ? renderGroup(suggestions)
               : renderGroup(recentlyUsed)}
@@ -354,7 +353,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
             searchable
             icon={<Icons.milestone className={`h-4 w-4`} />}
             options={projectMilestone}
-            label={selectedData?.project?.name || "Milestone"}
+            label={selectedData?.milestone?.name || "Milestone"}
             selectedItem={selectedData?.milestone?.name}
             handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
             disable={!selectedData?.project?.id}
@@ -368,7 +367,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date,edit,setEdit }
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-              disable={!(selectedData?.project?.id && selectedData?.milestone?.id)}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
             />
           }
         </div>
