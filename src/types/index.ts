@@ -1,3 +1,4 @@
+import { Dispatch } from "react";
 import { Icons } from "@/components/icons";
 import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
@@ -198,3 +199,47 @@ export type Client = {
   status: Status;
   Project: number;
 };
+
+export interface Project {
+  billable?: boolean;
+  id: number;
+  name: string;
+  milestone?: Milestone[];
+  task?:Milestone[];
+  client?:Milestone;
+}
+
+export interface TimeEntryProperties {
+  id:number,
+  milestone:Milestone;
+  task:Milestone|null;
+  comments: string | null;
+  billable:boolean;
+  time:number;
+}
+
+interface ProjectLog {
+  project:Project;
+  total:number;
+  data:TimeEntryProperties[];
+}
+
+export interface TimeEntryData {
+  projectsLog:ProjectLog[];
+  dayTotal:number;
+}
+
+export interface TimeEntryDataObj {
+  [key:string]:TimeEntryData
+}
+
+ export type Milestone = {
+  id: number;
+  name: string;
+  billable?:boolean;
+};
+
+export interface GetSetDateProps {
+  date:Date;
+  setDate:Dispatch<Date>|any;
+}

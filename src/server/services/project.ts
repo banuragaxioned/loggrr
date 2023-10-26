@@ -80,7 +80,7 @@ export async function getProjects(slug: string) {
   return projectList;
 }
 
-export async function getProjectSummary(slug: string) {
+export async function getProjectSummary(slug?: string, userId?: number) {
   const summary = await db.project.findMany({
     where: { Tenant: { slug } },
     select: {
@@ -89,15 +89,20 @@ export async function getProjectSummary(slug: string) {
       billable: true,
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
-      Milestone: { select: { id: true, budget: true, projectId: true } },
+      Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
       TimeEntry: { select: { id: true, time: true, projectId: true } },
+      Members: { select: { id: true, name: true } },
+      Task:{select:{id:true,name:true}}
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  const flattenedSummary = summary.map((project) => ({
+  return userId ? summary
+    .filter((project) => project.Members.find((member) => member.id === userId))
+    .map((project) => ({ id: project.id, name: project.name, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})),task:project.Task.map((task)=>({id:task.id,name:task.name})) }))
+  : summary.map((project) => ({
     id: project.id,
     name: project.name,
     billable: project.billable,
@@ -108,8 +113,6 @@ export async function getProjectSummary(slug: string) {
     budget: project.Milestone.length ? project.Milestone.filter((item) => item.projectId === project.id)[0].budget : 0,
     logged: project.TimeEntry.length ? project.TimeEntry.filter((item) => item.projectId === project.id)[0].time : 0,
   }));
-
-  return flattenedSummary;
 }
 
 export async function getClients(slug: string) {
@@ -243,4 +246,26 @@ export async function projectAccess(projectId: number) {
   });
 
   return hasAccess;
+}
+
+export const getAllUserProjects = async(userId:number)=> {
+  const projects = await db.user.findUnique({
+   where:{
+    id:userId
+   },
+   select:{
+    Project:{
+      select:{
+        id:true,
+        name: true,
+        billable: true,
+        Client: { select: { id: true, name: true } },
+        Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
+        TimeEntry: { select: { id: true, time: true, projectId: true } },
+        Task:{select:{id:true,name:true}}
+      }
+    }
+   },
+  });
+  return projects?.Project.map((project) => ({ id: project.id, name: project.name,billable:project.billable, milestone: project.Milestone.map((milestone)=>({id:milestone.id,name:milestone.name})),task:project.Task.map((task)=>({id:task.id,name:task.name})),client:project.Client }))
 }
