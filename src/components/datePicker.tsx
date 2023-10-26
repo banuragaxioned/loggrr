@@ -47,6 +47,7 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
             setDate(select);
             buttonRef.current?.click();
           }}
+          toDate={new Date()}
           initialFocus
         />
       </PopoverContent>

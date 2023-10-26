@@ -4,7 +4,7 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 import { TimeEntryDataObj } from "@/types";
 
-const TimeEntrySchema = z.object({
+const commonValidationObj = {
   team: z.string().min(1),
   project: z.number(),
   milestone: z.number(),
@@ -12,8 +12,11 @@ const TimeEntrySchema = z.object({
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
-  task: z.number().min(1),
-});
+  task: z.number().min(1).optional(),
+}
+
+const TimeEntrySchema = z.object(commonValidationObj);
+const TimeEntryUpdateSchema = z.object({...commonValidationObj,id:z.number().min(1)});
 
 export async function POST(req: Request) {
   try {
@@ -36,14 +39,14 @@ export async function POST(req: Request) {
     //schema goes here
     const timeEntry = await db.timeEntry.create({
       data: {
-        time: body?.time,
-        comments: body?.comments,
-        milestoneId: body?.milestone,
-        billable: body?.billable,
+        time: body.time,
+        comments: body.comments,
+        milestoneId: body.milestone,
+        billable: body.billable,
         userId: user.id,
-        projectId: body?.project,
+        projectId: body.project,
         date: new Date(body.date),
-        taskId: body?.task,
+        taskId: body.task,
         tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
       },
     });
@@ -91,7 +94,7 @@ export async function GET(req: Request) {
         userId: user.id,
         Tenant: {
           slug: team ? team : "",
-        },
+        }
       },
       select: {
         id: true,
@@ -176,7 +179,7 @@ export async function GET(req: Request) {
 export async function DELETE(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") as string;
 
   try {
     const session = await getServerSession(authOptions);
@@ -194,7 +197,7 @@ export async function DELETE(req: Request) {
     //schema goes here
     const query = await db.timeEntry.delete({
       where:{
-        id:id ? Number(id) : -1
+        id: +id
       }
     })
 
@@ -208,3 +211,47 @@ export async function DELETE(req: Request) {
   }
 }
 
+export async function PUT(req: Request) {
+
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new Response("Unauthorized", { status: 403 });
+    }
+
+    const { user } = session;
+    const json = await req.json();
+    const body = TimeEntryUpdateSchema.parse(json);
+
+    // check if the user has permission to the current team/tenant id if not return 403
+    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
+    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+      return new Response("Unauthorized", { status: 403 });
+    }
+
+    //schema goes here
+   const query = await db.timeEntry.update({
+    where:{
+      id:body.id
+    },
+    data:{
+        time: body.time,
+        comments:body.comments,
+        milestoneId:body.milestone,
+        billable: body.billable,
+        projectId: body.project,
+        taskId: body.task,
+        updatedAt:new Date()
+    }
+   })
+
+    return new Response(JSON.stringify(query));
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify(error.issues), { status: 422 });
+    }
+
+    return new Response(null, { status: 500 });
+  }
+}
