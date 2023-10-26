@@ -12,7 +12,7 @@ interface MarkerBarProps {
 export function MarkerBar({ value, minValue, maxValue, className }: MarkerBarProps) {
 
   const getGreenBarWidth = () => {
-    if (maxValue > value) return value + 2
+    if (maxValue > value) return value + 2  // Added 2px to hide white space between marker and range color
     return maxValue
   }
 
