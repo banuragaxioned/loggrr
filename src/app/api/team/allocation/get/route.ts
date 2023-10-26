@@ -108,6 +108,7 @@ const dataFiltering = (data: any, startDate: Date, endDate: Date) => {
       team: user.team,
       timeAssigned: getTotalAssignedTime(user?.projects, startDate, endDate),
       skills: user.skills,
+      usergroup: user.usergroup,
     };
     const finalData = user?.projects?.length ? { ...temp, subRows: getSubRows(user, startDate, endDate) } : temp;
     resultantArray.push(finalData);
@@ -221,6 +222,7 @@ export async function POST(req: Request) {
           orderBy: { name: "asc" },
         },
         SkillScore: {
+          where: { Tenant: {slug: body.team} },
           select: {
             level: true,
             Skill: {
@@ -230,6 +232,13 @@ export async function POST(req: Request) {
             },
           },
         },
+        UserGroup: {
+          where: { Tenant: { slug: body.team } },
+          select: {
+            id: true,
+            name: true
+          }
+        }
       },
       orderBy: { name: "asc" },
     });
@@ -246,6 +255,7 @@ export async function POST(req: Request) {
             skill: item.Skill.name,
           };
         }),
+        usergroup: obj.UserGroup,
         projects: obj.Project.map((project) => {
           allocations = createAllocationDates(
             project.Allocation.filter(

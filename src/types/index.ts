@@ -186,6 +186,7 @@ export interface Assignment {
   title: string;
   subRows: AllocationDetails[] | undefined;
   skills?: Skills[];
+  usergroup: UserGroup[];
 }
 
 interface Skills {
