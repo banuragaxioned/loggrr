@@ -31,7 +31,7 @@ export default async function Dashboard({ params }: pageProps) {
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
-        <TimeEntry team={team} projects={projects ? projects : []} userId={user.id} />
+        <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
       <aside className="col-span-12 m-2 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
