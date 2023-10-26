@@ -13,7 +13,6 @@ import { SelectedData } from "./forms/timelogForm";
 interface TimeEntryProps {
   team: string;
   projects: Project[];
-  userId: number;
 }
 
 export interface EditReferenceObj {
@@ -23,7 +22,7 @@ export interface EditReferenceObj {
 }
 
 export const getDateStr = (date: Date) =>
-  date.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+  date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
 
 export type EntryData = { data: TimeEntryDataObj; status: number };
 
@@ -34,8 +33,9 @@ export const getDates = (date: Date) => {
   return arr;
 };
 
-export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
-  const [submitCount, setSubmitCount] = useState<number>(0);
+const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
+
+export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
@@ -57,7 +57,7 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
       },
     })
       .then((res) => res.json())
-      .then((res) => setEntries({ data: res, status: 1 }))
+      .then((res) => setEntries({ data: { ...entries.data, ...res }, status: 1 }))
       .catch((e) => setEntries({ data: {}, status: -1 }));
 
   const deleteApiCall = (id: number) =>
@@ -68,18 +68,18 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
       },
     })
       .then((res) => {
-        setSubmitCount((prev) => prev++);
         getApiCall();
         showToast("Time entry deleted", "success");
       })
       .catch((e) => showToast("Something went wrong", "error"));
 
-  useEffect(() => {
-    getApiCall();
-  }, [submitCount, !dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0]);
-
   //submit handler
-  const submitHandler = async (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => {
+  const submitHandler = async (
+    e: FormEvent,
+    clearForm: Function,
+    recentlyUsed: SelectedData[],
+    selectedData: SelectedData = {},
+  ) => {
     e.preventDefault();
     const defaultBodyObj = {
       team,
@@ -101,21 +101,23 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
     });
     if (response.ok) {
       showToast("Entry Updated", "success");
-      setSubmitCount((prev) => prev + 1);
-      edit.isEditing && setEdit((prev) => ({ ...prev, isEditing: false }));
+      const arr =
+        recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
+      edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
+      getApiCall();
     } else showToast("Something went wrong,try again", "warning");
     clearForm();
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => getDateStr(dateInArr) === getDateStr(date)) || entries.status === 0 )&& getApiCall();
-  }, [submitCount,dates]);
+    (!dates.find((dateInArr) => entries.data[getDateStr(dateInArr)]) || entries.status === 0) && getApiCall();
+  }, [dates]);
 
   return (
     <div className="mx-auto w-11/12">
       <div className="rounded-xl border-[1px] border-slate-300">
         <div className="flex justify-between border-b-[1px] border-b-slate-300 p-4">
-          <ClassicDatePicker date={date} setDate={setDate} /> 
+          <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
         <h2 className="flex justify-between px-5 py-2">
@@ -125,7 +127,6 @@ export const TimeEntry = ({ team, projects, userId }: TimeEntryProps) => {
       <TimeLogForm
         team={team}
         projects={projects}
-        submitCounter={setSubmitCount}
         date={date}
         edit={edit}
         setEdit={setEdit}

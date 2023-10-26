@@ -20,11 +20,10 @@ export type SelectedData = {
 interface TimelogProps {
   team: string;
   projects: Project[];
-  submitCounter: Dispatch<(prev: number) => number>;
   date: Date;
   edit: EditReferenceObj;
   setEdit: Dispatch<EditReferenceObj>;
-  submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
+  submitHandler: (e: FormEvent, clearForm: Function, recentlyUsed: SelectedData[], selectedData?: SelectedData) => void;
 }
 
 type ErrorsObj = {
@@ -34,14 +33,11 @@ type ErrorsObj = {
 //list item jsx
 const renderList = (obj: SelectedData) => {
   return (
-    obj.milestone &&
     obj.project &&
-    obj.client &&
-    obj.task && (
-      <>
-        <span className="text-info-light dark:text-zinc-400">{obj.client.name}</span> / <span>{obj.project.name}</span>{" "}
-        / <span>{obj.milestone.name}</span> / <span>{obj.task.name}</span>
-      </>
+    obj.client && (
+      <span className="text-info-light dark:text-zinc-400">{`${obj.client.name} / ${obj.project.name} ${
+        obj.milestone?.name ? `/${obj.milestone.name}` : ""
+      } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}</span>
     )
   );
 };
@@ -51,13 +47,10 @@ const getRecent = () => {
   return storage ? JSON.parse(storage) : [];
 };
 
-const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
-
-export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit, submitHandler }: TimelogProps) => {
+export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => {
   const [isFocus, setFocus] = useState<boolean>(false);
   const [commentFocus, setCommentFocus] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputParentRef = useRef<HTMLDivElement>(null);
   const checkobxRef = useRef<HTMLButtonElement>(null);
   const commentRef = useRef<HTMLInputElement>(null);
   const commentParentRef = useRef<HTMLDivElement>(null);
@@ -76,10 +69,8 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
   const renderGroup = (arr: SelectedData[]) => {
     return arr?.map((obj, i: number) => {
       return (
-        obj.milestone &&
         obj.project &&
-        obj.client &&
-        obj.task && (
+        obj.client && (
           <Command.Group
             key={i}
             className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
@@ -87,11 +78,13 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
             {
               <div key={i}>
                 <Command.Item
-                  className="w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${obj.client.name} / ${obj.project.name} / ${obj.milestone.name} / ${obj.task.name}`}
+                  className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
+                  value={`${obj.client.name} / ${obj.project.name} ${
+                    obj.milestone?.name ? `/${obj.milestone.name}` : ""
+                  } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
                   onSelect={() => {
-                    isFocus && setSelectedData({ ...selectedData, ...obj });
-                    setFocus(false);
+                    setSelectedData(obj);
+                    setFocus(false)
                   }}
                 >
                   {renderList(obj)}
@@ -107,10 +100,12 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
   const handleClearForm = () => {
     setSelectedData({});
     if (timeInputRef.current) timeInputRef.current.value = "";
+    if (commentRef.current) commentRef.current.value = "";
+    setRecentlyUsed(getRecent());
   };
 
   const formValidator = () =>
-    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.task && !errors?.time;
+    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.project && !errors?.time;
 
   const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
@@ -142,11 +137,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
   const taskCallback = (selected: Milestone) => {
     const data: SelectedData = { ...selectedData, task: selected };
     setSelectedData(data);
-    const selectedObj = { client: data?.client, project: data?.project, milestone: data?.milestone, task: data?.task };
-    const arr = recentlyUsed.length < 3 ? [selectedObj, ...recentlyUsed] : [selectedObj, ...recentlyUsed.slice(0, 1)];
-    setRecentlyUsed(arr);
-    setRecent(arr);
-    setFocus(false);
+    setFocus(false)
   };
 
   //common select handler
@@ -164,30 +155,55 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
   //set comment
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
+  const getFormattedSuggestion = (current: Project, milestone?: Milestone, task?: Milestone) => ({
+    client: current?.client,
+    project: { id: current?.id, name: current?.name, billable: current.billable },
+    milestone: milestone,
+    task: task,
+  });
+
+  const getCombination = (current: Project) => {
+    const temp: SelectedData[] = [];
+    current.milestone?.map((milestone) => {
+      current?.task?.map((task) => temp.push(getFormattedSuggestion(current, milestone, task)));
+    });
+    return temp;
+  };
+
   //search suggestion
   const setSearch = (str: string) => {
-    const [clientName, projectName, milestoneName, taskName] = str.trim().split("/");
-    const matchedArr = projects
-      .filter((project) => project.client?.name.toLowerCase().includes(clientName.trim().toLocaleLowerCase()))
-      .map((project) => ({
-        client: project?.client,
-        project: { id: project?.id, name: project?.name, billable: project.billable },
-        milestone: project?.milestone,
-        task: project?.task,
-      }));
-
-    const suggestionArr = matchedArr.reduce((prev: SelectedData[], current) => {
-      const temp: SelectedData[] = [];
-      current.milestone?.map(
-        (milestone) =>
-          current.task?.map((task) =>
-            temp.push({ client: current?.client, project: current.project, milestone, task }),
-          ),
-      );
-      return [...prev, ...temp];
+    const [clientName, projectName, milestoneName, taskName] = str.toLowerCase().trim().split("/");
+    const suggestionArr2 = projects.reduce((prev: SelectedData[], current) => {
+      const check1 = current.client?.name.toLowerCase().includes(clientName) ? current : null;
+      const check2 = projectName ? (check1?.name.toLowerCase().includes(projectName) ? current : null) : current;
+      const milestoneObj = check2?.milestone?.find((obj) => obj.name.toLowerCase().includes(milestoneName));
+      const taskObj = milestoneObj && check2?.task?.find((obj) => obj.name.toLowerCase().includes(taskName));
+      const [isTask, isMilestone] = [current.task, current.milestone];
+      const check3 =
+        check2 &&
+        (milestoneName
+          ? milestoneObj
+            ? isTask?.length
+              ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
+              : [getFormattedSuggestion(current, milestoneObj)]
+            : null
+          : isMilestone?.length
+          ? isTask?.length
+            ? getCombination(current)
+            : isMilestone.map((obj) => getFormattedSuggestion(current, obj))
+          : null);
+      const check4 =
+        check3 &&
+        (taskName
+          ? taskObj
+            ? [getFormattedSuggestion(current, milestoneObj, taskObj)]
+            : null
+          : isTask?.length && milestoneObj
+          ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
+          : check3);
+      return check4 ? [...prev, ...check4] : prev;
     }, []);
-
-    setSuggestions(suggestionArr);
+    setSuggestions(suggestionArr2);
   };
 
   useEffect(() => {
@@ -208,8 +224,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
       } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
       <form
-        onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
-        onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
+        onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
+        onKeyDown={(e) =>
+          e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)
+        }
       >
         <Command label="Command Menu" className="text-content-light relative">
           <div
@@ -219,7 +237,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
                 : "border-b-borderColor-light dark:border-b-borderColor-dark"
             } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
           >
-            {selectedData?.milestone && selectedData?.project && selectedData?.task ? (
+            {selectedData?.project ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
                 <Icons.comment
                   onClick={() => setCommentFocus(true)}
@@ -237,7 +255,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
                 />
               </div>
             ) : (
-              <div ref={inputParentRef} className="flex basis-[70%] items-center">
+              <div className="flex basis-[70%] items-center">
                 <Icons.search onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
                 <Command.Input
                   tabIndex={1}
@@ -247,7 +265,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
                   onFocus={() => setFocus(true)}
                   onClick={(e) => e.stopPropagation()}
                   onValueChange={setSearch}
-                  onBlur={() => setTimeout(() => setFocus(false), 125)}
+                  onBlur={(e) => {
+                    e.target.value = "";
+                    setTimeout(() =>setFocus(false), 125)
+                  }}
                 />
               </div>
             )}
@@ -273,7 +294,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
                 selectedData?.project?.billable &&
                 setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
               }
-              className={`border-borderColor-light ${
+              className={`border-borderColor-light ${selectedData?.project?.billable ? "" : "opacity-30"} ${
                 selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
               } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
             >
@@ -297,10 +318,10 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
-            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length < 1 && (
               <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
-            )}
+              )}
+              <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length > 0
               ? renderGroup(suggestions)
               : renderGroup(recentlyUsed)}
@@ -332,7 +353,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
             searchable
             icon={<Icons.milestone className={`h-4 w-4`} />}
             options={projectMilestone}
-            label={selectedData?.project?.name || "Milestone"}
+            label={selectedData?.milestone?.name || "Milestone"}
             selectedItem={selectedData?.milestone?.name}
             handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
             disable={!selectedData?.project?.id}
@@ -346,7 +367,7 @@ export const TimeLogForm = ({ team, projects, submitCounter, date, edit, setEdit
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-              disable={!(selectedData?.project?.id && selectedData?.milestone?.id)}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
             />
           }
         </div>

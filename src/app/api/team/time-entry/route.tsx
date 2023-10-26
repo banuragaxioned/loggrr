@@ -12,7 +12,7 @@ const commonValidationObj = {
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
-  task: z.number().min(1),
+  task: z.number().min(1).optional(),
 }
 
 const TimeEntrySchema = z.object(commonValidationObj);
@@ -94,7 +94,7 @@ export async function GET(req: Request) {
         userId: user.id,
         Tenant: {
           slug: team ? team : "",
-        },
+        }
       },
       select: {
         id: true,
