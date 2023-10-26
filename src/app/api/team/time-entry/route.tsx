@@ -179,7 +179,7 @@ export async function GET(req: Request) {
 export async function DELETE(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") as string;
 
   try {
     const session = await getServerSession(authOptions);
@@ -197,7 +197,7 @@ export async function DELETE(req: Request) {
     //schema goes here
     const query = await db.timeEntry.delete({
       where:{
-        id:id ? Number(id) : -1
+        id: +id
       }
     })
 
