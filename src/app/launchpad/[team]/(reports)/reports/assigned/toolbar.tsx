@@ -4,12 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch, useEffect } from "react";
-import { DataTableVisibilityToggler } from "@/components/data-table-toggler";
-import { Icons } from "@/components/icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
-import {Row} from "@tanstack/react-table";
 import { Toggle } from "@/components/ui/toggle";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
@@ -17,38 +14,9 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   setStartDate: Dispatch<Date>;
   setWeekend: Dispatch<string>;
   setBillable: Dispatch<string>;
+  billable: string;
+  weekend: string;
 }
-
-const weekOptions = [
-  {
-    value: "week",
-    label: "Week",
-    icon: Icons.activity,
-  },
-  {
-    value: "weekdays",
-    label: "Week Days",
-    icon: Icons.activity,
-  },
-];
-
-const entryTypeOptions = [
-  {
-    value: "totalTime",
-    label: "Total Time",
-    icon: Icons.activity,
-  },
-  {
-    value: "billableTime",
-    label: "Billable",
-    icon: Icons.activity,
-  },
-  {
-    value: "nonBillableTime",
-    label: "Non-Billable",
-    icon: Icons.activity,
-  },
-];
 
 export function DataTableToolbar<TData>({
   table,
@@ -56,7 +24,34 @@ export function DataTableToolbar<TData>({
   setStartDate,
   setWeekend,
   setBillable,
+  billable,
+  weekend,
 }: DataTableToolbarExtendedProps<Assignment>) {
+
+  const entryOptionClick: Record<string, { value: string; label: string, next: string, class: string }> = {
+    totalTime: {
+      value: "totalTime",
+      label: "Total Time",
+      next: "billableTime",
+      class: "bg-transparent hover:text-slate-500"
+    },
+    billableTime: {
+      value: "billableTime",
+      label: "Billable",
+      next: "nonBillableTime",
+      class: "bg-indigo-500 border-indigo-500 text-white",
+    },
+    nonBillableTime: {
+      value: "nonBillableTime",
+      label: "Non-Billable",
+      next: "totalTime",
+      class: "bg-indigo-600 border-indigo-600 text-white"
+    },
+  };
+
+  const handleEntryTime = (data: { next: string }) => {
+    setBillable(data.next)
+  };
 
   const group = useSearchParams().get("group");
 
@@ -93,16 +88,18 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle className="data-[state=on]:bg-[#5048e5] data-[state=on]:text-white data-[state=on]:border-[#5048e5] border rounded-md" 
+        <Toggle className="data-[state=on]:bg-indigo-600 data-[state=on]:text-white data-[state=on]:border-indigo-600 border rounded-md"
           onClick={(e) => {
             const element = e.target as Element;
             const dataState = element.getAttribute("data-state");
             setWeekend(dataState === 'off' ? "week" : "weekdays")
           }}
         >
-          Week
+          {weekend === 'weekdays' ? 'Week Days' : 'Week'}
         </Toggle>
-        <DataTableVisibilityToggler options={entryTypeOptions} title="Entry" selectionHandler={setBillable} />
+        <button onClick={() => handleEntryTime(entryOptionClick[billable])} className={`border rounded-md h-10 px-3 ${entryOptionClick[billable].class}`}>
+          {entryOptionClick[billable].label}
+        </button>
         <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />
         <DataTableFacetedFilter options={groupList} title="Groups" column={table.getAllColumns()[2]} />
       </div>

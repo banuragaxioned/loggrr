@@ -102,7 +102,7 @@ export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<
     <DataTableStructure
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
-      toolBarProps={{ startDate, setStartDate, setWeekend, setBillable }}
+      toolBarProps={{ startDate, setStartDate, setWeekend, setBillable, billable, weekend }}
       rowClickHandler={rowClickHandler}
     />
   ) : (
