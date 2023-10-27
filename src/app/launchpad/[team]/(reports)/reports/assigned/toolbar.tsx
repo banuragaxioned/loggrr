@@ -3,9 +3,10 @@
 import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
-import { Dispatch } from "react";
+import { Dispatch, useEffect } from "react";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
-import { Row } from "@tanstack/react-table";
+import { removeDuplicatesFromArray } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 import { Toggle } from "@/components/ui/toggle";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
@@ -26,17 +27,6 @@ export function DataTableToolbar<TData>({
   billable,
   weekend,
 }: DataTableToolbarExtendedProps<Assignment>) {
-  let skillValues: Array<{ value: string, label: string }> = [];
-
-  const skillList = table.getRowModel().rows.map((item: Row<Assignment>) => {
-    item?.original?.skills?.map((value: { skill: string }) => {
-      !skillValues.find((obj) => obj.value.toLowerCase() === value.skill.toLowerCase()) &&
-        skillValues.push({
-          label: value.skill,
-          value: value.skill,
-        });
-    });
-  });
 
   const entryOptionClick: Record<string, { value: string; label: string, next: string, class: string }> = {
     totalTime: {
@@ -63,14 +53,34 @@ export function DataTableToolbar<TData>({
     setBillable(data.next)
   };
 
-  const sortedSkills = skillValues.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+  const group = useSearchParams().get("group");
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const flattedSkillArray = table.getRowModel().rows.flatMap(row => row.original.skills)
+
+  const uniqueSkillList = removeDuplicatesFromArray(flattedSkillArray.map(skillList => skillList?.skill) as [])
+
+  const skillList = uniqueSkillList.map(skill => ({
+    label: skill,
+    value: skill
+  }))
+
+  const flattedGroupArray = table.options.data.flatMap((assign) => assign.usergroup)
+
+  const uniqueGroupList = removeDuplicatesFromArray(flattedGroupArray.map(group => group?.name) as [])
+
+  const groupList = uniqueGroupList.map(group => ({
+    label: group,
+    value: group
+  }))
+
+  useEffect(() => {
+    group && table.getAllColumns()[2].setFilterValue([group])
+  }, [group])
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border-[1px] border-border p-[15px]">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 flex-wrap items-center space-x-2 space-y-2">
         <DatePicker date={startDate} setDate={startDateValidator} />
         <Input
           placeholder="Filter names..."
@@ -90,7 +100,8 @@ export function DataTableToolbar<TData>({
         <button onClick={() => handleEntryTime(entryOptionClick[billable])} className={`border rounded-md h-10 px-3 ${entryOptionClick[billable].class}`}>
           {entryOptionClick[billable].label}
         </button>
-        <DataTableFacetedFilter options={sortedSkills} title="Skills" column={table.getAllColumns()[1]} />
+        <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />
+        <DataTableFacetedFilter options={groupList} title="Groups" column={table.getAllColumns()[2]} />
       </div>
     </div>
   );

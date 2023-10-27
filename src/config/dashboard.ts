@@ -64,6 +64,11 @@ export const dashboardConfig: DashboardConfig = {
       href: "/manage/members",
       icon: "user",
     },
+    {
+      title: "Groups",
+      href: "/usergroup",
+      icon: "group",
+    },
   ],
   sidebarSkills: [
     {

@@ -9,6 +9,7 @@ module.exports = {
     ".src/components/**/*.{js,jsx,ts,tsx}",
     ".src/app/**/*.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}", // Tremor module
   ],
   theme: {
     container: {
@@ -61,7 +62,59 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Tremor package style config start 
+        tremor: {
+          // light mode
+          brand: {
+            DEFAULT: "#3b82f6", // blue-500
+            inverted: "#ffffff", // white
+          },
+          background: {
+            DEFAULT: "#ffffff", // white
+            subtle: "#E2E8F0"
+          },
+          border: {
+            DEFAULT: "#CBD5E1", // gray-200
+          },
+          ring: {
+            DEFAULT: "#e5e7eb", // gray-200
+          },
+          content: {
+            DEFAULT: "#374151", // gray-500
+            subtle: "#31C48D"
+          },
+        },
+        "dark-tremor": {
+          // dark mode
+          brand: {
+            DEFAULT: "#3b82f6", // blue-500
+            inverted: "#ffffff", // white
+          },
+          background: {
+            DEFAULT: "#18181B", // gray-900
+          },
+          border: {
+            DEFAULT: "#3F3F46", // gray-800
+          },
+          ring: {
+            DEFAULT: "#1f2937", // gray-800
+          },
+          content: {
+            DEFAULT: "#ffffff", // gray-500
+          },
+        },
       },
+      boxShadow: {
+        // light
+        "tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "tremor-card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        // dark
+        "dark-tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "dark-tremor-card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "dark-tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      },
+      // Tremor package style config end
       fontFamily: {
         sans: ["var(--font-primary)", ...fontFamily.sans],
         heading: ["var(--font-heading)", ...fontFamily.sans],
@@ -70,6 +123,10 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // tremor border radius style
+        "tremor-small": "0.375rem",
+        "tremor-default": "0.5rem",
+        "tremor-full": "9999px",
       },
       keyframes: {
         "accordion-down": {
@@ -87,6 +144,36 @@ module.exports = {
       },
     },
   },
+  // tremor safelist
+  safelist: [
+    {
+      pattern:
+        /^(bg-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+      variants: ["hover", "ui-selected"],
+    },
+    {
+      pattern:
+        /^(text-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+      variants: ["hover", "ui-selected"],
+    },
+    {
+      pattern:
+        /^(border-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+      variants: ["hover", "ui-selected"],
+    },
+    {
+      pattern:
+        /^(ring-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+    },
+    {
+      pattern:
+        /^(stroke-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+    },
+    {
+      pattern:
+        /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
+    },
+  ],
   // @ts-ignore
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],
 };

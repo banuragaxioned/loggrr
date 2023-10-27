@@ -17,6 +17,7 @@ import {
   MessageSquare,
   ListRestart,
   User,
+  BoxesIcon,
   ArrowRight,
   Settings,
   CreditCard,
@@ -37,6 +38,7 @@ import {
   LucideProps,
   Edit,
   Save,
+  CalendarDays,
 } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
@@ -72,6 +74,7 @@ export const Icons = {
   comment: MessageSquare,
   dollar: CurrencyDollarIcon,
   user: User,
+  group: BoxesIcon,
   arrowRight: ArrowRight,
   settings: Settings,
   billing: CreditCard,
@@ -91,4 +94,5 @@ export const Icons = {
   minusCircle: MinusCircle,
   edit: Edit,
   save: Save,
+  calendar: CalendarDays,
 };
