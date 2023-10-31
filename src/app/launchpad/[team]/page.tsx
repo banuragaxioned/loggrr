@@ -19,6 +19,7 @@ import {
 } from "@tremor/react";
 import { Icons } from "@/components/icons";
 import { MarkerBar } from "@/components/marker-bar";
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -71,13 +72,20 @@ export default async function Dashboard({ params }: pageProps) {
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
 
+  // const toolTip = () => {
+  //   const value = `${(overallEntryTime / 40) * 100}%`
+  //   return (
+  //     <p className="p-3 border border-blue-200">{value}</p>
+  //   )
+  // }
+  
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
         <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
-      <aside className="col-span-12 m-2 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
+      <aside className="col-span-12 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
         <div className="flex flex-col items-center gap-4">
           <Card className="mx-auto w-full p-4 pb-6">
@@ -85,7 +93,7 @@ export default async function Dashboard({ params }: pageProps) {
               <Text className="pb-5 text-base bg-gradient-to-r from-green-to-red">Logged hours</Text>
               <Text className="text-[#6B7280] text-xs flex items-center pb-5">
                 <Icons.calendar className="ml-2 h-4 w-4 mr-[5px]" />
-                This week
+                Current week
               </Text>
             </Flex>
             <Flex>
@@ -98,6 +106,7 @@ export default async function Dashboard({ params }: pageProps) {
               colors={["rose", "orange", "yellow", "emerald"]}
               markerValue={(overallEntryTime / 40) * 100}
               className="mt-3 text-sm"
+              // tooltip={toolTip}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
@@ -108,15 +117,17 @@ export default async function Dashboard({ params }: pageProps) {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  {userTimeEntry.length === 0 ? <p>Log your hours</p> : userTimeEntry.map((item, i) => (
-                    <div className="mt-8" key={i}>
-                      <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
-                      <Flex className="items-center mt-3">
-                        <ProgressBar value={item.time} color="indigo" className="mr-4" />
-                        <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 40 * 100)}%</Text>
-                      </Flex>
-                    </div>
-                  ))}
+                  <ScrollArea className="max-h-[256px] w-full">
+                    {userTimeEntry.map((item, i) => (
+                      <div className="mt-8 pr-3" key={i}>
+                        <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                        <Flex className="items-center mt-3">
+                          <ProgressBar value={userTimeEntry.length === 0 ? 0 : item.time} color="indigo" className="mr-4" />
+                          <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 40 * 100)}%</Text>
+                        </Flex>
+                      </div>
+                    ))}
+                  </ScrollArea>
                 </TabPanel>
                 <TabPanel>
                   {userTimeAllocated.map((item, i) => {
