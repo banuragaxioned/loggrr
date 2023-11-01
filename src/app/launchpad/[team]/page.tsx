@@ -72,16 +72,6 @@ export default async function Dashboard({ params }: pageProps) {
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
 
-  const toolTip = () => {
-    const value = `${(overallEntryTime / 40) * 100}%`
-    return (
-      <p className="p-3 border border-blue-200">{value}</p>
-    )
-  }
-
-  // console.log(toolTip());
-  
-  
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
