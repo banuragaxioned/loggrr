@@ -74,7 +74,7 @@ module.exports = {
             subtle: "#E2E8F0"
           },
           border: {
-            DEFAULT: "#CBD5E1", // gray-200
+            DEFAULT: "#CBD5E1", // slate-300
           },
           ring: {
             DEFAULT: "#e5e7eb", // gray-200
@@ -87,20 +87,20 @@ module.exports = {
         "dark-tremor": {
           // dark mode
           brand: {
-            DEFAULT: "#3b82f6", // blue-500
+            DEFAULT: "#ffffff", // white
             inverted: "#ffffff", // white
           },
           background: {
             DEFAULT: "#18181B", // gray-900
           },
           border: {
-            DEFAULT: "#3F3F46", // gray-800
+            DEFAULT: "#1f2937", // gray-800
           },
           ring: {
             DEFAULT: "#1f2937", // gray-800
           },
           content: {
-            DEFAULT: "#ffffff", // gray-500
+            DEFAULT: "#ffffff", // white
           },
         },
       },
