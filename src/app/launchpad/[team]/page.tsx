@@ -6,7 +6,6 @@ import { getCurrentUser } from "@/lib/session";
 import { pageProps } from "@/types";
 import { db } from "@/lib/db";
 import {
-  Card,
   Text,
   Flex,
   CategoryBar,
@@ -81,7 +80,7 @@ export default async function Dashboard({ params }: pageProps) {
       <aside className="col-span-12 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
         <div className="flex flex-col items-center gap-4">
-          <Card className="mx-auto w-[95%] p-4 pb-6 side-bar">
+          <div className="mx-auto max-w-xs w-full border border-border rounded-xl p-4 pb-6 side-bar">
             <Flex className="font-semibold items-center">
               <Text className="pb-5 text-base bg-gradient-to-r from-green-to-red">Logged hours</Text>
               <Text className="text-[#6B7280] text-xs flex items-center pb-5">
@@ -110,35 +109,45 @@ export default async function Dashboard({ params }: pageProps) {
               </TabList>
               <TabPanels>
                 <TabPanel className="max-h-[500px] mt-0">
-                  <ScrollArea className={` ${userTimeEntry.length > 5 ? "h-[500px]" : "h-auto"} w-full}`}>
-                    {userTimeEntry.map((item, i) => (
-                      <div className="mt-8 pr-3" key={i}>
-                        <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                  <ScrollArea className={`${userTimeEntry.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}>
+                    {userTimeEntry.length === 0 ?
+                      <div className="mt-8 pr-3">
+                        <Text className="w-full font-semibold text-black leading-5">Projects</Text>
                         <Flex className="items-center mt-3">
-                          <ProgressBar value={userTimeEntry.length === 0 ? 0 : item.time} color="indigo" className="mr-4" />
-                          <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 40 * 100)}%</Text>
+                          <ProgressBar value={0} color="indigo" className="mr-4" />
+                          <Text className="text-gray-500 text-sm font-normal">0%</Text>
                         </Flex>
-                      </div>
-                    ))}
+                      </div> :
+                      userTimeEntry.map((item, i) => (
+                        <div className="mt-8 pr-3" key={i}>
+                          <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                          <Flex className="items-center mt-3">
+                            <ProgressBar value={item.time} color="indigo" className="mr-4" />
+                            <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 40 * 100)}%</Text>
+                          </Flex>
+                        </div>
+                      ))}
                   </ScrollArea>
                 </TabPanel>
-                <TabPanel>
-                  {userTimeAllocated.map((item, i) => {
-                    const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce((acc, current) => acc + current.time, 0);
-                    return (
-                      <div className="mt-8" key={i}>
-                        <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
-                        <Flex className="items-center mt-3">
-                          <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4 relative w-full bg-slate-200 rounded-md" />
-                          <Text className="text-gray-500 text-sm font-normal">{entryValue}h</Text>
-                        </Flex>
-                      </div>
-                    )
-                  })}
+                <TabPanel className="max-h-[550px] mt-0">
+                  <ScrollArea className={`${userTimeAllocated.length >= 5 ? "h-[550px]" : "h-auto"} w-full}`}>
+                    {userTimeAllocated.map((item, i) => {
+                      const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce((acc, current) => acc + current.time, 0);
+                      return (
+                        <div className="mt-8 pr-3" key={i}>
+                          <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                          <Flex className="items-center mt-3">
+                            <MarkerBar value={item.billableTime + item.nonBillableTime} minValue={0} maxValue={entryValue} color="slate" className="mr-4 relative w-full bg-slate-200 rounded-md" />
+                            <Text className="text-gray-500 text-sm font-normal">{entryValue}h</Text>
+                          </Flex>
+                        </div>
+                      )
+                    })}
+                  </ScrollArea>
                 </TabPanel>
               </TabPanels>
             </TabGroup>
-          </Card>
+          </div>
         </div>
         {/* Time Insights (breakdown of time over the last week)
         <div className="flex flex-col items-center gap-4">
