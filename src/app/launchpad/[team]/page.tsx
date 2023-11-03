@@ -90,7 +90,7 @@ export default async function Dashboard({ params }: pageProps) {
             </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{overallEntryTime}</span> / 40h
+                <span className="text-3xl font-semibold">{(overallEntryTime / 60).toFixed(2)}</span> / 40h
               </Text>
             </Flex>
             <CategoryBar

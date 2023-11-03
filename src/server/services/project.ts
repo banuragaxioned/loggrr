@@ -2,7 +2,7 @@ import { prisma } from "../db";
 import { db } from "@/lib/db";
 
 export const getMembersByProjectId = async (slug: string, projectId: number) => {
-  const data = await prisma.project.findMany({
+  const data = await prisma.project.findUnique({
     where: { Tenant: { slug }, id: +projectId },
     select: {
       Members: {
@@ -19,20 +19,32 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
           },
         },
       },
+      Owner: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          status: true,
+        }
+      }
     },
   });
 
-  const members = data[0]?.Members?.map((value) => {
+  const members = data?.Members.map((value) => {
     return {
-      id: value?.id,
-      name: value?.name,
-      email: value?.email,
-      image: value?.image,
-      status: value?.status,
+      id: value.id,
+      name: value.name,
+      email: value.email,
+      image: value.image,
+      status: value.status,
       projectId: projectId,
     };
   });
-  return members;
+
+  const projectMembers = members && data?.Owner ? [...members, {...data?.Owner, projectId}] : members
+
+  return projectMembers;
 };
 
 export async function getProjects(slug: string) {

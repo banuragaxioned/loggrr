@@ -64,7 +64,7 @@ export function DataTablePagination<TData>({ table, pageSizeArr }: DataTablePagi
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
-            <Icons.arrowRight className="h-4 w-4" />
+            <Icons.chevronRight className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
