@@ -346,7 +346,6 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             label={selectedData?.project?.name || "Project"}
             selectedItem={selectedData?.project?.name}
             handleSelect={(option) => selectHandler(option, projects, projectCallback)}
-            disable={!selectedData?.client?.id}
           />
           <ComboBox
             tabIndex={3}
@@ -367,7 +366,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.project.task?.length}
             />
           }
         </div>

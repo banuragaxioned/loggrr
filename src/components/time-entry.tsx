@@ -120,9 +120,9 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
-        <h2 className="flex justify-between px-5 py-2">
+        <span className="flex justify-between px-5 py-2 font-semibold text-lg">
           Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
-        </h2>
+        </span>
       </div>
       <TimeLogForm
         team={team}
