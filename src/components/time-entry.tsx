@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import useToast from "@/hooks/useToast";
 import { SelectedData } from "./forms/timelogForm";
 
-interface TimeEntryProps {
+export interface TimeEntryProps {
   team: string;
   projects: Project[];
 }

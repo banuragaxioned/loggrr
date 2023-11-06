@@ -366,7 +366,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.project.task?.length}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !projectTask.length}
             />
           }
         </div>
