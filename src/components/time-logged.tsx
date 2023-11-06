@@ -25,12 +25,12 @@ import {
   }
 
 export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
-  let userTimeEntry = [];
+  let userTimeEntry:any[] = [];
     return (
         <>
         <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
-        <TimeEntry team={team} projects={projects ? projects : []} />
+        <TimeEntry team={team} projects={projects} />
       </main>
       <aside className="col-span-12 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}

@@ -51,7 +51,7 @@ export default async function Dashboard({ params }: pageProps) {
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
-      <TimeLogged team={team} projects={projects} allocationData={allocationData}/>
+      <TimeLogged team={team} projects={projects ? projects : []} allocationData={allocationData}/>
     </div>
   );
 }
