@@ -63,16 +63,8 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const dates = searchParams.get("dates");
-  const dateStrs: string[] =
-    dates &&
-    JSON.parse(dates)?.map((date: Date) =>
-      new Date(date).toLocaleDateString("en-us", {
-        day: "2-digit",
-        month: "short",
-        weekday: "short",
-      }),
-    );
+  const dates = searchParams.get("dates") as string;
+  const dateStrs: string[] =  JSON.parse(dates);
 
   try {
     const session = await getServerSession(authOptions);
@@ -88,12 +80,16 @@ export async function GET(req: Request) {
     if (user.tenants.filter((tenant) => tenant.slug === team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
-    //schema goes here
+
     const response = await db.timeEntry.findMany({
-      where: {
+      where:{
         userId: user.id,
         Tenant: {
           slug: team ? team : "",
+        },
+        date:{
+          lte: dateStrs[dateStrs.length-1],
+          gte: dateStrs[0]
         }
       },
       select: {
@@ -130,7 +126,7 @@ export async function GET(req: Request) {
       orderBy: {
         projectId: "asc",
       },
-    });
+    })
 
     const restructuredData = response.reduce((prev: TimeEntryDataObj, current) => {
       const currentDateStr = current.date.toLocaleDateString("en-us", {
@@ -138,7 +134,6 @@ export async function GET(req: Request) {
         month: "short",
         weekday: "short",
       });
-      const check = dateStrs.includes(currentDateStr);
       const project = { ...current?.Project };
       const data = {
         id: current.id,
@@ -149,15 +144,15 @@ export async function GET(req: Request) {
         comments: current.comments,
       };
       const projectObj = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
-      if (check && prev[currentDateStr]) {
+      if ( prev[currentDateStr]) {
         const previous = prev[currentDateStr];
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
         if (index > -1) {
           previous.projectsLog[index]?.data.push(data);
           previous.projectsLog[index].total += current?.time / 60;
           previous.dayTotal += current.time / 60;
-        } else check && previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
-      } else if (check)
+        } else previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
+      } else 
         prev[currentDateStr] = {
           dayTotal: current?.time / 60,
           projectsLog: [{ project: projectObj, data: [data], total: current?.time / 60 }],
@@ -165,7 +160,6 @@ export async function GET(req: Request) {
 
       return prev;
     }, {});
-
     return new Response(JSON.stringify(restructuredData));
   } catch (error) {
     if (error instanceof z.ZodError) {

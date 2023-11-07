@@ -1,3 +1,4 @@
+"use client";
 import { TimeEntry } from "@/components/time-entry";
 import {
     Text,
@@ -14,6 +15,7 @@ import {
   import { MarkerBar } from "@/components/marker-bar";
   import { ScrollArea } from "@/components/ui/scroll-area";
   import { TimeEntryProps } from "@/components/time-entry";
+import { useState } from "react";
   
   interface TimeLoggedProps extends TimeEntryProps{
     allocationData:{
@@ -25,12 +27,12 @@ import {
   }
 
 export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
-  let userTimeEntry:any[] = [];
+  const [userTimeEntry,setUserEntry] = useState<any>({totalTime:0.0});
     return (
         <>
         <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
-        <TimeEntry team={team} projects={projects} />
+        <TimeEntry team={team} projects={projects} setUserEntry={setUserEntry}/>
       </main>
       <aside className="col-span-12 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
         {/* Quick stats (% of time logged in the last week) */}
@@ -45,15 +47,15 @@ export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
             </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{0/60}</span> / 40h
+                <span className="text-3xl font-semibold">{userTimeEntry.totalTime}</span> / 40h
               </Text>
             </Flex>
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(0 / 2400) * 100}
+              markerValue={(userTimeEntry.totalTime/40)*100}
               className="mt-3 text-sm "
-              tooltip={`${Math.round((0 / 2400) * 100)}%`}
+              tooltip={`${Math.round(userTimeEntry.totalTime/40)*100}%`}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
@@ -65,7 +67,7 @@ export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
               <TabPanels>
                 <TabPanel className="max-h-[500px] mt-0">
                   <ScrollArea className={`${userTimeEntry.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}>
-                    {userTimeEntry.length === 0 ?
+                    {/* {userTimeEntry.length === 0 ?
                       <div className="mt-8 pr-3">
                         <Text className="w-full font-semibold text-black leading-5">Projects</Text>
                         <Flex className="items-center mt-3">
@@ -81,7 +83,7 @@ export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
                             <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 2400 * 100)}%</Text>
                           </Flex>
                         </div>
-                      ))}
+                      ))} */}
                   </ScrollArea>
                 </TabPanel>
                 <TabPanel className="max-h-[550px] mt-0">

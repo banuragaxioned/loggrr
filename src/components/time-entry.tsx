@@ -1,10 +1,9 @@
-"use client";
 import { useState, useEffect, FormEvent } from "react";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./datePicker";
 import { TimeLogForm } from "./forms/timelogForm";
-import { Project } from "@/types";
+import { Project, TimeEntryData } from "@/types";
 import { TimeEntryDataObj } from "@/types";
 import dayjs from "dayjs";
 import useToast from "@/hooks/useToast";
@@ -13,6 +12,7 @@ import { SelectedData } from "./forms/timelogForm";
 export interface TimeEntryProps {
   team: string;
   projects: Project[];
+  setUserEntry:any;
 }
 
 export interface EditReferenceObj {
@@ -28,14 +28,14 @@ export type EntryData = { data: TimeEntryDataObj; status: number };
 
 export const getDates = (date: Date) => {
   let arr = [],
-    i = -2;
-  for (i; i < 3; i++) arr.push(dayjs(date).add(i, "day").toDate());
+    i = -7;
+  for (i; i < 8; i++) arr.push(dayjs(date).add(i, "day").toDate());
   return arr;
 };
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
@@ -49,6 +49,20 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
+  const currentWeekEntryFilter = (res:TimeEntryDataObj)=> {
+    let i=0,med = 7,dayIndex = dates[med].getDay(),currentWeek:TimeEntryData[]=[];
+    console.log(dayIndex)
+    for(i;i<7;i++) {
+      const dateObj = res[getDateStr(dates[med+(i-dayIndex)])] ;
+      dateObj && currentWeek.push(dateObj)
+    }
+    return currentWeek.reduce((prev,current)=>{
+      prev.totalTime += current.dayTotal
+      console.log(prev)
+      return prev
+    },{totalTime:0})
+  }
+
   const getApiCall = () =>
     fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
       method: "GET",
@@ -57,7 +71,11 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       },
     })
       .then((res) => res.json())
-      .then((res) => setEntries({ data: { ...entries.data, ...res }, status: 1 }))
+      .then((res) => {
+       console.log(dates)
+        entries.status === 0 && setUserEntry(currentWeekEntryFilter(res));
+        setEntries({ data: { ...entries.data, ...res }, status: 1 })
+      })
       .catch((e) => setEntries({ data: {}, status: -1 }));
 
   const deleteApiCall = (id: number) =>
@@ -115,13 +133,14 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   return (
     <div className="mx-auto w-11/12">
+      <h2 className="md:hidden my-2">Add a new entry</h2>
       <div className="rounded-xl border-[1px] border-slate-300">
-        <div className="flex justify-between border-b-[1px] border-b-slate-300 p-4">
+        <div className="flex flex-col md:flex-row md:justify-between border-b-[1px] border-b-slate-300 p-4">
           <ClassicDatePicker date={date} setDate={setDate} />
-          <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
+          <InlineDatePicker date={date} setDate={setDate} dates={dates.slice(5,10)} setDates={setDates} entries={entries.data} />
         </div>
         <span className="flex justify-between px-5 py-2 font-semibold text-lg">
-          Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
+          Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2) || 0}</span>
         </span>
       </div>
       <TimeLogForm
