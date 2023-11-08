@@ -49,18 +49,16 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
-  const currentWeekEntryFilter = (res:TimeEntryDataObj)=> {
-    let i=0,med = 7,dayIndex = dates[med].getDay(),currentWeek:TimeEntryData[]=[];
-    console.log(dayIndex)
+  const weekEntryFilter = (res:TimeEntryDataObj)=> {
+    let i=0,med = 6,currentWeek:TimeEntryData[]=[];
     for(i;i<7;i++) {
-      const dateObj = res[getDateStr(dates[med+(i-dayIndex)])] ;
+      const dateObj = res[getDateStr(dates[med-i])] ;
       dateObj && currentWeek.push(dateObj)
     }
     return currentWeek.reduce((prev,current)=>{
-      prev.totalTime += current.dayTotal
-      console.log(prev)
+      prev.totalTime += current.dayTotal,
       return prev
-    },{totalTime:0})
+    },{totalTime:0,projects:[]})
   }
 
   const getApiCall = () =>
@@ -72,8 +70,9 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
     })
       .then((res) => res.json())
       .then((res) => {
-       console.log(dates)
-        entries.status === 0 && setUserEntry(currentWeekEntryFilter(res));
+        const datesAsStrs = dates.map((date)=>getDateStr(date));
+        datesAsStrs.map((date)=>res[date] ? res : res={...res,[date]:{dayTotal:0}})
+        entries.status === 0 && setUserEntry(weekEntryFilter(res));
         setEntries({ data: { ...entries.data, ...res }, status: 1 })
       })
       .catch((e) => setEntries({ data: {}, status: -1 }));
@@ -132,10 +131,10 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
   }, [dates]);
 
   return (
-    <div className="mx-auto w-11/12">
+    <div className="mx-auto w-[72%]">
       <h2 className="md:hidden my-2">Add a new entry</h2>
       <div className="rounded-xl border-[1px] border-slate-300">
-        <div className="flex flex-col md:flex-row md:justify-between border-b-[1px] border-b-slate-300 p-4">
+        <div className="flex flex-col md:flex-row md:gap-x-[9px] border-b-[1px] md:items-center border-b-slate-300 py-4 px-5">
           <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates.slice(5,10)} setDates={setDates} entries={entries.data} />
         </div>

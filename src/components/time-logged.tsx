@@ -55,7 +55,7 @@ export const TimeLogged = ({team,projects,allocationData}:TimeLoggedProps)=> {
               colors={["rose", "orange", "yellow", "emerald"]}
               markerValue={(userTimeEntry.totalTime/40)*100}
               className="mt-3 text-sm "
-              tooltip={`${Math.round(userTimeEntry.totalTime/40)*100}%`}
+              tooltip={`${(userTimeEntry.totalTime/40)*100}%`}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
