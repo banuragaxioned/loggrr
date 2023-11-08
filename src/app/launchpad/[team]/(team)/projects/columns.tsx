@@ -4,6 +4,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Icons } from "@/components/icons";
 
 export type Projects = {
   id: number;
@@ -59,5 +69,37 @@ export const columns: ColumnDef<Projects>[] = [
     accessorKey: "status",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return (
+        <div className={cn("invisible flex gap-x-3", "group-hover:visible relative z-10")}>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="bg-transparent border-none px-[10px] py-[12px] h-0 w-[40px]" title="More">
+              <Icons.more height={18} width={18} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-8 p-0">
+              <div className="border-b-[1px] border-b-gray-50 w-auto">
+                <Icons.edit height={18} width={18} />
+                Edit
+              </div>
+            </PopoverContent>
+          </Popover>
+          {/* <Button
+            title="Remove"
+            className={cn("h-auto border-0 bg-inherit p-0")}
+            onClick={() => console.log('here')}
+          >
+            <Icons.minusCircle height={18} width={18} />
+          </Button> */}
+        </div>
+      );
+    },
+    meta: {
+      className: "w-[10%]",
+    },
   },
 ];
