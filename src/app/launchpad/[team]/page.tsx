@@ -24,7 +24,7 @@ export default async function Dashboard({ params }: pageProps) {
         select: {
           id: true,
           name: true,
-        }
+        },
       },
       User: {
         select: {
@@ -32,26 +32,29 @@ export default async function Dashboard({ params }: pageProps) {
             select: {
               projectId: true,
               time: true,
-            }
-          }
-        }
-      }
-    }
-  })
+            },
+          },
+        },
+      },
+    },
+  });
   const projects = await getAllUserProjects(user.id);
   const allocationData = userTimeAllocated.map((item, i) => {
-    const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce((acc, current) => acc + current.time, 0);
+    const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce(
+      (acc, current) => acc + current.time,
+      0,
+    );
     return {
-      projectName:item.Project.name,
-      billable:item.billableTime,
-      nonBillable:item.nonBillableTime,
-      entryValue
-    }
+      projectName: item.Project.name,
+      billable: item.billableTime,
+      nonBillable: item.nonBillableTime,
+      entryValue,
+    };
   });
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12">
-      <TimeLogged team={team} projects={projects ? projects : []} allocationData={allocationData}/>
+      <TimeLogged team={team} projects={projects ? projects : []} allocationData={allocationData} />
     </div>
   );
 }

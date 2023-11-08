@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, Dispatch } from "react";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./datePicker";
@@ -8,11 +8,12 @@ import { TimeEntryDataObj } from "@/types";
 import dayjs from "dayjs";
 import useToast from "@/hooks/useToast";
 import { SelectedData } from "./forms/timelogForm";
+import { UserTimeEntry } from "./time-logged";
 
 export interface TimeEntryProps {
   team: string;
   projects: Project[];
-  setUserEntry:any;
+  setUserEntry: Dispatch<UserTimeEntry>;
 }
 
 export interface EditReferenceObj {
@@ -35,7 +36,7 @@ export const getDates = (date: Date) => {
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
-export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
@@ -49,17 +50,22 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
-  const weekEntryFilter = (res:TimeEntryDataObj)=> {
-    let i=0,med = 6,currentWeek:TimeEntryData[]=[];
-    for(i;i<7;i++) {
-      const dateObj = res[getDateStr(dates[med-i])] ;
-      dateObj && currentWeek.push(dateObj)
+  const weekEntryFilter = (res: TimeEntryDataObj): UserTimeEntry => {
+    let i = 0,
+      med = 6,
+      currentWeek: TimeEntryData[] = [];
+    for (i; i < 7; i++) {
+      const dateObj = res[getDateStr(dates[med - i])];
+      dateObj && currentWeek.push(dateObj);
     }
-    return currentWeek.reduce((prev,current)=>{
-      prev.totalTime += current.dayTotal,
-      return prev
-    },{totalTime:0,projects:[]})
-  }
+    return currentWeek.reduce(
+      (prev, current) => {
+        prev.totalTime += current.dayTotal;
+        return prev;
+      },
+      { totalTime: 0, projects: [] },
+    );
+  };
 
   const getApiCall = () =>
     fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
@@ -70,10 +76,10 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        const datesAsStrs = dates.map((date)=>getDateStr(date));
-        datesAsStrs.map((date)=>res[date] ? res : res={...res,[date]:{dayTotal:0}})
+        const datesAsStrs = dates.map((date) => getDateStr(date));
+        datesAsStrs.map((date) => (res[date] ? res : (res = { ...res, [date]: { dayTotal: 0 } })));
         entries.status === 0 && setUserEntry(weekEntryFilter(res));
-        setEntries({ data: { ...entries.data, ...res }, status: 1 })
+        setEntries({ data: { ...entries.data, ...res }, status: 1 });
       })
       .catch((e) => setEntries({ data: {}, status: -1 }));
 
@@ -132,13 +138,19 @@ export const TimeEntry = ({ team, projects,setUserEntry }: TimeEntryProps) => {
 
   return (
     <div className="mx-auto w-[72%]">
-      <h2 className="md:hidden my-2">Add a new entry</h2>
+      <h2 className="my-2 md:hidden">Add a new entry</h2>
       <div className="rounded-xl border-[1px] border-slate-300">
-        <div className="flex flex-col md:flex-row md:gap-x-[9px] border-b-[1px] md:items-center border-b-slate-300 py-4 px-5">
+        <div className="flex flex-col border-b-[1px] border-b-slate-300 px-5 py-4 md:flex-row md:items-center md:gap-x-[9px]">
           <ClassicDatePicker date={date} setDate={setDate} />
-          <InlineDatePicker date={date} setDate={setDate} dates={dates.slice(5,10)} setDates={setDates} entries={entries.data} />
+          <InlineDatePicker
+            date={date}
+            setDate={setDate}
+            dates={dates.slice(5, 10)}
+            setDates={setDates}
+            entries={entries.data}
+          />
         </div>
-        <span className="flex justify-between px-5 py-2 font-semibold text-lg">
+        <span className="flex justify-between px-5 py-2 text-lg font-semibold">
           Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2) || 0}</span>
         </span>
       </div>
