@@ -11,8 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default async function SkillsSummary({ params }: pageProps) {
-  const skills = await getSkills(params.team);
   const { team } = params;
+  const skills = await getSkills(team);
+
   return (
     <DashboardShell>
       <DashboardHeader heading="All Skills" text="These are all the skills that are on our radar.">
