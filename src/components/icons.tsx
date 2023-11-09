@@ -32,6 +32,7 @@ import {
   ChevronsLeft,
   EyeOff,
   Boxes,
+  CircleDollarSign,
   Loader,
   FileText,
   MinusCircle,
@@ -41,7 +42,6 @@ import {
   CalendarDays,
 } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
-import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 
 interface IconProps extends LucideProps {
   name: keyof typeof dynamicIconImports;
@@ -72,7 +72,7 @@ export const Icons = {
   milestone: Rocket,
   task: List,
   comment: MessageSquare,
-  dollar: CurrencyDollarIcon,
+  dollar: CircleDollarSign,
   user: User,
   group: BoxesIcon,
   arrowRight: ArrowRight,
