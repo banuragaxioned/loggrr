@@ -3,8 +3,6 @@ import { prisma } from "@/server/db";
 
 import { getCurrentUser } from "@/lib/session";
 import { pageProps } from "@/types";
-import { DashboardNav } from "@/components/nav";
-import { dashboardConfig } from "@/config/dashboard";
 
 interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;
