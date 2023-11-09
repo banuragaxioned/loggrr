@@ -53,9 +53,9 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(userTimeEntry.totalTime / 40) * 100}
+              markerValue={(userTimeEntry.totalTime / 40) * 100 >100 ?100:(userTimeEntry.totalTime / 40) * 100 }
               className="mt-3 text-sm "
-              tooltip={`${(userTimeEntry.totalTime / 40) * 100}%`}
+              tooltip={`${((userTimeEntry.totalTime / 40) * 100).toFixed(2)}%`}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
