@@ -35,7 +35,7 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant={"outline"} className={cn("flex p-0")} ref={buttonRef}>
+        <Button variant={"outline"} className={cn("flex py-0 px-1 ")} ref={buttonRef}>
           <CalendarIcon className="h-5 w-6 px-1" />
           <span className="md:hidden">{format(date, "PPP")}</span>
         </Button>

@@ -1,6 +1,6 @@
 "use client";
 import { TimeEntry } from "@/components/time-entry";
-import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel } from "@tremor/react";
+import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel,ProgressBar } from "@tremor/react";
 import { Icons } from "@/components/icons";
 import { MarkerBar } from "@/components/marker-bar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,6 +9,10 @@ import { useState } from "react";
 
 export interface UserTimeEntry {
   totalTime: number;
+  projects:{
+    name:string;
+    timeEntered:number;
+  }[]
 }
 
 interface TimeLoggedProps {
@@ -23,7 +27,7 @@ interface TimeLoggedProps {
 }
 
 export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) => {
-  const [userTimeEntry, setUserEntry] = useState<UserTimeEntry>({ totalTime: 0.0 });
+  const [userTimeEntry, setUserEntry] = useState<UserTimeEntry>({ totalTime: 0.0,projects:[] });
   return (
     <>
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
@@ -62,8 +66,8 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
               </TabList>
               <TabPanels>
                 <TabPanel className="mt-0 max-h-[500px]">
-                  {/* <ScrollArea className={`${userTimeEntry.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}> */}
-                    {/* {userTimeEntry.length === 0 ?
+                  <ScrollArea className={`${userTimeEntry.projects.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}>
+                    {userTimeEntry.projects.length === 0 ?
                       <div className="mt-8 pr-3">
                         <Text className="w-full font-semibold text-black leading-5">Projects</Text>
                         <Flex className="items-center mt-3">
@@ -71,16 +75,16 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
                           <Text className="text-gray-500 text-sm font-normal">0%</Text>
                         </Flex>
                       </div> :
-                      userTimeEntry.map((item, i) => (
+                      userTimeEntry.projects.map((item, i) => (
                         <div className="mt-8 pr-3" key={i}>
-                          <Text className="w-full font-semibold text-black leading-5">{item.Project.name}</Text>
+                          <Text className="w-full font-semibold text-black leading-5">{item.name}</Text>
                           <Flex className="items-center mt-3">
-                            <ProgressBar value={item.time} color="indigo" className="mr-4" />
-                            <Text className="text-gray-500 text-sm font-normal">{Math.round(item.time / 2400 * 100)}%</Text>
+                            <ProgressBar value={item.timeEntered} color="indigo" className="mr-4" />
+                            <Text className="text-gray-500 text-sm font-normal">{Math.round(item.timeEntered / 2400 * 100)}%</Text>
                           </Flex>
                         </div>
-                      ))} */}
-                  {/* </ScrollArea> */}
+                      ))}
+                  </ScrollArea>
                 </TabPanel>
                 <TabPanel className="mt-0 max-h-[550px]">
                   <ScrollArea className={`${allocationData.length >= 5 ? "h-[550px]" : "h-auto"} w-full}`}>
@@ -107,12 +111,6 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
             </TabGroup>
           </div>
         </div>
-        {/* Time Insights (breakdown of time over the last week)
-        <div className="flex flex-col items-center gap-4">
-          <Skeleton className="h-8 w-60" />
-          <Skeleton className="h-4 w-60" />
-          <Skeleton className="h-4 w-60" />
-        </div> */}
       </aside>
     </>
   );

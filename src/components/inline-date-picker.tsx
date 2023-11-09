@@ -47,7 +47,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
               dateString === getDateStr(date)
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
-            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-black":""}`}
+            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground":""}`}
           >
             <span>
               {dateNum} {day} {month}

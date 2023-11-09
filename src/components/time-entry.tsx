@@ -58,9 +58,15 @@ export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
       const dateObj = res[getDateStr(dates[med - i])];
       dateObj && currentWeek.push(dateObj);
     }
-    return currentWeek.reduce(
-      (prev, current) => {
+    return  currentWeek.reduce(
+      (prev:UserTimeEntry, current) => {
         prev.totalTime += current.dayTotal;
+        current.projectsLog.map((projectLog)=>{
+          const index = prev.projects.findIndex((project)=>project?.name === projectLog.project.name);
+          const availableProject = prev.projects[index];
+          availableProject ? prev.projects[index] = {...availableProject,timeEntered:availableProject.timeEntered+projectLog.total} :
+          prev.projects.push({name:projectLog.project.name,timeEntered:projectLog.total});
+        })
         return prev;
       },
       { totalTime: 0, projects: [] },
@@ -77,8 +83,8 @@ export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
       .then((res) => res.json())
       .then((res) => {
         const datesAsStrs = dates.map((date) => getDateStr(date));
-        datesAsStrs.map((date) => (res[date] ? res : (res = { ...res, [date]: { dayTotal: 0 } })));
         entries.status === 0 && setUserEntry(weekEntryFilter(res));
+        datesAsStrs.map((date) => (res[date] ? res : (res = { ...res, [date]: { dayTotal: 0 } })));
         setEntries({ data: { ...entries.data, ...res }, status: 1 });
       })
       .catch((e) => setEntries({ data: {}, status: -1 }));
