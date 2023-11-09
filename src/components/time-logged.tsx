@@ -42,7 +42,7 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
               <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
               <Text className="flex items-center pb-5 text-xs text-[#6B7280]">
                 <Icons.calendar className="ml-2 mr-[5px] h-4 w-4" />
-                Current week
+                Last Seven Days
               </Text>
             </Flex>
             <Flex>
