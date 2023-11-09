@@ -47,7 +47,7 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
             </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{userTimeEntry.totalTime}</span> / 40h
+                <span className="text-3xl font-semibold">{userTimeEntry.totalTime.toFixed(2)}</span> / 40h
               </Text>
             </Flex>
             <CategoryBar
