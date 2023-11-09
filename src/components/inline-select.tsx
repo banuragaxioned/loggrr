@@ -38,22 +38,24 @@ export function InlineSelect<TData, TValue>({
   onSelect,
 }: InlineSelectProps<TData, TValue>) {
   const [selected, setSelected] = useState<Options[]>(selectedValues);
-  const [isValueUpdated, setValueUpdated] = useState(false)
+  const [isValueUpdated, setValueUpdated] = useState(false);
 
   const handleSelect = (isSelected: boolean, option: Options) => {
-    isSelected ? setSelected(prev => prev.filter(opt => option.id !== opt.id)) : setSelected((prev) => [...prev, option]);
+    isSelected
+      ? setSelected((prev) => prev.filter((opt) => option.id !== opt.id))
+      : setSelected((prev) => [...prev, option]);
   };
 
   useEffect(() => {
     let valueUpdated = false;
 
-    if(selected.length !== selectedValues.length) {
-      valueUpdated = true
+    if (selected.length !== selectedValues.length) {
+      valueUpdated = true;
     } else {
-      selected.map(value => valueUpdated = selectedValues.some(prevVal => value.id !== prevVal.id))
+      selected.map((value) => (valueUpdated = selectedValues.some((prevVal) => value.id !== prevVal.id)));
     }
-    setValueUpdated(valueUpdated)
-  }, [selected])
+    setValueUpdated(valueUpdated);
+  }, [selected]);
 
   return (
     <Popover onOpenChange={(e) => !e && setSelected(selectedValues)}>
@@ -101,11 +103,13 @@ export function InlineSelect<TData, TValue>({
                 );
               })}
             </CommandGroup>
-            {(isValueUpdated) && (
+            {isValueUpdated && (
               <>
                 <CommandSeparator />
                 <CommandGroup>
-                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>Update</CommandItem>
+                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>
+                    Update
+                  </CommandItem>
                 </CommandGroup>
               </>
             )}

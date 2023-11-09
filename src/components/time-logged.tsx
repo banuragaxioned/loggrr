@@ -1,6 +1,6 @@
 "use client";
 import { TimeEntry } from "@/components/time-entry";
-import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel,ProgressBar } from "@tremor/react";
+import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel, ProgressBar } from "@tremor/react";
 import { Icons } from "@/components/icons";
 import { MarkerBar } from "@/components/marker-bar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,10 +9,10 @@ import { useState } from "react";
 
 export interface UserTimeEntry {
   totalTime: number;
-  projects:{
-    name:string;
-    timeEntered:number;
-  }[]
+  projects: {
+    name: string;
+    timeEntered: number;
+  }[];
 }
 
 interface TimeLoggedProps {
@@ -27,7 +27,7 @@ interface TimeLoggedProps {
 }
 
 export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) => {
-  const [userTimeEntry, setUserEntry] = useState<UserTimeEntry>({ totalTime: 0.0,projects:[] });
+  const [userTimeEntry, setUserEntry] = useState<UserTimeEntry>({ totalTime: 0.0, projects: [] });
   return (
     <>
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
@@ -67,23 +67,27 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
               <TabPanels>
                 <TabPanel className="mt-0 max-h-[500px]">
                   <ScrollArea className={`${userTimeEntry.projects.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}>
-                    {userTimeEntry.projects.length === 0 ?
+                    {userTimeEntry.projects.length === 0 ? (
                       <div className="mt-8 pr-3">
-                        <Text className="w-full font-semibold text-black leading-5">Projects</Text>
-                        <Flex className="items-center mt-3">
+                        <Text className="w-full font-semibold leading-5 text-black">Projects</Text>
+                        <Flex className="mt-3 items-center">
                           <ProgressBar value={0} color="indigo" className="mr-4" />
-                          <Text className="text-gray-500 text-sm font-normal">0%</Text>
+                          <Text className="text-sm font-normal text-gray-500">0%</Text>
                         </Flex>
-                      </div> :
+                      </div>
+                    ) : (
                       userTimeEntry.projects.map((item, i) => (
                         <div className="mt-8 pr-3" key={i}>
-                          <Text className="w-full font-semibold text-black leading-5">{item.name}</Text>
-                          <Flex className="items-center mt-3">
+                          <Text className="w-full font-semibold leading-5 text-black">{item.name}</Text>
+                          <Flex className="mt-3 items-center">
                             <ProgressBar value={item.timeEntered} color="indigo" className="mr-4" />
-                            <Text className="text-gray-500 text-sm font-normal">{Math.round(item.timeEntered / 2400 * 100)}%</Text>
+                            <Text className="text-sm font-normal text-gray-500">
+                              {Math.round((item.timeEntered / 2400) * 100)}%
+                            </Text>
                           </Flex>
                         </div>
-                      ))}
+                      ))
+                    )}
                   </ScrollArea>
                 </TabPanel>
                 <TabPanel className="mt-0 max-h-[550px]">

@@ -58,15 +58,19 @@ export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
       const dateObj = res[getDateStr(dates[med - i])];
       dateObj && currentWeek.push(dateObj);
     }
-    return  currentWeek.reduce(
-      (prev:UserTimeEntry, current) => {
+    return currentWeek.reduce(
+      (prev: UserTimeEntry, current) => {
         prev.totalTime += current.dayTotal;
-        current.projectsLog.map((projectLog)=>{
-          const index = prev.projects.findIndex((project)=>project?.name === projectLog.project.name);
+        current.projectsLog.map((projectLog) => {
+          const index = prev.projects.findIndex((project) => project?.name === projectLog.project.name);
           const availableProject = prev.projects[index];
-          availableProject ? prev.projects[index] = {...availableProject,timeEntered:availableProject.timeEntered+projectLog.total} :
-          prev.projects.push({name:projectLog.project.name,timeEntered:projectLog.total});
-        })
+          availableProject
+            ? (prev.projects[index] = {
+                ...availableProject,
+                timeEntered: availableProject.timeEntered + projectLog.total,
+              })
+            : prev.projects.push({ name: projectLog.project.name, timeEntered: projectLog.total });
+        });
         return prev;
       },
       { totalTime: 0, projects: [] },

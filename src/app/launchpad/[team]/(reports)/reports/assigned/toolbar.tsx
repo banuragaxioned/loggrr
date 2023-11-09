@@ -27,13 +27,12 @@ export function DataTableToolbar<TData>({
   billable,
   weekend,
 }: DataTableToolbarExtendedProps<Assignment>) {
-
-  const entryOptionClick: Record<string, { value: string; label: string, next: string, class: string }> = {
+  const entryOptionClick: Record<string, { value: string; label: string; next: string; class: string }> = {
     totalTime: {
       value: "totalTime",
       label: "Total Time",
       next: "billableTime",
-      class: "bg-transparent hover:text-slate-500"
+      class: "bg-transparent hover:text-slate-500",
     },
     billableTime: {
       value: "billableTime",
@@ -45,37 +44,37 @@ export function DataTableToolbar<TData>({
       value: "nonBillableTime",
       label: "Non-Billable",
       next: "totalTime",
-      class: "bg-indigo-600 border-indigo-600 text-white"
+      class: "bg-indigo-600 border-indigo-600 text-white",
     },
   };
 
   const handleEntryTime = (data: { next: string }) => {
-    setBillable(data.next)
+    setBillable(data.next);
   };
 
   const group = useSearchParams().get("group");
 
-  const flattedSkillArray = table.getRowModel().rows.flatMap(row => row.original.skills)
+  const flattedSkillArray = table.getRowModel().rows.flatMap((row) => row.original.skills);
 
-  const uniqueSkillList = removeDuplicatesFromArray(flattedSkillArray.map(skillList => skillList?.skill) as [])
+  const uniqueSkillList = removeDuplicatesFromArray(flattedSkillArray.map((skillList) => skillList?.skill) as []);
 
-  const skillList = uniqueSkillList.map(skill => ({
+  const skillList = uniqueSkillList.map((skill) => ({
     label: skill,
-    value: skill
-  }))
+    value: skill,
+  }));
 
-  const flattedGroupArray = table.options.data.flatMap((assign) => assign.usergroup)
+  const flattedGroupArray = table.options.data.flatMap((assign) => assign.usergroup);
 
-  const uniqueGroupList = removeDuplicatesFromArray(flattedGroupArray.map(group => group?.name) as [])
+  const uniqueGroupList = removeDuplicatesFromArray(flattedGroupArray.map((group) => group?.name) as []);
 
-  const groupList = uniqueGroupList.map(group => ({
+  const groupList = uniqueGroupList.map((group) => ({
     label: group,
-    value: group
-  }))
+    value: group,
+  }));
 
   useEffect(() => {
-    group && table.getAllColumns()[2].setFilterValue([group])
-  }, [group])
+    group && table.getAllColumns()[2].setFilterValue([group]);
+  }, [group]);
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
@@ -88,16 +87,20 @@ export function DataTableToolbar<TData>({
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-10 w-[150px] lg:w-[250px]"
         />
-        <Toggle className="data-[state=on]:bg-indigo-600 data-[state=on]:text-white data-[state=on]:border-indigo-600 border rounded-md"
+        <Toggle
+          className="rounded-md border data-[state=on]:border-indigo-600 data-[state=on]:bg-indigo-600 data-[state=on]:text-white"
           onClick={(e) => {
             const element = e.target as Element;
             const dataState = element.getAttribute("data-state");
-            setWeekend(dataState === 'off' ? "week" : "weekdays")
+            setWeekend(dataState === "off" ? "week" : "weekdays");
           }}
         >
-          {weekend === 'weekdays' ? 'Week Days' : 'Week'}
+          {weekend === "weekdays" ? "Week Days" : "Week"}
         </Toggle>
-        <button onClick={() => handleEntryTime(entryOptionClick[billable])} className={`border rounded-md h-10 px-3 ${entryOptionClick[billable].class}`}>
+        <button
+          onClick={() => handleEntryTime(entryOptionClick[billable])}
+          className={`h-10 rounded-md border px-3 ${entryOptionClick[billable].class}`}
+        >
           {entryOptionClick[billable].label}
         </button>
         <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />

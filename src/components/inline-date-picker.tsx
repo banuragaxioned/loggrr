@@ -1,8 +1,8 @@
-import { useEffect, Dispatch } from "react";
+import { useState,useEffect, Dispatch } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { GetSetDateProps,TimeEntryDataObj } from "@/types";
+import { GetSetDateProps, TimeEntryDataObj } from "@/types";
 import { getDates } from "./time-entry";
 import dayjs from "dayjs";
 import { getDateStr } from "./time-entry";
@@ -14,7 +14,13 @@ interface InlineDateProps extends GetSetDateProps {
 }
 
 export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: InlineDateProps) => {
-  const clickHandler = (date: Date) => setDates(getDates(date));
+
+  const [triggerCount,setTriggerCount] = useState<number>(0) 
+
+  const clickHandler = (date: Date) => {
+    setTriggerCount(triggerCount+1);
+    setDates(getDates(date));
+  };
 
   useEffect(() => {
     if (!dates.includes(date)) {
@@ -24,10 +30,10 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
   }, [date]);
 
   return (
-    <ul className="flex gap-x-2 text-neutral-500 w-full">
+    <ul className="flex w-full gap-x-2 text-neutral-500">
       <li className="flex basis-[5%] cursor-pointer items-center">
         <Button
-          className={cn("border-none outline-none p-0")}
+          className={cn("border-none p-0 outline-none")}
           onClick={() => clickHandler(dayjs(dates[0]).add(-3, "day").toDate())}
           title="Prev"
         >
@@ -43,11 +49,11 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           <li
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
-            className={`flex basis-[23%] font-medium text-sm cursor-pointer items-center justify-center text-center transition-all duration-300 ${
+            className={`flex basis-[23%] cursor-pointer items-center justify-center text-center text-sm font-medium transition-all duration-300 ${
               dateString === getDateStr(date)
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
-            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground":""}`}
+            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground" : ""}`}
           >
             <span>
               {dateNum} {day} {month}
@@ -67,7 +73,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
       <li className="flex basis-[5%] cursor-pointer items-center">
         <Button
           className={cn(
-            `border-none outline-none p-0 ${
+            `border-none p-0 outline-none ${
               dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "opacity-30" : ""
             }`,
           )}

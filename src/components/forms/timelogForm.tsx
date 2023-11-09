@@ -84,7 +84,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                   } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
                   onSelect={() => {
                     setSelectedData(obj);
-                    setFocus(false)
+                    setFocus(false);
                   }}
                 >
                   {renderList(obj)}
@@ -137,7 +137,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
   const taskCallback = (selected: Milestone) => {
     const data: SelectedData = { ...selectedData, task: selected };
     setSelectedData(data);
-    setFocus(false)
+    setFocus(false);
   };
 
   //common select handler
@@ -267,7 +267,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                   onValueChange={setSearch}
                   onBlur={(e) => {
                     e.target.value = "";
-                    setTimeout(() =>setFocus(false), 125)
+                    setTimeout(() => setFocus(false), 125);
                   }}
                 />
               </div>
@@ -320,8 +320,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           >
             {inputRef.current && inputRef.current?.value?.length < 1 && (
               <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
-              )}
-              <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
+            )}
+            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length > 0
               ? renderGroup(suggestions)
               : renderGroup(recentlyUsed)}

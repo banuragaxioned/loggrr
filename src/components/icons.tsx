@@ -39,7 +39,7 @@ import {
   Edit,
   Save,
   CalendarDays,
-  Dot
+  Dot,
 } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
@@ -96,5 +96,5 @@ export const Icons = {
   edit: Edit,
   save: Save,
   calendar: CalendarDays,
-  dot:Dot
+  dot: Dot,
 };
