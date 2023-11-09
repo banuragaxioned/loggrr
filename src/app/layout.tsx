@@ -66,10 +66,6 @@ export const metadata: Metadata = {
     },
   ],
   creator: "Axioned",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
   icons: [
     {
       rel: "icon",

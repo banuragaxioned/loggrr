@@ -134,3 +134,7 @@
     @apply rounded-[14px] border-4 border-solid border-popover bg-popover-foreground;
   }
 }
+
+.side-bar [role=tooltip] {
+  @apply bg-background text-foreground border rounded-md ;
+}

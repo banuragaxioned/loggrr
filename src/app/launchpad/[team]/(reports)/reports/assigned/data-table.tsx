@@ -32,8 +32,12 @@ const expandingRowFilter = (row: Row<Assignment>, columnIds: string[], filterVal
 };
 
 const skillFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string[]) => {
-  return filterValue.filter((item: any) => row.original.skills?.find((ele) => ele.skill === item)).length > 0;
+    return filterValue.filter((item: any) => row.original.skills?.find((ele) => ele.skill === item)).length > 0;
 };
+
+const groupFilter = (row: Row<Assignment>, columnIds: string[], filterValue: string[]) => {
+  return filterValue.filter((item: any) => row.original.usergroup?.find((ele) => ele.name === item)).length > 0;
+}
 
 export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<Assignment, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -64,7 +68,7 @@ export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<
     getCoreRowModel: getCoreRowModel(),
     paginateExpandedRows: false,
     filterFromLeafRows: true,
-    filterFns: { expandingRowFilter, skillFilter },
+    filterFns: { expandingRowFilter, skillFilter, groupFilter },
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   };
@@ -98,7 +102,7 @@ export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<
     <DataTableStructure
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
-      toolBarProps={{ startDate, setStartDate, setWeekend, setBillable }}
+      toolBarProps={{ startDate, setStartDate, setWeekend, setBillable, billable, weekend }}
       rowClickHandler={rowClickHandler}
     />
   ) : (

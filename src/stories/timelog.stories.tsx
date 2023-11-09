@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TimeLogForm from "@/components/forms/timelogFrom";
+import {TimeLogForm} from "@/components/forms/timelogForm";
 
 type FormData = {
   project: string | undefined;
@@ -12,5 +12,5 @@ type FormData = {
 export const Timelog = () => {
   const [formObj, setFormObj] = useState<FormData | undefined>();
 
-  return <TimeLogForm formData={formObj} handleFormData={setFormObj} />;
+  // return <TimeLogForm formData={formObj} handleFormData={setFormObj} />;
 };
