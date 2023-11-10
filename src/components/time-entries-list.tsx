@@ -72,13 +72,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                       </div>
                       <div className="flex flex-col items-center justify-center gap-y-1">
                         <span className="text-xl font-medium text-foreground">{data?.time.toFixed(2)}</span>
-                        <span
-                          className={`text-xs font-light capitalize ${
-                            data?.billable ? "text-success" : "text-destructive"
-                          }`}
-                        >
-                          billable
-                        </span>
+                        <span className={`capitalize text-xs font-light ${data?.billable ?"text-success":"text-destructive" }`}>{data?.billable ? "billable" : "non billable"}</span>
                         <div className="flex gap-x-2 md:invisible md:group-hover:visible">
                           <Button className="rounded-md p-2" onClick={() => editHandler(tempObj, data.id)}>
                             {edit.isEditing ? <Icons.reset className="h-4 w-4" /> : <Icons.edit className="h-4 w-4" />}

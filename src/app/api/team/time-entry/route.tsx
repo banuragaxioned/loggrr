@@ -151,7 +151,10 @@ export async function GET(req: Request) {
           previous.projectsLog[index]?.data.push(data);
           previous.projectsLog[index].total += current?.time / 60;
           previous.dayTotal += current.time / 60;
-        } else previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
+        } else {
+           previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
+           previous.dayTotal+= current?.time / 60 ;
+        }
       } else 
         prev[currentDateStr] = {
           dayTotal: current?.time / 60,

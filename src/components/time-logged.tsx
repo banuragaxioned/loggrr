@@ -42,20 +42,20 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
               <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
               <Text className="flex items-center pb-5 text-xs text-[#6B7280]">
                 <Icons.calendar className="ml-2 mr-[5px] h-4 w-4" />
-                Current week
+                Last 7 Days
               </Text>
             </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{userTimeEntry.totalTime}</span> / 40h
+                <span className="text-3xl font-semibold">{userTimeEntry.totalTime.toFixed(2)}</span> / 40h
               </Text>
             </Flex>
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(userTimeEntry.totalTime / 40) * 100}
+              markerValue={(userTimeEntry.totalTime / 40) * 100 >100 ?100:(userTimeEntry.totalTime / 40) * 100 }
               className="mt-3 text-sm "
-              tooltip={`${(userTimeEntry.totalTime / 40) * 100}%`}
+              tooltip={`${((userTimeEntry.totalTime / 40) * 100).toFixed(2)}%`}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
