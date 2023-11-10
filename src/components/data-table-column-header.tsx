@@ -33,10 +33,10 @@ export function DataTableColumnHeader<TData, TValue>({
       <Button
         variant="ghost"
         size="sm"
-        className="h-8 px-0 data-[state=open]:bg-accent"
+        className="h-8 px-0 data-[state=open]:bg-accent hover:bg-transparent"
         onClick={() => clickHandler(column)}
       >
-        {title && <span className="p-3">{title}</span>}
+        {title && <span>{title}</span>}
         {child}
         {column.getIsSorted() === "desc" ? (
           <Icons.selectDown className="ml-2 h-4 w-4" />
