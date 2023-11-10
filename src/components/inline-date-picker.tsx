@@ -1,4 +1,4 @@
-import { useState,useEffect, Dispatch } from "react";
+import { useState, useEffect, Dispatch } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,8 @@ interface InlineDateProps extends GetSetDateProps {
 }
 
 export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: InlineDateProps) => {
-
-  const [triggerCount,setTriggerCount] = useState<number>(0) 
-
-  const clickHandler = (date: Date) => {
-    setTriggerCount(triggerCount+1);
-    setDates(getDates(date));
-  };
+  const [triggerCount, setTriggerCount] = useState<number>(0);
+  const clickHandler = (date: Date) => setDates(getDates(date));
 
   useEffect(() => {
     if (!dates.includes(date)) {
@@ -34,7 +29,10 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
       <li className="flex basis-[5%] cursor-pointer items-center">
         <Button
           className={cn("border-none p-0 outline-none")}
-          onClick={() => clickHandler(dayjs(dates[0]).add(-3, "day").toDate())}
+          onClick={() => {
+            clickHandler(dayjs(dates[0]).add(-3, "day").toDate());
+            setTriggerCount(triggerCount > 0 ? -1 : triggerCount - 1);
+          }}
           title="Prev"
         >
           <ChevronLeft />
@@ -49,11 +47,13 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           <li
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
-            className={`flex basis-[23%] cursor-pointer items-center justify-center text-center text-sm font-medium transition-all duration-300 ${
+            className={`list-ele flex basis-[23%] cursor-pointer items-center justify-center text-center text-sm font-medium transition-all duration-300 ${
               dateString === getDateStr(date)
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
-            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground" : ""}`}
+            } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground" : ""} ${
+              triggerCount < 0 ? "animate-slide-right" : "animate-slide-left"
+            }`}
           >
             <span>
               {dateNum} {day} {month}
@@ -77,14 +77,15 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
               dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "opacity-30" : ""
             }`,
           )}
-          onClick={() =>
+          onClick={() => {
             dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) &&
-            clickHandler(
-              dayjs(dates[dates.length - 1])
-                .add(3, "day")
-                .toDate(),
-            )
-          }
+              clickHandler(
+                dayjs(dates[dates.length - 1])
+                  .add(3, "day")
+                  .toDate(),
+              );
+            setTriggerCount(triggerCount < 0 ? 1 : triggerCount + 1);
+          }}
           title="Next"
         >
           <ChevronRight />
