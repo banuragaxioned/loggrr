@@ -13,10 +13,10 @@ const commonValidationObj = {
   billable: z.boolean(),
   date: z.string(),
   task: z.number().min(1).optional(),
-}
+};
 
 const TimeEntrySchema = z.object(commonValidationObj);
-const TimeEntryUpdateSchema = z.object({...commonValidationObj,id:z.number().min(1)});
+const TimeEntryUpdateSchema = z.object({ ...commonValidationObj, id: z.number().min(1) });
 
 export async function POST(req: Request) {
   try {
@@ -64,7 +64,7 @@ export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
   const dates = searchParams.get("dates") as string;
-  const dateStrs: string[] =  JSON.parse(dates);
+  const dateStrs: string[] = JSON.parse(dates);
 
   try {
     const session = await getServerSession(authOptions);
@@ -82,15 +82,15 @@ export async function GET(req: Request) {
     }
 
     const response = await db.timeEntry.findMany({
-      where:{
+      where: {
         userId: user.id,
         Tenant: {
           slug: team ? team : "",
         },
-        date:{
-          lte: dateStrs[dateStrs.length-1],
-          gte: dateStrs[0]
-        }
+        date: {
+          lte: dateStrs[dateStrs.length - 1],
+          gte: dateStrs[0],
+        },
       },
       select: {
         id: true,
@@ -126,7 +126,7 @@ export async function GET(req: Request) {
       orderBy: {
         projectId: "asc",
       },
-    })
+    });
 
     const restructuredData = response.reduce((prev: TimeEntryDataObj, current) => {
       const currentDateStr = current.date.toLocaleDateString("en-us", {
@@ -144,7 +144,7 @@ export async function GET(req: Request) {
         comments: current.comments,
       };
       const projectObj = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
-      if ( prev[currentDateStr]) {
+      if (prev[currentDateStr]) {
         const previous = prev[currentDateStr];
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
         if (index > -1) {
@@ -152,10 +152,10 @@ export async function GET(req: Request) {
           previous.projectsLog[index].total += current?.time / 60;
           previous.dayTotal += current.time / 60;
         } else {
-           previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
-           previous.dayTotal+= current?.time / 60 ;
+          previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
+          previous.dayTotal += current?.time / 60;
         }
-      } else 
+      } else
         prev[currentDateStr] = {
           dayTotal: current?.time / 60,
           projectsLog: [{ project: projectObj, data: [data], total: current?.time / 60 }],
@@ -193,10 +193,10 @@ export async function DELETE(req: Request) {
     }
     //schema goes here
     const query = await db.timeEntry.delete({
-      where:{
-        id: +id
-      }
-    })
+      where: {
+        id: +id,
+      },
+    });
 
     return new Response(JSON.stringify(query));
   } catch (error) {
@@ -209,7 +209,6 @@ export async function DELETE(req: Request) {
 }
 
 export async function PUT(req: Request) {
-
   try {
     const session = await getServerSession(authOptions);
 
@@ -228,20 +227,20 @@ export async function PUT(req: Request) {
     }
 
     //schema goes here
-   const query = await db.timeEntry.update({
-    where:{
-      id:body.id
-    },
-    data:{
+    const query = await db.timeEntry.update({
+      where: {
+        id: body.id,
+      },
+      data: {
         time: body.time,
-        comments:body.comments,
-        milestoneId:body.milestone,
+        comments: body.comments,
+        milestoneId: body.milestone,
         billable: body.billable,
         projectId: body.project,
         taskId: body.task,
-        updatedAt:new Date()
-    }
-   })
+        updatedAt: new Date(),
+      },
+    });
 
     return new Response(JSON.stringify(query));
   } catch (error) {
