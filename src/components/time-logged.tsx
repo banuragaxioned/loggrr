@@ -53,7 +53,7 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(userTimeEntry.totalTime / 40) * 100 >100 ?100:(userTimeEntry.totalTime / 40) * 100 }
+              markerValue={(userTimeEntry.totalTime / 40) * 100 > 100 ? 100 : (userTimeEntry.totalTime / 40) * 100}
               className="mt-3 text-sm "
               tooltip={`${((userTimeEntry.totalTime / 40) * 100).toFixed(2)}%`}
             />
@@ -76,35 +76,43 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
                         </Flex>
                       </div>
                     ) : (
-                      userTimeEntry.projects.map((item, i) => (
-                        <div className="mt-8 pr-3" key={i}>
-                          <Text className="w-full font-semibold leading-5 text-black">{item.name}</Text>
-                          <Flex className="mt-3 items-center">
-                            <ProgressBar value={item.timeEntered} color="indigo" className="mr-4" />
-                            <Text className="text-sm font-normal text-gray-500">
-                              {Math.round((item.timeEntered / 2400) * 100)}%
-                            </Text>
-                          </Flex>
-                        </div>
-                      ))
+                      userTimeEntry.projects.map((item, i) => {
+                        const projectAllocation = allocationData.filter((proj) => proj.projectName === item.name)[0];
+                        const totalTime = projectAllocation.billable + projectAllocation.nonBillable;
+                        const percent = +((item.timeEntered / totalTime) * 100).toFixed(2);
+                        return (
+                          <div className="mt-8 pr-3" key={i}>
+                            <Text className="w-full font-semibold leading-5 text-black">{item.name}</Text>
+                            <Flex className="mb-1 mt-3 w-full items-center">
+                              <Text className="text-sm font-normal text-gray-500">
+                                {item.timeEntered.toFixed(2)}h &bull; {percent}%
+                              </Text>
+                              <Text className="text-sm font-normal text-gray-500">{totalTime}h</Text>
+                            </Flex>
+                            <ProgressBar value={percent} color="indigo" className="mr-4" />
+                          </div>
+                        );
+                      })
                     )}
                   </ScrollArea>
                 </TabPanel>
                 <TabPanel className="mt-0 max-h-[550px]">
                   <ScrollArea className={`${allocationData.length >= 5 ? "h-[550px]" : "h-auto"} w-full}`}>
                     {allocationData.map((item, i) => {
+                      const totalTime = +(item.billable + item.nonBillable).toFixed(2);
+                      const entryTime = +(item.entryValue / 60).toFixed(2);
                       return (
                         <div className="mt-8 pr-3" key={i}>
                           <Text className="w-full font-semibold leading-5 text-black">{item.projectName}</Text>
                           <Flex className="mt-3 items-center">
                             <MarkerBar
-                              value={item.billable + item.nonBillable}
+                              value={entryTime}
                               minValue={0}
-                              maxValue={item.entryValue / 60}
+                              maxValue={totalTime}
                               color="slate"
                               className="relative mr-4 w-full rounded-md bg-slate-200"
                             />
-                            <Text className="text-sm font-normal text-gray-500">{item.entryValue / 60}h</Text>
+                            <Text className="text-sm font-normal text-gray-500">{totalTime}h</Text>
                           </Flex>
                         </div>
                       );
