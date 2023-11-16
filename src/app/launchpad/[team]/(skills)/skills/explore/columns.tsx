@@ -45,7 +45,7 @@ export function skillName(
             }}
           />
         ) : (
-          <span className="flex h-auto w-auto rounded-md border border-transparent px-3 py-1 text-sm">
+          <span className="flex rounded-md border border-transparent text-sm h-auto w-auto py-1">
             {row.original.name}
           </span>
         );
@@ -57,7 +57,7 @@ export function skillName(
     {
       accessorKey: "users",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Users" />,
-      cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.users}</span>,
+      cell: ({ row }) => <span className="block w-full pl-4 tabular-nums">{row.original.users}</span>,
     },
     {
       id: "edit",

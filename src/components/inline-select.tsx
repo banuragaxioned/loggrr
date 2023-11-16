@@ -69,7 +69,7 @@ export function InlineSelect<TData, TValue>({
                   <Separator orientation="vertical" className="mx-2 h-4" />
                   <div className="hidden space-x-1 lg:flex">
                     <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                      {selectedValues.length - 1} {title}
+                      +{selectedValues.length - 1}
                     </Badge>
                   </div>
                 </>
