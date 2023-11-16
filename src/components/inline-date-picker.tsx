@@ -47,7 +47,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           <li
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
-            className={`list-ele flex basis-[23%] cursor-pointer items-center justify-center text-center text-sm font-medium transition-all duration-300 ${
+            className={`flex basis-[23%] cursor-pointer items-center justify-center text-center text-sm font-medium transition-all duration-300 ${
               dateString === getDateStr(date)
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
