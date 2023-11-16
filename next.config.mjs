@@ -17,6 +17,7 @@ const withBundleAnalyzerPlugin = withBundleAnalyzer(bundleAnalyzerConfig);
 /** @type {import("next").NextConfig} */
 const config = withBundleAnalyzerPlugin({
   reactStrictMode: true,
+  transpilePackages: ["lucide-react"],
   images: {
     domains: ["lh3.googleusercontent.com"],
   },

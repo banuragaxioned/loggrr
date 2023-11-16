@@ -40,7 +40,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
             }}
           />
         ) : (
-          <span className="flex rounded-md border border-transparent px-3 text-sm h-auto w-auto py-1">
+          <span className="flex rounded-md border border-transparent text-sm h-auto w-auto py-1">
             {row.original.name}
           </span>
         );
@@ -52,7 +52,7 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
     {
       accessorKey: "users",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Users" />,
-      cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.users}</span>,
+      cell: ({ row }) => <span className="block w-full pl-4 tabular-nums">{row.original.users}</span>,
     },
     {
       id: "edit",
