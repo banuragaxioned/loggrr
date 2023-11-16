@@ -54,13 +54,13 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "budget",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-right tabular-nums">{row.original.budget}</span>,
+    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.budget}</span>,
     filterFn: "arrIncludesSome",
   },
   {
     accessorKey: "logged",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged " />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-right tabular-nums">{row.original.logged}</span>,
+    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.logged}</span>,
     filterFn: "arrIncludesSome",
   },
   {
