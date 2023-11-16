@@ -222,7 +222,7 @@ export async function POST(req: Request) {
           orderBy: { name: "asc" },
         },
         SkillScore: {
-          where: { Tenant: { slug: body.team } },
+          where: { Tenant: {slug: body.team} },
           select: {
             level: true,
             Skill: {
@@ -236,9 +236,9 @@ export async function POST(req: Request) {
           where: { Tenant: { slug: body.team } },
           select: {
             id: true,
-            name: true,
-          },
-        },
+            name: true
+          }
+        }
       },
       orderBy: { name: "asc" },
     });

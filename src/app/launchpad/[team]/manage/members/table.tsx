@@ -36,15 +36,15 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       body: JSON.stringify({
         team,
         userId: id,
-      }),
-    });
+      })
+    })
 
     if (response.ok) showToast("Status Updated", "success");
 
     router.refresh();
-  };
+  }
 
-  const updateUserGroup = async (options: { id: number }[], id: number) => {
+  const updateUserGroup = async (options: { id: number }[], id:number) => {
     const response = await fetch("/api/team/members/usergroup/", {
       method: "PATCH",
       headers: {
@@ -53,14 +53,14 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       body: JSON.stringify({
         team,
         groups: options,
-        userId: id,
-      }),
-    });
+        userId: id
+      })
+    })
 
-    if (response.ok) showToast("User group updated", "success");
+    if (response.ok) showToast('User group updated', "success");
 
-    router.refresh();
-  };
+    router.refresh()
+  }
 
   const tableConfig = {
     data,

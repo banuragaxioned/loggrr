@@ -3,12 +3,12 @@ import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/lib/db";
 
-const groupSchema = z.object({ id: z.number() });
+const groupSchema = z.object({ id: z.number() })
 
 const updateUserGroupSchema = z.object({
   team: z.string().min(1),
   groups: z.array(groupSchema),
-  userId: z.number().min(1),
+  userId: z.number().min(1)
 });
 
 export async function PATCH(req: Request) {
@@ -38,23 +38,22 @@ export async function PATCH(req: Request) {
         UserGroup: {
           select: {
             id: true,
-          },
-        },
-      },
-    });
+          }
+        }
+      }
+    })
 
-    if (!connectedGroups) {
-      return new Response("User not found", { status: 403 });
+    if(!connectedGroups) {
+      return new Response('User not found', { status: 403 })
     }
 
-    const flatConnectedGroups = connectedGroups.UserGroup;
+    const flatConnectedGroups = connectedGroups.UserGroup
 
     let updatedUserGroupIds;
 
     let isConnect = false;
 
-    const difference = (bigArray: { id: number }[], smallArray: { id: number }[]) =>
-      bigArray.filter((obj1) => !smallArray.some((obj2) => obj1.id === obj2.id));
+    const difference = (bigArray: {id: number}[], smallArray: {id: number}[]) => bigArray.filter(obj1 => !smallArray.some(obj2 => obj1.id === obj2.id))
 
     if (flatConnectedGroups.length > body.groups.length) {
       isConnect = false;
@@ -69,13 +68,13 @@ export async function PATCH(req: Request) {
         where: { id: body.userId },
         data: {
           UserGroup: {
-            [isConnect ? "connect" : "disconnect"]: { id: group.id },
-          },
+            [isConnect ? 'connect' : 'disconnect']: { id: group.id }
+          }
         },
       });
 
       return userGroup;
-    });
+    })
 
     return new Response(JSON.stringify(updateUserGroup));
   } catch (error) {

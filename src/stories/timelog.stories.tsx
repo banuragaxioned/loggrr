@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TimeLogForm } from "@/components/forms/timelogForm";
+import {TimeLogForm} from "@/components/forms/timelogForm";
 
 type FormData = {
   project: string | undefined;
