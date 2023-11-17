@@ -40,23 +40,23 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                     key={i}
                     className="group relative mx-4 mb-2 flex flex-wrap justify-between border-b-2 border-slate-300 bg-background py-5 text-black last:mb-0"
                   >
-                    <h3 className="mb-3 flex w-full items-center gap-x-1 text-foreground">
-                      <span className="text-base font-semibold">{entryData?.project?.name}</span>{" "}
-                      <Icons.dot className="h-5 w-5 text-slate-400" />{" "}
+                    <h3 className="flex w-full items-center gap-x-1 text-foreground">
+                      <span className="text-base font-semibold">{entryData?.project?.name}</span>
+                      <Icons.dot className="h-5 w-5 text-slate-400" />
                       <span className="text-base font-normal">{entryData?.project.client?.name}</span>
                     </h3>
-                    <div className="mb-4 flex w-full justify-between">
-                      <div className="flex gap-x-4">
+                    <div className="flex w-full justify-between">
+                      <div className="flex gap-x-4 items-center">
                         {data.milestone?.name && (
-                          <p className="flex items-center gap-x-1 bg-indigo-50 px-3 py-2 text-xs font-medium">
-                            <Icons.milestone className="text-secondary" />
-                            {data.milestone.name}
+                          <p className="flex min-w-[90px] justify-center gap-x-[6px] bg-indigo-50 h-auto px-3 py-2 text-xs font-medium rounded-[6px] box-shadow">
+                            <Icons.milestone className="text-secondary w-3 h-3" />
+                            <span>{data.milestone.name}</span>
                           </p>
                         )}
                         {data.task?.name && (
-                          <p className="flex items-center gap-x-1 bg-indigo-50 px-3 py-2 text-xs font-medium">
-                            <Icons.task className="text-secondary" />
-                            {data.task.name}
+                          <p className="flex min-w-[90px] justify-center gap-x-[6px] h-auto bg-indigo-50 px-3 py-2 text-xs font-medium rounded-[6px] box-shadow">
+                            <Icons.task className="text-secondary w-3 h-3" />
+                            <span>{data.task.name}</span>
                           </p>
                         )}
                       </div>
@@ -72,7 +72,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                       </div>
                     </div>
                     <div className="flex w-full items-start justify-between">
-                      <p className="text-sm text-foreground">{data?.comments}</p>
+                      <p className="text-sm text-slate-500">{data?.comments}</p>
                       <div className="flex gap-x-4 md:invisible md:group-hover:visible">
                         <Button
                           className="h-auto rounded-md border-none p-0"
