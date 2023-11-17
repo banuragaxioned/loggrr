@@ -42,9 +42,7 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
     };
   });
 
-  const projectMembers = members && data?.Owner ? [...members, {...data?.Owner, projectId}] : members
-
-  return projectMembers;
+  return members;
 };
 
 export async function getProjects(slug: string) {
