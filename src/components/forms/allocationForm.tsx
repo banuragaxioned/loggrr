@@ -7,16 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -24,17 +15,9 @@ import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
-import { Icons } from "../icons";
+import { Folder, User } from "lucide-react";
 
-export function NewAllocationForm({
-  team,
-  projects,
-  users,
-}: {
-  team: string;
-  projects: AllProjectsWithMembers[];
-  users: AllUsersWithAllocation[];
-}) {
+export function NewAllocationForm({ team, projects, users }: { team: string; projects: AllProjectsWithMembers[]; users: AllUsersWithAllocation[] }) {
   const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
   const showToast = useToast();
@@ -98,9 +81,7 @@ export function NewAllocationForm({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const isUserAdded = !!projects
-      .find((project) => project.id === values.projectId)
-      ?.Members.find((member) => member.id === values.userId);
+    const isUserAdded = !!projects.find((project) => project.id === values.projectId)?.Members.find((member) => member.id === values.userId);
 
     if (!isUserAdded) {
       const addUserResponse = await addUser(values);
@@ -151,7 +132,7 @@ export function NewAllocationForm({
                       options={projects}
                       setVal={form.setValue}
                       fieldName="projectId"
-                      icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<Folder className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -170,7 +151,7 @@ export function NewAllocationForm({
                       options={users}
                       setVal={form.setValue}
                       fieldName="userId"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

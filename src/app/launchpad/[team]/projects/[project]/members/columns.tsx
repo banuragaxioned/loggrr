@@ -5,7 +5,7 @@ import { ColumnDef, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
+import { MinusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 declare module "@tanstack/table-core" {
@@ -52,11 +52,9 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
             <Button
               title="Remove"
               className={cn("h-auto border-0 bg-inherit p-0")}
-              onClick={() =>
-                row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId)
-              }
+              onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
             >
-              <Icons.minusCircle height={18} width={18} />
+              <MinusCircle height={18} width={18} />
             </Button>
           </div>
         );

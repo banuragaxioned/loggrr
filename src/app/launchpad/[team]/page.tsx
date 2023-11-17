@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/session";
 import { pageProps } from "@/types";
 import { db } from "@/lib/db";
 import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel, ProgressBar } from "@tremor/react";
-import { Icons } from "@/components/icons";
+import { CalendarDays, Camera } from "lucide-react";
 import { MarkerBar } from "@/components/marker-bar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -73,7 +73,7 @@ export default async function Dashboard({ params }: pageProps) {
             <Flex className="items-center font-semibold">
               <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
               <Text className="flex items-center pb-5 text-xs text-[#6B7280]">
-                <Icons.calendar className="ml-2 mr-[5px] h-4 w-4" />
+                <CalendarDays className="ml-2 mr-[5px] h-4 w-4" />
                 Current week
               </Text>
             </Flex>
@@ -113,9 +113,7 @@ export default async function Dashboard({ params }: pageProps) {
                           <Text className="w-full font-semibold leading-5 text-black">{item.Project.name}</Text>
                           <Flex className="mt-3 items-center">
                             <ProgressBar value={item.time} color="indigo" className="mr-4" />
-                            <Text className="text-sm font-normal text-gray-500">
-                              {Math.round((item.time / 40) * 100)}%
-                            </Text>
+                            <Text className="text-sm font-normal text-gray-500">{Math.round((item.time / 40) * 100)}%</Text>
                           </Flex>
                         </div>
                       ))

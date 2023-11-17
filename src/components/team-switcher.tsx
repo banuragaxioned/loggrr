@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Icons } from "@/components/icons";
+import { Boxes, Check, ChevronsUpDown } from "lucide-react";
 import { Role } from "@prisma/client";
 import { useRouter, useParams, usePathname } from "next/navigation";
 
@@ -53,9 +53,9 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           aria-label="Select a team"
           className={cn("w-[200px] justify-between", className)}
         >
-          <Icons.team className="mr-2 h-5 w-5" />
+          <Boxes className="mr-2 h-5 w-5" />
           {selectedTeam.name}
-          <Icons.select className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
@@ -71,11 +71,9 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
                 }}
                 className="text-sm"
               >
-                <Icons.team className="mr-2 h-5 w-5" />
+                <Boxes className="mr-2 h-5 w-5" />
                 {item.name}
-                <Icons.check
-                  className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")}
-                />
+                <Check className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")} />
               </CommandItem>
             ))}
           </CommandList>

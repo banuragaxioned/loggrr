@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { dashboardConfig } from "@/config/dashboard";
 import { getCurrentUser } from "@/lib/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
+import { CreditCard, FileText, User } from "lucide-react";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -16,17 +16,17 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     {
       title: "Milestones",
       href: `/projects/${projectId}/milestones`,
-      icon: "post",
+      icon: FileText,
     },
     {
       title: "Tasks",
       href: `/projects/${projectId}/tasks`,
-      icon: "billing",
+      icon: CreditCard,
     },
     {
       title: "Members",
       href: `/projects/${projectId}/members`,
-      icon: "user",
+      icon: User,
     },
   ];
 

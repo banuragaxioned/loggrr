@@ -6,21 +6,12 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
-import { Icons } from "../icons";
+import { Laptop, User } from "lucide-react";
 import { AllUsersWithAllocation } from "@/types";
 import { SingleSelectDropdown } from "../ui/single-select-dropdown";
 import { levels } from "@/config/skills";
@@ -111,7 +102,7 @@ export function AddSKill({
                       options={users}
                       setVal={form.setValue}
                       fieldName="userId"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                       defaultValue={currentUser}
                     />
                   </FormControl>
@@ -131,7 +122,7 @@ export function AddSKill({
                       options={skillsList}
                       setVal={form.setValue}
                       fieldName="skillId"
-                      icon={<Icons.laptop className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<Laptop className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

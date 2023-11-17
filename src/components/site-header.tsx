@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { siteConfig } from "@/config/site";
-import { Icons } from "@/components/icons";
+import { HelpCircle } from "lucide-react";
 import { MainNav } from "@/components/main-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export function SiteHeader() {
                 className: "text-zinc-700 dark:text-zinc-400",
               })}
             >
-              <Icons.help className="h-5 w-5" />
+              <HelpCircle className="h-5 w-5" />
               <span className="sr-only">Help</span>
             </div>
           </Link>

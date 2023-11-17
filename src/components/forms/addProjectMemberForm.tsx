@@ -6,31 +6,15 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
-import { Icons } from "../icons";
+import { User } from "lucide-react";
 import { AllUsersWithAllocation } from "@/types";
 
-export function AddMemberInProject({
-  team,
-  project,
-  users,
-}: {
-  team: string;
-  project: number;
-  users: AllUsersWithAllocation[];
-}) {
+export function AddMemberInProject({ team, project, users }: { team: string; project: number; users: AllUsersWithAllocation[] }) {
   const router = useRouter();
   const showToast = useToast();
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -93,7 +77,7 @@ export function AddMemberInProject({
                       options={users}
                       setVal={form.setValue}
                       fieldName="user"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

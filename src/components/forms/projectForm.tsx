@@ -7,21 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import useToast from "@/hooks/useToast";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
-import { Icons } from "../icons";
+import { Activity, User } from "lucide-react";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
@@ -122,7 +113,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={clients}
                       setVal={form.setValue}
                       fieldName="client"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -141,7 +132,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={users}
                       setVal={form.setValue}
                       fieldName="owner"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -173,7 +164,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={intervalList}
                       setVal={form.setValue}
                       fieldName="interval"
-                      icon={<Icons.activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<Activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

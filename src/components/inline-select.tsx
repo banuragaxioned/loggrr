@@ -3,18 +3,10 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Icons } from "@/components/icons";
+import { Check } from "lucide-react";
 
 interface Options {
   id: number;
@@ -30,30 +22,24 @@ interface InlineSelectProps<TData, TValue> {
   onSelect: (selectedOption: Options[]) => void;
 }
 
-export function InlineSelect<TData, TValue>({
-  label,
-  title,
-  options,
-  selectedValues,
-  onSelect,
-}: InlineSelectProps<TData, TValue>) {
+export function InlineSelect<TData, TValue>({ label, title, options, selectedValues, onSelect }: InlineSelectProps<TData, TValue>) {
   const [selected, setSelected] = useState<Options[]>(selectedValues);
-  const [isValueUpdated, setValueUpdated] = useState(false)
+  const [isValueUpdated, setValueUpdated] = useState(false);
 
   const handleSelect = (isSelected: boolean, option: Options) => {
-    isSelected ? setSelected(prev => prev.filter(opt => option.id !== opt.id)) : setSelected((prev) => [...prev, option]);
+    isSelected ? setSelected((prev) => prev.filter((opt) => option.id !== opt.id)) : setSelected((prev) => [...prev, option]);
   };
 
   useEffect(() => {
     let valueUpdated = false;
 
-    if(selected.length !== selectedValues.length) {
-      valueUpdated = true
+    if (selected.length !== selectedValues.length) {
+      valueUpdated = true;
     } else {
-      selected.map(value => valueUpdated = selectedValues.some(prevVal => value.id !== prevVal.id))
+      selected.map((value) => (valueUpdated = selectedValues.some((prevVal) => value.id !== prevVal.id)));
     }
-    setValueUpdated(valueUpdated)
-  }, [selected])
+    setValueUpdated(valueUpdated);
+  }, [selected]);
 
   return (
     <Popover onOpenChange={(e) => !e && setSelected(selectedValues)}>
@@ -94,18 +80,20 @@ export function InlineSelect<TData, TValue>({
                         !!isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible",
                       )}
                     >
-                      <Icons.check className={cn("h-4 w-4")} />
+                      <Check className={cn("h-4 w-4")} />
                     </div>
                     <span>{option.label}</span>
                   </CommandItem>
                 );
               })}
             </CommandGroup>
-            {(isValueUpdated) && (
+            {isValueUpdated && (
               <>
                 <CommandSeparator />
                 <CommandGroup>
-                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>Update</CommandItem>
+                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>
+                    Update
+                  </CommandItem>
                 </CommandGroup>
               </>
             )}

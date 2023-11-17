@@ -3,7 +3,7 @@
 import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { Icons } from "@/components/icons";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { TableInput } from "@/components/table-input";
 import { Dispatch } from "react";
 import { AllocationDetails, Assignment } from "@/types";
@@ -50,7 +50,10 @@ const createDynamicColumns = (
   const createdColumns = getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
     const date: any = dateObj.dateKey;
     const col1 = startDate.toISOString().split("T")[0];
-    const col2 = dayjs(startDate).add(startDate.getDay() > 4 ? 3 : 1, 'day').toISOString().split("T")[0];
+    const col2 = dayjs(startDate)
+      .add(startDate.getDay() > 4 ? 3 : 1, "day")
+      .toISOString()
+      .split("T")[0];
 
     return {
       accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
@@ -94,18 +97,13 @@ const createDynamicColumns = (
       meta: {
         className: "w-[12%]",
       },
-      filterFn: dateObj.dateKey === col1 ? 'skillFilter' : dateObj.dateKey === col2 ? 'groupFilter' : null,
+      filterFn: dateObj.dateKey === col1 ? "skillFilter" : dateObj.dateKey === col2 ? "groupFilter" : null,
     };
   });
   return createdColumns;
 };
 
-export const getDynamicColumns = (
-  startDate: Date,
-  billable: string,
-  weekend: boolean,
-  setSubmitCount: Dispatch<number>,
-) => {
+export const getDynamicColumns = (startDate: Date, billable: string, weekend: boolean, setSubmitCount: Dispatch<number>) => {
   const columns: ColumnDef<Assignment | any>[] = [
     {
       accessorKey: "name",
@@ -120,13 +118,7 @@ export const getDynamicColumns = (
             }`}
           >
             {row.getCanExpand() && (
-              <button>
-                {row.getIsExpanded() ? (
-                  <Icons.chevronDown className="h-4 w-4" />
-                ) : (
-                  <Icons.chevronRight className="h-4 w-4" />
-                )}
-              </button>
+              <button>{row.getIsExpanded() ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}</button>
             )}
             {row.depth < 1 && (
               <UserAvatar
