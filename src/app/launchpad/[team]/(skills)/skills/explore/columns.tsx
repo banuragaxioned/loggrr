@@ -14,6 +14,7 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 export interface SkillsList {
   id: number;
   name: string;
+  users: number;
   edit?: string;
 }
 
@@ -39,11 +40,19 @@ export function skillName(editSkillNames: (id: number, name: string) => void, is
             }}
           />
         ) : (
-          <span className="flex rounded-md border border-transparent px-3 text-sm h-auto w-auto py-1">
+          <span className="flex rounded-md border border-transparent text-sm h-auto w-auto py-1">
             {row.original.name}
           </span>
         );
       },
+      meta: {
+        className: "w-[45%]"
+      }
+    },
+    {
+      accessorKey: "users",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Users" />,
+      cell: ({ row }) => <span className="block w-full pl-4 tabular-nums">{row.original.users}</span>,
     },
     {
       id: "edit",

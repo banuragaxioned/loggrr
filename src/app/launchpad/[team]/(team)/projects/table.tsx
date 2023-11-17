@@ -38,7 +38,7 @@ export function Table<TData, TValue>({ columns, data }: TableProps<Projects, TVa
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer hover:bg-hover" }}
+      rowProps={{ className: "cursor-pointer group hover:bg-hover" }}
     />
   );
 }

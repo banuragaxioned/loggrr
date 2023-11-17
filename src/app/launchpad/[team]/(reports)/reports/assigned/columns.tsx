@@ -58,7 +58,7 @@ const createDynamicColumns = (
         <DataTableColumnHeader
           column={column}
           child={
-            <span className="flex flex-col items-center justify-center p-[10px]">
+            <span className="flex flex-col items-center justify-center p-[8px]">
               <span>{`${dateObj.date} ${dateObj.month}`}</span>
               <span>{dateObj.day}</span>
             </span>
