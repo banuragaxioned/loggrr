@@ -72,8 +72,8 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                       </div>
                     </div>
                     <div className="flex w-full items-start justify-between">
-                      <p className="text-sm text-slate-500">{data?.comments}</p>
-                      <div className="flex gap-x-4 md:invisible md:group-hover:visible">
+                      <p className="text-sm text-slate-500 line-clamp-1">{data?.comments}</p>
+                      <div className="flex gap-x-4 md:invisible md:group-hover:visible justify-center min-w-[68px]">
                         <Button
                           className="h-auto rounded-md border-none p-0"
                           onClick={() => editHandler(tempObj, data.id)}
