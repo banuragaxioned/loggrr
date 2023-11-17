@@ -1,25 +1,25 @@
-import { Icons } from "@/components/icons";
+import { Activity, Archive, MinusCircle, User } from "lucide-react";
 
 export const roles = [
   {
     value: "OWNER",
     label: "Owner",
-    icon: Icons.user,
+    icon: User,
   },
   {
     value: "MANAGER",
     label: "Manager",
-    icon: Icons.user,
+    icon: User,
   },
   {
     value: "USER",
     label: "User",
-    icon: Icons.user,
+    icon: User,
   },
   {
     value: "INACTIVE",
     label: "Inactive",
-    icon: Icons.minusCircle,
+    icon: MinusCircle,
   },
 ];
 
@@ -38,11 +38,11 @@ export const clientStatuses = [
   {
     value: "PUBLISHED",
     label: "Published",
-    icon: Icons.activity,
+    icon: Activity,
   },
   {
     value: "ARCHIVED",
     label: "Archived",
-    icon: Icons.archive,
+    icon: Archive,
   },
 ];

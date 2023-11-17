@@ -1,6 +1,6 @@
 "use client";
 
-import { Icons } from "@/components/icons";
+import { ListRestart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableToolbarProps } from "@/types";
@@ -20,7 +20,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset
-            <Icons.reset className="ml-2 h-4 w-4" />
+            <ListRestart className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

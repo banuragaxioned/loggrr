@@ -13,10 +13,10 @@ const commonValidationObj = {
   billable: z.boolean(),
   date: z.string(),
   task: z.number().min(1).optional(),
-}
+};
 
 const TimeEntrySchema = z.object(commonValidationObj);
-const TimeEntryUpdateSchema = z.object({...commonValidationObj,id:z.number().min(1)});
+const TimeEntryUpdateSchema = z.object({ ...commonValidationObj, id: z.number().min(1) });
 
 export async function POST(req: Request) {
   try {
@@ -94,7 +94,7 @@ export async function GET(req: Request) {
         userId: user.id,
         Tenant: {
           slug: team ? team : "",
-        }
+        },
       },
       select: {
         id: true,
@@ -196,10 +196,10 @@ export async function DELETE(req: Request) {
     }
     //schema goes here
     const query = await db.timeEntry.delete({
-      where:{
-        id: +id
-      }
-    })
+      where: {
+        id: +id,
+      },
+    });
 
     return new Response(JSON.stringify(query));
   } catch (error) {
@@ -212,7 +212,6 @@ export async function DELETE(req: Request) {
 }
 
 export async function PUT(req: Request) {
-
   try {
     const session = await getServerSession(authOptions);
 
@@ -231,20 +230,20 @@ export async function PUT(req: Request) {
     }
 
     //schema goes here
-   const query = await db.timeEntry.update({
-    where:{
-      id:body.id
-    },
-    data:{
+    const query = await db.timeEntry.update({
+      where: {
+        id: body.id,
+      },
+      data: {
         time: body.time,
-        comments:body.comments,
-        milestoneId:body.milestone,
+        comments: body.comments,
+        milestoneId: body.milestone,
         billable: body.billable,
         projectId: body.project,
         taskId: body.task,
-        updatedAt:new Date()
-    }
-   })
+        updatedAt: new Date(),
+      },
+    });
 
     return new Response(JSON.stringify(query));
   } catch (error) {

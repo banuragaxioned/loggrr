@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { Icons } from "@/components/icons";
+import { LucideIcon } from "lucide-react";
 import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
@@ -14,7 +14,7 @@ export type NavLink = {
   href: string;
   disabled?: boolean;
   external?: boolean;
-  icon?: keyof typeof Icons;
+  icon?: LucideIcon;
 };
 
 export type DashboardConfig = {
@@ -38,7 +38,7 @@ export type SidebarNavItem = {
   title: string;
   disabled?: boolean;
   external?: boolean;
-  icon?: keyof typeof Icons;
+  icon?: LucideIcon;
 } & (
   | {
       href: string;
@@ -206,41 +206,41 @@ export interface Project {
   id: number;
   name: string;
   milestone?: Milestone[];
-  task?:Milestone[];
-  client?:Milestone;
+  task?: Milestone[];
+  client?: Milestone;
 }
 
 export interface TimeEntryProperties {
-  id:number,
-  milestone:Milestone;
-  task:Milestone|null;
+  id: number;
+  milestone: Milestone;
+  task: Milestone | null;
   comments: string | null;
-  billable:boolean;
-  time:number;
+  billable: boolean;
+  time: number;
 }
 
 interface ProjectLog {
-  project:Project;
-  total:number;
-  data:TimeEntryProperties[];
+  project: Project;
+  total: number;
+  data: TimeEntryProperties[];
 }
 
 export interface TimeEntryData {
-  projectsLog:ProjectLog[];
-  dayTotal:number;
+  projectsLog: ProjectLog[];
+  dayTotal: number;
 }
 
 export interface TimeEntryDataObj {
-  [key:string]:TimeEntryData
+  [key: string]: TimeEntryData;
 }
 
- export type Milestone = {
+export type Milestone = {
   id: number;
   name: string;
-  billable?:boolean;
+  billable?: boolean;
 };
 
 export interface GetSetDateProps {
-  date:Date;
-  setDate:Dispatch<Date>|any;
+  date: Date;
+  setDate: Dispatch<Date> | any;
 }
