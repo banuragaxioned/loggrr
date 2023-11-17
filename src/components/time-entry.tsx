@@ -143,7 +143,7 @@ export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => entries.data[getDateStr(dateInArr)]) || entries.status === 0) && getApiCall();
+    (dates.filter((dateInArr) => !entries.data[getDateStr(dateInArr)]).length || entries.status === 0) && getApiCall();
   }, [dates]);
 
   return (
