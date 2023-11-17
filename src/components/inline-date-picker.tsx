@@ -52,7 +52,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
                 ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
                 : ""
             } ${isNotClickable ? "opacity-30" : ""} ${dateString === getDateStr(new Date()) ? "text-foreground" : ""} ${
-              triggerCount < 0 ? "animate-slide-right" : "animate-slide-left"
+              triggerCount < 0 ? "animate-slide-left" : "animate-slide-right"
             }`}
           >
             <span>

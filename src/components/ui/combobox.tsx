@@ -80,7 +80,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
               <div className="space-between flex w-full items-center rounded-t-[5px]">
                 <CommandInput
                   tabIndex={tabIndex}
-                  className={`text-popover-foregroun box-border border-0 border-none border-border bg-popover px-0 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
+                  className={`text-popover-foregroun box-border border-0 border-none border-border bg-popover px-2 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
                   autoFocus
                   placeholder={placeholder ?? "Search here..."}
                   value={searchTerm}
