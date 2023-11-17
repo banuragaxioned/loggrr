@@ -28,11 +28,17 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                   <h3 className="flex gap-x-1 font-medium">
                     {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
                   </h3>
-                  <span className="font-bold text-black text-primary-foreground">{entryData?.total.toFixed(2)} Hrs</span>
+                  <span className="font-bold text-black text-primary-foreground">
+                    {entryData?.total.toFixed(2)} Hrs
+                  </span>
                 </div>
                 {/* milestone data */}
                 {entryData?.data?.map((data, i) => {
-                  const projectObj = { id: entryData.project.id, name: entryData.project.name, billable: entryData.project.billable };
+                  const projectObj = {
+                    id: entryData.project.id,
+                    name: entryData.project.name,
+                    billable: entryData.project.billable,
+                  };
                   const tempObj = {
                     ...data,
                     comment: data.comments,
@@ -41,7 +47,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                     time: `${data.time}`,
                   };
                   return (
-                    <div className="group relative mb-2 flex justify-between rounded-md bg-background bg-slate-50 p-4 text-black last:mb-0" key={i}>
+                    <div
+                      className="group relative mb-2 flex justify-between rounded-md bg-background bg-slate-50 p-4 text-black last:mb-0"
+                      key={i}
+                    >
                       <div className="flex flex-col justify-between gap-y-4">
                         <div className="flex gap-x-4">
                           {data.milestone?.name && (

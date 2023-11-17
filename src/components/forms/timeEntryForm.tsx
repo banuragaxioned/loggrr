@@ -120,7 +120,12 @@ export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormPr
                   <FormItem className="col-span-2">
                     <div className="relative mt-2 flex rounded-md border-[1px]">
                       <FormControl>
-                        <Input placeholder="Time" {...field} type="number" className="w-20 border-none  outline-none focus:ring-0" />
+                        <Input
+                          placeholder="Time"
+                          {...field}
+                          type="number"
+                          className="w-20 border-none  outline-none focus:ring-0"
+                        />
                       </FormControl>
                       <span className="block h-full bg-hover p-2 text-center text-neutral-400">Hours</span>
                     </div>

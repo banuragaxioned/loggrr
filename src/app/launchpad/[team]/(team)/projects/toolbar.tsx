@@ -15,7 +15,9 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const uniqueClientList = removeDuplicatesFromArray(table.options.data.map((client: { clientName: string }) => client.clientName) as []);
+  const uniqueClientList = removeDuplicatesFromArray(
+    table.options.data.map((client: { clientName: string }) => client.clientName) as [],
+  );
   const clientList = uniqueClientList.map((name: string) => ({
     label: name,
     value: name,
@@ -32,8 +34,12 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />}
-        {table.getColumn("clientName") && <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />}
+        {table.getColumn("status") && (
+          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
+        )}
+        {table.getColumn("clientName") && (
+          <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
+        )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset

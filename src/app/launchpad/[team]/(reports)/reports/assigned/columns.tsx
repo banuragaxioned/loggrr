@@ -103,7 +103,12 @@ const createDynamicColumns = (
   return createdColumns;
 };
 
-export const getDynamicColumns = (startDate: Date, billable: string, weekend: boolean, setSubmitCount: Dispatch<number>) => {
+export const getDynamicColumns = (
+  startDate: Date,
+  billable: string,
+  weekend: boolean,
+  setSubmitCount: Dispatch<number>,
+) => {
   const columns: ColumnDef<Assignment | any>[] = [
     {
       accessorKey: "name",
@@ -118,7 +123,9 @@ export const getDynamicColumns = (startDate: Date, billable: string, weekend: bo
             }`}
           >
             {row.getCanExpand() && (
-              <button>{row.getIsExpanded() ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}</button>
+              <button>
+                {row.getIsExpanded() ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              </button>
             )}
             {row.depth < 1 && (
               <UserAvatar

@@ -79,9 +79,9 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               <div key={i}>
                 <Command.Item
                   className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
-                  value={`${obj.client.name} / ${obj.project.name} ${obj.milestone?.name ? `/${obj.milestone.name}` : ""} ${
-                    obj.task?.name ? `/${obj.task?.name}` : ""
-                  } `}
+                  value={`${obj.client.name} / ${obj.project.name} ${
+                    obj.milestone?.name ? `/${obj.milestone.name}` : ""
+                  } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
                   onSelect={() => {
                     setSelectedData(obj);
                     setFocus(false);
@@ -104,7 +104,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
     setRecentlyUsed(getRecent());
   };
 
-  const formValidator = () => selectedData?.comment?.trim().length && selectedData?.time && selectedData?.project && !errors?.time;
+  const formValidator = () =>
+    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.project && !errors?.time;
 
   const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
@@ -217,12 +218,16 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
     <div
       ref={timeLogFormRef}
       className={`${
-        isFocus ? "border-brand-light ring-brand-light shadow-lg ring-1 ring-offset-0" : "border-borderColor-light dark:border-borderColor-dark"
+        isFocus
+          ? "border-brand-light ring-brand-light shadow-lg ring-1 ring-offset-0"
+          : "border-borderColor-light dark:border-borderColor-dark"
       } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
     >
       <form
         onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
-        onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
+        onKeyDown={(e) =>
+          e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)
+        }
       >
         <Command label="Command Menu" className="text-content-light relative">
           <div
@@ -234,7 +239,10 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           >
             {selectedData?.project ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
-                <MessageSquare onClick={() => setCommentFocus(true)} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
+                <MessageSquare
+                  onClick={() => setCommentFocus(true)}
+                  className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
+                />
                 <input
                   tabIndex={5}
                   ref={commentRef}
@@ -282,7 +290,10 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               ref={checkobxRef}
               variant="outline"
               size="sm"
-              onClick={() => selectedData?.project?.billable && setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))}
+              onClick={() =>
+                selectedData?.project?.billable &&
+                setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+              }
               className={`border-borderColor-light ${selectedData?.project?.billable ? "" : "opacity-30"} ${
                 selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
               } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
@@ -311,7 +322,9 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
             )}
             <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
-            {inputRef.current && inputRef.current?.value?.length > 0 ? renderGroup(suggestions) : renderGroup(recentlyUsed)}
+            {inputRef.current && inputRef.current?.value?.length > 0
+              ? renderGroup(suggestions)
+              : renderGroup(recentlyUsed)}
           </Command.List>
         </Command>
       </form>

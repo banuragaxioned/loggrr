@@ -19,7 +19,9 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />}
+        {table.getColumn("status") && (
+          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
+        )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset

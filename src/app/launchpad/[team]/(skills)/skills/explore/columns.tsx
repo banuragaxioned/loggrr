@@ -45,7 +45,9 @@ export function skillName(
             }}
           />
         ) : (
-          <span className="flex h-auto w-auto rounded-md border border-transparent py-1 text-sm">{row.original.name}</span>
+          <span className="flex h-auto w-auto rounded-md border border-transparent py-1 text-sm">
+            {row.original.name}
+          </span>
         );
       },
       meta: {
@@ -78,7 +80,11 @@ export function skillName(
                 <Save height={18} width={18} />
               </Button>
             ) : (
-              <Button title="Edit" className={cn("h-auto border-0 bg-inherit p-0")} onClick={() => setIsEditing(row.original.id)}>
+              <Button
+                title="Edit"
+                className={cn("h-auto border-0 bg-inherit p-0")}
+                onClick={() => setIsEditing(row.original.id)}
+              >
                 <Edit height={18} width={18} />
               </Button>
             )}

@@ -9,19 +9,33 @@ interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes
   child?: React.ReactNode;
 }
 
-export function DataTableColumnHeader<TData, TValue>({ column, title, className, child }: DataTableColumnHeaderProps<TData, TValue>) {
+export function DataTableColumnHeader<TData, TValue>({
+  column,
+  title,
+  className,
+  child,
+}: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
 
   const clickHandler = (column: Column<TData, TValue>) => {
     const sortingState = column.getIsSorted();
-    !sortingState ? column.toggleSorting(false) : sortingState === "asc" ? column.toggleSorting(true) : column.clearSorting();
+    !sortingState
+      ? column.toggleSorting(false)
+      : sortingState === "asc"
+        ? column.toggleSorting(true)
+        : column.clearSorting();
   };
 
   return (
     <div className={cn("flex items-center space-x-2", className)}>
-      <Button variant="ghost" size="sm" className="h-8 px-0 hover:bg-transparent data-[state=open]:bg-accent" onClick={() => clickHandler(column)}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 px-0 hover:bg-transparent data-[state=open]:bg-accent"
+        onClick={() => clickHandler(column)}
+      >
         {title && <span>{title}</span>}
         {child}
         {column.getIsSorted() === "desc" ? (

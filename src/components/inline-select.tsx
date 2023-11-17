@@ -3,7 +3,15 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Check } from "lucide-react";
@@ -22,12 +30,20 @@ interface InlineSelectProps<TData, TValue> {
   onSelect: (selectedOption: Options[]) => void;
 }
 
-export function InlineSelect<TData, TValue>({ label, title, options, selectedValues, onSelect }: InlineSelectProps<TData, TValue>) {
+export function InlineSelect<TData, TValue>({
+  label,
+  title,
+  options,
+  selectedValues,
+  onSelect,
+}: InlineSelectProps<TData, TValue>) {
   const [selected, setSelected] = useState<Options[]>(selectedValues);
   const [isValueUpdated, setValueUpdated] = useState(false);
 
   const handleSelect = (isSelected: boolean, option: Options) => {
-    isSelected ? setSelected((prev) => prev.filter((opt) => option.id !== opt.id)) : setSelected((prev) => [...prev, option]);
+    isSelected
+      ? setSelected((prev) => prev.filter((opt) => option.id !== opt.id))
+      : setSelected((prev) => [...prev, option]);
   };
 
   useEffect(() => {

@@ -17,7 +17,11 @@ interface DataTableVisibilityTogglerProps<TData, TValue> {
   options: option[];
 }
 
-export function DataTableVisibilityToggler<TData, TValue>({ selectionHandler, title, options }: DataTableVisibilityTogglerProps<TData, TValue>) {
+export function DataTableVisibilityToggler<TData, TValue>({
+  selectionHandler,
+  title,
+  options,
+}: DataTableVisibilityTogglerProps<TData, TValue>) {
   const [selected, setSelected] = useState<option>(options[0]);
   const clickHandler = (option: option) => {
     setSelected(option);

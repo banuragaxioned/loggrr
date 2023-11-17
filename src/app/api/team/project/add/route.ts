@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         Members: {
           connect: {
             id: body.ownerId,
-          }
+          },
         },
         startdate: body.startDate,
         enddate: body.endDate,

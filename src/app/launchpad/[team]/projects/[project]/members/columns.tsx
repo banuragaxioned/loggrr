@@ -52,7 +52,9 @@ export const getColumn = (deleteMembers: (id: number, projectId: number) => void
             <Button
               title="Remove"
               className={cn("h-auto border-0 bg-inherit p-0")}
-              onClick={() => (row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId))}
+              onClick={() =>
+                row?.original?.role === "INACTIVE" ? null : deleteMembers(row?.original?.id, row.original.projectId)
+              }
             >
               <MinusCircle height={18} width={18} />
             </Button>

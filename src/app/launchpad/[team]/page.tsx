@@ -113,7 +113,9 @@ export default async function Dashboard({ params }: pageProps) {
                           <Text className="w-full font-semibold leading-5 text-black">{item.Project.name}</Text>
                           <Flex className="mt-3 items-center">
                             <ProgressBar value={item.time} color="indigo" className="mr-4" />
-                            <Text className="text-sm font-normal text-gray-500">{Math.round((item.time / 40) * 100)}%</Text>
+                            <Text className="text-sm font-normal text-gray-500">
+                              {Math.round((item.time / 40) * 100)}%
+                            </Text>
                           </Flex>
                         </div>
                       ))

@@ -73,7 +73,9 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
               >
                 <Boxes className="mr-2 h-5 w-5" />
                 {item.name}
-                <Check className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")} />
+                <Check
+                  className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")}
+                />
               </CommandItem>
             ))}
           </CommandList>
