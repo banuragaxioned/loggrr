@@ -19,7 +19,7 @@ import useToast from "@/hooks/useToast";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
-import { Icons } from "../icons";
+import { User } from "lucide-react";
 import { AllUsersWithAllocation } from "@/types";
 
 export function AddMemberInProject({
@@ -93,7 +93,7 @@ export function AddMemberInProject({
                       options={users}
                       setVal={form.setValue}
                       fieldName="user"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

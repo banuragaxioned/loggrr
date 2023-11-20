@@ -6,7 +6,7 @@ import { UserAccountNav } from "@/components/user-account";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
-import { Icons } from "@/components/icons";
+import { HelpCircle } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import TeamSwitcher from "@/components/team-switcher";
 
@@ -37,7 +37,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                   className: "text-zinc-700 dark:text-zinc-400",
                 })}
               >
-                <Icons.help className="h-5 w-5" />
+                <HelpCircle className="h-5 w-5" />
                 <span className="sr-only">Help</span>
               </div>
             </Link>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { clientStatuses } from "@/config/filters";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
-import { Icons } from "@/components/icons";
+import { ListRestart } from "lucide-react";
 import { DataTableToolbarProps } from "@/types";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
@@ -43,7 +43,7 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset
-            <Icons.reset className="ml-2 h-4 w-4" />
+            <ListRestart className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

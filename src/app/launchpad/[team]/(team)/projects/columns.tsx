@@ -5,13 +5,9 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Archive, Delete, Edit, MoreVertical } from "lucide-react";
 
 export type Projects = {
   id: number;
@@ -54,13 +50,13 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "budget",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-right tabular-nums">{row.original.budget}</span>,
+    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.budget}</span>,
     filterFn: "arrIncludesSome",
   },
   {
     accessorKey: "logged",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged " />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-right tabular-nums">{row.original.logged}</span>,
+    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.logged}</span>,
     filterFn: "arrIncludesSome",
   },
   {
@@ -75,21 +71,21 @@ export const columns: ColumnDef<Projects>[] = [
         <div className={cn("invisible flex gap-x-3 group-hover:visible")} onClick={(e) => e.stopPropagation()}>
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="bg-transparent border-none px-[10px] py-[12px] h-0 w-[40px]" title="More">
-                <Icons.more height={18} width={18} />
+              <Button className="h-0 w-[40px] border-none bg-transparent px-[10px] py-[12px]" title="More">
+                <MoreVertical height={18} width={18} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 overflow-hidden">
-              <div className="border-b-[1px] border-border px-4 py-2 text-primary-foreground flex items-center cursor-pointer hover:bg-hover">
-                <Icons.edit height={18} width={18} className="mr-2" />
+            <PopoverContent className="w-auto overflow-hidden p-0">
+              <div className="flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-primary-foreground hover:bg-hover">
+                <Edit height={18} width={18} className="mr-2" />
                 Edit
               </div>
-              <div className="border-b-[1px] border-border px-4 py-2 text-red-600 flex items-center cursor-pointer hover:bg-hover">
-                <Icons.delete height={18} width={18} className="mr-2" />
+              <div className="flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-red-600 hover:bg-hover">
+                <Delete height={18} width={18} className="mr-2" />
                 Delete
               </div>
-              <div className="px-4 py-2 flex items-center cursor-pointer text-primary-foreground hover:bg-hover">
-                <Icons.archive height={18} width={18} className="mr-2" />
+              <div className="flex cursor-pointer items-center px-4 py-2 text-primary-foreground hover:bg-hover">
+                <Archive height={18} width={18} className="mr-2" />
                 Archive
               </div>
             </PopoverContent>

@@ -1,7 +1,7 @@
 import { Column } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
+import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
@@ -24,8 +24,8 @@ export function DataTableColumnHeader<TData, TValue>({
     !sortingState
       ? column.toggleSorting(false)
       : sortingState === "asc"
-      ? column.toggleSorting(true)
-      : column.clearSorting();
+        ? column.toggleSorting(true)
+        : column.clearSorting();
   };
 
   return (
@@ -33,17 +33,17 @@ export function DataTableColumnHeader<TData, TValue>({
       <Button
         variant="ghost"
         size="sm"
-        className="h-8 px-0 data-[state=open]:bg-accent"
+        className="h-8 px-0 hover:bg-transparent data-[state=open]:bg-accent"
         onClick={() => clickHandler(column)}
       >
-        {title && <span className="p-3">{title}</span>}
+        {title && <span>{title}</span>}
         {child}
         {column.getIsSorted() === "desc" ? (
-          <Icons.selectDown className="ml-2 h-4 w-4" />
+          <ChevronDown className="ml-2 h-4 w-4" />
         ) : column.getIsSorted() === "asc" ? (
-          <Icons.selectUp className="ml-2 h-4 w-4" />
+          <ChevronUp className="ml-2 h-4 w-4" />
         ) : (
-          <Icons.select className="ml-2 h-4 w-4" />
+          <ChevronsUpDown className="ml-2 h-4 w-4" />
         )}
       </Button>
     </div>
