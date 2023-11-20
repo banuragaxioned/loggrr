@@ -17,13 +17,13 @@ import {
 import { DataTableToolbar } from "./toolbar";
 import { Client } from "@/types";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValue>, {params}: pageProps) {
+export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [isEditing, setIsEditing] = React.useState<number>(0);
   const showToast = useToast();
   const router = useRouter();
-  const { team } = params;
+  // const { team } = params;
 
   const refButton = React.useRef<HTMLButtonElement>(null);
 
@@ -38,7 +38,7 @@ export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValu
       body: JSON.stringify({
         id: id,
         name: value,
-        team,
+        // team,
       }),
     });
 

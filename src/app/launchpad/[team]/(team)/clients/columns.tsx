@@ -5,12 +5,12 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Client } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
 import { Dispatch } from "react";
+import { Edit } from "lucide-react";
 
 // export function clientName(editClientNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>) {
 
-  const columns: ColumnDef<Client>[] = [
+  export const columns: ColumnDef<Client>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -29,7 +29,7 @@ import { Dispatch } from "react";
       id: "edit",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")}>
+          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")} onClick={(e) => e.stopPropagation()} >
             {/* {isEditing === row.original.id ? ( */}
               {/* <Button
                 title="Save"
@@ -51,7 +51,7 @@ import { Dispatch } from "react";
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 // onClick={() => setIsEditing(row.original.id)}
               >
-                <Icons.edit height={18} width={18} />
+                <Edit height={18} width={18} />
               </Button>
             {/* )} */}
           </div>
