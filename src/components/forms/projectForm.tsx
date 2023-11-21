@@ -30,7 +30,7 @@ const formSchema = z.object({
   client: z.number().int("Please select a client"),
   name: z.string().nonempty("Please provide a Project name"),
   owner: z.number().int("Please select a Owner name"),
-  budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a Budget"),
+  budget: z.string().regex(new RegExp(/^([0-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[0-9]\d{0,2}|[0-9]\d{0,2})$/, "g"), "Please provide a Budget"),
   date: z.coerce.date(),
   enddate: z.coerce.date().optional(),
   billable: z.any(),
@@ -187,7 +187,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Budget</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Budget" {...field} type="number" />
+                    <Input placeholder="Budget" {...field} type="text"  step="0.1" min="0"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
