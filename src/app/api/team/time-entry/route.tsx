@@ -63,8 +63,8 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const dates = searchParams.get("dates") as string;
-  const dateStrs: string[] = JSON.parse(dates);
+  const startDate = JSON.parse(searchParams.get("startDate") as string);
+  const endDate = JSON.parse(searchParams.get("endDate") as string);
 
   try {
     const session = await getServerSession(authOptions);
@@ -88,8 +88,8 @@ export async function GET(req: Request) {
           slug: team ? team : "",
         },
         date: {
-          lte: dateStrs[dateStrs.length - 1],
-          gte: dateStrs[0],
+          gte: startDate,
+          lte: endDate
         },
       },
       select: {
