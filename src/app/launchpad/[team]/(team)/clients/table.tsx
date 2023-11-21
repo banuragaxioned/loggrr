@@ -5,8 +5,8 @@ import { useRef } from "react";
 import useToast from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import { DataTableStructure } from "@/components/data-table-structure";
-import { TableProps, pageProps } from "@/types";
 import {
+  ColumnDef,
   ColumnFiltersState,
   Row,
   SortingState,
@@ -17,13 +17,18 @@ import {
 import { DataTableToolbar } from "./toolbar";
 import { Client } from "@/types";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValue>) {
+export interface TableProps<TData, TValue> {
+  clientName: Function
+  data: TData[];
+  team: string
+}
+
+export function Table<TData, TValue>({ clientName, data, team }: TableProps<Client, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [isEditing, setIsEditing] = React.useState<number>(0);
   const showToast = useToast();
   const router = useRouter();
-  // const { team } = params;
 
   const refButton = React.useRef<HTMLButtonElement>(null);
 
@@ -38,11 +43,11 @@ export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValu
       body: JSON.stringify({
         id: id,
         name: value,
-        // team,
+        team,
       }),
     });
 
-    if (response?.ok) showToast("Skill updated", "success");
+    if (response?.ok) showToast("Client name updated", "success");
 
     router.refresh();
     setIsEditing(0);
@@ -50,7 +55,7 @@ export function Table<TData, TValue>({ columns, data }: TableProps<Client, TValu
 
   const tableConfig = {
     data,
-    columns,
+    columns: clientName(editClientNames, isEditing, setIsEditing, refButton),
     state: {
       sorting,
       columnFilters,
