@@ -78,7 +78,7 @@ export const TimeEntry = ({ team, projects, setUserEntry }: TimeEntryProps) => {
   };
 
   const getApiCall = () =>
-    fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
+    fetch(`/api/team/time-entry?team=${team}&startDate=${JSON.stringify(dates[0])}&endDate=${JSON.stringify(dates[dates.length-1])}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
