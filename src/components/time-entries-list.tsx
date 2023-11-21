@@ -1,6 +1,6 @@
 import { Skeleton } from "./ui/skeleton";
-import { Icons } from "./icons";
 import { TimeEntryData } from "@/types";
+import { Edit, List, ListRestart, Rocket, Trash,Dot } from "lucide-react";
 import { Button } from "./ui/button";
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
@@ -42,20 +42,20 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                   >
                     <h3 className="flex w-full items-center gap-x-1 text-foreground">
                       <span className="text-base font-semibold">{entryData?.project?.name}</span>
-                      <Icons.dot className="h-5 w-5 text-slate-400" />
+                      <Dot className="h-5 w-5 text-slate-400" />
                       <span className="text-base font-normal">{entryData?.project.client?.name}</span>
                     </h3>
                     <div className="flex w-full justify-between">
                       <div className="flex gap-x-4 items-center">
                         {data.milestone?.name && (
                           <p className="flex min-w-[90px] justify-center gap-x-[6px] bg-indigo-50 h-auto px-3 py-2 text-xs font-medium rounded-[6px] box-shadow">
-                            <Icons.milestone className="text-secondary w-3 h-3" />
+                            <Rocket className="text-secondary w-3 h-3" />
                             <span>{data.milestone.name}</span>
                           </p>
                         )}
                         {data.task?.name && (
                           <p className="flex min-w-[90px] justify-center gap-x-[6px] h-auto bg-indigo-50 px-3 py-2 text-xs font-medium rounded-[6px] box-shadow">
-                            <Icons.task className="text-secondary w-3 h-3" />
+                            <List className="text-secondary w-3 h-3" />
                             <span>{data.task.name}</span>
                           </p>
                         )}
@@ -78,10 +78,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                           className="h-auto rounded-md border-none p-0"
                           onClick={() => editHandler(tempObj, data.id)}
                         >
-                          {edit.isEditing ? <Icons.reset className="h-5 w-5" /> : <Icons.edit className="h-5 w-5" />}
+                          {edit.isEditing ? <ListRestart className="h-5 w-5" /> : <Edit className="h-5 w-5" />}
                         </Button>
                         <Button className="h-auto rounded-md border-none p-0" onClick={() => deleteHandler(data.id)}>
-                          <Icons.delete className="h-5 w-5" />
+                          <Trash className="h-5 w-5" />
                         </Button>
                       </div>
                     </div>

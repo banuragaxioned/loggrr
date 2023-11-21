@@ -1,4 +1,5 @@
 import { DashboardConfig } from "@/types";
+import { BoxesIcon, CreditCard, FileTextIcon, Settings, User } from "lucide-react";
 
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
@@ -30,83 +31,83 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Milestones",
       href: "/milestones",
-      icon: "post",
+      // icon: FileTextIcon,
     },
     {
       title: "Tasks",
       href: "/tasks",
-      icon: "billing",
+      // icon: CreditCard,
     },
     {
       title: "Members",
       href: "/manage/members",
-      icon: "user",
+      // icon: User,
     },
     {
       title: "Manage",
       href: "/manage",
-      icon: "settings",
+      // icon: Settings,
     },
   ],
   sidebarTeam: [
     {
       title: "Clients",
       href: "/clients",
-      icon: "post",
+      // icon: FileTextIcon,
     },
     {
       title: "Projects",
       href: "/projects",
-      icon: "post",
+      // icon: FileTextIcon,
     },
     {
       title: "Members",
       href: "/manage/members",
-      icon: "user",
+      // icon: User,
     },
     {
       title: "Groups",
       href: "/usergroup",
-      icon: "group",
+      // icon: BoxesIcon,
     },
   ],
   sidebarSkills: [
     {
       title: "Summary",
       href: "/skills/summary",
-      icon: "user",
+      // icon: User,
     },
     {
       title: "Explore",
       href: "/skills/explore",
-      icon: "post",
+      // icon: FileTextIcon,
     },
     {
       title: "Report",
       href: "/skills/report",
-      icon: "billing",
+      // icon: CreditCard,
     },
   ],
   sidebarReports: [
     {
       title: "Summary",
       href: "/reports/summary",
-      icon: "user",
+      // icon: User,
     },
     {
       title: "Assigned",
       href: "/reports/assigned",
-      icon: "post",
+      // icon: FileTextIcon,
     },
     {
       title: "Logged",
       href: "/reports/logged",
-      icon: "settings",
+      // icon: Settings,
     },
     {
       title: "Available",
       href: "/reports/available",
-      icon: "billing",
+      // icon: CreditCard,
     },
   ],
 };

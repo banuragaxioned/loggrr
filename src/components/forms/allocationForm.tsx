@@ -24,7 +24,7 @@ import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
-import { Icons } from "../icons";
+import { Folder, User } from "lucide-react";
 
 export function NewAllocationForm({
   team,
@@ -151,7 +151,7 @@ export function NewAllocationForm({
                       options={projects}
                       setVal={form.setValue}
                       fieldName="projectId"
-                      icon={<Icons.project className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<Folder className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -170,7 +170,7 @@ export function NewAllocationForm({
                       options={users}
                       setVal={form.setValue}
                       fieldName="userId"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

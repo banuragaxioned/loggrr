@@ -21,7 +21,7 @@ import useToast from "@/hooks/useToast";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
-import { Icons } from "../icons";
+import { Activity, User } from "lucide-react";
 import { CalendarDateRangePicker } from "@/components/datePicker";
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
@@ -122,7 +122,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={clients}
                       setVal={form.setValue}
                       fieldName="client"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -141,7 +141,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={users}
                       setVal={form.setValue}
                       fieldName="owner"
-                      icon={<Icons.user className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />
@@ -173,7 +173,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       options={intervalList}
                       setVal={form.setValue}
                       fieldName="interval"
-                      icon={<Icons.activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      icon={<Activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
                     />
                   </FormControl>
                   <FormMessage />

@@ -1,5 +1,5 @@
 import React, { Dispatch, FormEvent, useEffect, useRef, useState } from "react";
-import { Icons } from "@/components/icons";
+import { CircleDollarSign, Folder, List, MessageSquare, Rocket, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
@@ -188,10 +188,10 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               : [getFormattedSuggestion(current, milestoneObj)]
             : null
           : isMilestone?.length
-          ? isTask?.length
-            ? getCombination(current)
-            : isMilestone.map((obj) => getFormattedSuggestion(current, obj))
-          : null);
+            ? isTask?.length
+              ? getCombination(current)
+              : isMilestone.map((obj) => getFormattedSuggestion(current, obj))
+            : null);
       const check4 =
         check3 &&
         (taskName
@@ -199,8 +199,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             ? [getFormattedSuggestion(current, milestoneObj, taskObj)]
             : null
           : isTask?.length && milestoneObj
-          ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
-          : check3);
+            ? isTask.map((obj) => getFormattedSuggestion(current, milestoneObj, obj))
+            : check3);
       return check4 ? [...prev, ...check4] : prev;
     }, []);
     setSuggestions(suggestionArr2);
@@ -239,7 +239,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           >
             {selectedData?.project ? (
               <div ref={commentParentRef} className="flex basis-[70%] items-center">
-                <Icons.comment
+                <MessageSquare
                   onClick={() => setCommentFocus(true)}
                   className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
                 />
@@ -256,7 +256,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               </div>
             ) : (
               <div className="flex basis-[70%] items-center">
-                <Icons.search onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
+                <SearchIcon onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
                 <Command.Input
                   tabIndex={1}
                   ref={inputRef}
@@ -298,7 +298,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                 selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
               } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
             >
-              <Icons.dollar className="h-6 w-6" />
+              <CircleDollarSign className="h-6 w-6" />
             </Toggle>
             <Button
               variant="secondary"
@@ -341,7 +341,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           <ComboBox
             tabIndex={2}
             searchable
-            icon={<Icons.project className={`h-4 w-4`} />}
+            icon={<Folder className={`h-4 w-4`} />}
             options={projects}
             label={selectedData?.project?.name || "Project"}
             selectedItem={selectedData?.project?.name}
@@ -350,7 +350,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           <ComboBox
             tabIndex={3}
             searchable
-            icon={<Icons.milestone className={`h-4 w-4`} />}
+            icon={<Rocket className={`h-4 w-4`} />}
             options={projectMilestone}
             label={selectedData?.milestone?.name || "Milestone"}
             selectedItem={selectedData?.milestone?.name}
@@ -361,7 +361,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             <ComboBox
               tabIndex={4}
               searchable
-              icon={<Icons.task className={`h-4 w-4`} />}
+              icon={<List className={`h-4 w-4`} />}
               options={projectTask}
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
