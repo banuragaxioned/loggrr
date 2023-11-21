@@ -1,11 +1,11 @@
 "use client";
-import { TimeEntry } from "@/components/time-entry";
+import { useState } from "react";
 import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel, ProgressBar } from "@tremor/react";
-import { Icons } from "@/components/icons";
+import { Calendar } from "lucide-react";
+import { TimeEntry } from "@/components/time-entry";
 import { MarkerBar } from "@/components/marker-bar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Project } from "@/types";
-import { useState } from "react";
 
 export interface UserTimeEntry {
   totalTime: number;
@@ -41,7 +41,7 @@ export const TimeLogged = ({ team, projects, allocationData }: TimeLoggedProps) 
             <Flex className="items-center font-semibold">
               <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
               <Text className="flex items-center pb-5 text-xs text-[#6B7280]">
-                <Icons.calendar className="ml-2 mr-[5px] h-4 w-4" />
+                <Calendar className="ml-2 mr-[5px] h-4 w-4" />
                 Last 7 Days
               </Text>
             </Flex>
