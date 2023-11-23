@@ -20,7 +20,7 @@ export function clientName(editClientNames: (id: number, name: string) => void, 
           <Input
             defaultValue={row.original.name}
             ref={refButton}
-            className="h-auto w-auto py-1"
+            className={`h-auto w-auto py-1 ${isEditing ? 'border-[1px] border-gray-50' : ''}`} 
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 setIsEditing(0);
