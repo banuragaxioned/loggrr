@@ -7,7 +7,7 @@ import { Command, CommandItem, CommandList, CommandSeparator } from "@/component
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Boxes, Check, ChevronsUpDown } from "lucide-react";
 import { Role } from "@prisma/client";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
@@ -27,7 +27,6 @@ interface Teams extends React.HTMLAttributes<HTMLDivElement> {
 export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitcherProps) {
   const router = useRouter();
   const params = useParams();
-  const path = usePathname();
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
 
@@ -38,7 +37,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
     }
   }
 
-  if (path === "/launchpad" || teamData.teams.length === 1) {
+  if (teamData.teams.length === 1) {
     return null;
   }
 
@@ -66,7 +65,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
                 key={item.slug}
                 onSelect={() => {
                   setSelectedTeam(item);
-                  router.push(`/launchpad/${item.slug}`);
+                  router.push(`/${item.slug}`);
                   setOpen(false);
                 }}
                 className="text-sm"
