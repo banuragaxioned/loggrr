@@ -38,7 +38,7 @@ export type SidebarNavItem = {
   title: string;
   disabled?: boolean;
   external?: boolean;
-  icon?: LucideIcon;
+  icon?: React.ReactNode;
 } & (
   | {
       href: string;

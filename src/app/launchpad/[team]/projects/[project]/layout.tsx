@@ -16,17 +16,17 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     {
       title: "Milestones",
       href: `/projects/${projectId}/milestones`,
-      icon: FileText,
+      icon: <FileText height={18} width={18} />,
     },
     {
       title: "Tasks",
       href: `/projects/${projectId}/tasks`,
-      icon: CreditCard,
+      icon: <CreditCard height={18} width={18} />,
     },
     {
       title: "Members",
       href: `/projects/${projectId}/members`,
-      icon: User,
+      icon: <User height={18} width={18} />,
     },
   ];
 

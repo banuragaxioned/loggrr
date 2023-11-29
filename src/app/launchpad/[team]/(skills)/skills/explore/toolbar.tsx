@@ -15,7 +15,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-10 w-[150px] lg:w-[250px]"
         />
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
