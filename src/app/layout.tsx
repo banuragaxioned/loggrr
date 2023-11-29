@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 import localFont from "next/font/local";
 import { ContextProvider } from "./context-provider";
+import { SiteHeader } from "./header";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -52,7 +53,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           fontHeading.variable,
         )}
       >
-        <ContextProvider>{children}</ContextProvider>
+        <ContextProvider>
+          <SiteHeader />
+          {children}
+        </ContextProvider>
       </body>
     </html>
   );
