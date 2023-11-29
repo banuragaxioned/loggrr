@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SidebarNavItem } from "@/types";
-import { ArrowRight, Camera } from "lucide-react";
 
 interface DashboardNavProps {
   items: SidebarNavItem[];
