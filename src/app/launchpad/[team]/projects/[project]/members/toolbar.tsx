@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { roles } from "@/config/filters";
-import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { Camera } from "lucide-react";
 import { DataTableToolbarProps } from "@/types";
 

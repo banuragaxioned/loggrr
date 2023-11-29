@@ -3,7 +3,7 @@
 import * as React from "react";
 import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, Row } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/data-table-pagination";
+import { DataTablePagination } from "@/components/data-table/pagination";
 import { cn } from "@/lib/utils";
 import { TableProps } from "@/types";
 

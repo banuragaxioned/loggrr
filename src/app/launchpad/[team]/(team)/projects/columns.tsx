@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";

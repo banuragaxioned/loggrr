@@ -3,7 +3,7 @@
 import { Members } from "@/types";
 import { ColumnDef, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { MinusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";

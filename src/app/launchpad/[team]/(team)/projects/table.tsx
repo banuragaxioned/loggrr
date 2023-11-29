@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { DataTableStructure } from "@/components/data-table-structure";
+import { DataTableStructure } from "@/components/data-table/structure";
 import { TableProps } from "@/types";
 import {
   ColumnFiltersState,

@@ -2,7 +2,7 @@
 
 import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { TableInput } from "@/components/table-input";
 import { Dispatch } from "react";

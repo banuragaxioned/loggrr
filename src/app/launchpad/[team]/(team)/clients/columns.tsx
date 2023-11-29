@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Client } from "@/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

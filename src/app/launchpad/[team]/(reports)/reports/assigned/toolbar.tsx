@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { DatePicker } from "@/components/datePicker";
 import { Dispatch, useEffect } from "react";
-import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { Toggle } from "@/components/ui/toggle";

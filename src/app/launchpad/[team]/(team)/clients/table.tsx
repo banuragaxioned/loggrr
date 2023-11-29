@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRef } from "react";
 import useToast from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
-import { DataTableStructure } from "@/components/data-table-structure";
+import { DataTableStructure } from "@/components/data-table/structure";
 import {
   ColumnDef,
   ColumnFiltersState,
