@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { HelpCircle } from "lucide-react";
 import { MainNav } from "@/components/main-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/app/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";

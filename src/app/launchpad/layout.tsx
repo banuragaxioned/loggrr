@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
-
 import { getCurrentUser } from "@/lib/session";
 import { MainNav } from "@/components/main-nav";
 import { UserAccountNav } from "@/components/user-account";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/app/theme-toggle";
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { HelpCircle } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import TeamSwitcher from "@/components/team-switcher";
+import TeamSwitcher from "@/app/team-switcher";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
