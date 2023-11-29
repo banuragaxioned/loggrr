@@ -18,9 +18,9 @@ import { DataTableToolbar } from "./toolbar";
 import { Client } from "@/types";
 
 export interface TableProps<TData, TValue> {
-  clientName: Function
+  clientName: Function;
   data: TData[];
-  team: string
+  team: string;
 }
 
 export function Table<TData, TValue>({ clientName, data, team }: TableProps<Client, TValue>) {

@@ -9,9 +9,13 @@ import { Dispatch } from "react";
 import { Edit, Save } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-export function clientName(editClientNames: (id: number, name: string) => void, isEditing: number, setIsEditing: Dispatch<number>, refButton: any) {
-
-   const columns: ColumnDef<Client>[] = [
+export function clientName(
+  editClientNames: (id: number, name: string) => void,
+  isEditing: number,
+  setIsEditing: Dispatch<number>,
+  refButton: any,
+) {
+  const columns: ColumnDef<Client>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -20,7 +24,7 @@ export function clientName(editClientNames: (id: number, name: string) => void, 
           <Input
             defaultValue={row.original.name}
             ref={refButton}
-            className={`h-auto w-auto py-1 ${isEditing ? 'border-[1px] border-gray-50' : ''}`} 
+            className={`h-auto w-auto py-1 ${isEditing ? "border-[1px] border-gray-50" : ""}`}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 setIsEditing(0);
@@ -52,23 +56,26 @@ export function clientName(editClientNames: (id: number, name: string) => void, 
       id: "edit",
       cell: ({ row }) => {
         return (
-          <div className={cn("invisible flex gap-x-3 items-center justify-center", "group-hover:visible")} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={cn("invisible flex items-center justify-center gap-x-3", "group-hover:visible")}
+            onClick={(e) => e.stopPropagation()}
+          >
             {isEditing === row.original.id ? (
               <Button
                 title="Save"
                 className={cn("h-auto border-0 bg-inherit p-0")}
                 onClick={() => {
-                  setIsEditing(row.original.id)
-                  if(row.original.name !== refButton?.current?.value) {
+                  setIsEditing(row.original.id);
+                  if (row.original.name !== refButton?.current?.value) {
                     editClientNames(isEditing, refButton?.current?.value);
                   } else {
-                    setIsEditing(0)
+                    setIsEditing(0);
                   }
                 }}
               >
                 <Save height={18} width={18} />
               </Button>
-            ) : ( 
+            ) : (
               <Button
                 title="Edit"
                 className={cn("h-auto border-0 bg-inherit p-0")}
@@ -76,7 +83,7 @@ export function clientName(editClientNames: (id: number, name: string) => void, 
               >
                 <Edit height={18} width={18} />
               </Button>
-            )} 
+            )}
           </div>
         );
       },
@@ -87,4 +94,3 @@ export function clientName(editClientNames: (id: number, name: string) => void, 
   ];
   return columns;
 }
-
