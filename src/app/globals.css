@@ -135,6 +135,6 @@
   }
 }
 
-.side-bar [role=tooltip] {
-  @apply bg-background text-foreground border rounded-md ;
+.side-bar [role="tooltip"] {
+  @apply rounded-md border bg-background text-foreground;
 }

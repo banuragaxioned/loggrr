@@ -1,14 +1,10 @@
-import { TailwindIndicator } from "@/app/tailwind-indicator";
-import { siteConfig } from "@/config/site";
-import { ThemeProvider } from "@/app/theme-provider";
-import PHProvider, { Analytics } from "@/app/analytics";
-import { Toaster } from "react-hot-toast";
-import { cn } from "@/lib/utils";
+import "./globals.css";
 import { Metadata } from "next";
-
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 import localFont from "next/font/local";
-import "@/styles/globals.css";
+import { ContextProvider } from "./context-provider";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -20,30 +16,6 @@ const font = PrimaryFont({
   variable: "--font-primary",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
-      <body
-        className={cn(
-          "min-h-screen items-center border-border bg-background font-sans text-base text-foreground antialiased",
-          font.variable,
-          fontHeading.variable,
-        )}
-      >
-        <PHProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
-          <Analytics />
-          <TailwindIndicator />
-          <Toaster />
-        </PHProvider>
-      </body>
-    </html>
-  );
-}
 
 export const metadata: Metadata = {
   title: {
@@ -68,3 +40,20 @@ export const metadata: Metadata = {
     },
   ],
 };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={cn(
+          "min-h-screen items-center border-border font-sans text-base antialiased",
+          font.variable,
+          fontHeading.variable,
+        )}
+      >
+        <ContextProvider>{children}</ContextProvider>
+      </body>
+    </html>
+  );
+}
