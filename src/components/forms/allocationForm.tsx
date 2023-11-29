@@ -21,7 +21,7 @@ import useToast from "@/hooks/useToast";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
-import { CalendarDateRangePicker } from "@/components/datePicker";
+import { CalendarDateRangePicker } from "@/components/date-picker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Folder, User } from "lucide-react";

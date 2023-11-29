@@ -22,7 +22,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
 import { Activity, User } from "lucide-react";
-import { CalendarDateRangePicker } from "@/components/datePicker";
+import { CalendarDateRangePicker } from "@/components/date-picker";
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
 

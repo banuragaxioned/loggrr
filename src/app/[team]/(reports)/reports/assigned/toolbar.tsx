@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Assignment, DataTableToolbarProps } from "@/types";
-import { DatePicker } from "@/components/datePicker";
+import { DatePicker } from "@/components/date-picker";
 import { Dispatch, useEffect } from "react";
 import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";

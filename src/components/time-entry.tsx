@@ -2,7 +2,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
-import { ClassicDatePicker } from "./datePicker";
+import { ClassicDatePicker } from "./date-picker";
 import { TimeLogForm } from "./forms/timelogForm";
 import { Project } from "@/types";
 import { TimeEntryDataObj } from "@/types";
