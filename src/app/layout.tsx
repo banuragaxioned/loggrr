@@ -1,16 +1,15 @@
-import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
-import localFont from "next/font/local";
-
-import "@/styles/globals.css";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { TailwindIndicator } from "@/app/tailwind-indicator";
 import { siteConfig } from "@/config/site";
-import { ThemeProvider } from "@/components/theme-provider";
-import PHProvider, { Analytics } from "@/components/analytics";
+import { ThemeProvider } from "@/app/theme-provider";
+import PHProvider, { Analytics } from "@/app/analytics";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 
-// Font files can be colocated inside of `pages`
+import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
+import localFont from "next/font/local";
+import "@/styles/globals.css";
+
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
   variable: "--font-heading",
@@ -22,13 +21,7 @@ const font = PrimaryFont({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-export default function RootLayout({
-  // Layouts must accept a children prop.
-  // This will be populated with nested layouts or pages
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
