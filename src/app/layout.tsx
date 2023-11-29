@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 import localFont from "next/font/local";
 import { ContextProvider } from "./context-provider";
-import { SiteHeader } from "./header";
+import { SiteHeader } from "./site-header";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",

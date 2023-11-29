@@ -8,12 +8,13 @@ import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
+import TeamSwitcher from "./team-switcher";
 
 export function SiteHeader() {
   const { data: sessionData } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="hidden items-center space-x-2 md:flex">
           <Clock className="h-6 w-6" />
@@ -44,6 +45,7 @@ export function SiteHeader() {
                 }}
               />
             )}
+            {/* {teamData && <TeamSwitcher teams={teamData} />} */}
           </nav>
         </div>
       </div>
