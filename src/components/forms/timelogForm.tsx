@@ -301,7 +301,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               <CircleDollarSign className="h-6 w-6" />
             </Toggle>
             <Button
-              variant="secondary"
+              variant="primary"
               size="sm"
               type="submit"
               disabled={!formValidator()}
@@ -373,7 +373,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         </div>
         <Button
           tabIndex={9}
-          variant="primary"
+          variant="outline"
           onClick={handleClearForm}
           size="sm"
           type="submit"

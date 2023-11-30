@@ -57,7 +57,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         <PopoverTrigger asChild>
           <Button
             title={selectedItem}
-            variant="primary"
+            variant="outline"
             role="combobox"
             tabIndex={searchable && isOpen ? -1 : tabIndex}
             disabled={disable}
