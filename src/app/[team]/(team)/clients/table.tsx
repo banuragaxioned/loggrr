@@ -72,7 +72,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer group hover:bg-hover" }}
+      rowProps={{ className: "cursor-pointer group hover:bg-accent" }}
     />
   );
 }

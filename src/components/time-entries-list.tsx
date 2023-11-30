@@ -1,9 +1,10 @@
 import { Skeleton } from "./ui/skeleton";
 import { TimeEntryData } from "@/types";
-import { Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
+import { CalendarClock, Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
+import { Card } from "./ui/card";
 
 interface TimeEntries {
   entries: TimeEntryData;
@@ -85,7 +86,13 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
             </li>
           ))
         ) : (
-          <li>Nothing to show</li>
+          <li>
+            <Card className="flex flex-col items-center justify-center space-y-4 p-12">
+              <CalendarClock className="h-12 w-12 text-primary" />
+              <h2 className="text-2xl font-bold text-primary">No Timesheet Entries</h2>
+              <p className="text-primary">You haven&apos;t made any timesheet entries for the selected date.</p>
+            </Card>
+          </li>
         )
       ) : (
         <li>sorry something went wrong</li>

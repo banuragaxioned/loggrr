@@ -13,7 +13,7 @@ export default function Unavailable() {
         <Link href="mailto:loggr@axioned.com" rel="noreferrer" className={buttonVariants({ size: "lg" })}>
           Contact
         </Link>
-        <Link rel="noreferrer" href="/" className={buttonVariants({ variant: "primary", size: "lg" })}>
+        <Link rel="noreferrer" href="/" className={buttonVariants({ variant: "default", size: "lg" })}>
           Back to home
         </Link>
       </div>

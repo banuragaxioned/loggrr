@@ -6,6 +6,7 @@ import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
+import { cn } from "@/lib/utils";
 
 export type SelectedData = {
   client?: Milestone;
@@ -272,44 +273,49 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                 />
               </div>
             )}
-            <input
-              tabIndex={6}
-              type="text"
-              placeholder="7:30"
-              className={`${
-                errors?.time
-                  ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                  : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
-              } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
-              value={selectedData?.time}
-              onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-              ref={timeInputRef}
-            />
-            <Toggle
-              tabIndex={7}
-              ref={checkobxRef}
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                selectedData?.project?.billable &&
-                setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-              }
-              className={`border-borderColor-light ${selectedData?.project?.billable ? "" : "opacity-30"} ${
-                selectedData?.billable ? "border-brand-light ring-brand-light ring-1 ring-offset-0" : ""
-              } text-billable-light dark:border-borderColor-dark ml-3 px-1.5 `}
-            >
-              <CircleDollarSign className="h-6 w-6" />
-            </Toggle>
-            <Button
-              variant="primary"
-              size="sm"
-              type="submit"
-              disabled={!formValidator()}
-              tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-              className={`disabled:hover:bg-brand-light ml-[12px] min-w-[75px] border px-[12px] py-[7px] disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              {edit.isEditing ? "Save" : "Submit"}
-            </Button>
+            <span className="flex items-center gap-4">
+              <input
+                tabIndex={6}
+                type="text"
+                placeholder="7:30"
+                className={`${
+                  errors?.time
+                    ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                    : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
+                } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
+                value={selectedData?.time}
+                onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                ref={timeInputRef}
+              />
+              <Toggle
+                tabIndex={7}
+                ref={checkobxRef}
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  selectedData?.project?.billable &&
+                  setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                }
+                className={cn(
+                  `${
+                    selectedData?.project?.billable
+                      ? "text-success hover:text-success focus:bg-success/10"
+                      : "text-muted"
+                  }`,
+                )}
+              >
+                <CircleDollarSign className="h-6 w-6" />
+              </Toggle>
+              <Button
+                size="sm"
+                type="submit"
+                disabled={!formValidator()}
+                tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
+                className={`disabled:hover:bg-brand-light disabled:disabled border`}
+              >
+                {edit.isEditing ? "Save" : "Submit"}
+              </Button>
+            </span>
           </div>
           <Command.List
             className={`z-10 w-[calc(100%)] ${

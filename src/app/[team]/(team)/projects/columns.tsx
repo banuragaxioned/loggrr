@@ -71,21 +71,25 @@ export const columns: ColumnDef<Projects>[] = [
         <div className={cn("invisible flex gap-x-3 group-hover:visible")} onClick={(e) => e.stopPropagation()}>
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="h-0 w-[40px] border-none bg-transparent px-[10px] py-[12px]" title="More">
-                <MoreVertical height={18} width={18} />
+              <Button
+                size={"sm"}
+                className="h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground"
+                title="More"
+              >
+                <MoreVertical height={16} width={16} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto overflow-hidden p-0">
-              <div className="hover:bg-hover flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-primary-foreground">
-                <Edit height={18} width={18} className="mr-2" />
+            <PopoverContent className="w-auto overflow-hidden p-0 text-sm">
+              <div className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-primary">
+                <Edit height={16} width={16} className="mr-2" />
                 Edit
               </div>
-              <div className="hover:bg-hover flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-red-600">
-                <Delete height={18} width={18} className="mr-2" />
+              <div className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-destructive">
+                <Delete height={16} width={16} className="mr-2" />
                 Delete
               </div>
-              <div className="hover:bg-hover flex cursor-pointer items-center px-4 py-2 text-primary-foreground">
-                <Archive height={18} width={18} className="mr-2" />
+              <div className="hover:bg-hover flex cursor-pointer items-center p-2">
+                <Archive height={16} width={16} className="mr-2" />
                 Archive
               </div>
             </PopoverContent>

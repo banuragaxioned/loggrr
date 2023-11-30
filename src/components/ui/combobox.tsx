@@ -59,6 +59,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             title={selectedItem}
             variant="outline"
             role="combobox"
+            size={"sm"}
             tabIndex={searchable && isOpen ? -1 : tabIndex}
             disabled={disable}
             className={`flex justify-between`}

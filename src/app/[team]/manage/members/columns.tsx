@@ -96,10 +96,11 @@ export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColum
           <div className={cn("invisible flex gap-x-3", row.original.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
               title="Inactive"
-              className={cn("h-auto border-0 bg-inherit p-0")}
+              variant={"ghost"}
+              className={cn("h-auto border-0 bg-inherit p-0 text-primary")}
               onClick={() => (row.original.role === "INACTIVE" ? null : updateStatus(row.original.id))}
             >
-              <MinusCircle height={18} width={18} />
+              <MinusCircle height={16} width={16} />
             </Button>
           </div>
         );

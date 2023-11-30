@@ -36,7 +36,7 @@ export function Table<TData, TValue>({ columns, data }: TableProps<UserGroup, TV
     <DataTableStructure
       tableConfig={tableConfig}
       rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer hover:bg-hover" }}
+      rowProps={{ className: "cursor-pointer hover:bg-accent" }}
     />
   );
 }
