@@ -31,10 +31,10 @@ export function NavMenu() {
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[350px] lg:grid-cols-1">
-              <ListItem href={`/${slug}/projects`} title="Projects">
+              <ListItem href={`/${slug}/manage/projects`} title="Projects">
                 Manage and view your projects.
               </ListItem>
-              <ListItem href={`/${slug}/clients`} title="Clients">
+              <ListItem href={`/${slug}/manage/clients`} title="Clients">
                 View clients associated with your projects.
               </ListItem>
             </ul>
@@ -47,7 +47,7 @@ export function NavMenu() {
               <ListItem href={`/${slug}/manage/members`} title="Manage Members">
                 Manage members and their permissions.
               </ListItem>
-              <ListItem href={`/${slug}/usergroup`} title="Groups">
+              <ListItem href={`/${slug}/manage/groups`} title="Groups">
                 View various groups of members in the project.
               </ListItem>
             </ul>

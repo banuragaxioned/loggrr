@@ -18,7 +18,9 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
   return (
     <ul className="flex max-h-60 w-full flex-col gap-y-2 overflow-y-auto">
       {status === 0 ? (
-        <Skeleton className="h-20 w-full" />
+        <>
+          <Skeleton className="h-20 w-full" />
+        </>
       ) : status > 0 ? (
         entries.projectsLog?.length ? (
           entries.projectsLog.map((entryData, i) => (

@@ -9,10 +9,12 @@ import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
+import { usePathname } from "next/navigation";
 
 export function SiteHeader() {
   const { data: sessionData } = useSession();
   const teamData = sessionData?.user.tenants;
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -24,7 +26,7 @@ export function SiteHeader() {
         {teamData && <TeamSwitcher teams={teamData} />}
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center space-x-1">
-            <NavMenu />
+            {pathname !== "/" && <NavMenu />}
             <Link href={siteConfig.links.help} target="_blank" rel="noreferrer">
               <div
                 className={buttonVariants({
