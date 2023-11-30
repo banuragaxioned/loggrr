@@ -37,9 +37,6 @@ export function NavMenu() {
               <ListItem href={`/${slug}/clients`} title="Clients">
                 View clients associated with your projects.
               </ListItem>
-              <ListItem href={`/${slug}/usergroup`} title="Groups">
-                View various groups of members in the project.
-              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -49,6 +46,9 @@ export function NavMenu() {
             <ul className="grid gap-3 p-6 md:w-[350px] lg:grid-cols-1">
               <ListItem href={`/${slug}/manage/members`} title="Manage Members">
                 Manage members and their permissions.
+              </ListItem>
+              <ListItem href={`/${slug}/usergroup`} title="Groups">
+                View various groups of members in the project.
               </ListItem>
             </ul>
           </NavigationMenuContent>
