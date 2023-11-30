@@ -29,7 +29,7 @@ export function SiteHeader() {
               <div
                 className={buttonVariants({
                   size: "sm",
-                  variant: "primary",
+                  variant: "outline",
                   className: "text-zinc-700 dark:text-zinc-400",
                 })}
               >
