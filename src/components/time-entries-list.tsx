@@ -25,12 +25,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
               {/* project name  */}
               <div>
                 <div className="flex w-full justify-between bg-background p-4">
-                  <h3 className="flex gap-x-1 font-medium">
+                  <h4 className="flex gap-x-1 font-medium">
                     {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
-                  </h3>
-                  <span className="font-bold text-black text-primary-foreground">
-                    {entryData?.total.toFixed(2)} Hrs
-                  </span>
+                  </h4>
+                  <span className="font-bold normal-nums text-primary">{entryData?.total.toFixed(2)}</span>
                 </div>
                 {/* milestone data */}
                 {entryData?.data?.map((data, i) => {
@@ -48,20 +46,20 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                   };
                   return (
                     <div
-                      className="group relative mb-2 flex justify-between rounded-md bg-background bg-slate-50 p-4 text-black last:mb-0"
+                      className="group relative mb-2 flex justify-between rounded-md bg-muted p-4 text-primary last:mb-0"
                       key={i}
                     >
                       <div className="flex flex-col justify-between gap-y-4">
                         <div className="flex gap-x-4">
                           {data.milestone?.name && (
                             <p className="flex gap-x-1 font-medium">
-                              <Rocket className="text-secondary" />
+                              <Rocket className="text-foreground" />
                               {data.milestone.name}
                             </p>
                           )}
                           {data.task?.name && (
                             <p className="flex gap-x-1 font-medium">
-                              <List className="text-secondary" />
+                              <List className="text-foreground" />
                               {data.task.name}
                             </p>
                           )}

@@ -114,15 +114,16 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   }, [dates]);
 
   return (
-    <div className="w-[95%]">
-      <div className="rounded-xl border-[1px] border-slate-300">
-        <div className="flex justify-between border-b-[1px] border-b-slate-300 p-4">
+    <div className="w-full">
+      <div className="rounded-xl border">
+        <div className="flex justify-between gap-2 border-b p-2">
           <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
-        <h2 className="flex justify-between px-5 py-2">
-          Time logged for the day <span>{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
-        </h2>
+        <h4 className="flex justify-between px-5 py-2">
+          Time logged for the day
+          <span className="normal-nums">{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
+        </h4>
       </div>
       <TimeLogForm
         team={team}

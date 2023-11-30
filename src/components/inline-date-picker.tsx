@@ -24,10 +24,11 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
   }, [date]);
 
   return (
-    <ul className="flex w-11/12 gap-x-2 text-neutral-500">
+    <ul className="flex w-full gap-x-2">
       <li className="flex basis-[5%] cursor-pointer items-center">
         <Button
-          className={cn("border-none outline-none")}
+          variant={"outline"}
+          size="sm"
           onClick={() => clickHandler(dayjs(dates[0]).add(-3, "day").toDate())}
           title="Prev"
         >
@@ -43,20 +44,22 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           <li
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
-            className={`flex basis-[23%] cursor-pointer items-center justify-center px-2 py-1 text-center ${
-              dateString === getDateStr(date)
-                ? "relative text-indigo-600 before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-indigo-600 before:indent-[-9999px] before:content-['a']"
-                : ""
-            } ${isNotClickable ? "opacity-30" : ""}`}
+            className={cn(
+              `flex basis-[23%] cursor-pointer items-center justify-center px-2 py-1 text-center ${
+                dateString === getDateStr(date)
+                  ? "relative text-primary before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-primary before:indent-[-9999px] before:content-['a']"
+                  : ""
+              } ${isNotClickable ? "disabled" : ""}`,
+            )}
           >
-            <span>
-              {dateNum} {day} {month}
+            <span className="text-sm font-medium tracking-tighter">
+              {day} {month} {dateNum}
             </span>
             {loggedTime && (
               <span
-                className={`ml-1 h-2 w-2 -indent-[9999px] ${
-                  loggedTime >= 8 ? "bg-green-600" : loggedTime >= 4 ? "bg-orange-600" : "bg-red-600"
-                } rounded-full`}
+                className={`ml-1 h-2 w-2 rounded-full -indent-[9999px] ${
+                  loggedTime >= 8 ? "bg-success" : loggedTime >= 4 ? "bg-orange-600" : "bg-destructive"
+                }`}
               >
                 text
               </span>
@@ -64,13 +67,11 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           </li>
         );
       })}
-      <li className="flex basis-[5%] cursor-pointer items-center">
+      <li>
         <Button
-          className={cn(
-            `border-none outline-none ${
-              dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "opacity-30" : ""
-            }`,
-          )}
+          variant={"outline"}
+          size="sm"
+          className={cn(` ${dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
           onClick={() =>
             dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) &&
             clickHandler(
