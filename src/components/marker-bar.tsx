@@ -29,7 +29,7 @@ export function MarkerBar({ value, minValue, maxValue, className }: MarkerBarPro
         />
       </div>
       <div
-        className={`group absolute -top-[5px] h-[18px] w-[6px] rounded-md border-[1px] border-white bg-slate-400`}
+        className={`group absolute -top-[5px] h-[18px] w-[6px] rounded-md border border-white bg-slate-400`}
         style={{ left: `${value}%` }}
       >
         <p className="invisible absolute -top-[34px] left-0 rounded-md border bg-background px-2.5 py-1 text-sm text-foreground group-hover:visible">{`${value}h`}</p>
