@@ -151,12 +151,6 @@ export default async function Dashboard({ params }: pageProps) {
             </TabGroup>
           </div>
         </div>
-        {/* Time Insights (breakdown of time over the last week)
-        <div className="flex flex-col items-center gap-4">
-          <Skeleton className="h-8 w-60" />
-          <Skeleton className="h-4 w-60" />
-          <Skeleton className="h-4 w-60" />
-        </div> */}
       </aside>
     </div>
   );
