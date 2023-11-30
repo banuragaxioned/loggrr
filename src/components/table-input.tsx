@@ -87,7 +87,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
     <Popover>
       <PopoverTrigger className="mx-auto flex  w-12 cursor-default items-center justify-center">
         <Input
-          className="mx-0 h-auto basis-14 cursor-pointer border-transparent p-0 text-center hover:border-hover"
+          className="hover:border-hover mx-0 h-auto basis-14 cursor-pointer border-transparent p-0 text-center"
           disabled={true}
           onMouseOver={(e: any) => (e.target.disabled = false)}
           onMouseOut={(e: any) => (e.target.disabled = true)}

@@ -127,7 +127,7 @@ export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormPr
                           className="w-20 border-none  outline-none focus:ring-0"
                         />
                       </FormControl>
-                      <span className="block h-full bg-hover p-2 text-center text-neutral-400">Hours</span>
+                      <span className="bg-hover block h-full p-2 text-center text-neutral-400">Hours</span>
                     </div>
                     <FormMessage className="relative -bottom-0 w-full" />
                   </FormItem>
