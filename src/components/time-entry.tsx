@@ -114,7 +114,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   }, [dates]);
 
   return (
-    <div className="mx-auto w-11/12">
+    <div className="w-[95%]">
       <div className="rounded-xl border-[1px] border-slate-300">
         <div className="flex justify-between border-b-[1px] border-b-slate-300 p-4">
           <ClassicDatePicker date={date} setDate={setDate} />

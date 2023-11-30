@@ -23,7 +23,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
       {items.map((item, index) => {
         return (
           item.href && (
-            <Link key={index} href={item.disabled ? "/" : "/launchpad/" + slug + item.href}>
+            <Link key={index} href={item.disabled ? "/" : item.href}>
               <span
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-600",

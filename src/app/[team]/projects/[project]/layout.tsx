@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
-import { CreditCard, FileText, User } from "lucide-react";
+import { CreditCard, FileText, HomeIcon, User } from "lucide-react";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -11,21 +11,27 @@ interface DashboardLayoutProps extends projectProps {
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
   const projectId = params?.project;
+  const slug = params.team
 
   const sidebarProjectsList: SidebarNavItem[] = [
     {
+      title: "Project home",
+      href: `/${slug}/projects/${projectId}/`,
+      icon: <HomeIcon height={18} width={18} />,
+    },
+    {
       title: "Milestones",
-      href: `/projects/${projectId}/milestones`,
+      href: `/${slug}/projects/${projectId}/milestones`,
       icon: <FileText height={18} width={18} />,
     },
     {
       title: "Tasks",
-      href: `/projects/${projectId}/tasks`,
+      href: `/${slug}/projects/${projectId}/tasks`,
       icon: <CreditCard height={18} width={18} />,
     },
     {
       title: "Members",
-      href: `/projects/${projectId}/members`,
+      href: `/${slug}/projects/${projectId}/members`,
       icon: <User height={18} width={18} />,
     },
   ];
