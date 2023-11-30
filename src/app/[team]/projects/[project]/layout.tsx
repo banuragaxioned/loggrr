@@ -11,7 +11,7 @@ interface DashboardLayoutProps extends projectProps {
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
   const projectId = params?.project;
-  const slug = params.team
+  const slug = params.team;
 
   const sidebarProjectsList: SidebarNavItem[] = [
     {

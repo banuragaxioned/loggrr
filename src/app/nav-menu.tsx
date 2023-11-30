@@ -10,7 +10,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -24,9 +24,7 @@ export function NavMenu() {
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href={`/${slug}`} legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -61,9 +59,7 @@ export function NavMenu() {
             <ul className="grid gap-3 p-6 md:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
-                  <div
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                  >
+                  <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
                     <div className="mb-2 mt-4 text-lg font-medium">Skills</div>
                     <p className="text-sm leading-tight text-muted-foreground">View and manage your skills.</p>
                   </div>
@@ -87,9 +83,7 @@ export function NavMenu() {
             <ul className="grid gap-3 p-6 md:w-[600px] lg:grid-cols-3">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
-                  <div
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                  >
+                  <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
                     <div className="mb-2 mt-4 text-lg font-medium">Reporting</div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       View and download reports for your projects and teams.

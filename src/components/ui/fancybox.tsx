@@ -123,7 +123,7 @@ const CommandItemCreate = ({
     <CommandItem
       key={`${inputValue}`}
       value={`${inputValue}`}
-      className="w-full cursor-pointer rounded-md px-[18px] py-2 text-sm text-muted-foreground aria-selected:bg-hover"
+      className="aria-selected:bg-hover w-full cursor-pointer rounded-md px-[18px] py-2 text-sm text-muted-foreground"
       onSelect={onSelect}
     >
       Create new label &quot;{inputValue}&quot;

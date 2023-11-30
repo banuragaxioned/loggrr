@@ -76,15 +76,15 @@ export const columns: ColumnDef<Projects>[] = [
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto overflow-hidden p-0">
-              <div className="flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-primary-foreground hover:bg-hover">
+              <div className="hover:bg-hover flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-primary-foreground">
                 <Edit height={18} width={18} className="mr-2" />
                 Edit
               </div>
-              <div className="flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-red-600 hover:bg-hover">
+              <div className="hover:bg-hover flex cursor-pointer items-center border-b-[1px] border-border px-4 py-2 text-red-600">
                 <Delete height={18} width={18} className="mr-2" />
                 Delete
               </div>
-              <div className="flex cursor-pointer items-center px-4 py-2 text-primary-foreground hover:bg-hover">
+              <div className="hover:bg-hover flex cursor-pointer items-center px-4 py-2 text-primary-foreground">
                 <Archive height={18} width={18} className="mr-2" />
                 Archive
               </div>
