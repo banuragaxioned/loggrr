@@ -25,12 +25,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
               {/* project name  */}
               <div>
                 <div className="flex w-full justify-between bg-background p-4">
-                  <h3 className="flex gap-x-1 font-medium">
+                  <h4 className="flex gap-x-1 font-medium">
                     {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
-                  </h3>
-                  <span className="font-bold text-black text-primary-foreground">
-                    {entryData?.total.toFixed(2)} Hrs
-                  </span>
+                  </h4>
+                  <span className="font-bold normal-nums">{entryData?.total.toFixed(2)}</span>
                 </div>
                 {/* milestone data */}
                 {entryData?.data?.map((data, i) => {
@@ -48,34 +46,34 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                   };
                   return (
                     <div
-                      className="group relative mb-2 flex justify-between rounded-md bg-background bg-slate-50 p-4 text-black last:mb-0"
+                      className="group relative mb-2 flex justify-between rounded-md bg-secondary p-4 last:mb-0"
                       key={i}
                     >
                       <div className="flex flex-col justify-between gap-y-4">
                         <div className="flex gap-x-4">
                           {data.milestone?.name && (
                             <p className="flex gap-x-1 font-medium">
-                              <Rocket className="text-secondary" />
+                              <Rocket className="text-primary" />
                               {data.milestone.name}
                             </p>
                           )}
                           {data.task?.name && (
                             <p className="flex gap-x-1 font-medium">
-                              <List className="text-secondary" />
+                              <List className="text-primary" />
                               {data.task.name}
                             </p>
                           )}
                         </div>
                         <p>{data?.comments}</p>
                       </div>
-                      <div className="flex flex-col items-center justify-center gap-y-1">
-                        <span className="font-semibold">{data?.time.toFixed(2)}</span>
+                      <div className="flex flex-col gap-y-1 text-right">
+                        <span className="font-semibold normal-nums">{data?.time.toFixed(2)}</span>
                         {data?.billable && <span className="capitalize text-success">billable</span>}
                         <div className="flex gap-x-2 md:invisible md:group-hover:visible">
-                          <Button className="rounded-md p-2" onClick={() => editHandler(tempObj, data.id)}>
+                          <Button className="rounded-md p-2" size={"sm"} onClick={() => editHandler(tempObj, data.id)}>
                             {edit.isEditing ? <ListRestart className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                           </Button>
-                          <Button className="rounded-md p-2" onClick={() => deleteHandler(data.id)}>
+                          <Button className="rounded-md p-2" size={"sm"} onClick={() => deleteHandler(data.id)}>
                             <Trash className="h-4 w-4" />
                           </Button>
                         </div>

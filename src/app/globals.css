@@ -63,6 +63,8 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -85,8 +87,10 @@
   h4 {
     @apply scroll-m-20 font-heading text-lg font-semibold tracking-tight;
   }
-  :disabled {
-    @apply cursor-not-allowed opacity-50;
+  :disabled,
+  disabled,
+  .disabled {
+    @apply cursor-not-allowed select-none opacity-50;
   }
   :invalid {
     @apply invalid:focus:ring-destructive;

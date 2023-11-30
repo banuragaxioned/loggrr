@@ -118,7 +118,7 @@ export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormPr
                 name="time"
                 render={({ field }) => (
                   <FormItem className="col-span-2">
-                    <div className="relative mt-2 flex rounded-md border-[1px]">
+                    <div className="relative mt-2 flex rounded-md border">
                       <FormControl>
                         <Input
                           placeholder="Time"
