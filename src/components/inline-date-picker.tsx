@@ -1,5 +1,5 @@
 import { useEffect, Dispatch } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { GetSetDateProps, TimeEntryDataObj } from "@/types";
@@ -25,7 +25,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
 
   return (
     <ul className="flex w-full gap-x-2">
-      <li className="flex basis-[5%] cursor-pointer items-center">
+      <li className="flex cursor-pointer items-center">
         <Button
           variant={"outline"}
           size="sm"
@@ -45,24 +45,23 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
             className={cn(
-              `flex basis-[23%] cursor-pointer items-center justify-center px-2 py-1 text-center ${
+              `flex basis-[23%] items-center justify-center gap-2 text-center ${
                 dateString === getDateStr(date)
                   ? "relative text-primary before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-primary before:indent-[-9999px] before:content-['a']"
                   : ""
-              } ${isNotClickable ? "disabled" : ""}`,
+              } ${isNotClickable ? "disabled" : "cursor-pointer"}`,
             )}
           >
             <span className="text-sm font-medium tracking-tighter">
               {day} {month} {dateNum}
             </span>
             {loggedTime && (
-              <span
-                className={`ml-1 h-2 w-2 rounded-full -indent-[9999px] ${
-                  loggedTime >= 8 ? "bg-success" : loggedTime >= 4 ? "bg-orange-600" : "bg-destructive"
-                }`}
-              >
-                text
-              </span>
+              <Circle
+                className={cn(
+                  "h-2 w-2 stroke-none",
+                  `${loggedTime >= 7 ? "fill-success" : loggedTime >= 4 ? "fill-orange-600" : "fill-destructive"}`,
+                )}
+              ></Circle>
             )}
           </li>
         );
