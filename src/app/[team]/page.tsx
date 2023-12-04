@@ -59,10 +59,9 @@ export default async function Dashboard({ params }: pageProps) {
   });
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
-  console.log(overallEntryTime);
 
   return (
-    <div className="container col-span-12 grid w-full grid-cols-12 gap-4">
+    <div className="col-span-12 grid w-full grid-cols-12 gap-4">
       <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
         {/* Horizontal Calendar and date picker */}
         <TimeEntry team={team} projects={projects ? projects : []} />
@@ -72,15 +71,18 @@ export default async function Dashboard({ params }: pageProps) {
         <div className="flex flex-col items-center gap-4">
           <div className="side-bar mx-auto w-full max-w-xs rounded-xl border border-border p-4 pb-6">
             <Flex className="items-center font-semibold">
-              <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
+              <Text className="pb-5">Logged hours</Text>
               <Text className="flex items-center pb-5 text-xs">
                 <CalendarDays className="ml-2 mr-[5px] h-4 w-4" />
                 Current week
               </Text>
             </Flex>
             <Flex>
-              <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{(overallEntryTime / 60).toFixed(2)}</span> / 37.5h
+              <Text className="pb-4">
+                <span className="text-3xl font-semibold normal-nums text-primary">
+                  {(overallEntryTime / 60).toFixed(2)}
+                </span>{" "}
+                / <span className="normal-nums">37.5h</span>
               </Text>
             </Flex>
             <CategoryBar
