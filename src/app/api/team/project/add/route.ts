@@ -27,7 +27,6 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    console.log(json);
     const body = projectCreateSchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403

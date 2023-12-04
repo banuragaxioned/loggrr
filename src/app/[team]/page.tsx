@@ -59,6 +59,7 @@ export default async function Dashboard({ params }: pageProps) {
   });
 
   const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
+  console.log(overallEntryTime);
 
   return (
     <div className="container col-span-12 grid w-full grid-cols-12 gap-4">
@@ -72,27 +73,27 @@ export default async function Dashboard({ params }: pageProps) {
           <div className="side-bar mx-auto w-full max-w-xs rounded-xl border border-border p-4 pb-6">
             <Flex className="items-center font-semibold">
               <Text className="from-green-to-red bg-gradient-to-r pb-5 text-base">Logged hours</Text>
-              <Text className="flex items-center pb-5 text-xs text-[#6B7280]">
+              <Text className="flex items-center pb-5 text-xs">
                 <CalendarDays className="ml-2 mr-[5px] h-4 w-4" />
                 Current week
               </Text>
             </Flex>
             <Flex>
               <Text className="pb-4 text-sm">
-                <span className="text-3xl font-semibold">{(overallEntryTime / 60).toFixed(2)}</span> / 40h
+                <span className="text-3xl font-semibold">{(overallEntryTime / 60).toFixed(2)}</span> / 37.5h
               </Text>
             </Flex>
             <CategoryBar
               values={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(overallEntryTime / 40) * 100}
+              markerValue={(overallEntryTime / 60 / 37.5) * 100}
               className="mt-3 text-sm "
-              tooltip={`${Math.round((overallEntryTime / 40) * 100)}%`}
+              tooltip={`${Math.round((overallEntryTime / 60 / 37.5) * 100)}%`}
             />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
             <TabGroup>
-              <TabList className="">
+              <TabList>
                 <Tab>Projects</Tab>
                 <Tab>Assigned</Tab>
               </TabList>
@@ -101,21 +102,24 @@ export default async function Dashboard({ params }: pageProps) {
                   <ScrollArea className={`${userTimeEntry.length >= 5 ? "h-[500px]" : "h-auto"} w-full}`}>
                     {userTimeEntry.length === 0 ? (
                       <div className="mt-8 pr-3">
-                        <Text className="w-full font-semibold leading-5 text-black">Projects</Text>
+                        <Text className="w-full font-semibold leading-5">Projects</Text>
                         <Flex className="mt-3 items-center">
                           <ProgressBar value={0} color="indigo" className="mr-4" />
-                          <Text className="text-sm font-normal text-gray-500">0%</Text>
+                          <Text className="text-sm font-normal">0%</Text>
                         </Flex>
                       </div>
                     ) : (
                       userTimeEntry.map((item, i) => (
                         <div className="mt-8 pr-3" key={i}>
-                          <Text className="w-full font-semibold leading-5 text-black">{item.Project.name}</Text>
+                          <Text className="w-full font-semibold leading-5">{item.Project.name}</Text>
                           <Flex className="mt-3 items-center">
-                            <ProgressBar value={item.time} color="indigo" className="mr-4" />
-                            <Text className="text-sm font-normal text-gray-500">
-                              {Math.round((item.time / 40) * 100)}%
-                            </Text>
+                            <ProgressBar
+                              value={item.time / 60}
+                              color="indigo"
+                              className="mr-4"
+                              tooltip={`${Math.round((overallEntryTime / 60 / 37.5) * 100)}%`}
+                            />
+                            <Text className="font-norma text-sm">{Math.round((item.time / 60 / 37.5) * 100)}%</Text>
                           </Flex>
                         </div>
                       ))
@@ -131,16 +135,16 @@ export default async function Dashboard({ params }: pageProps) {
                       );
                       return (
                         <div className="mt-8 pr-3" key={i}>
-                          <Text className="w-full font-semibold leading-5 text-black">{item.Project.name}</Text>
+                          <Text className="w-full font-semibold leading-5">{item.Project.name}</Text>
                           <Flex className="mt-3 items-center">
                             <MarkerBar
                               value={item.billableTime + item.nonBillableTime}
                               minValue={0}
                               maxValue={entryValue}
                               color="slate"
-                              className="relative mr-4 w-full rounded-md bg-slate-200"
+                              className="relative mr-4 w-full rounded-md "
                             />
-                            <Text className="text-sm font-normal text-gray-500">{entryValue}h</Text>
+                            <Text className="text-sm font-normal">{entryValue}h</Text>
                           </Flex>
                         </div>
                       );

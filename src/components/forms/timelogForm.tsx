@@ -325,9 +325,9 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             }`}
           >
             {inputRef.current && inputRef.current?.value?.length < 1 && (
-              <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently Used :</Command>
+              <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently used</Command>
             )}
-            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found.</Command.Empty>
+            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found</Command.Empty>
             {inputRef.current && inputRef.current?.value?.length > 0
               ? renderGroup(suggestions)
               : renderGroup(recentlyUsed)}
