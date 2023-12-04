@@ -7,8 +7,8 @@ import { ProjectInterval } from "@prisma/client";
 const projectCreateSchema = z.object({
   budget: z.number().min(1),
   team: z.string().min(1),
-  name: z.string().min(1).max(25),
-  clientId: z.number().min(1).max(25),
+  name: z.string().min(3).max(25),
+  clientId: z.number().min(1),
   ownerId: z.number().min(1),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
+    console.log(json);
     const body = projectCreateSchema.parse(json);
 
     // check if the user has permission to the current team/tenant id if not return 403
@@ -61,6 +62,7 @@ export async function POST(req: Request) {
         startdate: body.startDate,
         enddate: body.endDate,
         interval: body.interval,
+        budget: body.budget,
       },
     });
 

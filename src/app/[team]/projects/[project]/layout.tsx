@@ -15,7 +15,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
 
   const sidebarProjectsList: SidebarNavItem[] = [
     {
-      title: "Project home",
+      title: "Overview",
       href: `/${slug}/projects/${projectId}/`,
       icon: <HomeIcon height={18} width={18} />,
     },

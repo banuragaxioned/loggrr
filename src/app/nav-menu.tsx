@@ -31,12 +31,12 @@ export function NavMenu() {
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[350px] lg:grid-cols-1">
-              <ListItem href={`/${slug}/manage/projects`} title="Projects">
-                Manage and view your projects.
-              </ListItem>
-              <ListItem href={`/${slug}/manage/clients`} title="Clients">
-                View clients associated with your projects.
-              </ListItem>
+              <Link href={`/${slug}/projects`} legacyBehavior passHref>
+                <ListItem title="Projects">Manage and view your projects.</ListItem>
+              </Link>
+              <Link href={`/${slug}/clients`} legacyBehavior passHref>
+                <ListItem title="Clients">View clients associated with your projects.</ListItem>
+              </Link>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -44,12 +44,12 @@ export function NavMenu() {
           <NavigationMenuTrigger>Members</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[350px] lg:grid-cols-1">
-              <ListItem href={`/${slug}/manage/members`} title="Manage Members">
-                Manage members and their permissions.
-              </ListItem>
-              <ListItem href={`/${slug}/manage/groups`} title="Groups">
-                View various groups of members in the project.
-              </ListItem>
+              <Link href={`/${slug}/manage/members`} legacyBehavior passHref>
+                <ListItem title="Manage Members">Manage members and their permissions.</ListItem>
+              </Link>
+              <Link href={`/${slug}/manage/groups`} legacyBehavior passHref>
+                <ListItem title="Groups">View various groups of members in the project.</ListItem>
+              </Link>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -65,15 +65,15 @@ export function NavMenu() {
                   </div>
                 </NavigationMenuLink>
               </li>
-              <ListItem href={`/${slug}/skills/summary`} title="Summary">
-                View and manage your skills.
-              </ListItem>
-              <ListItem href={`/${slug}/skills/explore`} title="Explore">
-                View all skills.
-              </ListItem>
-              <ListItem href={`/${slug}/skills/report`} title="Report">
-                Explore roadmap and skills.
-              </ListItem>
+              <Link href={`/${slug}/skills/summary`} legacyBehavior passHref>
+                <ListItem title="Summary">View and manage your skills.</ListItem>
+              </Link>
+              <Link href={`/${slug}/skills/explore`} legacyBehavior passHref>
+                <ListItem title="Explore">View all skills.</ListItem>
+              </Link>
+              <Link href={`/${slug}/skills/report`} legacyBehavior passHref>
+                <ListItem title="Report">Explore roadmap and skills.</ListItem>
+              </Link>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -91,18 +91,18 @@ export function NavMenu() {
                   </div>
                 </NavigationMenuLink>
               </li>
-              <ListItem href={`/${slug}/reports/summary`} title="Summary">
-                View who is assigned to what project.
-              </ListItem>
-              <ListItem href={`/${slug}/reports/assigned`} title="Assigned">
-                View who is assigned to what project.
-              </ListItem>
-              <ListItem href={`/${slug}/reports/logged`} title="Logged">
-                View how many hours have been logged.
-              </ListItem>
-              <ListItem href={`/${slug}/reports/available`} title="Available">
-                View who is available for work.
-              </ListItem>
+              <Link href={`/${slug}/reports/summary`} legacyBehavior passHref>
+                <ListItem title="Summary">View who is assigned to what project.</ListItem>
+              </Link>
+              <Link href={`/${slug}/reports/assigned`} legacyBehavior passHref>
+                <ListItem title="Assigned">View who is assigned to what project.</ListItem>
+              </Link>
+              <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
+                <ListItem title="Logged">View how many hours have been logged.</ListItem>
+              </Link>
+              <Link href={`/${slug}/reports/available`} legacyBehavior passHref>
+                <ListItem title="Available">View who is available for work.</ListItem>
+              </Link>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

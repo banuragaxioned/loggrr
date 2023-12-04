@@ -16,7 +16,7 @@ interface TimeEntries {
 
 export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, edit }: TimeEntries) => {
   return (
-    <ul className="flex max-h-60 w-full flex-col gap-y-2 overflow-y-auto">
+    <ul className="flex w-full flex-col gap-y-2 overflow-y-auto">
       {status === 0 ? (
         <>
           <Skeleton className="h-20 w-full" />

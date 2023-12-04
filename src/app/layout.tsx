@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head />
       <body
         className={cn(
-          "min-h-screen items-center border-border font-sans text-base antialiased",
+          "min-h-screen items-center overscroll-y-none border-border font-sans text-base antialiased",
           font.variable,
           fontHeading.variable,
         )}

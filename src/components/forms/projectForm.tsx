@@ -27,10 +27,10 @@ import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({
-  client: z.number().int("Please select a client"),
-  name: z.string().nonempty("Please provide a Project name"),
-  owner: z.number().int("Please select a Owner name"),
-  budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a Budget"),
+  client: z.number().int().min(1, "Please select a client"),
+  project: z.string().min(3).max(25, "Project name should be between 3 and 25 characters"),
+  owner: z.number().int().min(1, "Please set a project owner"),
+  budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
   date: z.coerce.date(),
   enddate: z.coerce.date().optional(),
   billable: z.any(),
@@ -63,7 +63,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
       body: JSON.stringify({
         budget: Number(values.budget),
         team: team,
-        name: values.name,
+        name: values.project,
         clientId: values.client,
         ownerId: values.owner,
         startDate: new Date(values.date),
@@ -74,6 +74,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     });
 
     if (!response?.ok) {
+      console.log(response);
       return showToast("Something went wrong.", "warning");
     }
 
@@ -99,7 +100,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
             <FormField
               control={form.control}
-              name="name"
+              name="project"
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Project name</FormLabel>
