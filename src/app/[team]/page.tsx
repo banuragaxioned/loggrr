@@ -8,6 +8,8 @@ import { Text, Flex, CategoryBar, TabList, Tab, TabGroup, TabPanels, TabPanel, P
 import { CalendarDays, Camera } from "lucide-react";
 import { MarkerBar } from "@/components/marker-bar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import CategoryDataBar from "@/components/charts/category-bar";
+import { getTimeInHours } from "@/lib/helper";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -62,36 +64,19 @@ export default async function Dashboard({ params }: pageProps) {
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12 gap-4">
-      <main className="col-span-12 flex flex-col gap-4 md:col-span-9">
-        {/* Horizontal Calendar and date picker */}
+      <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
         <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
-      <aside className="col-span-12 hidden space-y-12 md:col-span-3 lg:block lg:basis-1/4">
-        {/* Quick stats (% of time logged in the last week) */}
+      <aside className="hidden basis-1/4 space-y-4 lg:col-span-3 lg:block">
+        <CategoryDataBar
+          title="Logged hours"
+          subtitle="Last 7 days"
+          markerValue={getTimeInHours(overallEntryTime)}
+          maxValue={37.5}
+          type="hours"
+        />
         <div className="flex flex-col items-center gap-4">
           <div className="side-bar mx-auto w-full max-w-xs rounded-xl border border-border p-4 pb-6">
-            <Flex className="items-center font-semibold">
-              <Text className="pb-5">Logged hours</Text>
-              <Text className="flex items-center pb-5 text-xs">
-                <CalendarDays className="ml-2 mr-[5px] h-4 w-4" />
-                Current week
-              </Text>
-            </Flex>
-            <Flex>
-              <Text className="pb-4">
-                <span className="text-3xl font-semibold normal-nums text-primary">
-                  {(overallEntryTime / 60).toFixed(2)}
-                </span>{" "}
-                / <span className="normal-nums">37.5h</span>
-              </Text>
-            </Flex>
-            <CategoryBar
-              values={[25, 25, 25, 25]}
-              colors={["rose", "orange", "yellow", "emerald"]}
-              markerValue={(overallEntryTime / 60 / 37.5) * 100}
-              className="mt-3 text-sm "
-              tooltip={`${Math.round((overallEntryTime / 60 / 37.5) * 100)}%`}
-            />
             {/* Time Insights (breakdown of time based on projects) */}
             <Text className="pb-5 pt-8 text-base font-semibold">Time logged</Text>
             <TabGroup>
