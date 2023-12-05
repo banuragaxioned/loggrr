@@ -68,7 +68,10 @@ export const columns: ColumnDef<Projects>[] = [
     id: "actions",
     cell: ({ row }) => {
       return (
-        <div className={cn("invisible flex gap-x-3 group-hover:visible")} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={cn("invisible flex items-center gap-x-3 group-hover:visible")}
+          onClick={(e) => e.stopPropagation()}
+        >
           <Popover>
             <PopoverTrigger asChild>
               <Button
