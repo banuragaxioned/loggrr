@@ -31,13 +31,16 @@ export function CreateGroupForm({ team }: { team: string }) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    createGroup(team, data.groupName).then(() => {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const result = await createGroup(team, data.groupName);
+    if (result.success) {
       showToast("A new Client was created", "success");
       formRef.current?.reset();
       router.refresh();
-    });
+      form.reset();
+    } else {
+      showToast("Something went wrong.", "warning");
+    }
   }
 
   return (
