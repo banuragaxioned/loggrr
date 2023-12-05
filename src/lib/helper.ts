@@ -58,12 +58,18 @@ export const getTimeInMinutes = (logTime: string): number => {
 };
 
 // Get time in hours and minutes
-export const getTimeInHours = (duration: number) => {
+export const getTimeInHoursAndMinutes = (duration: number) => {
   const hours = Math.floor(duration / 60);
   const minutes = duration % 60;
   const HH = hours < 10 ? `0${hours}` : hours;
   const MM = minutes < 10 ? `0${minutes}` : minutes;
   return `${HH}:${MM}`;
+};
+
+// Get time in hours and minutes
+export const getTimeInHours = (duration: number) => {
+  const hours = Math.round(duration / 60);
+  return hours;
 };
 
 // Get date with Date format, but with 00:00:00 time
