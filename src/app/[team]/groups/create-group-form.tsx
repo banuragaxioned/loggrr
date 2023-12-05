@@ -12,6 +12,7 @@ import { SheetWrapper } from "@/components/sheet-wrapper";
 import { createGroup } from "@/app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { SheetClose } from "@/components/ui/sheet";
 
 const FormSchema = z.object({
   groupName: z.string().min(2, {
@@ -31,6 +32,8 @@ export function CreateGroupForm({ team }: { team: string }) {
     },
   });
 
+  const SheetCloseButton = useRef<HTMLButtonElement>(null);
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const result = await createGroup(team, data.groupName);
     if (result.success) {
@@ -38,6 +41,7 @@ export function CreateGroupForm({ team }: { team: string }) {
       formRef.current?.reset();
       router.refresh();
       form.reset();
+      SheetCloseButton.current?.click();
     } else {
       showToast("Something went wrong.", "warning");
     }
@@ -60,7 +64,14 @@ export function CreateGroupForm({ team }: { team: string }) {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <div className="flex gap-2">
+            <Button type="submit">Submit</Button>
+            <SheetClose>
+              <Button type="button" variant={"outline"} ref={SheetCloseButton}>
+                Cancel
+              </Button>
+            </SheetClose>
+          </div>
         </form>
       </Form>
     </SheetWrapper>
