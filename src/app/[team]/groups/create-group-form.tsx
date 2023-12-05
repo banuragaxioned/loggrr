@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useToast from "@/hooks/useToast";
-import { SheetWrapper } from "@/components/sheet-wrapper";
+import { SheetWrapper } from "@/components/ui/sheet-wrapper";
 import { createGroup } from "@/app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
