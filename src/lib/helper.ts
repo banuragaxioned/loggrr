@@ -68,7 +68,8 @@ export const getTimeInHoursAndMinutes = (duration: number) => {
 
 // Get time in hours and minutes
 export const getTimeInHours = (duration: number) => {
-  const hours = Math.round(duration / 60);
+  const minutesToHours = (duration / 60).toFixed(2);
+  let hours = parseFloat(minutesToHours.toString().replace(/\.0+$/, ""));
   return hours;
 };
 

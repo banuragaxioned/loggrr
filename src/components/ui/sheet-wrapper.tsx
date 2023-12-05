@@ -1,4 +1,12 @@
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 interface DashboardLayoutProps {
@@ -19,7 +27,7 @@ export function SheetWrapper({ children, button, title, description }: Dashboard
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
-        {children}
+        <div className="pt-4">{children}</div>
       </SheetContent>
     </Sheet>
   );

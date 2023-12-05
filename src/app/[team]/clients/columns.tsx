@@ -57,13 +57,13 @@ export function clientName(
       cell: ({ row }) => {
         return (
           <div
-            className={cn("invisible flex items-center justify-center gap-x-3", "group-hover:visible")}
+            className={cn("invisible flex items-center gap-x-3 group-hover:visible")}
             onClick={(e) => e.stopPropagation()}
           >
             {isEditing === row.original.id ? (
               <Button
                 title="Save"
-                className={cn("h-auto border-0 bg-inherit p-0")}
+                className={cn("h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground")}
                 onClick={() => {
                   setIsEditing(row.original.id);
                   if (row.original.name !== refButton?.current?.value) {
@@ -73,15 +73,15 @@ export function clientName(
                   }
                 }}
               >
-                <Save height={18} width={18} />
+                <Save height={16} width={16} />
               </Button>
             ) : (
               <Button
                 title="Edit"
-                className={cn("h-auto border-0 bg-inherit p-0")}
+                className={cn("h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground")}
                 onClick={() => setIsEditing(row.original.id)}
               >
-                <Edit height={18} width={18} />
+                <Edit height={16} width={16} />
               </Button>
             )}
           </div>

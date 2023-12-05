@@ -44,7 +44,7 @@ const renderList = (obj: SelectedData) => {
 };
 
 const getRecent = () => {
-  const storage = localStorage.getItem("loggr-recent");
+  const storage = localStorage.getItem("loggr-recent-1"); // TODO: intentional breaking this
   return storage ? JSON.parse(storage) : [];
 };
 
@@ -219,10 +219,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
     <div
       ref={timeLogFormRef}
       className={`${
-        isFocus
-          ? "border-brand-light ring-brand-light shadow-lg ring-1 ring-offset-0"
-          : "border-borderColor-light dark:border-borderColor-dark"
-      } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-white dark:bg-transparent`}
+        isFocus ? "border-primary shadow-lg ring-1 ring-primary ring-offset-0" : "border-border"
+      } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-transparent`}
     >
       <form
         onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
@@ -233,9 +231,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         <Command label="Command Menu" className="text-content-light relative">
           <div
             className={`${
-              commentFocus
-                ? "ring-brand-light rounded-b-sm border-white ring-2 ring-offset-0 dark:border-transparent"
-                : "border-b-borderColor-light dark:border-b-borderColor-dark"
+              commentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border"
             } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
           >
             {selectedData?.project ? (
@@ -281,8 +277,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                 className={`${
                   errors?.time
                     ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                    : "border-borderColor-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark"
-                } placeholder:text-disabled-light w-[60px] select-none rounded-md border text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none dark:bg-transparent`}
+                    : "border-border focus:border-primary focus:ring-primary"
+                } placeholder:text-disabled-light w-[60px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none`}
                 value={selectedData?.time}
                 onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
                 ref={timeInputRef}
@@ -311,7 +307,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                 type="submit"
                 disabled={!formValidator()}
                 tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-                className={`disabled:hover:bg-brand-light disabled:disabled border`}
+                className={`disabled:disabled border disabled:hover:bg-primary`}
               >
                 {edit.isEditing ? "Save" : "Submit"}
               </Button>
@@ -319,8 +315,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           </div>
           <Command.List
             className={`z-10 w-[calc(100%)] ${
-              isFocus ? "border-brand-light" : "border-borderColor-light dark:border-borderColor-dark"
-            } text-content-light overflow-y-hidden bg-white transition-all duration-200 ease-in hover:overflow-y-auto dark:bg-transparent ${
+              isFocus ? "border-primary" : "border-border"
+            } text-content-light overflow-y-hidden bg-transparent transition-all duration-200 ease-in hover:overflow-y-auto  ${
               isFocus ? "max-h-[146px]" : "max-h-[0]"
             }`}
           >
@@ -337,9 +333,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
 
       <div
         className={`${
-          isFocus
-            ? "border-brand-light border-t-borderColor-light dark:border-t-borderColor-dark border-t"
-            : "border-borderColor-light dark:border-borderColor-dark border-t-0"
+          isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
         } bg-info-dark flex items-center justify-between rounded-b-xl px-5 py-[10px] dark:bg-zinc-900`}
       >
         <div ref={dropdownRef} className="inline-flex items-center gap-x-2.5 text-xs">
@@ -384,7 +378,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           size="sm"
           type="submit"
           disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
-          className={`border-borderColor-light bg-background-light text-content-light hover:border-info-light focus:border-brand-light focus:ring-brand-light dark:border-borderColor-dark border px-[12px] py-[7px] text-xs leading-none focus:ring-1 dark:bg-transparent`}
+          className={`text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary`}
         >
           Clear
         </Button>

@@ -44,10 +44,10 @@ export function NavMenu() {
           <NavigationMenuTrigger>Members</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[350px] lg:grid-cols-1">
-              <Link href={`/${slug}/manage/members`} legacyBehavior passHref>
+              <Link href={`/${slug}/members`} legacyBehavior passHref>
                 <ListItem title="Manage Members">Manage members and their permissions.</ListItem>
               </Link>
-              <Link href={`/${slug}/manage/groups`} legacyBehavior passHref>
+              <Link href={`/${slug}/groups`} legacyBehavior passHref>
                 <ListItem title="Groups">View various groups of members in the project.</ListItem>
               </Link>
             </ul>
