@@ -63,7 +63,7 @@ model Project {
   clientId  Int
   startdate DateTime
   enddate   DateTime?
-  budget    Int             @default(0) // Storing budget in hours
+  budget    Int?
   billable  Boolean         @default(false)
   interval  ProjectInterval
   createdAt DateTime        @default(now())
