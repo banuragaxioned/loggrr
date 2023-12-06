@@ -213,7 +213,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
 
   useEffect(() => {
     edit.isEditing ? setSelectedData(edit.obj) : handleClearForm();
-  }, [edit.isEditing]);
+  }, [edit]);
 
   return (
     <div
@@ -334,9 +334,9 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
       <div
         className={`${
           isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
-        } bg-info-dark flex items-center justify-between rounded-b-xl px-5 py-[10px] dark:bg-zinc-900`}
+        } flex items-center justify-between rounded-b-xl bg-zinc-50 px-5 py-[10px] dark:bg-zinc-900`}
       >
-        <div ref={dropdownRef} className="inline-flex items-center gap-x-2.5 text-xs">
+        <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
           {/* drop down */}
           <ComboBox
             tabIndex={2}
