@@ -20,6 +20,7 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import { Role } from "@prisma/client";
+import { createUser } from "@/server/services/user";
 
 export function AddUserInTeam({ team }: { team: string }) {
   const router = useRouter();
@@ -35,8 +36,10 @@ export function AddUserInTeam({ team }: { team: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    SheetCloseButton.current?.click();
+    // try creating a user first
+    await createUser(values.emailAddress);
 
+    // then add the user to the team
     const response = await fetch("/api/team/members/add", {
       method: "POST",
       headers: {
@@ -49,9 +52,15 @@ export function AddUserInTeam({ team }: { team: string }) {
       }),
     });
 
-    if (response?.ok) showToast("User added", "success");
-    else showToast("Not added", "warning");
-    router.refresh();
+    // if the user was added successfully, close the sheet
+    if (response.ok) {
+      SheetCloseButton.current?.click();
+      form.reset();
+      showToast("User added successfully.", "success");
+      router.refresh();
+    } else {
+      showToast("Something went wrong.", "error");
+    }
   }
 
   const handleOpenChange = (evt: boolean) => {
