@@ -1,12 +1,12 @@
 "use server";
 
+import { checkRole } from "@/lib/access";
 import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/session";
+import { Role } from "@prisma/client";
 
 export async function createGroup(team: string, groupName: string) {
-  const user = await getCurrentUser();
-
-  if (!user) {
+  const isOwner = await checkRole(team, Role.OWNER);
+  if (!isOwner) {
     return { success: false };
   }
 
@@ -24,16 +24,19 @@ export async function createGroup(team: string, groupName: string) {
   return { success: true };
 }
 
-export async function deletePost(id: number) {
-  const user = await getCurrentUser();
+export async function deletePost(team: string, id: number) {
+  const isOwner = await checkRole(team, Role.OWNER);
 
-  if (!user) {
+  if (!isOwner) {
     return { success: false };
   }
 
   await db.userGroup.delete({
     where: {
       id: id,
+      Tenant: {
+        slug: team,
+      },
     },
   });
 

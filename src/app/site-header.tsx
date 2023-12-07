@@ -3,8 +3,7 @@
 import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { Clock, HelpCircle } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
@@ -25,20 +24,8 @@ export function SiteHeader() {
         </Link>
         {teamData && <TeamSwitcher teams={teamData} />}
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <nav className="flex items-center space-x-1">
+          <nav className="flex items-center space-x-3">
             {pathname !== "/" && <NavMenu />}
-            <Link href={siteConfig.links.help} target="_blank" rel="noreferrer">
-              <div
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "outline",
-                  className: "text-zinc-700 dark:text-zinc-400",
-                })}
-              >
-                <HelpCircle className="h-5 w-5" />
-                <span className="sr-only">Help</span>
-              </div>
-            </Link>
             <ThemeToggle />
             {sessionData && (
               <UserAccountNav
