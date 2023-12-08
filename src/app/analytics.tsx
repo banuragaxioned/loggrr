@@ -1,11 +1,11 @@
 "use client";
 
-import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 
 export function Analytics() {
-  return <VercelAnalytics />;
+  return <SpeedInsights />;
 }
 
 if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
