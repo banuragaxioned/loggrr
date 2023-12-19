@@ -9,11 +9,17 @@ import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 
 export function SiteHeader() {
   const { data: sessionData } = useSession();
   const teamData = sessionData?.user.tenants;
   const pathname = usePathname();
+
+  posthog.identify(
+    String(sessionData?.user.id), // Replace 'distinct_id' with your user's unique identifier
+    { email: sessionData?.user.email, name: sessionData?.user.name }, // optional: set additional user properties
+  );
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
