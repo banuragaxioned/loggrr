@@ -15,7 +15,7 @@ export default async function DashboardPage() {
 
   if (!teams) {
     return (
-      <div className="container flex flex-col items-center justify-center gap-12">
+      <div className="flex flex-col items-center justify-center gap-12">
         <Card className="flex flex-col items-center justify-center space-y-4 p-12">
           <PartyPopper className="h-12 w-12 text-primary" />
           <h2 className="text-2xl font-bold text-primary">Thank you!</h2>
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="container flex flex-col items-center justify-center gap-12">
+      <div className="flex flex-col items-center justify-center gap-12">
         <h2>
           Welcome back, <span>{user?.name}</span> 👋
         </h2>

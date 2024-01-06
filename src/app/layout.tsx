@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
@@ -42,13 +42,20 @@ export const metadata: Metadata = {
   ],
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body
         className={cn(
-          "min-h-screen items-center overscroll-y-none border-border font-sans text-base antialiased",
+          "min-h-screen overscroll-y-none bg-background font-sans antialiased",
           font.variable,
           fontHeading.variable,
         )}

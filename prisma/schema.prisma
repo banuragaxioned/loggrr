@@ -31,7 +31,6 @@ model Tenant {
   Client     Client[]
   Project    Project[]
   Milestone  Milestone[]
-  Task       Task[]
   TimeEntry  TimeEntry[]
   UserGroup  UserGroup[]
   Allocation Allocation[]
@@ -61,16 +60,14 @@ model Project {
   tenantId  Int
   ownerId   Int
   clientId  Int
-  startdate DateTime
+  startdate DateTime?
   enddate   DateTime?
-  budget    Int?
   billable  Boolean         @default(false)
   interval  ProjectInterval
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 
   Milestone  Milestone[]
-  Task       Task[]
   TimeEntry  TimeEntry[]
   Allocation Allocation[]
   Tenant     Tenant       @relation(fields: [tenantId], references: [id])
@@ -88,13 +85,11 @@ enum ProjectInterval {
   WEEKLY
   MONTHLY
   QUARTERLY
-  HALFYEARLY
   YEARLY
 }
 
 enum Role {
   OWNER
-  // ADMIN
   MANAGER
   USER
   INACTIVE
@@ -112,26 +107,6 @@ model Milestone {
   startDate DateTime?
   endDate   DateTime?
 
-  // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
-
-  Tenant    Tenant      @relation(fields: [tenantId], references: [id])
-  Project   Project     @relation(fields: [projectId], references: [id])
-  TimeEntry TimeEntry[]
-
-  @@index([tenantId])
-  @@index([projectId])
-}
-
-model Task {
-  id        Int      @id @default(autoincrement())
-  tenantId  Int
-  name      String
-  status    Status   @default(PUBLISHED)
-  budget    Int?
-  projectId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   Tenant    Tenant      @relation(fields: [tenantId], references: [id])
   Project   Project     @relation(fields: [projectId], references: [id])
   TimeEntry TimeEntry[]
@@ -147,7 +122,6 @@ model TimeEntry {
   tenantId    Int
   userId      Int
   milestoneId Int
-  taskId      Int?
   billable    Boolean   @default(false)
   time        Int // Storing time in minutes
   comments    String?
@@ -160,7 +134,6 @@ model TimeEntry {
 
   Tenant    Tenant    @relation(fields: [tenantId], references: [id])
   Project   Project   @relation(fields: [projectId], references: [id])
-  Task      Task?     @relation(fields: [taskId], references: [id])
   Milestone Milestone @relation(fields: [milestoneId], references: [id])
   User      User      @relation(fields: [userId], references: [id])
 
@@ -168,7 +141,6 @@ model TimeEntry {
   @@index([projectId])
   @@index([userId])
   @@index([milestoneId])
-  @@index([taskId])
 }
 
 enum Status {

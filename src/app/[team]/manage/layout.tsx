@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
 
   return (
     <>
-      <div className="container grid gap-12 md:grid-cols-1">
+      <div className="grid gap-12 md:grid-cols-1">
         <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
       </div>
     </>
