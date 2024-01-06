@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { Role } from "@prisma/client";
 
-export async function checkRole(team: string, role: Role) {
+export async function checkRole(team: string) {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -17,14 +17,13 @@ export async function checkRole(team: string, role: Role) {
     },
     where: {
       id: user.id,
-      role: role,
       Tenant: {
         slug: team,
       },
     },
   });
 
-  if (response.role !== role) {
+  if (response.role === Role.INACTIVE) {
     return { success: false };
   }
 

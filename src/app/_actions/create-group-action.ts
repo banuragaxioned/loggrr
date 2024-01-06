@@ -2,11 +2,10 @@
 
 import { checkRole } from "@/lib/access";
 import { db } from "@/lib/db";
-import { Role } from "@prisma/client";
 
 export async function createGroup(team: string, groupName: string) {
-  const isOwner = await checkRole(team, Role.OWNER);
-  if (!isOwner) {
+  const hasAccess = await checkRole(team);
+  if (!hasAccess) {
     return { success: false };
   }
 
@@ -24,10 +23,10 @@ export async function createGroup(team: string, groupName: string) {
   return { success: true };
 }
 
-export async function deletePost(team: string, id: number) {
-  const isOwner = await checkRole(team, Role.OWNER);
+export async function deleteGroup(team: string, id: number) {
+  const hasAccess = await checkRole(team);
 
-  if (!isOwner) {
+  if (!hasAccess) {
     return { success: false };
   }
 
