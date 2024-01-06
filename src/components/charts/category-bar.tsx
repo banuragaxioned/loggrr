@@ -6,21 +6,14 @@ interface CategoryBarProps {
   colors?: string[]; // waiting for https://github.com/tremorlabs/tremor/pull/836
   markerValue: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   maxValue: number;
   type?: "hours";
 }
 
 export default function CategoryDataBar(input: CategoryBarProps) {
   return (
-    <Card className="border border-border">
-      <Flex className="items-center font-semibold">
-        <Text className="pb-2">{input.title}</Text>
-        <Text className="flex items-center pb-2 text-xs">
-          <CalendarDays className="mx-1 h-4 w-4" />
-          {input.subtitle}
-        </Text>
-      </Flex>
+    <Card>
       <Flex>
         <Text>
           <span className="text-3xl font-semibold normal-nums text-primary">{input.markerValue}</span> /{" "}

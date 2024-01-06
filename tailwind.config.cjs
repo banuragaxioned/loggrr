@@ -20,6 +20,9 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        "8xl": "1400px",
+      },
       fontFamily: {
         sans: ["var(--font-primary)", ...fontFamily.sans],
         heading: ["var(--font-heading)", ...fontFamily.sans],
@@ -151,12 +154,12 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -196,5 +199,5 @@ module.exports = {
     },
   ],
   // @ts-ignore
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],
+  plugins: [require("tailwindcss-animate"), require("@headlessui/tailwindcss")],
 };

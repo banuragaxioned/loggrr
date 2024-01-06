@@ -95,16 +95,12 @@
   :invalid {
     @apply invalid:focus:ring-destructive;
   }
-  select {
-    @apply my-2 block w-full rounded border-border pl-3 pr-10 text-base shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm;
-  }
   .scrollbar {
     overflow-y: auto;
     scrollbar-width: thin;
     /* scrollbar-color: rgba(0, 0, 0, 0.6) #f9f9f9; */
     transition: all 1s ease;
   }
-
   .scrollbar::-webkit-scrollbar {
     @apply w-[14px];
   }
@@ -114,8 +110,7 @@
   .scrollbar::-webkit-scrollbar-thumb {
     @apply rounded-[14px] border-4 border-solid border-popover bg-popover-foreground;
   }
-}
-
-.side-bar [role="tooltip"] {
-  @apply rounded-md border bg-background text-foreground;
+  .side-bar [role="tooltip"] {
+    @apply rounded-md border bg-background text-foreground;
+  }
 }

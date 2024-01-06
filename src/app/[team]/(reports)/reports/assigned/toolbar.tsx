@@ -8,6 +8,7 @@ import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { Toggle } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   startDate: Date;
@@ -27,24 +28,21 @@ export function DataTableToolbar<TData>({
   billable,
   weekend,
 }: DataTableToolbarExtendedProps<Assignment>) {
-  const entryOptionClick: Record<string, { value: string; label: string; next: string; class: string }> = {
+  const entryOptionClick: Record<string, { value: string; label: string; next: string }> = {
     totalTime: {
       value: "totalTime",
       label: "Total Time",
       next: "billableTime",
-      class: "bg-transparent hover:text-slate-500",
     },
     billableTime: {
       value: "billableTime",
       label: "Billable",
       next: "nonBillableTime",
-      class: "bg-indigo-500 border-indigo-500 text-white",
     },
     nonBillableTime: {
       value: "nonBillableTime",
       label: "Non-Billable",
       next: "totalTime",
-      class: "bg-indigo-600 border-indigo-600 text-white",
     },
   };
 
@@ -88,7 +86,7 @@ export function DataTableToolbar<TData>({
           className="h-10 w-[150px] lg:w-[250px]"
         />
         <Toggle
-          className="rounded-md border data-[state=on]:border-indigo-600 data-[state=on]:bg-indigo-600 data-[state=on]:text-white"
+          className="rounded-md border data-[state=on]:bg-primary data-[state=on]:text-white"
           onClick={(e) => {
             const element = e.target as Element;
             const dataState = element.getAttribute("data-state");
@@ -97,12 +95,7 @@ export function DataTableToolbar<TData>({
         >
           {weekend === "weekdays" ? "Week Days" : "Week"}
         </Toggle>
-        <button
-          onClick={() => handleEntryTime(entryOptionClick[billable])}
-          className={`h-10 rounded-md border px-3 ${entryOptionClick[billable].class}`}
-        >
-          {entryOptionClick[billable].label}
-        </button>
+        <Button onClick={() => handleEntryTime(entryOptionClick[billable])}>{entryOptionClick[billable].label}</Button>
         <DataTableFacetedFilter options={skillList} title="Skills" column={table.getAllColumns()[1]} />
         <DataTableFacetedFilter options={groupList} title="Groups" column={table.getAllColumns()[2]} />
       </div>

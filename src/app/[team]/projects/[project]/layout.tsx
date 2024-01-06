@@ -25,11 +25,6 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       icon: <FileText height={18} width={18} />,
     },
     {
-      title: "Tasks",
-      href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <CreditCard height={18} width={18} />,
-    },
-    {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
       icon: <User height={18} width={18} />,
@@ -42,7 +37,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
 
   return (
     <div className="grid gap-12 md:grid-cols-[200px_1fr]">
-      <aside className="hidden w-[200px] flex-col md:flex">
+      <aside className="hidden w-52 flex-col pt-4 md:flex">
         <DashboardNav items={sidebarProjectsList} />
       </aside>
       <div className="flex w-full flex-1 flex-col overflow-hidden">{children}</div>

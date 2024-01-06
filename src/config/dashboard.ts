@@ -34,11 +34,6 @@ export const dashboardConfig: DashboardConfig = {
       // icon: FileTextIcon,
     },
     {
-      title: "Tasks",
-      href: "/tasks",
-      // icon: CreditCard,
-    },
-    {
       title: "Members",
       href: "/manage/members",
       // icon: User,

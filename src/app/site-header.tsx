@@ -22,8 +22,8 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center space-x-4">
+    <header className="max-w-8xl container sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 items-center space-x-4 px-4">
         <Link href="/" className="hidden items-center space-x-2 md:flex">
           <Clock className="h-6 w-6" />
           <span className="hidden font-bold sm:inline-block">{siteConfig.name}</span>

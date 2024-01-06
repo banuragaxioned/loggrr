@@ -20,7 +20,7 @@ export function NavMenu() {
   const slug = params?.team;
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="hidden lg:block">
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href={`/${slug}`} legacyBehavior passHref>
