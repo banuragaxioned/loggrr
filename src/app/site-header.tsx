@@ -10,6 +10,7 @@ import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
 import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
+import { TimeAdd } from "@/components/time-add";
 
 export function SiteHeader() {
   const { data: sessionData, status } = useSession();
@@ -29,6 +30,7 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center space-x-3">
             {pathname !== "/" && <NavMenu />}
+            {pathname !== "/" && <TimeAdd />}
             <ThemeToggle />
             {status === "loading" && (
               <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />

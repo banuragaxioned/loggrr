@@ -90,7 +90,7 @@ export function AddSKill({
   return (
     <Sheet onOpenChange={(evt: boolean) => evt && form.reset()}>
       <SheetTrigger asChild>
-        <Button variant="outline">Add</Button>
+        <Button>Add</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>

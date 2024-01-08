@@ -61,7 +61,7 @@ export function NewSkillForm({ team }: { team: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Create</Button>
+        <Button>Create</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>

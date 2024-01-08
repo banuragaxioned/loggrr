@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CalendarIcon, Minus, Plus } from "lucide-react";
+import { CalendarIcon, CalendarPlus, ListPlus, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -80,7 +80,9 @@ export function TimeAdd() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="default">Track</Button>
+        <Button variant="default" size="icon">
+          <CalendarPlus className="h-6 w-6" />
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">

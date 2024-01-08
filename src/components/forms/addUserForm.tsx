@@ -72,7 +72,7 @@ export function AddUserInTeam({ team }: { team: string }) {
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="outline">Add</Button>
+        <Button>Add</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
