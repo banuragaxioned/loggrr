@@ -22,7 +22,7 @@ export function SheetWrapper({ children, button, title, description }: Dashboard
       <SheetTrigger asChild>
         <Button variant="outline">{button}</Button>
       </SheetTrigger>
-      <SheetContent position="right" size="sm">
+      <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>

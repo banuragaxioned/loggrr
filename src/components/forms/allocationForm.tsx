@@ -132,7 +132,7 @@ export function NewAllocationForm({
       <SheetTrigger asChild>
         <Button variant="outline">Add</Button>
       </SheetTrigger>
-      <SheetContent position="right" size="sm">
+      <SheetContent side="right">
         <Form {...form}>
           <SheetHeader>
             <SheetTitle>Add a new allocation</SheetTitle>
