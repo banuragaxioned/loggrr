@@ -9,7 +9,7 @@ import { Dispatch } from "react";
 import { AllocationDetails, Assignment } from "@/types";
 import dayjs from "dayjs";
 
-declare module "@tanstack/table-core" {
+declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className: string;
   }
