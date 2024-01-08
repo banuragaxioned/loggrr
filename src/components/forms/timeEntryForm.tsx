@@ -162,10 +162,8 @@ export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormPr
             )}
           />
           <div className="flex gap-x-4">
-            <Button type="submit" variant="secondary">
-              Submit
-            </Button>
-            <Button type="submit" ref={SheetCloseButton}>
+            <Button type="submit">Submit</Button>
+            <Button type="submit" variant="outline" ref={SheetCloseButton}>
               Cancel
             </Button>
           </div>

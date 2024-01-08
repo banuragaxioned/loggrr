@@ -217,11 +217,9 @@ export function NewAllocationForm({
               )}
             />
             <SheetFooter className="mt-2 justify-start space-x-3">
-              <Button type="submit" variant="secondary">
-                Submit
-              </Button>
+              <Button type="submit">Submit</Button>
               <SheetClose asChild>
-                <Button type="submit" ref={SheetCloseButton}>
+                <Button type="submit" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>

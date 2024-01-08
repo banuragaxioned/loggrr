@@ -157,11 +157,11 @@ export function AddSKill({
               )}
             />
             <SheetFooter className="mt-5 flex gap-2">
-              <Button type="submit" variant="secondary">
+              <Button type="submit" variant="default">
                 Submit
               </Button>
               <SheetClose asChild>
-                <Button type="submit" ref={SheetCloseButton}>
+                <Button type="submit" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>
