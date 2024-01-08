@@ -21,7 +21,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-primary)", ...fontFamily.sans],
+        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         heading: ["var(--font-heading)", ...fontFamily.sans],
       },
       colors: {
@@ -196,5 +196,5 @@ module.exports = {
     },
   ],
   // @ts-ignore
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],
+  plugins: [require("tailwindcss-animate"), require("@headlessui/tailwindcss")],
 };

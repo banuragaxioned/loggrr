@@ -2,20 +2,14 @@ import "./globals.css";
 import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { Be_Vietnam_Pro as PrimaryFont } from "next/font/google";
 import localFont from "next/font/local";
+import { GeistSans } from "geist/font/sans";
 import { ContextProvider } from "./context-provider";
 import { SiteHeader } from "./site-header";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
   variable: "--font-heading",
-});
-
-const font = PrimaryFont({
-  subsets: ["latin"],
-  variable: "--font-primary",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -49,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={cn(
           "min-h-screen items-center overscroll-y-none border-border font-sans text-base antialiased",
-          font.variable,
+          `${GeistSans.variable}`,
           fontHeading.variable,
         )}
       >

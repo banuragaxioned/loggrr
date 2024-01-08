@@ -7,7 +7,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { SheetWrapper } from "@/components/ui/sheet-wrapper";
 import { createGroup } from "@/app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ const FormSchema = z.object({
 export function CreateGroupForm({ team }: { team: string }) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const showToast = useToast();
+
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -37,13 +37,13 @@ export function CreateGroupForm({ team }: { team: string }) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const result = await createGroup(team, data.groupName);
     if (result.success) {
-      showToast("A new Client was created", "success");
+      toast.success("A new Client was created");
       formRef.current?.reset();
       router.refresh();
       form.reset();
       SheetCloseButton.current?.click();
     } else {
-      showToast("Something went wrong.", "warning");
+      toast.error("Something went wrong");
     }
   }
 

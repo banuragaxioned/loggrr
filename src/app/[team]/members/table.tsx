@@ -2,7 +2,7 @@
 import * as React from "react";
 import { DataTableStructure } from "@/components/data-table/structure";
 import { UserGroup } from "@/types";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import {
   ColumnFiltersState,
@@ -24,7 +24,7 @@ interface MemberTableProps<TData> {
 export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const showToast = useToast();
+
   const router = useRouter();
 
   const updateStatus = async (id: number) => {
@@ -39,7 +39,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       }),
     });
 
-    if (response.ok) showToast("Status Updated", "success");
+    if (response.ok) toast.success("Status Updated");
 
     router.refresh();
   };
@@ -57,7 +57,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       }),
     });
 
-    if (response.ok) showToast("User group updated", "success");
+    if (response.ok) toast.success("User group updated");
 
     router.refresh();
   };

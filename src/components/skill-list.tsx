@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Tenant } from "@prisma/client";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";
 import { levels } from "@/config/skills";
@@ -15,7 +15,7 @@ type Scores = {
 
 export function SkillList({ props, currentUser, team }: { props: Scores; currentUser: number; team: Tenant["slug"] }) {
   const router = useRouter();
-  const showToast = useToast();
+
 
   async function Update(value: string, scoreId: number) {
     const response = await fetch("/api/team/skill/update", {
@@ -30,7 +30,7 @@ export function SkillList({ props, currentUser, team }: { props: Scores; current
       }),
     });
 
-    if (response?.ok) showToast("Skill updated", "success");
+    if (response?.ok) toast.success("Skill updated");
 
     router.refresh();
   }

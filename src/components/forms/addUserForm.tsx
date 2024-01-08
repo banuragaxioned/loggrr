@@ -15,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
@@ -24,7 +24,7 @@ import { createUser } from "@/server/services/user";
 
 export function AddUserInTeam({ team }: { team: string }) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
@@ -56,10 +56,10 @@ export function AddUserInTeam({ team }: { team: string }) {
     if (response.ok) {
       SheetCloseButton.current?.click();
       form.reset();
-      showToast("User added successfully.", "success");
+      toast.success("User added successfully");
       router.refresh();
     } else {
-      showToast("Something went wrong.", "error");
+      toast.error("Something went wrong");
     }
   }
 

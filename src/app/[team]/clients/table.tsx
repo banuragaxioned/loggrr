@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRef } from "react";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import { DataTableStructure } from "@/components/data-table/structure";
 import {
@@ -27,7 +26,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [isEditing, setIsEditing] = React.useState<number>(0);
-  const showToast = useToast();
+
   const router = useRouter();
 
   const refButton = React.useRef<HTMLButtonElement>(null);
@@ -47,7 +46,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
       }),
     });
 
-    if (response?.ok) showToast("Client name updated", "success");
+    if (response?.ok) toast.success("Client name updated");
 
     router.refresh();
     setIsEditing(0);

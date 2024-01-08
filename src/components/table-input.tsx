@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { CalendarDateRangePicker as DateRangePicker } from "@/components/date-picker";
 import { Button } from "@/components/ui/button";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 
 export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const billable = data.hoursObj?.billableTime || 0;
@@ -15,15 +15,15 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
-  const showToast = useToast();
+
   const onSuccess = () => {
     setSubmitted(true);
-    showToast("A allocation was updated", "success");
+    toast.success("A allocation was updated");
   };
 
   const onFailure = () => {
     setSubmitted(false);
-    showToast("A allocation was not updated", "error");
+    toast.error("A allocation was not updated");
   };
 
   const submitHandler = (e: any) => {

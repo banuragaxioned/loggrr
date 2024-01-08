@@ -15,7 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
@@ -32,7 +32,7 @@ export function AddMemberInProject({
   users: AllUsersWithAllocation[];
 }) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
@@ -56,9 +56,9 @@ export function AddMemberInProject({
       }),
     });
 
-    if (response?.ok) showToast("User added", "success");
-    else if (response?.status === 500) showToast("User not exist", "error");
-    else showToast("Not added", "warning");
+    if (response?.ok) toast.success("User added");
+    else if (response?.status === 500) toast.warning("The user doesn't have an account");
+    else toast.error("Something went wrong");
 
     SheetCloseButton.current?.click();
     router.refresh();

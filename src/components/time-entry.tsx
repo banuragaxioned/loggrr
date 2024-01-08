@@ -7,7 +7,7 @@ import { TimeLogForm } from "./forms/timelogForm";
 import { Project } from "@/types";
 import { TimeEntryDataObj } from "@/types";
 import dayjs from "dayjs";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntryProps {
@@ -41,7 +41,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
-  const showToast = useToast();
+
 
   const editHandler = (obj: SelectedData, id: number) => {
     setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
@@ -69,9 +69,9 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     })
       .then((res) => {
         getApiCall();
-        showToast("Time entry deleted", "success");
+        toast.success("Time entry deleted");
       })
-      .catch((e) => showToast("Something went wrong", "error"));
+      .catch((e) => toast.error("Something went wrong"));
 
   //submit handler
   const submitHandler = async (
@@ -100,12 +100,12 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       body: JSON.stringify(edit.isEditing ? { ...defaultBodyObj, id: edit.id } : defaultBodyObj),
     });
     if (response.ok) {
-      showToast("Entry Updated", "success");
+      toast.success("Entry Updated");
       const arr =
         recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
       edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
       getApiCall();
-    } else showToast("Something went wrong,try again", "warning");
+    } else toast.error("Something went wrong,try again");
     clearForm();
   };
 

@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
@@ -37,7 +37,7 @@ export function NewAllocationForm({
 }) {
   const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
   const formSchema = z.object({
@@ -75,9 +75,9 @@ export function NewAllocationForm({
       }),
     });
     if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
+      return toast.error("Something went wrong");
     } else {
-      showToast("A new allocation was created", "success");
+      toast.success("A new allocation was created");
     }
   };
 

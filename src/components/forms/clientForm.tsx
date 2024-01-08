@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 
@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 export function NewClientForm({ team }: { team: string }) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,12 +49,12 @@ export function NewClientForm({ team }: { team: string }) {
     });
 
     if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
+      return toast.error("Something went wrong");
     }
 
     form.reset();
     SheetCloseButton.current?.click();
-    showToast("A new Client was created", "success");
+    toast.success("A new Client was created");
     router.refresh();
   }
 

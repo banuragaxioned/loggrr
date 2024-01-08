@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { Project, Milestone } from "@/types";
 import { InlineCombobox } from "../ui/combobox";
 import { User } from "lucide-react";
@@ -27,7 +27,7 @@ interface TimeEntryFormProps {
 
 export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormProps) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,11 +54,11 @@ export function TimeEntryForm({ team, projects, submitCounter }: TimeEntryFormPr
     });
 
     if (!response?.ok) {
-      return showToast("Something went wrong.", "warning");
+      return toast.error("Something went wrong.");
     }
     submitCounter((prev) => prev + 1);
     form.reset();
-    showToast("A new Project was created", "success");
+    toast.success("A new Project was created");
   }
 
   return (

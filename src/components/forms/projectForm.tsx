@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
@@ -45,7 +45,7 @@ interface NewProjectFormProps {
 
 export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [isOngoing, setOngoing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,12 +75,12 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
 
     if (!response?.ok) {
       console.log(response);
-      return showToast("Something went wrong.", "warning");
+      return toast.error("Something went wrong");
     }
 
     form.reset();
     SheetCloseButton.current?.click();
-    showToast("A new Project was created", "success");
+    toast.success("A new Project was created");
     router.refresh();
   }
 

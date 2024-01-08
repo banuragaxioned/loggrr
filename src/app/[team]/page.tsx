@@ -21,6 +21,9 @@ export default async function Dashboard({ params }: pageProps) {
   const userTimeAllocated = await db.allocation.findMany({
     where: {
       userId: user.id,
+      Tenant: {
+        slug: team,
+      },
     },
     select: {
       billableTime: true,
@@ -48,6 +51,12 @@ export default async function Dashboard({ params }: pageProps) {
   const userTimeEntry = await db.timeEntry.findMany({
     where: {
       userId: user.id,
+      date: {
+        gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+      },
+      Tenant: {
+        slug: team,
+      },
     },
     select: {
       time: true,
@@ -81,7 +90,7 @@ export default async function Dashboard({ params }: pageProps) {
           </Flex>
           <ScrollArea className={`${userTimeAllocated.length >= 5 ? "h-[550px]" : "h-auto"} w-full}`}>
             {userTimeAllocated.map((item, i) => {
-              const entryValue = item.User.TimeEntry.filter((ele) => ele.projectId === item.Project.id).reduce(
+              const entryValue = item.User.TimeEntry.filter((entry) => entry.projectId === item.Project.id).reduce(
                 (acc, current) => acc + current.time,
                 0,
               );

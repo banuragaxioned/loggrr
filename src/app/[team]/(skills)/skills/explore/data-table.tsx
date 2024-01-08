@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { DataTableStructure } from "@/components/data-table/structure";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 import {
   ColumnFiltersState,
@@ -28,7 +28,6 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [isEditing, setIsEditing] = React.useState<number>(0);
-  const showToast = useToast();
   const router = useRouter();
 
   const refButton = useRef<HTMLButtonElement>(null);
@@ -46,7 +45,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
       }),
     });
 
-    if (response?.ok) showToast("Skill updated", "success");
+    if (response?.ok) toast.success("Skill updated");
 
     router.refresh();
     setIsEditing(0);
@@ -64,7 +63,7 @@ export function DataTable<TData, TValue>({ skills, team }: MemberTableProps<Skil
       }),
     });
 
-    if (response?.ok) showToast("Skill deleted", "success");
+    if (response?.ok) toast.success("Skill deleted");
 
     router.refresh();
   };

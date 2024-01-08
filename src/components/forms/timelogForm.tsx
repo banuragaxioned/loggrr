@@ -7,6 +7,7 @@ import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
 import { cn } from "@/lib/utils";
+import { Input } from "../ui/input";
 
 export type SelectedData = {
   client?: Milestone;
@@ -270,7 +271,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               </div>
             )}
             <span className="flex items-center gap-4">
-              <input
+              <Input
                 tabIndex={6}
                 type="text"
                 placeholder="7:30"

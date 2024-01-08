@@ -16,7 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import useToast from "@/hooks/useToast";
+import { toast } from "sonner"
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
@@ -52,7 +52,7 @@ export function AddSKill({
   userSkills: Scores;
 }) {
   const router = useRouter();
-  const showToast = useToast();
+
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,12 +78,12 @@ export function AddSKill({
       });
 
       if (!response?.ok) {
-        return showToast("Something went wrong.", "warning");
+        return toast.error("Something went wrong");
       }
-      showToast("A new skill added", "success");
+      toast.success("A new skill added");
       router.refresh();
     } else {
-      showToast("Skill already added", "info");
+      toast.info("This skill already exists");
     }
   }
 
