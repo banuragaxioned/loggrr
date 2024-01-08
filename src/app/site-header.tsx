@@ -3,7 +3,7 @@
 import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { Clock } from "lucide-react";
+import { Clock, Loader } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 
 export function SiteHeader() {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
   const teamData = sessionData?.user.tenants;
   const pathname = usePathname();
 
@@ -30,7 +30,10 @@ export function SiteHeader() {
           <nav className="flex items-center space-x-3">
             {pathname !== "/" && <NavMenu />}
             <ThemeToggle />
-            {sessionData && (
+            {status === "loading" && (
+              <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
+            )}
+            {status === "authenticated" && (
               <UserAccountNav
                 user={{
                   name: sessionData.user.name,
