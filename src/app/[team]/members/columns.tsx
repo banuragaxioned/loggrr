@@ -10,7 +10,7 @@ import { cn, debounce } from "@/lib/utils";
 import { UserGroup } from "@/types";
 import { InlineSelect } from "@/components/inline-select";
 
-declare module "@tanstack/table-core" {
+declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className: string;
   }
