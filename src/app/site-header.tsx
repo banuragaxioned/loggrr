@@ -16,10 +16,7 @@ export function SiteHeader() {
   const teamData = sessionData?.user.tenants;
   const pathname = usePathname();
 
-  posthog.identify(
-    String(sessionData?.user.id), // Replace 'distinct_id' with your user's unique identifier
-    { email: sessionData?.user.email, name: sessionData?.user.name }, // optional: set additional user properties
-  );
+  posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

@@ -78,14 +78,14 @@ export function DataTableToolbar<TData>({
   //start date validator
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
-    <div className="flex items-center justify-between gap-x-3 rounded-xl border border-border p-[15px]">
+    <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       <div className="flex flex-1 flex-wrap items-center space-x-2">
         <DatePicker date={startDate} setDate={startDateValidator} />
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="h-10 w-[150px] lg:w-[250px]"
+          className="w-40 lg:w-64"
         />
         <Toggle
           className="rounded-md border data-[state=on]:border-indigo-600 data-[state=on]:bg-indigo-600 data-[state=on]:text-white"

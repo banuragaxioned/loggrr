@@ -11,13 +11,13 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between gap-x-3 rounded-xl border border-border p-[15px]">
+    <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="h-10 w-[150px] lg:w-[250px]"
+          className="w-40 lg:w-64"
         />
         {table.getColumn("role") && (
           <DataTableFacetedFilter column={table.getColumn("role")} title="Role" options={roles} />

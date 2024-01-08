@@ -16,13 +16,11 @@ export default async function Assigned({ params }: pageProps) {
   const projects = await getProjectsId(team);
   const users = await getAllUsers(team);
   return (
-    <>
-      <DashboardShell>
-        <DashboardHeader heading="Assignments" text="This is a summary current assignments">
-          <NewAllocationForm team={team} projects={projects} users={users} />
-        </DashboardHeader>
-        <DataTable columns={getDynamicColumns} />
-      </DashboardShell>
-    </>
+    <DashboardShell>
+      <DashboardHeader heading="Assignments" text="This is a summary current assignments">
+        <NewAllocationForm team={team} projects={projects} users={users} />
+      </DashboardHeader>
+      <DataTable columns={getDynamicColumns} />
+    </DashboardShell>
   );
 }

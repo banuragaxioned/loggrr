@@ -30,7 +30,7 @@ export function DataTableVisibilityToggler<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-10 border-dashed">
+        <Button variant="outline" size="sm">
           <PlusCircle className="mr-2 h-4 w-4" />
           {title}
           <Separator orientation="vertical" className="mx-2 h-4" />
