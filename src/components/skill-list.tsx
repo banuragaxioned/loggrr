@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Tenant } from "@prisma/client";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";
 import { levels } from "@/config/skills";
@@ -15,7 +15,6 @@ type Scores = {
 
 export function SkillList({ props, currentUser, team }: { props: Scores; currentUser: number; team: Tenant["slug"] }) {
   const router = useRouter();
-
 
   async function Update(value: string, scoreId: number) {
     const response = await fetch("/api/team/skill/update", {

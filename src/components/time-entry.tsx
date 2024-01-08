@@ -7,7 +7,7 @@ import { TimeLogForm } from "./forms/timelogForm";
 import { Project } from "@/types";
 import { TimeEntryDataObj } from "@/types";
 import dayjs from "dayjs";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntryProps {
@@ -41,7 +41,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
   //0 = loading, 1 = loaded with success , -1 = failed to fetch
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
-
 
   const editHandler = (obj: SelectedData, id: number) => {
     setEdit({ obj, isEditing: edit.isEditing ? false : true, id });

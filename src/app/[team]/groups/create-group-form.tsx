@@ -7,7 +7,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { SheetWrapper } from "@/components/ui/sheet-wrapper";
 import { createGroup } from "@/app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,6 @@ const FormSchema = z.object({
 export function CreateGroupForm({ team }: { team: string }) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
