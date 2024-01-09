@@ -55,7 +55,7 @@ model Project {
   workspaceId Int
   name        String
   status      Status          @default(PUBLISHED)
-  ownerId     Int?
+  ownerId     Int
   clientId    Int
   startdate   DateTime
   enddate     DateTime?
@@ -72,7 +72,7 @@ model Project {
   Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   Client     Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   Members    User[]       @relation("ProjectMembers")
-  Owner      User?        @relation("UserOwnedProjects", fields: [ownerId], references: [id])
+  Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
 
   @@index([workspaceId])
   @@index([clientId])

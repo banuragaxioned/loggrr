@@ -27,6 +27,7 @@ async function main() {
       name: "Loggr",
       clientId: client.id,
       workspaceId: workspace.id,
+      ownerId: 1,
       interval: "MONTHLY",
       startdate: new Date(),
       budget: 100,
