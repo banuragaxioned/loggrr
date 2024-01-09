@@ -18,7 +18,12 @@ const withBundleAnalyzerPlugin = withBundleAnalyzer(bundleAnalyzerConfig);
 const config = withBundleAnalyzerPlugin({
   reactStrictMode: true,
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
   },
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
