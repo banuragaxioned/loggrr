@@ -30,6 +30,77 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(db),
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+      maxAge: 24 * 60 * 60,
+    }),
+    /**
+     * ...add more providers here
+     *
+     * Most other providers require a bit more work than the Discord provider.
+     * For example, the GitHub provider requires you to add the
+     * `refresh_token_expires_in` field to the Account model. Refer to the
+     * NextAuth.js docs for the provider you want to use. Example:
+     * @see https://next-auth.js.org/providers/github
+     **/
+  ],
+  events: {
+    async signIn({ user, isNewUser }) {
+      if (isNewUser && user.email) {
+        // if email ends with @axioned.com then add them to workspace and role
+        // FIX: Hardcoded
+        // Maybe domain whitelist in database? Probably needs to be "verified" domains only though.
+        if (user.email.endsWith("@axioned.com")) {
+          await db.workspace.update({
+            where: { slug: "axioned" },
+            data: {
+              Users: {
+                connect: {
+                  id: Number(user.id),
+                },
+              },
+            },
+          });
+        }
+
+        if (user.email.endsWith("@axioned.com")) {
+          await db.userRole.create({
+            data: {
+              workspaceId: 1,
+              userId: Number(user.id),
+              role: Role.USER,
+            },
+          });
+        }
+      }
+    },
+  },
   callbacks: {
     async session({ token, session }) {
       if (token) {
@@ -37,9 +108,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
-      }
 
-      if (token) {
         const teams = await db.user.findUniqueOrThrow({
           where: { id: session.user.id },
           select: {
@@ -83,44 +152,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  adapter: PrismaAdapter(db),
-  session: {
-    strategy: "jwt",
-  },
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-    }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_FROM,
-      maxAge: 24 * 60 * 60,
-    }),
-    /**
-     * ...add more providers here
-     *
-     * Most other providers require a bit more work than the Discord provider.
-     * For example, the GitHub provider requires you to add the
-     * `refresh_token_expires_in` field to the Account model. Refer to the
-     * NextAuth.js docs for the provider you want to use. Example:
-     * @see https://next-auth.js.org/providers/github
-     **/
-  ],
 };
 
 /**

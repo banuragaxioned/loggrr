@@ -9,6 +9,8 @@
     "turbo": "next dev --turbo",
     "build": "next build",
     "push": "npx prisma db push",
+    "seed": "npx prisma db seed",
+    "reset": "npx prisma db push --force-reset",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
     "fresh": "pnpm run clean && pnpm install && pnpm run dev",
     "studio": "prisma studio --browser none",

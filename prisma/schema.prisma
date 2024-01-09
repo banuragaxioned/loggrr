@@ -45,7 +45,7 @@ model Client {
   updatedAt   DateTime @updatedAt
 
   Project   Project[]
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
 }
@@ -55,7 +55,7 @@ model Project {
   workspaceId Int
   name        String
   status      Status          @default(PUBLISHED)
-  ownerId     Int
+  ownerId     Int?
   clientId    Int
   startdate   DateTime
   enddate     DateTime?
@@ -69,10 +69,10 @@ model Project {
   Task       Task[]
   TimeEntry  TimeEntry[]
   Allocation Allocation[]
-  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
-  Client     Client       @relation(fields: [clientId], references: [id])
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Client     Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   Members    User[]       @relation("ProjectMembers")
-  Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
+  Owner      User?        @relation("UserOwnedProjects", fields: [ownerId], references: [id])
 
   @@index([workspaceId])
   @@index([clientId])
@@ -103,8 +103,8 @@ model Milestone {
   startDate   DateTime?
   endDate     DateTime?
 
-  Workspace Workspace   @relation(fields: [workspaceId], references: [id])
-  Project   Project     @relation(fields: [projectId], references: [id])
+  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   TimeEntry TimeEntry[]
 
   @@index([workspaceId])
@@ -121,8 +121,8 @@ model Task {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Workspace Workspace   @relation(fields: [workspaceId], references: [id])
-  Project   Project     @relation(fields: [projectId], references: [id])
+  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   TimeEntry TimeEntry[]
 
   @@index([workspaceId])
@@ -147,11 +147,11 @@ model TimeEntry {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
-  Project   Project   @relation(fields: [projectId], references: [id])
-  Task      Task?     @relation(fields: [taskId], references: [id])
-  Milestone Milestone @relation(fields: [milestoneId], references: [id])
-  User      User      @relation(fields: [userId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Task      Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  Milestone Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([projectId])
@@ -182,9 +182,9 @@ model Allocation {
   // If the frequency is ONGOING and enddate is present then it's a fixed duration
   frequency       AllocationFrequency @default(DAY)
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
-  Project   Project   @relation(fields: [projectId], references: [id])
-  User      User      @relation(fields: [userId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([projectId])
@@ -206,9 +206,9 @@ model SkillScore {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   Skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  User      User      @relation(fields: [userId], references: [id])
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([skillId])
@@ -222,7 +222,7 @@ model Skill {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   SkillScore SkillScore[]
 
   @@index([workspaceId])
@@ -236,8 +236,8 @@ model UserRole {
   role        Role      @default(USER)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Workspace   Workspace @relation(fields: [workspaceId], references: [id])
-  User        User      @relation(fields: [userId], references: [id])
+  Workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
   @@index([userId])
@@ -253,7 +253,7 @@ model UserGroup {
   updatedAt   DateTime @updatedAt
 
   users     User[]
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
 }
@@ -274,7 +274,6 @@ model User {
   image         String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
-  allocationId  Int?
   status        UserStatus @default(ACTIVE)
 
   Workspace     Workspace[]  @relation("WorkspaceMembers")
@@ -287,8 +286,6 @@ model User {
   TimeEntry     TimeEntry[]
   Project       Project[]    @relation("ProjectMembers")
   OwnedProjects Project[]    @relation("UserOwnedProjects")
-
-  @@index([allocationId])
 }
 
 model Session {
