@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 
 export const getMembersByProjectId = async (slug: string, projectId: number) => {
   const data = await prisma.project.findUnique({
-    where: { Tenant: { slug }, id: +projectId },
+    where: { Workspace: { slug }, id: +projectId },
     select: {
       Members: {
         select: {
@@ -47,7 +47,7 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
 
 export async function getProjects(slug: string) {
   const projects = await db.project.findMany({
-    where: { Tenant: { slug } },
+    where: { Workspace: { slug } },
     select: {
       id: true,
       name: true,
@@ -92,7 +92,7 @@ export async function getProjects(slug: string) {
 
 export async function getProjectSummary(slug?: string, userId?: number) {
   const summary = await db.project.findMany({
-    where: { Tenant: { slug } },
+    where: { Workspace: { slug } },
     select: {
       id: true,
       name: true,
@@ -137,7 +137,7 @@ export async function getProjectSummary(slug?: string, userId?: number) {
 
 export async function getClients(slug: string) {
   const clients = await db.client.findMany({
-    where: { Tenant: { slug } },
+    where: { Workspace: { slug } },
     select: {
       id: true,
       name: true,
@@ -156,7 +156,7 @@ export async function getClients(slug: string) {
 
 export async function getAssignments(slug: string) {
   const assignments = await db.allocation.findMany({
-    where: { Tenant: { slug } },
+    where: { Workspace: { slug } },
     select: {
       id: true,
       date: true,
@@ -227,7 +227,7 @@ const insertAllocation = async (requiredAllocation: any, data: any, range: any, 
       createdAt: new Date(),
       updatedAt: new Date(),
       userId: userId,
-      tenantId: 1,
+      workspaceId: 1,
     },
   });
 };

@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 
 export const getMembers = async (team: string) => {
-  const data = await db.tenant.findUnique({
+  const data = await db.workspace.findUnique({
     where: { slug: team },
     select: {
       Users: {
@@ -44,7 +44,7 @@ export const getMembers = async (team: string) => {
 
 export const getUserGroup = async (team: string) => {
   const data = await db.userGroup.findMany({
-    where: { Tenant: { slug: team } },
+    where: { Workspace: { slug: team } },
     select: {
       id: true,
       name: true,

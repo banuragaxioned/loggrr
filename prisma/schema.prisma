@@ -15,19 +15,15 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Tenant {
-  id                     Int       @id @default(autoincrement())
-  name                   String
-  slug                   String    @unique
-  status                 Status    @default(PUBLISHED)
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
-  stripeCustomerId       String?
-  stripeSubscriptionId   String?
-  stripePriceId          String?
-  stripeCurrentPeriodEnd DateTime?
+model Workspace {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  status    Status   @default(PUBLISHED)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  Users      User[]       @relation("UserTenants")
+  Users      User[]       @relation("WorkspaceMembers")
   Client     Client[]
   Project    Project[]
   Milestone  Milestone[]
@@ -41,102 +37,95 @@ model Tenant {
 }
 
 model Client {
-  id        Int      @id @default(autoincrement())
-  name      String
-  tenantId  Int
-  status    Status   @default(PUBLISHED)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String
+  workspaceId Int
+  status      Status   @default(PUBLISHED)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  Project Project[]
-  Tenant  Tenant    @relation(fields: [tenantId], references: [id])
+  Project   Project[]
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  @@index([tenantId])
+  @@index([workspaceId])
 }
 
 model Project {
-  id        Int             @id @default(autoincrement())
-  name      String
-  status    Status          @default(PUBLISHED)
-  tenantId  Int
-  ownerId   Int
-  clientId  Int
-  startdate DateTime
-  enddate   DateTime?
-  budget    Int?
-  billable  Boolean         @default(false)
-  interval  ProjectInterval
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id          Int             @id @default(autoincrement())
+  workspaceId Int
+  name        String
+  status      Status          @default(PUBLISHED)
+  ownerId     Int
+  clientId    Int
+  startdate   DateTime
+  enddate     DateTime?
+  budget      Int?
+  billable    Boolean         @default(false)
+  interval    ProjectInterval
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   Milestone  Milestone[]
   Task       Task[]
   TimeEntry  TimeEntry[]
   Allocation Allocation[]
-  Tenant     Tenant       @relation(fields: [tenantId], references: [id])
-  Client     Client       @relation(fields: [clientId], references: [id])
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Client     Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   Members    User[]       @relation("ProjectMembers")
   Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([clientId])
   @@index([ownerId])
 }
 
 enum ProjectInterval {
   FIXED
-  WEEKLY
   MONTHLY
-  QUARTERLY
-  HALFYEARLY
-  YEARLY
 }
 
 enum Role {
   OWNER
-  // ADMIN
   MANAGER
   USER
   INACTIVE
 }
 
 model Milestone {
-  id        Int       @id @default(autoincrement())
-  tenantId  Int
-  projectId Int
-  name      String
-  budget    Int       @default(0) // Storing budget in hours
-  status    Status    @default(PUBLISHED)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  startDate DateTime?
-  endDate   DateTime?
+  id          Int       @id @default(autoincrement())
+  workspaceId Int
+  projectId   Int
+  name        String
+  budget      Int       @default(0) // Storing budget in hours
+  status      Status    @default(PUBLISHED)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  startDate   DateTime?
+  endDate     DateTime?
 
-  // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
-
-  Tenant    Tenant      @relation(fields: [tenantId], references: [id])
-  Project   Project     @relation(fields: [projectId], references: [id])
+  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   TimeEntry TimeEntry[]
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([projectId])
 }
 
 model Task {
-  id        Int      @id @default(autoincrement())
-  tenantId  Int
-  name      String
-  status    Status   @default(PUBLISHED)
-  budget    Int?
-  projectId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  workspaceId Int
+  name        String
+  status      Status   @default(PUBLISHED)
+  budget      Int?
+  projectId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  Tenant    Tenant      @relation(fields: [tenantId], references: [id])
-  Project   Project     @relation(fields: [projectId], references: [id])
+  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   TimeEntry TimeEntry[]
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([projectId])
 }
 
@@ -144,7 +133,7 @@ model TimeEntry {
   id          Int       @id @default(autoincrement())
   date        DateTime
   projectId   Int
-  tenantId    Int
+  workspaceId Int
   userId      Int
   milestoneId Int
   taskId      Int?
@@ -158,13 +147,13 @@ model TimeEntry {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  Tenant    Tenant    @relation(fields: [tenantId], references: [id])
-  Project   Project   @relation(fields: [projectId], references: [id])
-  Task      Task?     @relation(fields: [taskId], references: [id])
-  Milestone Milestone @relation(fields: [milestoneId], references: [id])
-  User      User      @relation(fields: [userId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Task      Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  Milestone Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([projectId])
   @@index([userId])
   @@index([milestoneId])
@@ -178,30 +167,29 @@ enum Status {
 
 // Allocation-related
 model Allocation {
-  id              Int       @id @default(autoincrement())
+  id              Int                 @id @default(autoincrement())
+  workspaceId     Int
+  projectId       Int
+  userId          Int
   date            DateTime
   enddate         DateTime?
   billableTime    Int
   nonBillableTime Int
-  tenantId        Int
-  projectId       Int
-  userId          Int
-  status          Status    @default(PUBLISHED)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
+  status          Status              @default(PUBLISHED)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
   // If frequency is ONGOING and no enddate then it's indefinite
   // If the frequency is ONGOING and enddate is present then it's a fixed duration
-  frequency AllocationFrequency @default(DAY)
+  frequency       AllocationFrequency @default(DAY)
 
-  Tenant  Tenant  @relation(fields: [tenantId], references: [id])
-  Project Project @relation(fields: [projectId], references: [id])
-  User    User    @relation(fields: [userId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([projectId])
   @@index([userId])
-  @@index([tenantId, projectId, userId])
+  @@index([workspaceId, projectId, userId])
 }
 
 enum AllocationFrequency {
@@ -210,66 +198,64 @@ enum AllocationFrequency {
 }
 
 model SkillScore {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  skillId   Int
-  tenantId  Int
-  level     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  workspaceId Int
+  userId      Int
+  skillId     Int
+  level       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  Tenant Tenant @relation(fields: [tenantId], references: [id])
-  Skill  Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  User   User   @relation(fields: [userId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  Skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([tenantId])
+  @@index([workspaceId])
   @@index([skillId])
   @@index([userId])
 }
 
 model Skill {
-  id        Int      @id @default(autoincrement())
-  name      String
-  tenantId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  workspaceId Int
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  Tenant Tenant @relation(fields: [tenantId], references: [id])
-
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   SkillScore SkillScore[]
 
-  @@index([tenantId])
+  @@index([workspaceId])
 }
 
 // Additional User meta-data
 model UserRole {
-  id        Int      @id @default(autoincrement())
-  role      Role     @default(USER)
-  userId    Int
-  tenantId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  workspaceId Int
+  userId      Int
+  role        Role      @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  Tenant Tenant @relation(fields: [tenantId], references: [id])
-  User   User   @relation(fields: [userId], references: [id])
-
-  @@unique([role, userId, tenantId])
+  @@unique([userId, workspaceId])
   @@index([userId])
-  @@index([tenantId])
-  @@index([userId, tenantId]) // Added an index on both fields to optimize queries involving both fields
+  @@index([workspaceId])
+  @@index([userId, workspaceId]) // Added an index on both fields to optimize queries involving both fields
 }
 
 model UserGroup {
-  id        Int      @id @default(autoincrement())
-  name      String
-  tenantId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  workspaceId Int
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   users     User[]
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  Tenant Tenant @relation(fields: [tenantId], references: [id])
-
-  @@index([tenantId])
+  @@index([workspaceId])
 }
 
 enum UserStatus {
@@ -288,10 +274,9 @@ model User {
   image         String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
-  allocationId  Int?
   status        UserStatus @default(ACTIVE)
 
-  TenantId      Tenant[]     @relation("UserTenants")
+  Workspace     Workspace[]  @relation("WorkspaceMembers")
   UserGroup     UserGroup[]
   accounts      Account[]
   sessions      Session[]
@@ -301,8 +286,6 @@ model User {
   TimeEntry     TimeEntry[]
   Project       Project[]    @relation("ProjectMembers")
   OwnedProjects Project[]    @relation("UserOwnedProjects")
-
-  @@index([allocationId])
 }
 
 model Session {

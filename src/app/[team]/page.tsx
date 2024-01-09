@@ -21,7 +21,7 @@ export default async function Dashboard({ params }: pageProps) {
   const userTimeAllocated = await db.allocation.findMany({
     where: {
       userId: user.id,
-      Tenant: {
+      Workspace: {
         slug: team,
       },
     },
@@ -54,7 +54,7 @@ export default async function Dashboard({ params }: pageProps) {
       date: {
         gte: new Date(new Date().setDate(new Date().getDate() - 7)),
       },
-      Tenant: {
+      Workspace: {
         slug: team,
       },
     },

@@ -1,22 +1,22 @@
-import { Tenant, User } from "@prisma/client";
+import { Workspace, User } from "@prisma/client";
 import { prisma } from "../db";
 import { db } from "@/lib/db";
 
-export async function getSkills(team: Tenant["slug"]) {
+export async function getSkills(team: Workspace["slug"]) {
   const response = await db.skill.findMany({
     select: {
       id: true,
       name: true,
     },
     where: {
-      Tenant: {
+      Workspace: {
         slug: team,
       },
     },
   });
 
   const users = await db.skillScore.findMany({
-    where: { Tenant: { slug: team } },
+    where: { Workspace: { slug: team } },
     select: {
       skillId: true,
       User: {
@@ -41,7 +41,7 @@ export async function getSkills(team: Tenant["slug"]) {
   return flatResponse;
 }
 
-export async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
+export async function getUserSkills(userId: User["id"], team: Workspace["slug"]) {
   const response = await db.skillScore.findMany({
     select: {
       id: true,
@@ -54,7 +54,7 @@ export async function getUserSkills(userId: User["id"], team: Tenant["slug"]) {
       level: true,
     },
     where: {
-      Tenant: {
+      Workspace: {
         slug: team,
       },
       User: {

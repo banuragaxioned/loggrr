@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { type NextAuthOptions, type DefaultSession } from "next-auth";
+import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
@@ -18,7 +18,7 @@ declare module "next-auth" {
     user: {
       id: number;
       timezone: string;
-      tenants: { id: number; name: string; slug: string; role: Role }[];
+      workspaces: { id: number; name: string; slug: string; role: Role }[];
     } & DefaultSession["user"];
   }
 }
@@ -30,12 +30,11 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
-  // huh any! I know.
-  // This is a temporary fix for prisma client.
-  // @see https://github.com/prisma/prisma/issues/16117
-  adapter: PrismaAdapter(db as any),
+  adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   providers: [
     GoogleProvider({
@@ -59,7 +58,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: process.env.EMAIL_FROM,
-      maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
+      maxAge: 24 * 60 * 60,
     }),
     /**
      * ...add more providers here
@@ -71,6 +70,37 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      **/
   ],
+  events: {
+    async signIn({ user, isNewUser }) {
+      if (isNewUser && user.email) {
+        // if email ends with @axioned.com then add them to workspace and role
+        // FIX: Hardcoded
+        // Maybe domain whitelist in database? Probably needs to be "verified" domains only though.
+        if (user.email.endsWith("@axioned.com")) {
+          await db.workspace.update({
+            where: { slug: "axioned" },
+            data: {
+              Users: {
+                connect: {
+                  id: Number(user.id),
+                },
+              },
+            },
+          });
+        }
+
+        if (user.email.endsWith("@axioned.com")) {
+          await db.userRole.create({
+            data: {
+              workspaceId: 1,
+              userId: Number(user.id),
+              role: Role.USER,
+            },
+          });
+        }
+      }
+    },
+  },
   callbacks: {
     async session({ token, session }) {
       if (token) {
@@ -78,16 +108,14 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
-      }
 
-      if (token) {
         const teams = await db.user.findUniqueOrThrow({
           where: { id: session.user.id },
           select: {
             id: true,
             name: true,
             timezone: true,
-            TenantId: {
+            Workspace: {
               select: {
                 id: true,
                 slug: true,
@@ -98,13 +126,13 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        session.user.tenants = teams.TenantId.map((tenant) => {
+        session.user.workspaces = teams.Workspace.map((workspace) => {
           return {
-            id: tenant.id,
-            name: tenant.name,
-            slug: tenant.slug,
-            //NOTE: Each user can only have one `role` per tenant. Even though we have many to many relation
-            role: tenant.UserRole.map((userRole) => userRole.role)[0],
+            id: workspace.id,
+            name: workspace.name,
+            slug: workspace.slug,
+            //NOTE: Each user can only have one `role` per workspace. Even though we have many to many relation
+            role: workspace.UserRole.map((userRole) => userRole.role)[0],
           };
         });
 
@@ -125,3 +153,10 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+/**
+ * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
+ *
+ * @see https://next-auth.js.org/configuration/nextjs
+ */
+export const getServerAuthSession = () => getServerSession(authOptions);

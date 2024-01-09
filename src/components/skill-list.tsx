@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Tenant } from "@prisma/client";
+import { Workspace } from "@prisma/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";
@@ -13,7 +13,15 @@ type Scores = {
   value: number;
 }[];
 
-export function SkillList({ props, currentUser, team }: { props: Scores; currentUser: number; team: Tenant["slug"] }) {
+export function SkillList({
+  props,
+  currentUser,
+  team,
+}: {
+  props: Scores;
+  currentUser: number;
+  team: Workspace["slug"];
+}) {
   const router = useRouter();
 
   async function Update(value: string, scoreId: number) {

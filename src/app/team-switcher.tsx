@@ -37,7 +37,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
     }
   }
 
-  if (teamData.teams.length === 1) {
+  if (teamData.teams.length <= 1) {
     return null;
   }
 

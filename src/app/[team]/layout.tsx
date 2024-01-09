@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
 
   const hasAccess = await prisma.userRole.findMany({
     where: {
-      Tenant: {
+      Workspace: {
         slug: team,
         Users: {
           some: {
