@@ -97,7 +97,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
           </li>
         )
       ) : (
-        <li>sorry something went wrong</li>
+        <li>Sorry something went wrong</li>
       )}
     </ul>
   );

@@ -16,7 +16,7 @@ export async function getProjectsId(slug: string) {
 
 export const getAllUsers = async (slug: string) => {
   const users = await prisma.user.findMany({
-    where: { WorkspaceId: { some: { slug } } },
+    where: { Workspace: { some: { slug } } },
     select: {
       id: true,
       name: true,

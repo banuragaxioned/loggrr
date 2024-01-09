@@ -16,18 +16,14 @@ datasource db {
 }
 
 model Workspace {
-  id                     Int       @id @default(autoincrement())
-  name                   String
-  slug                   String    @unique
-  status                 Status    @default(PUBLISHED)
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
-  stripeCustomerId       String?
-  stripeSubscriptionId   String?
-  stripePriceId          String?
-  stripeCurrentPeriodEnd DateTime?
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  status    Status   @default(PUBLISHED)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  Users      User[]       @relation("UserWorkspaces")
+  Users      User[]       @relation("WorkspaceMembers")
   Client     Client[]
   Project    Project[]
   Milestone  Milestone[]
@@ -56,9 +52,9 @@ model Client {
 
 model Project {
   id          Int             @id @default(autoincrement())
+  workspaceId Int
   name        String
   status      Status          @default(PUBLISHED)
-  workspaceId Int
   ownerId     Int
   clientId    Int
   startdate   DateTime
@@ -85,16 +81,11 @@ model Project {
 
 enum ProjectInterval {
   FIXED
-  WEEKLY
   MONTHLY
-  QUARTERLY
-  HALFYEARLY
-  YEARLY
 }
 
 enum Role {
   OWNER
-  // ADMIN
   MANAGER
   USER
   INACTIVE
@@ -111,8 +102,6 @@ model Milestone {
   updatedAt   DateTime  @updatedAt
   startDate   DateTime?
   endDate     DateTime?
-
-  // TODO: Invoice Number reciprocal to be added to get Invoiced / Un-Invoiced Hours (INV-1234)
 
   Workspace Workspace   @relation(fields: [workspaceId], references: [id])
   Project   Project     @relation(fields: [projectId], references: [id])
@@ -178,21 +167,20 @@ enum Status {
 
 // Allocation-related
 model Allocation {
-  id              Int       @id @default(autoincrement())
+  id              Int                 @id @default(autoincrement())
+  workspaceId     Int
+  projectId       Int
+  userId          Int
   date            DateTime
   enddate         DateTime?
   billableTime    Int
   nonBillableTime Int
-  workspaceId     Int
-  projectId       Int
-  userId          Int
-  status          Status    @default(PUBLISHED)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
+  status          Status              @default(PUBLISHED)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
   // If frequency is ONGOING and no enddate then it's indefinite
   // If the frequency is ONGOING and enddate is present then it's a fixed duration
-  frequency AllocationFrequency @default(DAY)
+  frequency       AllocationFrequency @default(DAY)
 
   Workspace Workspace @relation(fields: [workspaceId], references: [id])
   Project   Project   @relation(fields: [projectId], references: [id])
@@ -211,9 +199,9 @@ enum AllocationFrequency {
 
 model SkillScore {
   id          Int      @id @default(autoincrement())
+  workspaceId Int
   userId      Int
   skillId     Int
-  workspaceId Int
   level       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -229,13 +217,12 @@ model SkillScore {
 
 model Skill {
   id          Int      @id @default(autoincrement())
-  name        String
   workspaceId Int
+  name        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
-
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
   SkillScore SkillScore[]
 
   @@index([workspaceId])
@@ -244,9 +231,9 @@ model Skill {
 // Additional User meta-data
 model UserRole {
   id          Int       @id @default(autoincrement())
-  role        Role      @default(USER)
-  userId      Int
   workspaceId Int
+  userId      Int
+  role        Role      @default(USER)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   Workspace   Workspace @relation(fields: [workspaceId], references: [id])
@@ -260,12 +247,12 @@ model UserRole {
 
 model UserGroup {
   id          Int      @id @default(autoincrement())
-  name        String
   workspaceId Int
+  name        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  users       User[]
 
+  users     User[]
   Workspace Workspace @relation(fields: [workspaceId], references: [id])
 
   @@index([workspaceId])
@@ -290,7 +277,7 @@ model User {
   allocationId  Int?
   status        UserStatus @default(ACTIVE)
 
-  WorkspaceId   Workspace[]  @relation("UserWorkspaces")
+  Workspace     Workspace[]  @relation("WorkspaceMembers")
   UserGroup     UserGroup[]
   accounts      Account[]
   sessions      Session[]

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const adduser = await db.user.update({
       where: { email: body.emailAddress },
       data: {
-        WorkspaceId: {
+        Workspace: {
           connect: { slug: body.team },
         },
         Roles: {

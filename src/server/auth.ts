@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
           id: true,
           name: true,
           timezone: true,
-          WorkspaceId: {
+          Workspace: {
             select: {
               id: true,
               slug: true,
@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
       });
 
       // Attach workspace with user role to the session object
-      session.user.workspaces = userWithWorkspaces.WorkspaceId.map((workspace) => {
+      session.user.workspaces = userWithWorkspaces.Workspace.map((workspace) => {
         return {
           id: workspace.id,
           name: workspace.name,
