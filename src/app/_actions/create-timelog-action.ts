@@ -10,8 +10,8 @@ type TimeEntry = {
   comment?: string;
 };
 
-export async function createTimeLog(data: TimeEntry, teamSlug: string, userId: number, time: number) {
-  const hasAccess = await checkRole(teamSlug);
+export async function createTimeLog(data: TimeEntry, slug: string, userId: number, time: number) {
+  const hasAccess = await checkRole(slug);
 
   if (!hasAccess) {
     return { success: false };
@@ -19,9 +19,9 @@ export async function createTimeLog(data: TimeEntry, teamSlug: string, userId: n
 
   await db.timeEntry.create({
     data: {
-      Tenant: {
+      Workspace: {
         connect: {
-          slug: teamSlug,
+          slug: slug,
         },
       },
       date: data.date,

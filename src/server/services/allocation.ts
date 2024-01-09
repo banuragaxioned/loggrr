@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 
 export async function getProjectsId(slug: string) {
   const projects = await db.project.findMany({
-    where: { Tenant: { slug } },
+    where: { Workspace: { slug } },
     select: {
       id: true,
       name: true,
@@ -16,7 +16,7 @@ export async function getProjectsId(slug: string) {
 
 export const getAllUsers = async (slug: string) => {
   const users = await prisma.user.findMany({
-    where: { TenantId: { some: { slug } } },
+    where: { WorkspaceId: { some: { slug } } },
     select: {
       id: true,
       name: true,

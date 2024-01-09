@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { LucideIcon } from "lucide-react";
-import { Tenant, Role, AllocationFrequency, Status } from "@prisma/client";
+import { Workspace, Role, AllocationFrequency, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type UserProfile = {
@@ -57,7 +57,7 @@ export type SubscriptionPlan = {
 };
 
 export type UserSubscriptionPlan = SubscriptionPlan &
-  Pick<Tenant, "stripeCustomerId" | "stripeSubscriptionId"> & {
+  Pick<Workspace, "stripeCustomerId" | "stripeSubscriptionId"> & {
     stripeCurrentPeriodEnd: number;
     isPro: boolean;
   };
@@ -153,9 +153,9 @@ export type Members = {
   projectId: number;
 };
 
-export type pageProps = { params: { team: Tenant["slug"] } };
+export type pageProps = { params: { team: Workspace["slug"] } };
 
-export type projectProps = { params: { project: Tenant["slug"]; team: Tenant["slug"] } };
+export type projectProps = { params: { project: Workspace["slug"]; team: Workspace["slug"] } };
 
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

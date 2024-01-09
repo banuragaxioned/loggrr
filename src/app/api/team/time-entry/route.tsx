@@ -31,9 +31,9 @@ export async function POST(req: Request) {
     const json = await req.json();
     const body = TimeEntrySchema.parse(json);
 
-    // check if the user has permission to the current team/tenant id if not return 403
-    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+    // check if the user has permission to the current team/workspace id if not return 403
+    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
+    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
     //schema goes here
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
         projectId: body.project,
         date: new Date(body.date),
         taskId: body.task,
-        tenantId: user.tenants.filter((tenant) => tenant.slug === body.team)[0].id,
+        workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
     return new Response(JSON.stringify(timeEntry));
@@ -83,16 +83,16 @@ export async function GET(req: Request) {
 
     const { user } = session;
 
-    // check if the user has permission to the current team/tenant id if not return 403
-    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === team).length === 0) {
+    // check if the user has permission to the current team/workspace id if not return 403
+    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
+    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
     //schema goes here
     const response = await db.timeEntry.findMany({
       where: {
         userId: user.id,
-        Tenant: {
+        Workspace: {
           slug: team ? team : "",
         },
       },
@@ -189,9 +189,9 @@ export async function DELETE(req: Request) {
     }
 
     const { user } = session;
-    // check if the user has permission to the current team/tenant id if not return 403
-    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === team).length === 0) {
+    // check if the user has permission to the current team/workspace id if not return 403
+    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
+    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
     //schema goes here
@@ -223,9 +223,9 @@ export async function PUT(req: Request) {
     const json = await req.json();
     const body = TimeEntryUpdateSchema.parse(json);
 
-    // check if the user has permission to the current team/tenant id if not return 403
-    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+    // check if the user has permission to the current team/workspace id if not return 403
+    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
+    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
 

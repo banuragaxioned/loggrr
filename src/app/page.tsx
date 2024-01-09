@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
-  const teams = user?.tenants;
+  const teams = user?.workspaces;
 
   if (!teams) {
     return (
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
           Welcome back, <span>{user?.name}</span> 👋
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          {user?.tenants.map((team) => (
+          {user?.workspaces.map((team) => (
             <Link
               className="hover:bg-zinc/20 flex max-w-xs flex-col gap-4 rounded-xl bg-zinc-400/10 p-4  hover:bg-zinc-400/20"
               href={team.slug}

@@ -14,7 +14,7 @@ import { TimeAdd } from "@/components/time-add";
 
 export function SiteHeader() {
   const { data: sessionData, status } = useSession();
-  const teamData = sessionData?.user.tenants;
+  const teamData = sessionData?.user.workspaces;
   const pathname = usePathname();
 
   posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });

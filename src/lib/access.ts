@@ -10,12 +10,10 @@ export async function checkRole(team: string) {
     return { success: false };
   }
   const response = await db.userRole.findUniqueOrThrow({
-    select: {
-      role: true,
-    },
     where: {
       id: user.id,
-      Tenant: {
+      userId: user.id,
+      Workspace: {
         slug: team,
       },
     },

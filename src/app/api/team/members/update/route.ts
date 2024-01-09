@@ -22,14 +22,14 @@ export async function POST(req: Request) {
     const json = await req.json();
     const body = deactivateUserSchema.parse(json);
 
-    // check if the user has permission to the current team/tenant id if not return 403
-    // user session has an object (name, id, slug, etc) of all tenants the user has access to. i want to match slug.
-    if (user.tenants.filter((tenant) => tenant.slug === body.team).length === 0) {
+    // check if the user has permission to the current team/workspace id if not return 403
+    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
+    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
 
     const deactivateUser = await db.userRole.updateMany({
-      where: { userId: body.userId, Tenant: { slug: body.team } },
+      where: { userId: body.userId, Workspace: { slug: body.team } },
       data: {
         role: Role.INACTIVE,
       },

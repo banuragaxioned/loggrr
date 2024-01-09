@@ -18,7 +18,7 @@ declare module "next-auth" {
     user: {
       id: number;
       timezone: string;
-      tenants: { id: number; name: string; slug: string; role: Role }[];
+      workspaces: { id: number; name: string; slug: string; role: Role }[];
     } & DefaultSession["user"];
   }
 }
@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
             name: true,
             timezone: true,
-            TenantId: {
+            WorkspaceId: {
               select: {
                 id: true,
                 slug: true,
@@ -98,13 +98,13 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        session.user.tenants = teams.TenantId.map((tenant) => {
+        session.user.workspaces = teams.WorkspaceId.map((workspace) => {
           return {
-            id: tenant.id,
-            name: tenant.name,
-            slug: tenant.slug,
-            //NOTE: Each user can only have one `role` per tenant. Even though we have many to many relation
-            role: tenant.UserRole.map((userRole) => userRole.role)[0],
+            id: workspace.id,
+            name: workspace.name,
+            slug: workspace.slug,
+            //NOTE: Each user can only have one `role` per workspace. Even though we have many to many relation
+            role: workspace.UserRole.map((userRole) => userRole.role)[0],
           };
         });
 

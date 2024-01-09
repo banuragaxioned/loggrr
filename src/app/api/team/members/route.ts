@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
     const { user } = session;
 
-    const data = await db.tenant.findUnique({
+    const data = await db.workspace.findUnique({
       where: { slug: "axioned" },
       select: {
         Users: {

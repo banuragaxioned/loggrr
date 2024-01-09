@@ -19,7 +19,7 @@ declare module "next-auth" {
     user: {
       id: number;
       timezone: string;
-      tenants: { id: number; name: string; slug: string; role: Role }[];
+      workspaces: { id: number; name: string; slug: string; role: Role }[];
     } & DefaultSession["user"];
   }
 }
@@ -43,14 +43,14 @@ export const authOptions: NextAuthOptions = {
       if (session?.user) {
         session.user.id = Number(token.id);
       }
-      // Add tenant properties to the session object
-      const userWithTenants = await prisma.user.findUniqueOrThrow({
+      // Add workspace properties to the session object
+      const userWithWorkspaces = await prisma.user.findUniqueOrThrow({
         where: { id: session.user.id },
         select: {
           id: true,
           name: true,
           timezone: true,
-          TenantId: {
+          WorkspaceId: {
             select: {
               id: true,
               slug: true,
@@ -61,19 +61,19 @@ export const authOptions: NextAuthOptions = {
         },
       });
 
-      // Attach tenant with user role to the session object
-      session.user.tenants = userWithTenants.TenantId.map((tenant) => {
+      // Attach workspace with user role to the session object
+      session.user.workspaces = userWithWorkspaces.WorkspaceId.map((workspace) => {
         return {
-          id: tenant.id,
-          name: tenant.name,
-          slug: tenant.slug,
-          //NOTE: Each user can only have one `role` per tenant. Even though we have many to many relation
-          role: tenant.UserRole.map((userRole) => userRole.role)[0],
+          id: workspace.id,
+          name: workspace.name,
+          slug: workspace.slug,
+          //NOTE: Each user can only have one `role` per workspace. Even though we have many to many relation
+          role: workspace.UserRole.map((userRole) => userRole.role)[0],
         };
       });
 
       // Attach timezone to the session object
-      session.user.timezone = userWithTenants.timezone;
+      session.user.timezone = userWithWorkspaces.timezone;
       return session;
     },
     jwt: async ({ user, token }) => {
