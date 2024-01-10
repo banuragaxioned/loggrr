@@ -2,7 +2,6 @@
 
 import { checkRole } from "@/lib/access";
 import { db } from "@/lib/db";
-import { Role } from "@prisma/client";
 
 export async function createGroup(team: string, groupName: string) {
   const hasAccess = await checkRole(team);
