@@ -141,7 +141,7 @@ export type Members = {
   projectId: number;
 };
 
-export type pageProps = { params: { team: Workspace["slug"] } };
+export type pageProps = { params: { team: Workspace["slug"]; project?: number } };
 
 export type projectProps = { params: { project: Workspace["slug"]; team: Workspace["slug"] } };
 

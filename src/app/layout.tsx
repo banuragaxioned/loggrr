@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   icons: [
     {
       rel: "icon",
-      url: "favicon.svg",
+      url: "/favicon.svg",
       type: "image/svg+xml",
       sizes: "any",
     },
