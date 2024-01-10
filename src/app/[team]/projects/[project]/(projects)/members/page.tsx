@@ -6,7 +6,7 @@ import { pageProps } from "@/types";
 export default async function Page({ params }: pageProps) {
   return (
     <DashboardShell>
-      <DashboardHeader heading="Project Details page" text="This is your project details page.">
+      <DashboardHeader heading="Manage Project team" text="People who are assigned to this project">
         <Button variant="outline">Edit</Button>
       </DashboardHeader>
     </DashboardShell>
