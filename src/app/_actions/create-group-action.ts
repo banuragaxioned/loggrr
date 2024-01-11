@@ -1,6 +1,6 @@
 "use server";
 
-import { checkRole } from "@/lib/access";
+import { checkRole } from "@/app/_actions/check-access";
 import { db } from "@/db";
 
 export async function createGroup(team: string, groupName: string) {

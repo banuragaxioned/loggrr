@@ -1,25 +1,18 @@
 "use server";
 
-import { checkRole } from "@/lib/access";
 import { db } from "@/db";
 import { z } from "zod";
 
 const timeEntry = z.object({
   date: z.date(),
-  projectId: z.number(),
-  milestoneId: z.number(),
+  projectId: z.string(),
+  milestoneId: z.string(),
   comment: z.string().optional(),
 });
 
 type Form = z.infer<typeof timeEntry>;
 
 export async function createTimeLog(data: Form, slug: string, userId: number, time: number) {
-  const hasAccess = await checkRole(slug);
-
-  if (!hasAccess) {
-    return { success: false };
-  }
-
   await db.timeEntry.create({
     data: {
       Workspace: {
@@ -36,12 +29,12 @@ export async function createTimeLog(data: Form, slug: string, userId: number, ti
       },
       Project: {
         connect: {
-          id: data.projectId,
+          id: +data.projectId,
         },
       },
       Milestone: {
         connect: {
-          id: data.milestoneId,
+          id: +data.milestoneId,
         },
       },
       comments: data.comment,
