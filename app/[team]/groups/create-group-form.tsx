@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { SheetWrapper } from "@/components/ui/sheet-wrapper";
-import { createGroup } from "@app/_actions/create-group-action";
+import { createGroup } from "@/app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { SheetClose } from "@/components/ui/sheet";
