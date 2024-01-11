@@ -2,7 +2,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
-import { env } from "env.mjs";
+import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
 

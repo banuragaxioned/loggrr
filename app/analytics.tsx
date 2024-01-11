@@ -1,6 +1,6 @@
 "use client";
 
-import { env } from "env.mjs";
+import { env } from "@/env.mjs";
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import posthog from "posthog-js";
