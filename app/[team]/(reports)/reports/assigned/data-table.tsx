@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
-import { useSubmit } from "hooks/useSubmit";
+import { useSubmit } from "@/hooks/useSubmit";
 import { AllocationDetails, Assignment } from "@/types";
 import { TableSkeleton } from "@/components/data-table/skeleton";
 
