@@ -4,21 +4,21 @@ import { checkRole } from "@/lib/access";
 import { db } from "@/db";
 
 export async function createGroup(team: string, groupName: string) {
-  const hasAccess = await checkRole(team);
-  if (!hasAccess) {
-    return { success: false };
-  }
-
-  await db.userGroup.create({
-    data: {
-      name: groupName,
-      Workspace: {
-        connect: {
-          slug: team,
+  try {
+    await db.userGroup.create({
+      data: {
+        name: groupName,
+        Workspace: {
+          connect: {
+            slug: team,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (e) {
+    throw new Error("Failed to create group");
+  }
+
   return { success: true };
 }
 

@@ -2,15 +2,18 @@
 
 import { checkRole } from "@/lib/access";
 import { db } from "@/db";
+import { z } from "zod";
 
-type TimeEntry = {
-  date: Date;
-  projectId: number | string;
-  milestoneId: number | string;
-  comment?: string;
-};
+const timeEntry = z.object({
+  date: z.date(),
+  projectId: z.number(),
+  milestoneId: z.number(),
+  comment: z.string().optional(),
+});
 
-export async function createTimeLog(data: TimeEntry, slug: string, userId: number, time: number) {
+type Form = z.infer<typeof timeEntry>;
+
+export async function createTimeLog(data: Form, slug: string, userId: number, time: number) {
   const hasAccess = await checkRole(slug);
 
   if (!hasAccess) {
@@ -33,12 +36,12 @@ export async function createTimeLog(data: TimeEntry, slug: string, userId: numbe
       },
       Project: {
         connect: {
-          id: Number(data.projectId),
+          id: data.projectId,
         },
       },
       Milestone: {
         connect: {
-          id: Number(data.milestoneId),
+          id: data.milestoneId,
         },
       },
       comments: data.comment,
