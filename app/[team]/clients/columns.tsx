@@ -1,13 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "components/data-table/column-header";
-import { Client } from "types";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
+import { Client } from "@/types";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Dispatch } from "react";
 import { Edit, Save } from "lucide-react";
-import { Input } from "components/ui/input";
+import { Input } from "@/components/ui/input";
 
 export function clientName(
   editClientNames: (id: number, name: string) => void,

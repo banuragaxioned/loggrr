@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CalendarIcon, CalendarPlus, ListPlus, Minus, Plus } from "lucide-react";
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -12,17 +12,17 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "components/ui/drawer";
+} from "@/components/ui/drawer";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
 
-import { cn } from "lib/utils";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "components/ui/command";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { Calendar } from "./ui/calendar";
 import { createTimeLog } from "app/_actions/create-timelog-action";

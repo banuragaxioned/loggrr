@@ -1,8 +1,8 @@
 import { useEffect, Dispatch } from "react";
 import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
-import { Button } from "components/ui/button";
-import { cn } from "lib/utils";
-import { GetSetDateProps, TimeEntryDataObj } from "types";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { GetSetDateProps, TimeEntryDataObj } from "@/types";
 import { getDates } from "./time-entry";
 import dayjs from "dayjs";
 import { getDateStr } from "./time-entry";

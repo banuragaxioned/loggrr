@@ -1,10 +1,10 @@
-import { DashboardShell } from "components/ui/shell";
+import { DashboardShell } from "@/components/ui/shell";
 import { DataTable } from "./data-table";
-import { DashboardHeader } from "components/ui/header";
-import { getProjectsId, getAllUsers } from "server/services/allocation";
-import { NewAllocationForm } from "components/forms/allocationForm";
+import { DashboardHeader } from "@/components/ui/header";
+import { getProjectsId, getAllUsers } from "@/server/services/allocation";
+import { NewAllocationForm } from "@/components/forms/allocationForm";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 import { getDynamicColumns } from "./columns";
 
 export const metadata: Metadata = {

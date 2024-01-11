@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Metadata, Viewport } from "next";
-import { siteConfig } from "config/site";
-import { cn } from "lib/utils";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
 import { ContextProvider } from "./context-provider";

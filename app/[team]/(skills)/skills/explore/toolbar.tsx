@@ -1,9 +1,9 @@
 "use client";
 
 import { ListRestart } from "lucide-react";
-import { Button } from "components/ui/button";
-import { Input } from "components/ui/input";
-import { DataTableToolbarProps } from "types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { DataTableToolbarProps } from "@/types";
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;

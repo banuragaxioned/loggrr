@@ -1,10 +1,10 @@
-import { Button } from "components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "components/ui/card";
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
 import { db } from "@/server/db";
-import { getTimeInHours } from "lib/helper";
-import { pageProps } from "types";
+import { getTimeInHours } from "@/lib/helper";
+import { pageProps } from "@/types";
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;

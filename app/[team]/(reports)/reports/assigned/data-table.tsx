@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, Dispatch } from "react";
-import { DataTableStructure } from "components/data-table/structure";
+import { DataTableStructure } from "@/components/data-table/structure";
 import {
   ColumnDef,
   SortingState,
@@ -14,8 +14,8 @@ import {
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
 import { useSubmit } from "hooks/useSubmit";
-import { AllocationDetails, Assignment } from "types";
-import { TableSkeleton } from "components/data-table/skeleton";
+import { AllocationDetails, Assignment } from "@/types";
+import { TableSkeleton } from "@/components/data-table/skeleton";
 
 interface AssignmentTableProps<TData, TValue> {
   columns: (

@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { dashboardConfig } from "config/dashboard";
-import { getCurrentUser } from "lib/session";
-import { DashboardNav } from "components/nav";
-import { SidebarNavItem } from "types";
+import { dashboardConfig } from "@/config/dashboard";
+import { getCurrentUser } from "@/lib/session";
+import { DashboardNav } from "@/components/nav";
+import { SidebarNavItem } from "@/types";
 import { BoxesIcon, FileTextIcon, User } from "lucide-react";
 
 interface DashboardLayoutProps {

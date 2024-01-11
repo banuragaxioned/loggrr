@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 
-import { getCurrentUser } from "lib/session";
-import { pageProps } from "types";
+import { getCurrentUser } from "@/lib/session";
+import { pageProps } from "@/types";
 
 interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;

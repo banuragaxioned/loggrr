@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 
 import { Laptop, Loader, Moon, SunMedium } from "lucide-react";
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {

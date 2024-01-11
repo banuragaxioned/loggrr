@@ -1,12 +1,12 @@
 import React, { Dispatch, FormEvent, useEffect, useRef, useState } from "react";
 import { CircleDollarSign, Folder, List, MessageSquare, Rocket, SearchIcon } from "lucide-react";
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
 import { Toggle } from "../ui/toggle";
 import { ComboBox } from "../ui/combobox";
-import { Project, Milestone } from "types";
+import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
-import { cn } from "lib/utils";
+import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 
 export type SelectedData = {

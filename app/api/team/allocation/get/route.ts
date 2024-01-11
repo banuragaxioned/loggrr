@@ -3,7 +3,7 @@ import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { AllocationFrequency } from "@prisma/client";
-import { AllocationDates } from "types";
+import { AllocationDates } from "@/types";
 import dayjs from "dayjs";
 
 const allocationCreateSchema = z.object({

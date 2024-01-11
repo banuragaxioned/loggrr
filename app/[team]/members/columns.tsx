@@ -1,14 +1,14 @@
 "use client";
 
-import { Members } from "types";
+import { Members } from "@/types";
 import { ColumnDef, RowData } from "@tanstack/react-table";
-import { UserAvatar } from "components/user-avatar";
-import { DataTableColumnHeader } from "components/data-table/column-header";
-import { Button } from "components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
+import { Button } from "@/components/ui/button";
 import { MinusCircle } from "lucide-react";
-import { cn, debounce } from "lib/utils";
-import { UserGroup } from "types";
-import { InlineSelect } from "components/inline-select";
+import { cn, debounce } from "@/lib/utils";
+import { UserGroup } from "@/types";
+import { InlineSelect } from "@/components/inline-select";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {

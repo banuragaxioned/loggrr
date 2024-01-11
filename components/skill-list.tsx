@@ -5,7 +5,7 @@ import { Workspace } from "@prisma/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";
-import { levels } from "config/skills";
+import { levels } from "@/config/skills";
 
 type Scores = {
   id: number;

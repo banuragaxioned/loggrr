@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
-import { Command, CommandItem, CommandList, CommandSeparator } from "components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Boxes, Check, ChevronsUpDown } from "lucide-react";
 import { Role } from "@prisma/client";
 import { useRouter, useParams } from "next/navigation";

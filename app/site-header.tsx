@@ -2,15 +2,15 @@
 
 import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
-import { siteConfig } from "config/site";
+import { siteConfig } from "@/config/site";
 import { Clock, Loader } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { UserAccountNav } from "components/user-account";
+import { UserAccountNav } from "@/components/user-account";
 import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
 import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
-import { TimeAdd } from "components/time-add";
+import { TimeAdd } from "@/components/time-add";
 
 export function SiteHeader() {
   const { data: sessionData, status } = useSession();

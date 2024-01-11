@@ -1,8 +1,8 @@
-import { DashboardShell } from "components/ui/shell";
-import { DashboardHeader } from "components/ui/header";
-import { getProjectSummary } from "server/services/project";
+import { DashboardShell } from "@/components/ui/shell";
+import { DashboardHeader } from "@/components/ui/header";
+import { getProjectSummary } from "@/server/services/project";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
   title: `Summary`,

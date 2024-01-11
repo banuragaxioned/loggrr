@@ -1,4 +1,4 @@
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 
 import { ChevronsUpDown, ChevronDown, ChevronUp } from "lucide-react";
 

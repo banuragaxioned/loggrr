@@ -1,6 +1,6 @@
 "use client";
 
-import { SkillRadar } from "types";
+import { SkillRadar } from "@/types";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 export function Overview(props: { data: SkillRadar }) {

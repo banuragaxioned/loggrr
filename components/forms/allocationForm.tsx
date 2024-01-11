@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Button } from "components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form";
-import { Input } from "components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
   Sheet,
@@ -16,12 +16,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "components/ui/sheet";
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
-import { CalendarDateRangePicker } from "components/date-picker";
+import { CalendarDateRangePicker } from "@/components/date-picker";
 import { InlineCombobox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
 import { Folder, User } from "lucide-react";

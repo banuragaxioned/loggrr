@@ -1,9 +1,9 @@
-import { DashboardShell } from "components/ui/shell";
-import { DashboardHeader } from "components/ui/header";
-import { AddUserInTeam } from "components/forms/addUserForm";
-import { getMembers, getUserGroup } from "server/services/members";
+import { DashboardShell } from "@/components/ui/shell";
+import { DashboardHeader } from "@/components/ui/header";
+import { AddUserInTeam } from "@/components/forms/addUserForm";
+import { getMembers, getUserGroup } from "@/server/services/members";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 import { Table } from "./table";
 
 export const metadata: Metadata = {

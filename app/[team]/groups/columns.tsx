@@ -1,8 +1,8 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "components/data-table/column-header";
-import { UserGroup } from "types";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
+import { UserGroup } from "@/types";
 
 export const columns: ColumnDef<UserGroup>[] = [
   {

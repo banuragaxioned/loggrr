@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { UseFormSetValue } from "react-hook-form";
 import { ChevronDown } from "lucide-react";
-import { ComboboxOptions, AssignFormValues } from "types";
-import { cn } from "lib/utils";
+import { ComboboxOptions, AssignFormValues } from "@/types";
+import { cn } from "@/lib/utils";
 
 type InlineComboboxProps = {
   options: ComboboxOptions[];

@@ -1,15 +1,15 @@
 import React, { Dispatch, Ref, RefAttributes, SetStateAction, useEffect, useRef, useState } from "react";
-import { Calendar } from "components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
 import { DateRange } from "react-day-picker";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { UseFormSetValue } from "react-hook-form";
-import { AssignFormValues } from "types";
+import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
-import { GetSetDateProps } from "types";
+import { GetSetDateProps } from "@/types";
 
 export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (

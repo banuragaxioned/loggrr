@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 
 export const metadata: Metadata = {
   title: `Report`,

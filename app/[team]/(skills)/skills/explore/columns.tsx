@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { cn } from "lib/utils";
+import { cn } from "@/lib/utils";
 import { Delete, Edit, Save } from "lucide-react";
-import { Input } from "components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Dispatch } from "react";
-import { DataTableColumnHeader } from "components/data-table/column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

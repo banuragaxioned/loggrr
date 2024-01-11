@@ -3,7 +3,7 @@
 import * as React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { DataTableStructure } from "components/data-table/structure";
+import { DataTableStructure } from "@/components/data-table/structure";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,7 +14,7 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
-import { Client } from "types";
+import { Client } from "@/types";
 
 export interface TableProps<TData, TValue> {
   clientName: Function;

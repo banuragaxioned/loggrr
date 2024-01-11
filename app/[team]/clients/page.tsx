@@ -1,9 +1,9 @@
-import { getClients } from "server/services/project";
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
-import { NewClientForm } from "components/forms/clientForm";
+import { getClients } from "@/server/services/project";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
+import { NewClientForm } from "@/components/forms/clientForm";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 import { Table } from "./table";
 import { clientName } from "./columns";
 

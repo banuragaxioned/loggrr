@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Button } from "components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import {
   Sheet,
@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "components/ui/sheet";
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";

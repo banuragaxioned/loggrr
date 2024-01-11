@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { TimeEntryDataObj } from "types";
+import { TimeEntryDataObj } from "@/types";
 
 const commonValidationObj = {
   team: z.string().min(1),

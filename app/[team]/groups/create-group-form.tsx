@@ -4,15 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form";
-import { Input } from "components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { SheetWrapper } from "components/ui/sheet-wrapper";
+import { SheetWrapper } from "@/components/ui/sheet-wrapper";
 import { createGroup } from "app/_actions/create-group-action";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
-import { SheetClose } from "components/ui/sheet";
+import { SheetClose } from "@/components/ui/sheet";
 
 const FormSchema = z.object({
   groupName: z.string().min(2, {

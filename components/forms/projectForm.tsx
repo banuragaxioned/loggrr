@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Button } from "components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form";
-import { Input } from "components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
   Sheet,
@@ -16,15 +16,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "components/ui/sheet";
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InlineCombobox } from "../ui/combobox";
 import { Activity, User } from "lucide-react";
-import { CalendarDateRangePicker } from "components/date-picker";
+import { CalendarDateRangePicker } from "@/components/date-picker";
 import { ProjectInterval } from "@prisma/client";
-import { Client, AllUsersWithAllocation } from "types";
+import { Client, AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({
   client: z.number().int().min(1, "Please select a client"),

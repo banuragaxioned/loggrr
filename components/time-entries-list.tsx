@@ -1,5 +1,5 @@
 import { Skeleton } from "./ui/skeleton";
-import { TimeEntryData } from "types";
+import { TimeEntryData } from "@/types";
 import { CalendarClock, Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 import { EditReferenceObj } from "./time-entry";

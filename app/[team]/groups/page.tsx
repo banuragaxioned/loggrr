@@ -1,11 +1,11 @@
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 import { Table } from "./table";
 import { columns } from "./columns";
-import { getUserGroup } from "server/services/members";
-import { Button } from "components/ui/button";
+import { getUserGroup } from "@/server/services/members";
+import { Button } from "@/components/ui/button";
 import { CreateGroupForm } from "./create-group-form";
 
 export const metadata: Metadata = {

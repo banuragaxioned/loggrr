@@ -10,8 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "components/ui/dropdown-menu";
-import { UserAvatar } from "components/user-avatar";
+} from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/user-avatar";
 import posthog from "posthog-js";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {

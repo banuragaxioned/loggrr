@@ -1,9 +1,9 @@
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
-import { NewSkillForm } from "components/forms/skillForm";
-import { getSkills } from "server/services/skill";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
+import { NewSkillForm } from "@/components/forms/skillForm";
+import { getSkills } from "@/server/services/skill";
 import type { Metadata } from "next";
-import { pageProps } from "types";
+import { pageProps } from "@/types";
 import { DataTable } from "./data-table";
 
 export const metadata: Metadata = {

@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import { getAllUserProjects } from "server/services/project";
-import { TimeEntry } from "components/time-entry";
-import { getCurrentUser } from "lib/session";
-import { pageProps } from "types";
+import { getAllUserProjects } from "@/server/services/project";
+import { TimeEntry } from "@/components/time-entry";
+import { getCurrentUser } from "@/lib/session";
+import { pageProps } from "@/types";
 import { db } from "@/server/db";
 import { Text, Flex, Card } from "@tremor/react";
-import { MarkerBar } from "components/marker-bar";
-import { ScrollArea } from "components/ui/scroll-area";
-import CategoryDataBar from "components/charts/category-bar";
-import { getTimeInHours } from "lib/helper";
+import { MarkerBar } from "@/components/marker-bar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import CategoryDataBar from "@/components/charts/category-bar";
+import { getTimeInHours } from "@/lib/helper";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();

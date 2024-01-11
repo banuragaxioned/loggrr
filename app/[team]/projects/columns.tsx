@@ -1,12 +1,12 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "components/data-table/column-header";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
-import { UserAvatar } from "components/user-avatar";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import { UserAvatar } from "@/components/user-avatar";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Archive, Delete, Edit, MoreVertical } from "lucide-react";
 
 export type Projects = {

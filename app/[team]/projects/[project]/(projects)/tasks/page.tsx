@@ -1,7 +1,7 @@
-import { Button } from "components/ui/button";
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
-import { pageProps } from "types";
+import { Button } from "@/components/ui/button";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
+import { pageProps } from "@/types";
 
 export default async function Page({ params }: pageProps) {
   return (

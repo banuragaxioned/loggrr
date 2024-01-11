@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { getCurrentUser } from "lib/session";
+import { getCurrentUser } from "@/lib/session";
 import { Role } from "@prisma/client";
 
 export async function checkRole(team: string) {

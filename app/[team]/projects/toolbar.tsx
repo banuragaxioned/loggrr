@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "components/ui/button";
-import { Input } from "components/ui/input";
-import { clientStatuses } from "config/filters";
-import { DataTableFacetedFilter } from "components/data-table/faceted-filter";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { clientStatuses } from "@/config/filters";
+import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { ListRestart } from "lucide-react";
-import { DataTableToolbarProps } from "types";
-import { removeDuplicatesFromArray } from "lib/utils";
+import { DataTableToolbarProps } from "@/types";
+import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 

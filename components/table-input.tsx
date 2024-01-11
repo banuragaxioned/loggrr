@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
-import { Input } from "components/ui/input";
-import { CalendarDateRangePicker as DateRangePicker } from "components/date-picker";
-import { Button } from "components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { CalendarDateRangePicker as DateRangePicker } from "@/components/date-picker";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {

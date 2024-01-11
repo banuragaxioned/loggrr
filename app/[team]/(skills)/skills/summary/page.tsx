@@ -1,15 +1,15 @@
-import { getCurrentUser } from "lib/session";
+import { getCurrentUser } from "@/lib/session";
 import { authOptions } from "@/server/auth";
 import { redirect } from "next/navigation";
-import { DashboardHeader } from "components/ui/header";
-import { DashboardShell } from "components/ui/shell";
-import { getSkills, getUserSkills } from "server/services/skill";
-import { Overview } from "components/charts/skills-radar";
-import { SkillList } from "components/skill-list";
-import { AddSKill } from "components/forms/addSkillForm";
+import { DashboardHeader } from "@/components/ui/header";
+import { DashboardShell } from "@/components/ui/shell";
+import { getSkills, getUserSkills } from "@/server/services/skill";
+import { Overview } from "@/components/charts/skills-radar";
+import { SkillList } from "@/components/skill-list";
+import { AddSKill } from "@/components/forms/addSkillForm";
 import type { Metadata } from "next";
-import { pageProps } from "types";
-import { getAllUsers } from "server/services/allocation";
+import { pageProps } from "@/types";
+import { getAllUsers } from "@/server/services/allocation";
 
 export const metadata: Metadata = {
   title: `Summary`,

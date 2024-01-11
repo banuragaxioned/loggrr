@@ -1,4 +1,4 @@
-import { DashboardConfig } from "types";
+import { DashboardConfig } from "@/types";
 import { BoxesIcon, CreditCard, FileTextIcon, Settings, User } from "lucide-react";
 
 export const dashboardConfig: DashboardConfig = {

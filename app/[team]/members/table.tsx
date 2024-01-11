@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
-import { DataTableStructure } from "components/data-table/structure";
-import { UserGroup } from "types";
+import { DataTableStructure } from "@/components/data-table/structure";
+import { UserGroup } from "@/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
