@@ -3,7 +3,7 @@ import getServerSession, { type NextAuthOptions, type DefaultSession } from "nex
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 import { Role } from "@prisma/client";
 
 /**
@@ -50,14 +50,14 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
+        host: env.EMAIL_HOST,
+        port: Number(env.EMAIL_PORT),
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD,
+          user: env.EMAIL_USER,
+          pass: env.EMAIL_PASSWORD,
         },
       },
-      from: process.env.EMAIL_FROM,
+      from: env.EMAIL_FROM,
       maxAge: 24 * 60 * 60,
     }),
     /**

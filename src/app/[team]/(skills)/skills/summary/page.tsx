@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/session";
-import { authOptions } from "@/server/auth";
+import { authOptions } from "@/auth";
 import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";

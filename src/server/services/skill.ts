@@ -1,6 +1,5 @@
 import { Workspace, User } from "@prisma/client";
-import { prisma } from "../db";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 
 export async function getSkills(team: Workspace["slug"]) {
   const response = await db.skill.findMany({

@@ -1,5 +1,4 @@
-import { prisma } from "../db";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 
 export async function getProjectsId(slug: string) {
   const projects = await db.project.findMany({
@@ -15,7 +14,7 @@ export async function getProjectsId(slug: string) {
 }
 
 export const getAllUsers = async (slug: string) => {
-  const users = await prisma.user.findMany({
+  const users = await db.user.findMany({
     where: { Workspace: { some: { slug } } },
     select: {
       id: true,

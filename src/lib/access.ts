@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { db } from "@/db";
 import { getCurrentUser } from "@/lib/session";
 import { Role } from "@prisma/client";
 

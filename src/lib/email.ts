@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { env } from "@/env.mjs";
 
 type EmailPayload = {
   to: string;
@@ -8,12 +9,12 @@ type EmailPayload = {
 
 // Replace with your SMTP credentials
 const smtpOptions = {
-  host: process.env.EMAIL_HOST || "smtp.mailtrap.io",
-  port: parseInt(process.env.EMAIL_PORT || "2525"),
+  host: env.EMAIL_HOST || "smtp.mailtrap.io",
+  port: parseInt(env.EMAIL_PORT || "2525"),
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER || "user",
-    pass: process.env.EMAIL_PASSWORD || "password",
+    user: env.EMAIL_USER || "user",
+    pass: env.EMAIL_PASSWORD || "password",
   },
 };
 
@@ -23,7 +24,7 @@ export const sendEmail = async (data: EmailPayload) => {
   });
 
   return await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     ...data,
   });
 };

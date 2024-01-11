@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 import { getTimeInHours } from "@/lib/helper";
 import { pageProps } from "@/types";
 

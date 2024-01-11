@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
-import { authOptions } from "@/server/auth";
-import { db } from "@/lib/db";
+import { authOptions } from "@/auth";
+import { db } from "@/db";
 
 const groupSchema = z.object({ id: z.number() });
 

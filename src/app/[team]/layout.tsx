@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { prisma } from "@/server/db";
+import { db } from "@/db";
 
 import { getCurrentUser } from "@/lib/session";
 import { pageProps } from "@/types";
@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  const hasAccess = await prisma.userRole.findMany({
+  const hasAccess = await db.userRole.findMany({
     where: {
       Workspace: {
         slug: team,

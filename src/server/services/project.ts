@@ -1,8 +1,7 @@
-import { prisma } from "../db";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 
 export const getMembersByProjectId = async (slug: string, projectId: number) => {
-  const data = await prisma.project.findUnique({
+  const data = await db.project.findUnique({
     where: { Workspace: { slug }, id: +projectId },
     select: {
       Members: {
@@ -197,7 +196,7 @@ export async function getAssignments(slug: string) {
 const updatedAllocation = async (requiredAllocation: any, data: any, range: any) => {
   const { total, billable, nonBillable } = data;
   const { from, to, onGoing } = range;
-  return await prisma.allocation.update({
+  return await db.allocation.update({
     where: {
       id: requiredAllocation?.id,
     },
@@ -216,7 +215,7 @@ const updatedAllocation = async (requiredAllocation: any, data: any, range: any)
 const insertAllocation = async (requiredAllocation: any, data: any, range: any, userId: number, projectId: number) => {
   const { total, billable, nonBillable } = data;
   const { from, to, onGoing } = range;
-  return await prisma.allocation.create({
+  return await db.allocation.create({
     data: {
       projectId: projectId,
       billableTime: billable,

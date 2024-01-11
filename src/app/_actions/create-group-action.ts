@@ -1,7 +1,7 @@
 "use server";
 
 import { checkRole } from "@/lib/access";
-import { db } from "@/lib/db";
+import { db } from "@/db";
 
 export async function createGroup(team: string, groupName: string) {
   const hasAccess = await checkRole(team);
