@@ -5,10 +5,8 @@
     "naumovs.color-highlight",
     "fabiospampinato.vscode-highlight",
     "wix.vscode-import-cost",
-    "sonarsource.sonarlint-vscode",
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
-    "prisma.prisma",
-    "ms-vsliveshare.vsliveshare"
+    "prisma.prisma"
   ]
 }
