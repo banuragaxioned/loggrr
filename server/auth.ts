@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, isNewUser }) {
       if (isNewUser && user.email) {
         if (user.email.endsWith("@axioned.com")) {
-          await db.workspaceMembership.create({
+          await db.userWorkspace.create({
             data: {
               workspaceId: 1,
               userId: +user.id,
@@ -92,7 +92,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
 
-        const workspaces = await db.workspaceMembership.findMany({
+        const workspaces = await db.userWorkspace.findMany({
           where: {
             userId: Number(token.id),
           },

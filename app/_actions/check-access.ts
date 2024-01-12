@@ -12,7 +12,7 @@ export async function checkRole(team: string) {
   }
 
   try {
-    const response = await db.workspaceMembership.findUniqueOrThrow({
+    const response = await db.userWorkspace.findUniqueOrThrow({
       where: {
         userId_workspaceId: {
           userId: user.id,

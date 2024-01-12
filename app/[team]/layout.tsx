@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  const hasAccess = await db.workspaceMembership.findMany({
+  const hasAccess = await db.userWorkspace.findMany({
     where: {
       workspace: {
         slug: slug,

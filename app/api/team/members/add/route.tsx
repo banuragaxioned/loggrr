@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const inviteUser = await db.workspaceMembership.create({
+    const inviteUser = await db.userWorkspace.create({
       data: {
         user: {
           connect: {

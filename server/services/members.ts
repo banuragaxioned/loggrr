@@ -1,7 +1,7 @@
 import { db } from "@/server/db";
 
 export const getMembers = async (team: string) => {
-  const membersList = await db.workspaceMembership.findMany({
+  const membersList = await db.userWorkspace.findMany({
     where: { workspace: { slug: team } },
     select: {
       role: true,

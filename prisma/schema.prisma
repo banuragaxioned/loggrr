@@ -34,7 +34,7 @@ model Workspace {
   Allocation Allocation[]
   Skill      Skill[]
   SkillScore SkillScore[]
-  users      WorkspaceMembership[]
+  users      UserWorkspace[]
 }
 
 model Client {
@@ -231,7 +231,7 @@ model Skill {
   @@index([workspaceId])
 }
 
-model WorkspaceMembership {
+model UserWorkspace {
   id          Int       @id @default(autoincrement())
   workspaceId Int
   userId      Int
@@ -285,9 +285,9 @@ model User {
   Allocation    Allocation[]
   SkillScore    SkillScore[]
   TimeEntry     TimeEntry[]
-  Project       Project[]             @relation("ProjectMembers")
-  OwnedProjects Project[]             @relation("UserOwnedProjects")
-  workspaces    WorkspaceMembership[]
+  Project       Project[]       @relation("ProjectMembers")
+  OwnedProjects Project[]       @relation("UserOwnedProjects")
+  workspaces    UserWorkspace[]
 }
 
 model Session {

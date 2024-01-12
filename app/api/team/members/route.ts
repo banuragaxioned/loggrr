@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const users = await db.workspaceMembership.findMany({
+    const users = await db.userWorkspace.findMany({
       where: {
         workspace: {
           slug: "axioned",
