@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const members = await db.workspaceMembership.findMany({
+    const users = await db.workspaceMembership.findMany({
       where: {
         workspace: {
           slug: "axioned",
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       },
       select: {
         role: true,
-        member: {
+        user: {
           select: {
             id: true,
             name: true,
@@ -30,13 +30,13 @@ export async function GET(request: Request) {
       },
     });
 
-    const flatMemberList = members.map((list) => {
+    const flatMemberList = users.map((list) => {
       return {
-        id: list.member.id,
-        name: list.member.name,
-        email: list.member.email,
-        image: list.member.image,
-        status: list.member.status,
+        id: list.user.id,
+        name: list.user.name,
+        email: list.user.email,
+        image: list.user.image,
+        status: list.user.status,
         role: list.role,
       };
     });

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     const inviteUser = await db.workspaceMembership.create({
       data: {
-        member: {
+        user: {
           connect: {
             email: body.emailAddress,
           },

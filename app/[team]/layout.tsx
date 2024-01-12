@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       workspace: {
         slug: slug,
       },
-      member: {
+      user: {
         id: user.id,
       },
     },

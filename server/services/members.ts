@@ -5,7 +5,7 @@ export const getMembers = async (team: string) => {
     where: { workspace: { slug: team } },
     select: {
       role: true,
-      member: {
+      user: {
         select: {
           id: true,
           name: true,
@@ -25,13 +25,13 @@ export const getMembers = async (team: string) => {
 
   const flatMemberList = membersList?.map((list) => {
     return {
-      id: list.member.id,
-      name: list.member.name,
-      email: list.member.email,
-      image: list.member.image,
-      status: list.member.status,
+      id: list.user.id,
+      name: list.user.name,
+      email: list.user.email,
+      image: list.user.image,
+      status: list.user.status,
       role: list.role,
-      UserGroup: list.member.UserGroup,
+      UserGroup: list.user.UserGroup,
     };
   });
   console.log(flatMemberList);

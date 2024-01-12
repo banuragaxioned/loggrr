@@ -72,15 +72,11 @@ export const authOptions: NextAuthOptions = {
   events: {
     async signIn({ user, isNewUser }) {
       if (isNewUser && user.email) {
-        // if email ends with @axioned.com then add them to workspace and role
-        // FIX: Hardcoded
-        // Maybe domain whitelist in database? Probably needs to be "verified" domains only though.
-
         if (user.email.endsWith("@axioned.com")) {
           await db.workspaceMembership.create({
             data: {
               workspaceId: 1,
-              userId: Number(user.id),
+              userId: +user.id,
               role: Role.USER,
             },
           });
@@ -121,6 +117,7 @@ export const authOptions: NextAuthOptions = {
           };
         });
       }
+      console.log(session);
       return session;
     },
     async jwt({ token, user }) {

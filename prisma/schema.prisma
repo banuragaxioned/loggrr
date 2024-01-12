@@ -16,12 +16,14 @@ datasource db {
 }
 
 model Workspace {
-  id        Int      @id @default(autoincrement())
-  name      String
-  slug      String   @unique
-  status    Status   @default(PUBLISHED)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  name           String
+  slug           String   @unique
+  status         Status   @default(PUBLISHED)
+  domain         String?  @unique
+  domainVerified Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   Client     Client[]
   Project    Project[]
@@ -32,7 +34,7 @@ model Workspace {
   Allocation Allocation[]
   Skill      Skill[]
   SkillScore SkillScore[]
-  members    WorkspaceMembership[]
+  users      WorkspaceMembership[]
 }
 
 model Client {
@@ -160,8 +162,10 @@ model TimeEntry {
 }
 
 enum Status {
+  DRAFT
   PUBLISHED
   ARCHIVED
+  DEACTIVATED
 }
 
 // Allocation-related
@@ -232,10 +236,11 @@ model WorkspaceMembership {
   workspaceId Int
   userId      Int
   role        Role      @default(USER)
+  status      Status    @default(PUBLISHED)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  member      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
   @@index([userId])
