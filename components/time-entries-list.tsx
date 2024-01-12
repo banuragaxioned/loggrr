@@ -89,10 +89,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
           ))
         ) : (
           <li>
-            <Card className="flex flex-col items-center justify-center space-y-4 p-12">
-              <CalendarClock className="h-12 w-12 text-primary" />
-              <h2 className="text-2xl font-bold text-primary">No Timesheet Entries</h2>
-              <p className="text-primary">You haven&apos;t made any timesheet entries for the selected date.</p>
+            <Card className="flex flex-col items-center justify-center space-y-2 p-12">
+              <CalendarClock className="h-8 w-8" />
+              <h2 className="text-xl font-bold">No Timesheet Entries</h2>
+              <p>You haven&apos;t made any timesheet entries for the selected date.</p>
             </Card>
           </li>
         )

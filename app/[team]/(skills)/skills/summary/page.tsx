@@ -37,7 +37,7 @@ export default async function SkillsSummary({ params }: pageProps) {
       <DashboardHeader heading="My Skills" text="This is a summary of your skills that you have been assessed on.">
         <AddSKill team={params.team} users={users} currentUser={user.id} skillsList={skillsList} userSkills={skills} />
       </DashboardHeader>
-      <Overview data={skills} />
+      {skills.length > 2 ? <Overview data={skills} /> : null}
       <SkillList props={skills} currentUser={user.id} team={params.team} />
     </DashboardShell>
   );
