@@ -198,28 +198,31 @@ export async function POST(req: Request) {
         id: true,
         name: true,
         image: true,
-        Project: {
+        UsersOnProject: {
           select: {
-            id: true,
-            name: true,
-            clientId: true,
-            Client: { select: { id: true, name: true } },
-            billable: true,
-            Allocation: {
+            project: {
               select: {
                 id: true,
-                billableTime: true,
-                nonBillableTime: true,
-                updatedAt: true,
-                frequency: true,
-                date: true,
-                enddate: true,
-                projectId: true,
-                userId: true,
+                name: true,
+                billable: true,
+                Client: { select: { id: true, name: true } },
+                Allocation: {
+                  select: {
+                    id: true,
+                    billableTime: true,
+                    nonBillableTime: true,
+                    updatedAt: true,
+                    frequency: true,
+                    date: true,
+                    enddate: true,
+                    projectId: true,
+                    userId: true,
+                  },
+                },
               },
             },
           },
-          orderBy: { name: "asc" },
+          orderBy: { project: { name: "asc" } },
         },
         SkillScore: {
           where: { Workspace: { slug: body.team } },
@@ -232,33 +235,67 @@ export async function POST(req: Request) {
             },
           },
         },
-        UserGroup: {
-          where: { Workspace: { slug: body.team } },
+        UserOnGroup: {
+          where: { workspace: { slug: body.team } },
           select: {
-            id: true,
-            name: true,
+            group: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
       orderBy: { name: "asc" },
     });
 
-    const allocationData = userData.map((obj, i) => {
+    // flatten the userData
+    const flatUserData = userData.map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        image: user.image,
+        projects: user.UsersOnProject.map((project) => {
+          return {
+            id: project.project.id,
+            name: project.project.name,
+            billable: project.project.billable,
+            clientName: project.project.Client.name,
+            allocations: project.project.Allocation,
+          };
+        }),
+        skills: user.SkillScore.map((skill) => {
+          return {
+            level: skill.level,
+            skill: skill.Skill.name,
+          };
+        }),
+        usergroup: user.UserOnGroup.map((group) => {
+          return {
+            id: group.group.id,
+            name: group.group.name,
+          };
+        }),
+      };
+    });
+
+    const allocationData = flatUserData.map((obj, i) => {
       let allocations, totalTime, averageTime;
       return {
         userId: obj.id,
         userName: obj.name,
         userAvatar: obj.image,
-        skills: obj.SkillScore.map((item) => {
+        skills: obj.skills.map((item) => {
           return {
             level: item.level,
-            skill: item.Skill.name,
+            skill: item.skill,
           };
         }),
-        usergroup: obj.UserGroup,
-        projects: obj.Project.map((project) => {
+        usergroup: obj.usergroup,
+        projects: obj.projects.map((project) => {
           allocations = createAllocationDates(
-            project.Allocation.filter(
+            project.allocations.filter(
               (allocation) => allocation.userId === obj.id && allocation.projectId === project.id,
             ),
             body.endDate,
@@ -267,7 +304,7 @@ export async function POST(req: Request) {
           averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
           return {
             projectId: project.id,
-            clientName: project.Client.name,
+            clientName: project.clientName,
             projectName: project.name,
             billable: project.billable,
             allocations: allocations,

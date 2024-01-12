@@ -5,7 +5,7 @@ import { db } from "@/server/db";
 
 export async function createGroup(team: string, groupName: string) {
   try {
-    await db.userGroup.create({
+    await db.group.create({
       data: {
         name: groupName,
         Workspace: {
@@ -29,7 +29,7 @@ export async function deleteGroup(team: string, id: number) {
     return { success: false };
   }
 
-  await db.userGroup.delete({
+  await db.group.delete({
     where: {
       id: id,
       Workspace: {

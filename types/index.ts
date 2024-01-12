@@ -106,7 +106,7 @@ export type ComboboxOptions = {
 export type AllProjectsWithMembers = {
   id: number;
   name?: string | null;
-  Members: ComboboxOptions[];
+  users: ComboboxOptions[];
 };
 
 export type AssignFormValues = {

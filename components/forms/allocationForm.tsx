@@ -100,7 +100,7 @@ export function NewAllocationForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const isUserAdded = !!projects
       .find((project) => project.id === values.projectId)
-      ?.Members.find((member) => member.id === values.userId);
+      ?.users.find((member) => member.id === values.userId);
 
     if (!isUserAdded) {
       const addUserResponse = await addUser(values);

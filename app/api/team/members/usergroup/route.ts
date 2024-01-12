@@ -35,9 +35,13 @@ export async function PATCH(req: Request) {
     const connectedGroups = await db.user.findUnique({
       where: { id: body.userId },
       select: {
-        UserGroup: {
+        UserOnGroup: {
           select: {
-            id: true,
+            group: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
       },
@@ -47,7 +51,7 @@ export async function PATCH(req: Request) {
       return new Response("User not found", { status: 403 });
     }
 
-    const flatConnectedGroups = connectedGroups.UserGroup;
+    const flatConnectedGroups = connectedGroups.UserOnGroup.map((group) => group.group);
 
     let updatedUserGroupIds;
 
@@ -68,7 +72,7 @@ export async function PATCH(req: Request) {
       const userGroup = await db.user.update({
         where: { id: body.userId },
         data: {
-          UserGroup: {
+          UserOnGroup: {
             [isConnect ? "connect" : "disconnect"]: { id: group.id },
           },
         },
