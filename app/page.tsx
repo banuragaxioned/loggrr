@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { PartyPopper } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";

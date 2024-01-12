@@ -25,8 +25,7 @@ interface GetColumn {
 export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColumn) => {
   const userGroupList = userGroup.map((option) => ({
     id: option.id,
-    label: option.name,
-    value: option.name,
+    name: option.name,
   }));
 
   const columns: ColumnDef<Members>[] = [
@@ -62,11 +61,7 @@ export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColum
       accessorKey: "userGroup",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Groups" />,
       cell: ({ row }) => {
-        const selectedGroups = row.original.userGroup.map((option) => ({
-          id: option.id,
-          label: option.name,
-          value: option.name,
-        }));
+        const selectedGroups = row.original.userGroup;
         return (
           <InlineSelect
             onSelect={(selectedOption) => debounce(() => updateUserGroup(selectedOption, row.original.id), 200)()}

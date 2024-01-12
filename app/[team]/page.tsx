@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getAllUserProjects } from "@/server/services/project";
 import { TimeEntry } from "@/components/time-entry";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
 import { db } from "@/server/db";
 import { Text, Flex, Card } from "@tremor/react";

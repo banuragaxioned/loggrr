@@ -31,9 +31,11 @@ export async function POST(req: Request) {
     const userDetails = await db.user.findUnique({
       where: {
         id: body.user,
-        Workspace: {
+        workspaces: {
           some: {
-            slug: body.team,
+            workspace: {
+              slug: body.team,
+            },
           },
         },
       },

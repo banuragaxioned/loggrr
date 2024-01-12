@@ -193,7 +193,7 @@ export async function POST(req: Request) {
     }
 
     const userData = await db.user.findMany({
-      where: { Workspace: { some: { slug: body.team } } },
+      where: { workspaces: { some: { workspace: { slug: body.team } } } },
       select: {
         id: true,
         name: true,

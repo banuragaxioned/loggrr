@@ -23,7 +23,6 @@ model Workspace {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Users      User[]       @relation("WorkspaceMembers")
   Client     Client[]
   Project    Project[]
   Milestone  Milestone[]
@@ -33,7 +32,7 @@ model Workspace {
   Allocation Allocation[]
   Skill      Skill[]
   SkillScore SkillScore[]
-  UserRole   UserRole[]
+  members    WorkspaceMembership[]
 }
 
 model Client {
@@ -228,16 +227,15 @@ model Skill {
   @@index([workspaceId])
 }
 
-// Additional User meta-data
-model UserRole {
+model WorkspaceMembership {
   id          Int       @id @default(autoincrement())
   workspaceId Int
   userId      Int
   role        Role      @default(USER)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  member      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
   @@index([userId])
@@ -276,16 +274,15 @@ model User {
   updatedAt     DateTime   @updatedAt
   status        UserStatus @default(ACTIVE)
 
-  Workspace     Workspace[]  @relation("WorkspaceMembers")
   UserGroup     UserGroup[]
   accounts      Account[]
   sessions      Session[]
-  Roles         UserRole[]
   Allocation    Allocation[]
   SkillScore    SkillScore[]
   TimeEntry     TimeEntry[]
-  Project       Project[]    @relation("ProjectMembers")
-  OwnedProjects Project[]    @relation("UserOwnedProjects")
+  Project       Project[]             @relation("ProjectMembers")
+  OwnedProjects Project[]             @relation("UserOwnedProjects")
+  workspaces    WorkspaceMembership[]
 }
 
 model Session {

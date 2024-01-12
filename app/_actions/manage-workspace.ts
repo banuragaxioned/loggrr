@@ -8,7 +8,7 @@ export async function addToWorkspace(slug: Workspace["slug"], user: User) {
     await db.workspace.update({
       where: { slug: slug },
       data: {
-        Users: {
+        members: {
           connect: {
             id: Number(user.id),
           },
@@ -26,7 +26,7 @@ export async function removeFromWorkspace(slug: Workspace["slug"], user: User) {
     await db.workspace.update({
       where: { slug: slug },
       data: {
-        Users: {
+        members: {
           disconnect: {
             id: Number(user.id),
           },

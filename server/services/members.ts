@@ -1,21 +1,17 @@
 import { db } from "@/server/db";
 
 export const getMembers = async (team: string) => {
-  const data = await db.workspace.findUnique({
-    where: { slug: team },
+  const membersList = await db.workspaceMembership.findMany({
+    where: { workspace: { slug: team } },
     select: {
-      Users: {
+      role: true,
+      member: {
         select: {
           id: true,
           name: true,
           email: true,
           image: true,
           status: true,
-          Roles: {
-            select: {
-              role: true,
-            },
-          },
           UserGroup: {
             select: {
               id: true,
@@ -27,19 +23,20 @@ export const getMembers = async (team: string) => {
     },
   });
 
-  const members = data?.Users.map((member) => {
+  const flatMemberList = membersList?.map((list) => {
     return {
-      id: member.id,
-      name: member.name,
-      email: member.email,
-      image: member.image,
-      status: member.status,
-      role: member.Roles[0]?.role,
-      userGroup: member.UserGroup,
+      id: list.member.id,
+      name: list.member.name,
+      email: list.member.email,
+      image: list.member.image,
+      status: list.member.status,
+      role: list.role,
+      UserGroup: list.member.UserGroup,
     };
   });
+  console.log(flatMemberList);
 
-  return members;
+  return flatMemberList;
 };
 
 export const getUserGroup = async (team: string) => {

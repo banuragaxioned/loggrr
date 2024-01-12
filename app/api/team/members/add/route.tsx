@@ -6,7 +6,6 @@ import { Role } from "@prisma/client";
 
 const addUserSchema = z.object({
   team: z.string().min(1),
-  userrole: z.nativeEnum(Role),
   emailAddress: z.string().email(),
 });
 
@@ -29,24 +28,23 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const adduser = await db.user.update({
-      where: { email: body.emailAddress },
+    const inviteUser = await db.workspaceMembership.create({
       data: {
-        Workspace: {
-          connect: { slug: body.team },
-        },
-        Roles: {
-          create: {
-            role: body.userrole,
-            Workspace: {
-              connect: { slug: body.team },
-            },
+        member: {
+          connect: {
+            email: body.emailAddress,
           },
         },
+        workspace: {
+          connect: {
+            slug: body.team,
+          },
+        },
+        role: Role.USER,
       },
     });
 
-    return new Response(JSON.stringify(adduser));
+    return new Response(JSON.stringify(inviteUser));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });

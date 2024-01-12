@@ -47,7 +47,6 @@ export function AddUserInTeam({ team }: { team: string }) {
       },
       body: JSON.stringify({
         team: team,
-        userrole: Role.USER,
         emailAddress: values.emailAddress,
       }),
     });

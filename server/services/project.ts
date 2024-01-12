@@ -11,11 +11,6 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
           email: true,
           image: true,
           status: true,
-          Roles: {
-            select: {
-              role: true,
-            },
-          },
         },
       },
       Owner: {
