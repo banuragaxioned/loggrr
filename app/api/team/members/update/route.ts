@@ -28,8 +28,13 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const deactivateUser = await db.userRole.updateMany({
-      where: { userId: body.userId, Workspace: { slug: body.team } },
+    const deactivateUser = await db.userWorkspace.updateMany({
+      where: {
+        workspace: {
+          slug: body.team,
+        },
+        userId: body.userId,
+      },
       data: {
         role: Role.INACTIVE,
       },

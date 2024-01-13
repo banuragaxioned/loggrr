@@ -44,7 +44,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
     router.refresh();
   };
 
-  const updateUserGroup = async (options: { id: number }[], id: number) => {
+  const updateUserGroup = async (options: { id: number }[], userId: number) => {
     const response = await fetch("/api/team/members/usergroup/", {
       method: "PATCH",
       headers: {
@@ -53,7 +53,7 @@ export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps
       body: JSON.stringify({
         team,
         groups: options,
-        userId: id,
+        userId: userId,
       }),
     });
 

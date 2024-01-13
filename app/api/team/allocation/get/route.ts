@@ -193,72 +193,109 @@ export async function POST(req: Request) {
     }
 
     const userData = await db.user.findMany({
-      where: { Workspace: { some: { slug: body.team } } },
+      where: { workspaces: { some: { workspace: { slug: body.team } } } },
       select: {
         id: true,
         name: true,
         image: true,
-        Project: {
+        usersOnProject: {
           select: {
-            id: true,
-            name: true,
-            clientId: true,
-            Client: { select: { id: true, name: true } },
-            billable: true,
-            Allocation: {
+            project: {
               select: {
                 id: true,
-                billableTime: true,
-                nonBillableTime: true,
-                updatedAt: true,
-                frequency: true,
-                date: true,
-                enddate: true,
-                projectId: true,
-                userId: true,
+                name: true,
+                billable: true,
+                client: { select: { id: true, name: true } },
+                allocation: {
+                  select: {
+                    id: true,
+                    billableTime: true,
+                    nonBillableTime: true,
+                    updatedAt: true,
+                    frequency: true,
+                    date: true,
+                    enddate: true,
+                    projectId: true,
+                    userId: true,
+                  },
+                },
               },
             },
           },
-          orderBy: { name: "asc" },
+          orderBy: { project: { name: "asc" } },
         },
-        SkillScore: {
-          where: { Workspace: { slug: body.team } },
+        skillScore: {
+          where: { workspace: { slug: body.team } },
           select: {
             level: true,
-            Skill: {
+            skill: {
               select: {
                 name: true,
               },
             },
           },
         },
-        UserGroup: {
-          where: { Workspace: { slug: body.team } },
+        userOnGroup: {
+          where: { workspace: { slug: body.team } },
           select: {
-            id: true,
-            name: true,
+            group: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
       orderBy: { name: "asc" },
     });
 
-    const allocationData = userData.map((obj, i) => {
+    // flatten the userData
+    const flatUserData = userData.map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        image: user.image,
+        projects: user.usersOnProject.map((project) => {
+          return {
+            id: project.project.id,
+            name: project.project.name,
+            billable: project.project.billable,
+            clientName: project.project.client.name,
+            allocations: project.project.allocation,
+          };
+        }),
+        skills: user.skillScore.map((skillList) => {
+          return {
+            level: skillList.level,
+            skill: skillList.skill.name,
+          };
+        }),
+        usergroup: user.userOnGroup.map((group) => {
+          return {
+            id: group.group.id,
+            name: group.group.name,
+          };
+        }),
+      };
+    });
+
+    const allocationData = flatUserData.map((obj, i) => {
       let allocations, totalTime, averageTime;
       return {
         userId: obj.id,
         userName: obj.name,
         userAvatar: obj.image,
-        skills: obj.SkillScore.map((item) => {
+        skills: obj.skills.map((item) => {
           return {
             level: item.level,
-            skill: item.Skill.name,
+            skill: item.skill,
           };
         }),
-        usergroup: obj.UserGroup,
-        projects: obj.Project.map((project) => {
+        usergroup: obj.usergroup,
+        projects: obj.projects.map((project) => {
           allocations = createAllocationDates(
-            project.Allocation.filter(
+            project.allocations.filter(
               (allocation) => allocation.userId === obj.id && allocation.projectId === project.id,
             ),
             body.endDate,
@@ -267,7 +304,7 @@ export async function POST(req: Request) {
           averageTime = parseFloat((totalTime / Object.keys(allocations).length).toFixed(2)) || 0;
           return {
             projectId: project.id,
-            clientName: project.Client.name,
+            clientName: project.clientName,
             projectName: project.name,
             billable: project.billable,
             allocations: allocations,

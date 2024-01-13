@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getAllUserProjects } from "@/server/services/project";
 import { TimeEntry } from "@/components/time-entry";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
 import { db } from "@/server/db";
 import { Text, Flex, Card } from "@tremor/react";
@@ -21,22 +21,22 @@ export default async function Dashboard({ params }: pageProps) {
   const userTimeAllocated = await db.allocation.findMany({
     where: {
       userId: user.id,
-      Workspace: {
+      workspace: {
         slug: team,
       },
     },
     select: {
       billableTime: true,
       nonBillableTime: true,
-      Project: {
+      project: {
         select: {
           id: true,
           name: true,
         },
       },
-      User: {
+      user: {
         select: {
-          TimeEntry: {
+          timeEntry: {
             select: {
               projectId: true,
               time: true,
@@ -48,19 +48,19 @@ export default async function Dashboard({ params }: pageProps) {
   });
   const projects = await getAllUserProjects(user.id);
 
-  const userTimeEntry = await db.timeEntry.findMany({
+  const usertimeEntry = await db.timeEntry.findMany({
     where: {
       userId: user.id,
       date: {
         gte: new Date(new Date().setDate(new Date().getDate() - 7)),
       },
-      Workspace: {
+      workspace: {
         slug: team,
       },
     },
     select: {
       time: true,
-      Project: {
+      project: {
         select: {
           name: true,
         },
@@ -68,7 +68,7 @@ export default async function Dashboard({ params }: pageProps) {
     },
   });
 
-  const overallEntryTime = userTimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
+  const overallEntryTime = usertimeEntry.map((item) => item.time).reduce((sum: number, num: number) => sum + num, 0);
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12 gap-4">
@@ -90,13 +90,12 @@ export default async function Dashboard({ params }: pageProps) {
           </Flex>
           <ScrollArea className={`${userTimeAllocated.length >= 5 ? "h-[550px]" : "h-auto"} w-full}`}>
             {userTimeAllocated.map((item, i) => {
-              const entryValue = item.User.TimeEntry.filter((entry) => entry.projectId === item.Project.id).reduce(
-                (acc, current) => acc + current.time,
-                0,
-              );
+              const entryValue = item.user.timeEntry
+                .filter((entry) => entry.projectId === item.project.id)
+                .reduce((acc, current) => acc + current.time, 0);
               return (
                 <div className="mt-3 pr-3" key={i}>
-                  <Text className="w-full font-semibold leading-5">{item.Project.name}</Text>
+                  <Text className="w-full font-semibold leading-5">{item.project.name}</Text>
                   <Flex className="mt-3 items-center">
                     <MarkerBar
                       value={item.billableTime + item.nonBillableTime}

@@ -16,7 +16,7 @@ export default async function Page({ params }: pageProps) {
   const projectDetails = await db.project.findUnique({
     where: {
       id: +project,
-      Workspace: {
+      workspace: {
         slug: team,
       },
     },
@@ -29,7 +29,7 @@ export default async function Page({ params }: pageProps) {
   const timeLogSummary = await db.timeEntry.groupBy({
     by: ["milestoneId"],
     where: {
-      Workspace: {
+      workspace: {
         slug: team,
       },
       projectId: +project,
@@ -55,8 +55,6 @@ export default async function Page({ params }: pageProps) {
       avg: item._avg.time,
     };
   });
-
-  console.log(timeLogSummary);
 
   return (
     <DashboardShell>

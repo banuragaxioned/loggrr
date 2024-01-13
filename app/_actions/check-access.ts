@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { Role } from "@prisma/client";
 
 export async function checkRole(team: string) {
@@ -12,11 +12,11 @@ export async function checkRole(team: string) {
   }
 
   try {
-    const response = await db.userRole.findUniqueOrThrow({
+    const response = await db.userWorkspace.findUniqueOrThrow({
       where: {
         userId_workspaceId: {
           userId: user.id,
-          workspaceId: 1, // FIXME: this is hardcoded
+          workspaceId: 1, // FIX: this is hardcoded
         },
         NOT: {
           role: Role.INACTIVE,

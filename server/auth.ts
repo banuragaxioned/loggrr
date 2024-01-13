@@ -17,7 +17,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: number;
-      timezone: string;
       workspaces: { id: number; name: string; slug: string; role: Role }[];
     } & DefaultSession["user"];
   }
@@ -48,18 +47,18 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
-    EmailProvider({
-      server: {
-        host: env.EMAIL_HOST,
-        port: Number(env.EMAIL_PORT),
-        auth: {
-          user: env.EMAIL_USER,
-          pass: env.EMAIL_PASSWORD,
-        },
-      },
-      from: env.EMAIL_FROM,
-      maxAge: 24 * 60 * 60,
-    }),
+    // EmailProvider({
+    //   server: {
+    //     host: env.EMAIL_HOST,
+    //     port: Number(env.EMAIL_PORT),
+    //     auth: {
+    //       user: env.EMAIL_USER,
+    //       pass: env.EMAIL_PASSWORD,
+    //     },
+    //   },
+    //   from: env.EMAIL_FROM,
+    //   maxAge: 24 * 60 * 60,
+    // }),
     /**
      * ...add more providers here
      *
@@ -73,27 +72,11 @@ export const authOptions: NextAuthOptions = {
   events: {
     async signIn({ user, isNewUser }) {
       if (isNewUser && user.email) {
-        // if email ends with @axioned.com then add them to workspace and role
-        // FIX: Hardcoded
-        // Maybe domain whitelist in database? Probably needs to be "verified" domains only though.
         if (user.email.endsWith("@axioned.com")) {
-          await db.workspace.update({
-            where: { slug: "axioned" },
-            data: {
-              Users: {
-                connect: {
-                  id: Number(user.id),
-                },
-              },
-            },
-          });
-        }
-
-        if (user.email.endsWith("@axioned.com")) {
-          await db.userRole.create({
+          await db.userWorkspace.create({
             data: {
               workspaceId: 1,
-              userId: Number(user.id),
+              userId: +user.id,
               role: Role.USER,
             },
           });
@@ -109,36 +92,31 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
 
-        const teams = await db.user.findUniqueOrThrow({
-          where: { id: session.user.id },
+        const workspaces = await db.userWorkspace.findMany({
+          where: {
+            userId: Number(token.id),
+          },
           select: {
-            id: true,
-            name: true,
-            timezone: true,
-            Workspace: {
+            role: true,
+            workspace: {
               select: {
                 id: true,
-                slug: true,
                 name: true,
-                UserRole: { select: { role: true } },
+                slug: true,
               },
             },
           },
         });
 
-        session.user.workspaces = teams.Workspace.map((workspace) => {
+        session.user.workspaces = workspaces.map((list) => {
           return {
-            id: workspace.id,
-            name: workspace.name,
-            slug: workspace.slug,
-            //NOTE: Each user can only have one `role` per workspace. Even though we have many to many relation
-            role: workspace.UserRole.map((userRole) => userRole.role)[0],
+            id: list.workspace.id,
+            name: list.workspace.name,
+            slug: list.workspace.slug,
+            role: list.role,
           };
         });
-
-        session.user.timezone = teams.timezone;
       }
-
       return session;
     },
     async jwt({ token, user }) {

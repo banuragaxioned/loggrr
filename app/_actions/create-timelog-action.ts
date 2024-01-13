@@ -15,24 +15,24 @@ type Form = z.infer<typeof timeEntry>;
 export async function createTimeLog(data: Form, slug: string, userId: number, time: number) {
   await db.timeEntry.create({
     data: {
-      Workspace: {
+      workspace: {
         connect: {
           slug: slug,
         },
       },
       date: data.date,
       time: time,
-      User: {
+      user: {
         connect: {
           id: userId,
         },
       },
-      Project: {
+      project: {
         connect: {
           id: +data.projectId,
         },
       },
-      Milestone: {
+      milestone: {
         connect: {
           id: +data.milestoneId,
         },

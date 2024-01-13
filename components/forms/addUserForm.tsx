@@ -20,7 +20,7 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import { Role } from "@prisma/client";
-import { createUser } from "@/app/_actions/create-user";
+import { createUser } from "@/app/_actions/user-management";
 
 export function AddUserInTeam({ team }: { team: string }) {
   const router = useRouter();
@@ -47,7 +47,6 @@ export function AddUserInTeam({ team }: { team: string }) {
       },
       body: JSON.stringify({
         team: team,
-        userrole: Role.USER,
         emailAddress: values.emailAddress,
       }),
     });

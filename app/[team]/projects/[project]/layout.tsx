@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
 import { CreditCard, FileText, HomeIcon, User } from "lucide-react";

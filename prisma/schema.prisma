@@ -16,67 +16,86 @@ datasource db {
 }
 
 model Workspace {
-  id        Int      @id @default(autoincrement())
-  name      String
-  slug      String   @unique
-  status    Status   @default(PUBLISHED)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Users      User[]       @relation("WorkspaceMembers")
-  Client     Client[]
-  Project    Project[]
-  Milestone  Milestone[]
-  Task       Task[]
-  TimeEntry  TimeEntry[]
-  UserGroup  UserGroup[]
-  Allocation Allocation[]
-  Skill      Skill[]
-  SkillScore SkillScore[]
-  UserRole   UserRole[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  slug           String           @unique
+  status         Status           @default(PUBLISHED)
+  domain         String?          @unique
+  domainVerified Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  client         Client[]
+  project        Project[]
+  milestone      Milestone[]
+  task           Task[]
+  timeEntry      TimeEntry[]
+  group          Group[]
+  allocation     Allocation[]
+  skill          Skill[]
+  skillScore     SkillScore[]
+  users          UserWorkspace[]
+  userOnGroup    UserOnGroup[]
+  usersOnProject UsersOnProject[]
 }
 
 model Client {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   workspaceId Int
-  status      Status   @default(PUBLISHED)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  Project   Project[]
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  status      Status    @default(PUBLISHED)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  project     Project[]
 
   @@index([workspaceId])
 }
 
 model Project {
-  id          Int             @id @default(autoincrement())
-  workspaceId Int
-  name        String
-  status      Status          @default(PUBLISHED)
-  ownerId     Int
-  clientId    Int
-  startdate   DateTime
-  enddate     DateTime?
-  budget      Int?
-  billable    Boolean         @default(false)
-  interval    ProjectInterval
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-
-  Milestone  Milestone[]
-  Task       Task[]
-  TimeEntry  TimeEntry[]
-  Allocation Allocation[]
-  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Client     Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  Members    User[]       @relation("ProjectMembers")
-  Owner      User         @relation("UserOwnedProjects", fields: [ownerId], references: [id])
+  id             Int              @id @default(autoincrement())
+  workspaceId    Int
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name           String
+  status         Status           @default(PUBLISHED)
+  ownerId        Int
+  owner          User             @relation("UserOwnedProjects", fields: [ownerId], references: [id])
+  clientId       Int
+  client         Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  startdate      DateTime
+  enddate        DateTime?
+  budget         Int?
+  billable       Boolean          @default(false)
+  interval       ProjectInterval
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  milestone      Milestone[]
+  task           Task[]
+  timeEntry      TimeEntry[]
+  allocation     Allocation[]
+  usersOnProject UsersOnProject[]
 
   @@index([workspaceId])
   @@index([clientId])
   @@index([ownerId])
+}
+
+model UsersOnProject {
+  id          Int       @id @default(autoincrement())
+  workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      Status    @default(PUBLISHED)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, projectId])
+  @@index([userId, projectId])
+  @@index([userId])
+  @@index([projectId])
+  @@index([workspaceId])
 }
 
 enum ProjectInterval {
@@ -92,85 +111,92 @@ enum Role {
 }
 
 model Milestone {
-  id          Int       @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   workspaceId Int
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projectId   Int
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name        String
-  budget      Int       @default(0) // Storing budget in hours
-  status      Status    @default(PUBLISHED)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  budget      Int         @default(0) // Storing budget in hours
+  status      Status      @default(PUBLISHED)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   startDate   DateTime?
   endDate     DateTime?
-
-  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  TimeEntry TimeEntry[]
+  timeEntry   TimeEntry[]
 
   @@index([workspaceId])
   @@index([projectId])
+  @@index([id, projectId, workspaceId])
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   workspaceId Int
-  name        String
-  status      Status   @default(PUBLISHED)
-  budget      Int?
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projectId   Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  Workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  TimeEntry TimeEntry[]
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name        String
+  status      Status      @default(PUBLISHED)
+  budget      Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  timeEntry   TimeEntry[]
 
   @@index([workspaceId])
   @@index([projectId])
+  @@index([id, projectId, workspaceId])
 }
 
 model TimeEntry {
   id          Int       @id @default(autoincrement())
   date        DateTime
-  projectId   Int
   workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   milestoneId Int
+  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   taskId      Int?
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   billable    Boolean   @default(false)
   time        Int // Storing time in minutes
   comments    String?
+  status      Status    @default(PUBLISHED)
   approved    Boolean   @default(false)
   approvedBy  String?
   approvedAt  DateTime?
-  status      Status    @default(PUBLISHED)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  Task      Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  Milestone Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([workspaceId])
-  @@index([projectId])
-  @@index([userId])
+  @@index([workspaceId, projectId, userId, milestoneId, taskId])
+  @@index([workspaceId, projectId])
+  @@index([workspaceId, userId])
+  @@index([workspaceId, milestoneId])
   @@index([milestoneId])
   @@index([taskId])
+  @@index([userId])
+  @@index([projectId])
 }
 
 enum Status {
+  DRAFT
   PUBLISHED
   ARCHIVED
+  DEACTIVATED
 }
 
 // Allocation-related
 model Allocation {
   id              Int                 @id @default(autoincrement())
   workspaceId     Int
+  workspace       Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projectId       Int
+  project         Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
   userId          Int
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   date            DateTime
   enddate         DateTime?
   billableTime    Int
@@ -181,10 +207,6 @@ model Allocation {
   // If frequency is ONGOING and no enddate then it's indefinite
   // If the frequency is ONGOING and enddate is present then it's a fixed duration
   frequency       AllocationFrequency @default(DAY)
-
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([projectId])
@@ -198,17 +220,16 @@ enum AllocationFrequency {
 }
 
 model SkillScore {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   skillId     Int
-  level       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  Skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  level       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([workspaceId])
   @@index([skillId])
@@ -216,85 +237,94 @@ model SkillScore {
 }
 
 model Skill {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   workspaceId Int
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  Workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  SkillScore SkillScore[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  skillScore  SkillScore[]
 
   @@index([workspaceId])
 }
 
-// Additional User meta-data
-model UserRole {
+model UserWorkspace {
   id          Int       @id @default(autoincrement())
   workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   role        Role      @default(USER)
+  status      Status    @default(PUBLISHED)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  Workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
+  @@index([userId, workspaceId, role])
+  @@index([userId, workspaceId])
   @@index([userId])
   @@index([workspaceId])
-  @@index([userId, workspaceId]) // Added an index on both fields to optimize queries involving both fields
 }
 
-model UserGroup {
-  id          Int      @id @default(autoincrement())
+model Group {
+  id          Int           @id @default(autoincrement())
   workspaceId Int
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  users     User[]
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  userOnGroup UserOnGroup[]
 
   @@index([workspaceId])
 }
 
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  DELETED
+model UserOnGroup {
+  id          Int       @id @default(autoincrement())
+  workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  groupId     Int
+  group       Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      Status    @default(PUBLISHED)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, groupId])
+  @@index([userId, groupId])
+  @@index([userId])
+  @@index([groupId])
+  @@index([workspaceId])
 }
 
 // NextAuth-related
 model User {
-  id            Int        @id @default(autoincrement())
-  name          String?
-  email         String     @unique
-  timezone      String     @default("UTC")
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  status        UserStatus @default(ACTIVE)
-
-  Workspace     Workspace[]  @relation("WorkspaceMembers")
-  UserGroup     UserGroup[]
-  accounts      Account[]
-  sessions      Session[]
-  Roles         UserRole[]
-  Allocation    Allocation[]
-  SkillScore    SkillScore[]
-  TimeEntry     TimeEntry[]
-  Project       Project[]    @relation("ProjectMembers")
-  OwnedProjects Project[]    @relation("UserOwnedProjects")
+  id             Int              @id @default(autoincrement())
+  name           String?
+  email          String           @unique
+  timezone       String           @default("Etc/UTC")
+  emailVerified  DateTime?
+  image          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  status         Status           @default(PUBLISHED)
+  accounts       Account[]
+  sessions       Session[]
+  allocation     Allocation[]
+  skillScore     SkillScore[]
+  timeEntry      TimeEntry[]
+  ownedProjects  Project[]        @relation("UserOwnedProjects")
+  workspaces     UserWorkspace[]
+  userOnGroup    UserOnGroup[]
+  usersOnProject UsersOnProject[]
 }
 
 model Session {
   id           Int      @id @default(autoincrement())
   sessionToken String   @unique
   userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -311,6 +341,7 @@ model VerificationToken {
 model Account {
   id                Int     @id @default(autoincrement())
   userId            Int
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   type              String
   provider          String
   providerAccountId String
@@ -321,7 +352,6 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])

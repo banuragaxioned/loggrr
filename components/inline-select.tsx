@@ -18,8 +18,7 @@ import { Check } from "lucide-react";
 
 interface Options {
   id: number;
-  value: string;
-  label: string;
+  name: string;
 }
 
 interface InlineSelectProps<TData, TValue> {
@@ -55,7 +54,7 @@ export function InlineSelect<TData, TValue>({
       selected.map((value) => (valueUpdated = selectedValues.some((prevVal) => value.id !== prevVal.id)));
     }
     setValueUpdated(valueUpdated);
-  }, [selected]);
+  }, [selected, selectedValues]);
 
   return (
     <Popover onOpenChange={(e) => !e && setSelected(selectedValues)}>
@@ -63,7 +62,7 @@ export function InlineSelect<TData, TValue>({
         <Button variant="outline" size="sm" className="h-8 border">
           {selectedValues?.length > 0 ? (
             <>
-              {selectedValues[0].label}
+              {selectedValues[0].name}
               {selectedValues?.length > 1 && (
                 <>
                   <Separator orientation="vertical" className="mx-2 h-4" />
@@ -87,9 +86,9 @@ export function InlineSelect<TData, TValue>({
             <CommandEmpty>No {title} found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                const isSelected = selected.find((values) => values.id === option.id);
+                const isSelected = (selected || []).find((values) => values.id === option.id);
                 return (
-                  <CommandItem key={option.value} onSelect={() => handleSelect(!!isSelected, option)}>
+                  <CommandItem key={option.id} onSelect={() => handleSelect(!!isSelected, option)}>
                     <div
                       className={cn(
                         "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
@@ -98,7 +97,7 @@ export function InlineSelect<TData, TValue>({
                     >
                       <Check className={cn("h-4 w-4")} />
                     </div>
-                    <span>{option.label}</span>
+                    <span>{option.name}</span>
                   </CommandItem>
                 );
               })}

@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  loggr-db-dev:
+    image: mysql:latest
+    restart: always
+    container_name: loggr-db-dev
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "loggr"
+      MYSQL_USER: "loggr"
+      MYSQL_PASSWORD: "password"
+    volumes:
+      - appdb:/var/lib/mysql
+
+volumes:
+  appdb:

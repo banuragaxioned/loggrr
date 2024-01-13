@@ -31,17 +31,17 @@ export async function POST(req: Request) {
 
     const addSkill = await db.skillScore.create({
       data: {
-        Workspace: {
+        workspace: {
           connect: {
             slug: body.team,
           },
         },
-        Skill: {
+        skill: {
           connect: {
             id: body.skillId,
           },
         },
-        User: {
+        user: {
           connect: {
             id: body.userId,
           },

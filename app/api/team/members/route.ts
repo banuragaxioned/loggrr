@@ -10,45 +10,38 @@ export async function GET(request: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const { user } = session;
-
-    const data = await db.workspace.findUnique({
-      where: { slug: "axioned" },
+    const users = await db.userWorkspace.findMany({
+      where: {
+        workspace: {
+          slug: "axioned",
+        },
+      },
       select: {
-        Users: {
+        role: true,
+        user: {
           select: {
             id: true,
             name: true,
             email: true,
             image: true,
             status: true,
-            Roles: {
-              select: {
-                role: true,
-              },
-              where: {
-                role: {
-                  not: undefined,
-                },
-              },
-            },
           },
         },
       },
     });
 
-    const memberList = data?.Users.map((member) => {
+    const flatMemberList = users.map((list) => {
       return {
-        id: member.id,
-        name: member.name,
-        email: member.email,
-        image: member.image,
-        status: member.status,
-        role: member.Roles.map((userRole) => userRole.role)[0],
+        id: list.user.id,
+        name: list.user.name,
+        email: list.user.email,
+        image: list.user.image,
+        status: list.user.status,
+        role: list.role,
       };
     });
 
-    return new Response(JSON.stringify(memberList));
+    return new Response(JSON.stringify(flatMemberList));
   } catch (error) {
     return new Response(null, { status: 500 });
   }

@@ -1,7 +1,8 @@
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
 import { AddUserInTeam } from "@/components/forms/addUserForm";
-import { getMembers, getUserGroup } from "@/server/services/members";
+import { getMembers } from "@/server/services/members";
+import { getGroups } from "@/server/services/groups";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { Table } from "./table";
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 const ManageMembers = async ({ params }: pageProps) => {
   const { team } = params;
   const data = await getMembers(team);
-  const userGroup = await getUserGroup(team);
+  const userGroup = await getGroups(team);
 
   return (
     <DashboardShell>

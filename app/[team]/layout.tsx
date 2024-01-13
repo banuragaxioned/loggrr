@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
 
 interface DashboardLayoutProps extends pageProps {
@@ -10,23 +10,18 @@ interface DashboardLayoutProps extends pageProps {
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
-  const team = params?.team;
+  const slug = decodeURIComponent(params.team);
 
   if (!user) {
     return notFound();
   }
 
-  const hasAccess = await db.userRole.findMany({
+  const hasAccess = await db.userWorkspace.findMany({
     where: {
-      Workspace: {
-        slug: team,
-        Users: {
-          some: {
-            id: user.id,
-          },
-        },
+      workspace: {
+        slug: slug,
       },
-      User: {
+      user: {
         id: user.id,
       },
     },

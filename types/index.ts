@@ -106,7 +106,7 @@ export type ComboboxOptions = {
 export type AllProjectsWithMembers = {
   id: number;
   name?: string | null;
-  Members: ComboboxOptions[];
+  users: ComboboxOptions[];
 };
 
 export type AssignFormValues = {
@@ -122,7 +122,7 @@ export type AssignFormValues = {
 export type AllUsersWithAllocation = {
   id: number;
   name?: string | null;
-  Allocation: { id: number; projectId: number }[];
+  allocation: { id: number; projectId: number }[];
 };
 
 export interface UserGroup {
@@ -186,7 +186,7 @@ export type Client = {
   id: number;
   name: string;
   status: Status;
-  Project: number;
+  project: number;
 };
 
 export interface Project {

@@ -1,3 +1,4 @@
+import { Workspace } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
@@ -26,58 +27,68 @@ export async function PATCH(req: Request) {
 
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
-    const isNotTeamMember = user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0;
+    const isMember = user.workspaces.filter((workspace) => workspace.slug === body.team).length === 1;
 
-    if (isNotTeamMember) {
+    if (!isMember) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const connectedGroups = await db.user.findUnique({
-      where: { id: body.userId },
-      select: {
-        UserGroup: {
-          select: {
-            id: true,
-          },
+    // get users current groups
+    const currentGroups = await db.userOnGroup.findMany({
+      where: {
+        userId: body.userId,
+        workspace: {
+          slug: body.team,
         },
       },
+      select: { groupId: true },
     });
 
-    if (!connectedGroups) {
-      return new Response("User not found", { status: 403 });
-    }
+    // get the new groups that don't exist in the current groups
+    const newGroups = body.groups.filter((group) => {
+      return !currentGroups.some((currentGroup) => currentGroup.groupId === group.id);
+    });
 
-    const flatConnectedGroups = connectedGroups.UserGroup;
+    // get the removed groups that exist in the current groups
+    const removedGroups = currentGroups.filter((currentGroup) => {
+      return !body.groups.some((group) => group.id === currentGroup.groupId);
+    });
 
-    let updatedUserGroupIds;
-
-    let isConnect = false;
-
-    const difference = (bigArray: { id: number }[], smallArray: { id: number }[]) =>
-      bigArray.filter((obj1) => !smallArray.some((obj2) => obj1.id === obj2.id));
-
-    if (flatConnectedGroups.length > body.groups.length) {
-      isConnect = false;
-      updatedUserGroupIds = difference(flatConnectedGroups, body.groups);
-    } else {
-      isConnect = true;
-      updatedUserGroupIds = difference(body.groups, flatConnectedGroups);
-    }
-
-    const updateUserGroup = updatedUserGroupIds.map(async (group) => {
-      const userGroup = await db.user.update({
-        where: { id: body.userId },
-        data: {
-          UserGroup: {
-            [isConnect ? "connect" : "disconnect"]: { id: group.id },
+    const updateGroups = await db.$transaction([
+      ...newGroups.map((group) => {
+        return db.userOnGroup.create({
+          data: {
+            group: {
+              connect: {
+                id: group.id,
+              },
+            },
+            user: {
+              connect: {
+                id: body.userId,
+              },
+            },
+            workspace: {
+              connect: {
+                slug: body.team,
+              },
+            },
           },
-        },
-      });
+        });
+      }),
+      ...removedGroups.map((group) => {
+        return db.userOnGroup.delete({
+          where: {
+            userId_groupId: {
+              groupId: group.groupId,
+              userId: body.userId,
+            },
+          },
+        });
+      }),
+    ]);
 
-      return userGroup;
-    });
-
-    return new Response(JSON.stringify(updateUserGroup));
+    return new Response(JSON.stringify(updateGroups));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });

@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/server/session";
 import { authOptions } from "@/server/auth";
 import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/ui/header";

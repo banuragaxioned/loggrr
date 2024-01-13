@@ -45,7 +45,7 @@ export function clientName(
     {
       accessorKey: "Project",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Active Projects" />,
-      cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.Project}</span>,
+      cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.project}</span>,
     },
     {
       accessorKey: "status",

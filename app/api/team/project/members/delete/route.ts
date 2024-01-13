@@ -28,15 +28,14 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const project = await db.project.update({
+    const project = await db.usersOnProject.delete({
       where: {
-        id: body.projectId,
-      },
-      data: {
-        Members: {
-          disconnect: {
-            id: body.userId,
-          },
+        userId_projectId: {
+          userId: body.userId,
+          projectId: body.projectId,
+        },
+        workspace: {
+          slug: body.team,
         },
       },
     });
