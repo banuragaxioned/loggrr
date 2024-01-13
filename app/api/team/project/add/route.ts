@@ -53,15 +53,30 @@ export async function POST(req: Request) {
             id: body.ownerId,
           },
         },
-        Members: {
-          connect: {
-            id: body.ownerId,
-          },
-        },
         startdate: body.startDate,
         enddate: body.endDate,
         interval: body.interval,
         budget: body.budget,
+      },
+    });
+
+    await db.usersOnProject.create({
+      data: {
+        project: {
+          connect: {
+            id: project.id,
+          },
+        },
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        workspace: {
+          connect: {
+            slug: body.team,
+          },
+        },
       },
     });
 

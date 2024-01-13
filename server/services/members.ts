@@ -12,10 +12,14 @@ export const getMembers = async (team: string) => {
           email: true,
           image: true,
           status: true,
-          UserGroup: {
+          UserOnGroup: {
             select: {
-              id: true,
-              name: true,
+              group: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
             },
           },
         },
@@ -31,7 +35,7 @@ export const getMembers = async (team: string) => {
       image: list.user.image,
       status: list.user.status,
       role: list.role,
-      UserGroup: list.user.UserGroup,
+      UserGroup: list.user.UserOnGroup,
     };
   });
   console.log(flatMemberList);
@@ -40,7 +44,7 @@ export const getMembers = async (team: string) => {
 };
 
 export const getUserGroup = async (team: string) => {
-  const data = await db.userGroup.findMany({
+  const data = await db.group.findMany({
     where: { Workspace: { slug: team } },
     select: {
       id: true,

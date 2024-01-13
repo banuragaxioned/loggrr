@@ -4,34 +4,38 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
   const data = await db.project.findUnique({
     where: { Workspace: { slug }, id: +projectId },
     select: {
-      Members: {
+      UsersOnProject: {
         select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          status: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              status: true,
+            },
+          },
         },
       },
-      Owner: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          status: true,
-        },
-      },
+      // Owner: {
+      //   select: {
+      //     id: true,
+      //     name: true,
+      //     email: true,
+      //     image: true,
+      //     status: true,
+      //   },
+      // },
     },
   });
 
-  const members = data?.Members.map((value) => {
+  const members = data?.UsersOnProject.map((value) => {
     return {
-      id: value.id,
-      name: value.name,
-      email: value.email,
-      image: value.image,
-      status: value.status,
+      id: value.user.id,
+      name: value.user.name,
+      email: value.user.email,
+      image: value.user.image,
+      status: value.user.status,
       projectId: projectId,
     };
   });
@@ -49,7 +53,11 @@ export async function getProjects(slug: string) {
       interval: true,
       Client: { select: { id: true, name: true } },
       Owner: { select: { id: true, name: true, image: true } },
-      Members: { select: { id: true, name: true, image: true } },
+      UsersOnProject: {
+        select: {
+          user: { select: { id: true, name: true, image: true } },
+        },
+      },
       Milestone: {
         select: {
           budget: true,
@@ -75,7 +83,7 @@ export async function getProjects(slug: string) {
     clientName: project.Client.name,
     owner: project.Owner.name,
     ownerImage: project.Owner.image,
-    members: project.Members,
+    members: project.UsersOnProject,
     status: project.status,
     budget: project.Milestone.map((obj) => obj.budget).reduce((prev, current) => prev + current, 0),
     logged: project.TimeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
@@ -95,7 +103,11 @@ export async function getProjectSummary(slug?: string, userId?: number) {
       Owner: { select: { id: true, name: true, image: true } },
       Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
       TimeEntry: { select: { id: true, time: true, projectId: true } },
-      Members: { select: { id: true, name: true } },
+      UsersOnProject: {
+        select: {
+          user: { select: { id: true, name: true, image: true } },
+        },
+      },
       Task: { select: { id: true, name: true } },
     },
     orderBy: {
@@ -105,7 +117,7 @@ export async function getProjectSummary(slug?: string, userId?: number) {
 
   return userId
     ? summary
-        .filter((project) => project.Members.find((member) => member.id === userId))
+        .filter((project) => project.UsersOnProject.find((member) => member.user.id === userId))
         .map((project) => ({
           id: project.id,
           name: project.name,
@@ -268,25 +280,29 @@ export const getAllUserProjects = async (userId: number) => {
       id: userId,
     },
     select: {
-      Project: {
+      UsersOnProject: {
         select: {
-          id: true,
-          name: true,
-          billable: true,
-          Client: { select: { id: true, name: true } },
-          Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
-          TimeEntry: { select: { id: true, time: true, projectId: true } },
-          Task: { select: { id: true, name: true } },
+          project: {
+            select: {
+              id: true,
+              name: true,
+              billable: true,
+              Client: { select: { id: true, name: true } },
+              Milestone: { select: { id: true, budget: true, projectId: true, name: true } },
+              TimeEntry: { select: { id: true, time: true, projectId: true } },
+              Task: { select: { id: true, name: true } },
+            },
+          },
         },
       },
     },
   });
-  return projects?.Project.map((project) => ({
-    id: project.id,
-    name: project.name,
-    billable: project.billable,
-    milestone: project.Milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
-    task: project.Task.map((task) => ({ id: task.id, name: task.name })),
-    client: project.Client,
+  return projects?.UsersOnProject.map((projectList) => ({
+    id: projectList.project.id,
+    name: projectList.project.name,
+    billable: projectList.project.billable,
+    milestone: projectList.project.Milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
+    task: projectList.project.Task.map((task) => ({ id: task.id, name: task.name })),
+    client: projectList.project.Client,
   }));
 };

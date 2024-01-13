@@ -54,12 +54,18 @@ export async function POST(req: Request) {
           id: body.projectId,
         },
         data: {
-          Members: {
-            connect: {
-              id: userDetails.id,
-              name: userDetails.name,
-              email: userDetails.email,
-              image: userDetails.image,
+          UsersOnProject: {
+            create: {
+              user: {
+                connect: {
+                  id: userDetails.id,
+                },
+              },
+              workspace: {
+                connect: {
+                  slug: body.team,
+                },
+              },
             },
           },
         },

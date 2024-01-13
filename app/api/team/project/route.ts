@@ -28,11 +28,22 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const project = await db.project.update({
-      where: { id: +body.projectId },
+    const project = await db.usersOnProject.create({
       data: {
-        Members: {
-          connect: { id: body.userId },
+        workspace: {
+          connect: {
+            slug: body.team,
+          },
+        },
+        project: {
+          connect: {
+            id: body.projectId,
+          },
+        },
+        user: {
+          connect: {
+            id: body.userId,
+          },
         },
       },
     });

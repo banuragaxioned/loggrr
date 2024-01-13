@@ -87,10 +87,11 @@ model UsersOnProject {
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   userId      Int
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      Status    @default(PUBLISHED)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@unique([userId, workspaceId, projectId])
+  @@unique([userId, projectId])
   @@index([userId, projectId])
   @@index([userId])
   @@index([projectId])
