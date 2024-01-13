@@ -253,7 +253,6 @@ export const updateAssignedHours = async (startDate: any, data: any, range: any,
     },
   });
   const requiredAllocation = getAllocationData.find((obj) => obj.projectId === project && obj.userId === user);
-  // console.log(new Date(requiredAllocation[0].date),new Date(startDate).getDate())
   requiredAllocation
     ? await updatedAllocation(requiredAllocation, data, range)
     : await insertAllocation(requiredAllocation, data, range, project, user);

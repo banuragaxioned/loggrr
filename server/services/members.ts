@@ -35,10 +35,9 @@ export const getMembers = async (team: string) => {
       image: list.user.image,
       status: list.user.status,
       role: list.role,
-      UserGroup: list.user.UserOnGroup,
+      userGroup: list.user.UserOnGroup.map((group) => group.group),
     };
   });
-  console.log(flatMemberList);
 
   return flatMemberList;
 };

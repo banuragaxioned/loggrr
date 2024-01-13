@@ -117,7 +117,6 @@ export const authOptions: NextAuthOptions = {
           };
         });
       }
-      console.log(session);
       return session;
     },
     async jwt({ token, user }) {

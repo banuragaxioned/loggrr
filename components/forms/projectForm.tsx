@@ -74,7 +74,6 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     });
 
     if (!response?.ok) {
-      console.log(response);
       return toast.error("Something went wrong");
     }
 

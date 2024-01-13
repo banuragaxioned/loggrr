@@ -56,8 +56,6 @@ export default async function Page({ params }: pageProps) {
     };
   });
 
-  console.log(timeLogSummary);
-
   return (
     <DashboardShell>
       <DashboardHeader heading={projectDetails.name} text="This is your project details page.">
