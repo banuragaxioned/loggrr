@@ -62,7 +62,7 @@ export function TimeAdd() {
     data.milestoneId = "1";
     const result = await createTimeLog(data, "axioned", 1, time);
     if (result.success) {
-      toast("A new Client was created");
+      toast("Time entry was created");
       form.reset();
     } else {
       toast("Something went wrong.");

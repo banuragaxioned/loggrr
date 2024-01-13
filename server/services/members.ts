@@ -41,15 +41,3 @@ export const getMembers = async (team: string) => {
 
   return flatMemberList;
 };
-
-export const getUserGroup = async (team: string) => {
-  const data = await db.group.findMany({
-    where: { workspace: { slug: team } },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
-
-  return data;
-};
