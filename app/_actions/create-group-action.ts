@@ -8,7 +8,7 @@ export async function createGroup(team: string, groupName: string) {
     await db.group.create({
       data: {
         name: groupName,
-        Workspace: {
+        workspace: {
           connect: {
             slug: team,
           },
@@ -32,7 +32,7 @@ export async function deleteGroup(team: string, id: number) {
   await db.group.delete({
     where: {
       id: id,
-      Workspace: {
+      workspace: {
         slug: team,
       },
     },

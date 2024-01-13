@@ -8,17 +8,17 @@ export async function getSkills(team: Workspace["slug"]) {
       name: true,
     },
     where: {
-      Workspace: {
+      workspace: {
         slug: team,
       },
     },
   });
 
   const users = await db.skillScore.findMany({
-    where: { Workspace: { slug: team } },
+    where: { workspace: { slug: team } },
     select: {
       skillId: true,
-      User: {
+      user: {
         select: {
           id: true,
           name: true,
@@ -44,7 +44,7 @@ export async function getUserSkills(userId: User["id"], team: Workspace["slug"])
   const response = await db.skillScore.findMany({
     select: {
       id: true,
-      Skill: {
+      skill: {
         select: {
           id: true,
           name: true,
@@ -53,10 +53,10 @@ export async function getUserSkills(userId: User["id"], team: Workspace["slug"])
       level: true,
     },
     where: {
-      Workspace: {
+      workspace: {
         slug: team,
       },
-      User: {
+      user: {
         id: userId,
       },
     },
@@ -65,8 +65,8 @@ export async function getUserSkills(userId: User["id"], team: Workspace["slug"])
   const flatResponse = response.map((skill) => {
     return {
       id: skill.id,
-      name: skill.Skill.name,
-      skillId: skill.Skill.id,
+      name: skill.skill.name,
+      skillId: skill.skill.id,
       value: skill.level,
     };
   });

@@ -92,7 +92,7 @@ export async function GET(req: Request) {
     const response = await db.timeEntry.findMany({
       where: {
         userId: user.id,
-        Workspace: {
+        workspace: {
           slug: team ? team : "",
         },
       },
@@ -100,11 +100,11 @@ export async function GET(req: Request) {
         id: true,
         billable: true,
         comments: true,
-        Project: {
+        project: {
           select: {
             id: true,
             name: true,
-            Client: {
+            client: {
               select: {
                 id: true,
                 name: true,
@@ -112,13 +112,13 @@ export async function GET(req: Request) {
             },
           },
         },
-        Milestone: {
+        milestone: {
           select: {
             id: true,
             name: true,
           },
         },
-        Task: {
+        task: {
           select: {
             id: true,
             name: true,
@@ -139,16 +139,16 @@ export async function GET(req: Request) {
         weekday: "short",
       });
       const check = dateStrs.includes(currentDateStr);
-      const project = { ...current?.Project };
+      const project = { ...current?.project };
       const data = {
         id: current.id,
         billable: current.billable,
         time: current.time / 60,
-        milestone: current.Milestone,
-        task: current.Task,
+        milestone: current.milestone,
+        task: current.task,
         comments: current.comments,
       };
-      const projectObj = { id: current.Project.id, name: current.Project.name, client: current.Project.Client };
+      const projectObj = { id: current.project.id, name: current.project.name, client: current.project.client };
       if (check && prev[currentDateStr]) {
         const previous = prev[currentDateStr];
         let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);

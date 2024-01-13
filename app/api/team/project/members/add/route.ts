@@ -54,7 +54,7 @@ export async function POST(req: Request) {
           id: body.projectId,
         },
         data: {
-          UsersOnProject: {
+          usersOnProject: {
             create: {
               user: {
                 connect: {

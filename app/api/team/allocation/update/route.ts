@@ -45,13 +45,13 @@ const insertAllocation = async (data: any, range: any, userId: number, projectId
       frequency: onGoing ? "ONGOING" : "DAY",
       date: from,
       enddate: onGoing ? null : to,
-      Workspace: {
+      workspace: {
         connect: { slug: team },
       },
-      Project: {
+      project: {
         connect: { id: projectId },
       },
-      User: {
+      user: {
         connect: { id: userId },
       },
     },
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       select: {
         id: true,
         userId: true,
-        Project: true,
+        project: true,
         projectId: true,
         frequency: true,
         date: true,

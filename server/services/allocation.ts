@@ -2,11 +2,11 @@ import { db } from "@/server/db";
 
 export async function getProjectsId(slug: string) {
   const projectTeam = await db.project.findMany({
-    where: { Workspace: { slug } },
+    where: { workspace: { slug } },
     select: {
       id: true,
       name: true,
-      UsersOnProject: {
+      usersOnProject: {
         select: {
           user: {
             select: {
@@ -24,7 +24,7 @@ export async function getProjectsId(slug: string) {
     return {
       id: project.id,
       name: project.name,
-      users: project.UsersOnProject.map((user) => {
+      users: project.usersOnProject.map((user) => {
         return {
           id: user.user.id,
           name: user.user.name,
@@ -42,7 +42,7 @@ export const getAllUsers = async (slug: string) => {
     select: {
       id: true,
       name: true,
-      Allocation: { select: { id: true, projectId: true } },
+      allocation: { select: { id: true, projectId: true } },
     },
   });
   return users;

@@ -198,15 +198,15 @@ export async function POST(req: Request) {
         id: true,
         name: true,
         image: true,
-        UsersOnProject: {
+        usersOnProject: {
           select: {
             project: {
               select: {
                 id: true,
                 name: true,
                 billable: true,
-                Client: { select: { id: true, name: true } },
-                Allocation: {
+                client: { select: { id: true, name: true } },
+                allocation: {
                   select: {
                     id: true,
                     billableTime: true,
@@ -224,18 +224,18 @@ export async function POST(req: Request) {
           },
           orderBy: { project: { name: "asc" } },
         },
-        SkillScore: {
-          where: { Workspace: { slug: body.team } },
+        skillScore: {
+          where: { workspace: { slug: body.team } },
           select: {
             level: true,
-            Skill: {
+            skill: {
               select: {
                 name: true,
               },
             },
           },
         },
-        UserOnGroup: {
+        userOnGroup: {
           where: { workspace: { slug: body.team } },
           select: {
             group: {
@@ -256,22 +256,22 @@ export async function POST(req: Request) {
         id: user.id,
         name: user.name,
         image: user.image,
-        projects: user.UsersOnProject.map((project) => {
+        projects: user.usersOnProject.map((project) => {
           return {
             id: project.project.id,
             name: project.project.name,
             billable: project.project.billable,
-            clientName: project.project.Client.name,
-            allocations: project.project.Allocation,
+            clientName: project.project.client.name,
+            allocations: project.project.allocation,
           };
         }),
-        skills: user.SkillScore.map((skill) => {
+        skills: user.skillScore.map((skillList) => {
           return {
-            level: skill.level,
-            skill: skill.Skill.name,
+            level: skillList.level,
+            skill: skillList.skill.name,
           };
         }),
-        usergroup: user.UserOnGroup.map((group) => {
+        usergroup: user.userOnGroup.map((group) => {
           return {
             id: group.group.id,
             name: group.group.name,

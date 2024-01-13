@@ -41,13 +41,13 @@ export async function POST(req: Request) {
         frequency: body.frequency,
         billableTime: body.billableTime,
         nonBillableTime: body.nonBillableTime,
-        Workspace: {
+        workspace: {
           connect: { slug: body.team },
         },
-        Project: {
+        project: {
           connect: { id: body.projectId },
         },
-        User: {
+        user: {
           connect: { id: body.userId },
         },
       },

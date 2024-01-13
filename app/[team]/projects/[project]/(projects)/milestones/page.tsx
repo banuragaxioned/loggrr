@@ -14,10 +14,10 @@ export default async function Page({ params }: pageProps) {
 
   const milestoneList = await db.milestone.findMany({
     where: {
-      Workspace: {
+      workspace: {
         slug: team,
       },
-      Project: {
+      project: {
         id: +project,
       },
     },

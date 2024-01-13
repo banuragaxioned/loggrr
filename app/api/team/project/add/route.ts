@@ -38,17 +38,17 @@ export async function POST(req: Request) {
     const project = await db.project.create({
       data: {
         name: body.name,
-        Client: {
+        client: {
           connect: {
             id: body.clientId,
           },
         },
-        Workspace: {
+        workspace: {
           connect: {
             slug: body.team,
           },
         },
-        Owner: {
+        owner: {
           connect: {
             id: body.ownerId,
           },

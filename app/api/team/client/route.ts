@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const client = await db.client.create({
       data: {
         name: body.name,
-        Workspace: {
+        workspace: {
           connect: {
             slug: body.team,
           },
