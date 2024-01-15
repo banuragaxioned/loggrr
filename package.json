@@ -79,7 +79,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^14.0.4",
     "@tailwindcss/forms": "^0.5.7",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.1",
     "@types/nodemailer": "^6.4.14",
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.2.47",
@@ -93,7 +93,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.13.1",
     "postcss": "^8.4.33",
-    "prettier": "^3.2.1",
+    "prettier": "^3.2.2",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "prisma": "^5.8.0",
     "tailwindcss": "^3.4.1",
