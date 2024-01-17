@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-import { db } from "@/server/db";
-
 import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
+import { IsMember } from "@/server/services/members";
 
 interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;
@@ -16,24 +15,15 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  const hasAccess = await db.userWorkspace.findMany({
-    where: {
-      workspace: {
-        slug: slug,
-      },
-      user: {
-        id: user.id,
-      },
-    },
-  });
+  const isMember = await IsMember(slug, user.id);
 
-  if (hasAccess && hasAccess.length !== 1) {
+  if (!isMember) {
     return notFound();
   }
 
   return (
     <div className="container grid gap-12 md:grid-cols-1">
-      <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
+      <main>{children}</main>
     </div>
   );
 }

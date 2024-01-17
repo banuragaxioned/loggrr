@@ -41,3 +41,22 @@ export const getMembers = async (team: string) => {
 
   return flatMemberList;
 };
+
+export const IsMember = async (slug: string, userId: number) => {
+  const response = await db.userWorkspace.findFirstOrThrow({
+    where: {
+      workspace: {
+        slug: slug,
+      },
+      user: {
+        id: userId,
+      },
+    },
+  });
+
+  if (!response) {
+    throw new Error("You are not a member of this workspace");
+  }
+
+  return response;
+};
