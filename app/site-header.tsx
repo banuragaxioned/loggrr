@@ -53,15 +53,13 @@ export function SiteHeader() {
                 <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
               )}
               {status === "authenticated" && (
-                <Button variant="outline" size="icon" className="rounded-full">
-                  <UserAccountNav
-                    user={{
-                      name,
-                      image,
-                      email,
-                    }}
-                  />
-                </Button>
+                <UserAccountNav
+                  user={{
+                    name,
+                    image,
+                    email,
+                  }}
+                />
               )}
             </div>
             {/* Mobile Menu */}
@@ -79,15 +77,13 @@ export function SiteHeader() {
                       <div className="mt-8 flex items-center justify-between">
                         <ThemeToggle />
                         {status === "authenticated" && (
-                          <Button variant="outline" size="icon" className="rounded-full">
-                            <UserAccountNav
-                              user={{
-                                name,
-                                image,
-                                email,
-                              }}
-                            />
-                          </Button>
+                          <UserAccountNav
+                            user={{
+                              name,
+                              image,
+                              email,
+                            }}
+                          />
                         )}
                       </div>
                       <MobileNavMenu />
