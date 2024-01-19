@@ -4,7 +4,6 @@ import Link from "next/link";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
 import posthog from "posthog-js";
-import { useParams } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -20,8 +19,6 @@ interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
-  const { team } = useParams();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
