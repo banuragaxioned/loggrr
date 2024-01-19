@@ -175,7 +175,7 @@ export async function projectAccess(projectId: number) {
   return hasAccess;
 }
 
-export const getAllUserProjects = async (userId: number) => {
+export const getAllProjects = async (userId: number) => {
   const projects = await db.user.findUnique({
     where: {
       id: userId,

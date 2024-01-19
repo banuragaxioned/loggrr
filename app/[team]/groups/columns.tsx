@@ -8,5 +8,6 @@ export const columns: ColumnDef<UserGroup>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Group" />,
+    cell: ({ row }) => <span className="flex h-auto py-1 text-sm">{row.original.name}</span>,
   },
 ];
