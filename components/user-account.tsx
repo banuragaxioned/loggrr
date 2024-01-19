@@ -42,7 +42,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer text-red-600"
+          className="cursor-pointer text-destructive"
           onSelect={(event) => {
             event.preventDefault();
             posthog.reset();
