@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Menu } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -11,18 +11,26 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function MobileNavMenu() {
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./theme-toggle";
+import { UserAccountNav } from "@/components/user-account";
+
+interface UserPropsInterface {
+  status: string | null | undefined;
+  name: string | null | undefined;
+  email: string | null | undefined;
+  image: string | null | undefined;
+}
+
+export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) {
   const params = useParams();
   const slug = params?.team;
+  const { status, name, image, email } = userProps;
 
   const links = [
     {
@@ -126,56 +134,77 @@ export function MobileNavMenu() {
     },
   ];
 
-  const renderLinks = links.map((link) => (
-    <li key={link.id}>
-      {Array.isArray(link.subLinks) ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center">
-              {link.title} <ChevronRight className="ml-2" size={18} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" sticky="always">
-            {link.subLinkTitle && (
-              <>
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-3 rounded-sm bg-gradient-to-b from-muted/50 to-muted px-2 py-4">
-                    <p className="text-base font-medium leading-none">{link.subLinkTitle}</p>
-                    <span className="line-clamp-2 text-sm font-normal leading-snug text-muted-foreground">
-                      {link.subLinkDescription}
-                    </span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            <DropdownMenuGroup>
-              {link.subLinks.map((subLink) => (
-                <DropdownMenuItem key={subLink.id}>
-                  <Link href={subLink.href} legacyBehavior passHref>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{subLink.title}</p>
-                      <span className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        {subLink.description}
-                      </span>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Link href={`/${slug}`} legacyBehavior passHref>
-          Home
-        </Link>
-      )}
-    </li>
-  ));
-
   return (
-    <div className="mt-6">
-      <ul className="flex flex-col space-y-4">{renderLinks}</ul>
-    </div>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Menu size={24} />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-full">
+        <div className="mt-8 flex items-center justify-between">
+          <ThemeToggle />
+          {status === "authenticated" && (
+            <UserAccountNav
+              user={{
+                name,
+                image,
+                email,
+              }}
+            />
+          )}
+        </div>
+        <div className="mt-6">
+          <ul className="flex flex-col space-y-4">
+            {links.map((link) => (
+              <li key={link.id}>
+                {Array.isArray(link.subLinks) ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center">
+                        {link.title} <ChevronRight className="ml-2" size={18} />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent avoidCollisions={false} align="start" className="sm:max-w-80">
+                      {link.subLinkTitle && (
+                        <>
+                          <DropdownMenuLabel>
+                            <div className="flex flex-col space-y-3 rounded-sm bg-gradient-to-b from-muted/50 to-muted px-2 py-4">
+                              <p className="text-base font-medium leading-none">{link.subLinkTitle}</p>
+                              <span className="line-clamp-2 text-sm font-normal leading-snug text-muted-foreground">
+                                {link.subLinkDescription}
+                              </span>
+                            </div>
+                          </DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                        </>
+                      )}
+                      <DropdownMenuGroup>
+                        {link.subLinks.map((subLink) => (
+                          <DropdownMenuItem key={subLink.id}>
+                            <Link href={subLink.href}>
+                              <SheetClose className="flex w-full flex-col space-y-1 p-1">
+                                <p className="text-sm font-medium leading-none">{subLink.title}</p>
+                                <span className="line-clamp-2 text-left text-sm leading-snug text-muted-foreground">
+                                  {subLink.description}
+                                </span>
+                              </SheetClose>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Link href={`/${slug}`}>
+                    <SheetClose>Home</SheetClose>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

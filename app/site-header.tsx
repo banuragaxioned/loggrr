@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import posthog from "posthog-js";
-import { Clock, Loader, Menu } from "lucide-react";
+import { Clock, Loader } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 
@@ -14,16 +15,6 @@ import TeamSwitcher from "./team-switcher";
 
 import { TimeAdd } from "@/components/time-add";
 import { UserAccountNav } from "@/components/user-account";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { MobileNavMenu } from "./mobile-menu";
 
 export function SiteHeader() {
@@ -67,28 +58,7 @@ export function SiteHeader() {
               <div className="ml-auto flex space-x-2 md:hidden">
                 <>
                   <TimeAdd />
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <Menu size={24} />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-full">
-                      <div className="mt-8 flex items-center justify-between">
-                        <ThemeToggle />
-                        {status === "authenticated" && (
-                          <UserAccountNav
-                            user={{
-                              name,
-                              image,
-                              email,
-                            }}
-                          />
-                        )}
-                      </div>
-                      <MobileNavMenu />
-                    </SheetContent>
-                  </Sheet>
+                  <MobileNavMenu userProps={{ status, name, image, email }} />
                 </>
               </div>
             )}
