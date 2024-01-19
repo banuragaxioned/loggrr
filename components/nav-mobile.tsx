@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { NavItem } from "../types"
 import { ThemeToggle } from "../app/theme-toggle"
 import { useSession } from "next-auth/react"
+import { UserAccountNav } from "./user-account"
 
 interface MobileNavProps {
   items: NavItem[]
@@ -17,7 +18,7 @@ interface MobileNavProps {
 
 export function MobileNav({ items, children, toggle, toggleFunction, }: MobileNavProps) {
 
-  const { data: sessionData } = useSession();  
+  const { data: sessionData, status } = useSession();  
 
   return (
     <div
@@ -28,7 +29,18 @@ export function MobileNav({ items, children, toggle, toggleFunction, }: MobileNa
       <div className="relative z-20 grid gap-2 rounded-md bg-background border border-gray-500 p-4 shadow-md">
         <div className="flex justify-between border-b pb-2">
           <p className="flex items-center space-x-2">Hello,&nbsp;<span className="font-bold">{sessionData?.user.name}</span></p>
-          <ThemeToggle />
+          <div className="flex gap-2">
+            <ThemeToggle />
+            {status === "authenticated" && (
+              <UserAccountNav
+                user={{
+                  name: sessionData.user.name,
+                  image: sessionData.user.image,
+                  email: sessionData.user.email,
+                }}
+              />
+            )}
+          </div>
         </div>
         <nav className="grid grid-flow-row auto-rows-max text-sm">
           {items.map((item, index) => (

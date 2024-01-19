@@ -69,17 +69,19 @@ export function SiteHeader() {
               <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
             )}
             {status === "authenticated" && (
-              <UserAccountNav
-                user={{
-                  name: sessionData.user.name,
-                  image: sessionData.user.image,
-                  email: sessionData.user.email,
-                }}
-              />
+              <div className="hidden md:flex">
+                <UserAccountNav
+                  user={{
+                    name: sessionData.user.name,
+                    image: sessionData.user.image,
+                    email: sessionData.user.email,
+                  }}
+                />
+              </div>
             )}
           </nav>
           <button className="flex items-center space-x-2 md:hidden" onClick={() => toggleFunction(!toggle)}>
-            {toggle ? <X/> : <Menu/>}
+            {toggle ? <X className="h-8 w-8"/> : <Menu className="h-8 w-8"/>}
           </button>
           {toggle && ( <MobileNav toggleFunction={toggleFunction} toggle={toggle} items={mobileLinks}/>)}
         </div>
