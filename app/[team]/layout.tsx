@@ -21,9 +21,5 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  return (
-    <div className="container grid gap-12 md:grid-cols-1">
-      <main>{children}</main>
-    </div>
-  );
+  return <div className="container grid gap-12 md:grid-cols-1">{children}</div>;
 }
