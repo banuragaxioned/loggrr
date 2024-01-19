@@ -18,7 +18,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   const pathToInclude = ["/", "/manage"];
-  const showMenu = !pathToInclude.includes(pathname); // eturns true, for paths not present in pathToInclude
+  const showMenu = !pathToInclude.includes(pathname); // returns true, for paths not present in pathToInclude
 
   posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });
 
