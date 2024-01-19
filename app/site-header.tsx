@@ -82,7 +82,7 @@ export function SiteHeader() {
             )}
           </nav>
           <Button variant="outline" size="icon" className="flex items-center md:hidden" onClick={() => toggleFunction(!toggle)}>
-            {toggle ? <X className="h-8 w-8"/> : <Menu className="h-8 w-8"/>}
+            {toggle ? <X/> : <Menu/>}
           </Button>
           {toggle && ( <MobileNav toggleFunction={toggleFunction} toggle={toggle} items={mobileLinks}/>)}
         </div>
