@@ -36,7 +36,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/${team}/manage`} className="block h-full w-full cursor-pointer">
+          <Link href="/manage" className="block h-full w-full cursor-pointer">
             Manage
           </Link>
         </DropdownMenuItem>
