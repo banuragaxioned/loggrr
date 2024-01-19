@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
-import { getAllProjects } from "@/server/services/project";
-import { TimeEntry } from "@/components/time-entry";
+
 import { getCurrentUser } from "@/server/session";
-import { pageProps } from "@/types";
-import CategoryDataBar from "@/components/charts/category-bar";
-import { getTimeInHours } from "@/lib/helper";
+import { getAllProjects } from "@/server/services/project";
 import { getTimelogLastWeek } from "@/server/services/time-entry";
+
+import { pageProps } from "@/types";
+
+import { getTimeInHours } from "@/lib/helper";
+import CategoryDataBar from "@/components/charts/category-bar";
+import { TimeEntry } from "@/components/time-entry";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
