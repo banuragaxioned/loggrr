@@ -14,6 +14,8 @@ export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
 
+  console.log(params);
+
   if (!user) {
     return notFound();
   }

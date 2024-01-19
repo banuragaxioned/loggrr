@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
+import posthog from "posthog-js";
+import { useParams } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -12,13 +14,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/user-avatar";
-import posthog from "posthog-js";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<User, "name" | "image" | "email">;
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
+  const { team } = useParams();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -32,12 +35,14 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/manage">Manage</Link>
+        <DropdownMenuItem>
+          <Link href={`/${team}/manage`} className="block h-full w-full">
+            Manage
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer"
+          className="cursor-pointer text-red-600"
           onSelect={(event) => {
             event.preventDefault();
             posthog.reset();
