@@ -16,6 +16,7 @@ import { MenuContext } from "./menu-context";
 import { MobileNav } from "../components/nav-mobile";
 import { X, Menu } from "lucide-react";
 import { MainNavItem } from "../types";
+import { Button } from "../components/ui/button";
 
 export function SiteHeader() {
   const { data: sessionData, status } = useSession();
@@ -80,9 +81,9 @@ export function SiteHeader() {
               </div>
             )}
           </nav>
-          <button className="flex items-center space-x-2 md:hidden" onClick={() => toggleFunction(!toggle)}>
+          <Button variant="outline" size="icon" className="flex items-center md:hidden" onClick={() => toggleFunction(!toggle)}>
             {toggle ? <X className="h-8 w-8"/> : <Menu className="h-8 w-8"/>}
-          </button>
+          </Button>
           {toggle && ( <MobileNav toggleFunction={toggleFunction} toggle={toggle} items={mobileLinks}/>)}
         </div>
       </div>
