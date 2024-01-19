@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
-import { IsMember } from "@/server/services/members";
+import { isMember } from "@/server/services/members";
 
 interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;
@@ -15,9 +15,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  const isMember = await IsMember(slug, user.id);
+  const isMemberFound = await isMember(slug, user.id);
 
-  if (!isMember) {
+  if (!isMemberFound) {
     return notFound();
   }
 
