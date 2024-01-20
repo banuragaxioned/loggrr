@@ -17,6 +17,9 @@ export function SiteHeader() {
   const teamData = sessionData?.user.workspaces;
   const pathname = usePathname();
 
+  const pathToInclude = ["/", "/manage"];
+  const showMenu = !pathToInclude.includes(pathname); // returns true, for paths not present in pathToInclude
+
   posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });
 
   return (
@@ -29,8 +32,12 @@ export function SiteHeader() {
         {teamData && <TeamSwitcher teams={teamData} />}
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center space-x-3">
-            {pathname !== "/" && <NavMenu />}
-            {pathname !== "/" && <TimeAdd />}
+            {showMenu && (
+              <>
+                <NavMenu />
+                <TimeAdd />
+              </>
+            )}
             <ThemeToggle />
             {status === "loading" && (
               <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
