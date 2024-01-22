@@ -52,6 +52,7 @@
             "id": 1,
             "name": "Shirly D",
             "hours": 74,
+            "expanded": false,
             "loggedHours": [
               {
                 "id": 1,
@@ -83,6 +84,7 @@
             "id": 2,
             "name": "Kashif A",
             "hours": 125,
+            "expanded": false,
             "loggedHours": [
               {
                 "id": 1,

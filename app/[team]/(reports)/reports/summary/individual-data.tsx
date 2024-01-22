@@ -1,12 +1,12 @@
-"use client";
+import { Minus, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Plus } from "lucide-react";
+
 import LoggedData from "./logged-data";
 
-export default function IndividualData({ membersData }: { membersData: any }) {
+const IndividualData = ({ membersData }: { membersData: any }) => {
   return (
     membersData &&
     membersData.map((member: any) => (
@@ -17,8 +17,9 @@ export default function IndividualData({ membersData }: { membersData: any }) {
               <span className="ml-16 flex items-center gap-2">
                 {member.loggedHours?.length > 0 && (
                   <CollapsibleTrigger asChild>
-                    <Button variant="outline" className="z-10 h-6 w-6 p-0">
-                      <Plus size={16} />
+                    <Button variant="outline" className="group z-10 h-6 w-6 p-0">
+                      <Plus size={16} className="group-aria-expanded:hidden" />
+                      <Minus size={16} className="hidden group-aria-expanded:block" />
                     </Button>
                   </CollapsibleTrigger>
                 )}
@@ -34,4 +35,6 @@ export default function IndividualData({ membersData }: { membersData: any }) {
       </Collapsible>
     ))
   );
-}
+};
+
+export default IndividualData;
