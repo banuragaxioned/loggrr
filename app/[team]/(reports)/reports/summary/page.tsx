@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import ProjectsTable from "./projects-table";
 
 export const metadata: Metadata = {
   title: `Summary`,
@@ -50,7 +51,7 @@ export default async function Page({ params }: pageProps) {
         <DropdownMenu>
           <DropdownMenuTrigger
             asChild
-            className={`${selected ? "bg-violet-200 text-violet-800 hover:bg-violet-100 hover:text-violet-700 dark:bg-violet-900/20 dark:text-white dark:hover:bg-violet-400/20" : ""}`}
+            className={`${selected ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20" : ""}`}
           >
             <Button variant="outline" className="flex gap-2">
               {dropdown.title} <ChevronDown size={20} />
@@ -93,8 +94,8 @@ export default async function Page({ params }: pageProps) {
           </Button>
         </div>
       </Card>
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+      <div className="mb-10">
+        <ProjectsTable />
       </div>
     </DashboardShell>
   );

@@ -68,6 +68,18 @@
   }
 }
 
+.descendent::before {
+  content: "";
+  width: 14px;
+  height: 42px;
+  top: -30px;
+  left: -20.5px;
+  @apply border border-gray-200 absolute;
+  border-bottom-left-radius: 6px;
+  border-right: transparent;
+  border-top: transparent;
+}
+
 @layer base {
   * {
     @apply border-border;
