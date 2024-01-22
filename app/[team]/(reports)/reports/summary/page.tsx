@@ -41,13 +41,17 @@ const allDropdowns = [
 export default async function Page({ params }: pageProps) {
   const { team } = params;
   const data = await getProjectSummary(team);
+  const selected = false; // Fake selected
 
   const renderDropdowns =
     Array.isArray(allDropdowns) &&
     allDropdowns.map((dropdown) => (
       <li key={dropdown.id}>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger
+            asChild
+            className={`${selected ? "bg-violet-200 text-violet-800 hover:bg-violet-100 hover:text-violet-700 dark:bg-violet-900/20 dark:text-white dark:hover:bg-violet-400/20" : ""}`}
+          >
             <Button variant="outline" className="flex gap-2">
               {dropdown.title} <ChevronDown size={20} />
             </Button>
