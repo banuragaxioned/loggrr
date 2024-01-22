@@ -66,11 +66,11 @@ export function SiteHeader() {
             {pathname !== "/" && <NavMenu />}
             {pathname !== "/" && <TimeAdd />}
             <ThemeToggle className="hidden md:flex" />
-            {status === "loading" && (
-              <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
-            )}
-            {status === "authenticated" && (
-              <div className="hidden md:flex">
+            <div className="hidden md:flex">
+              {status === "loading" && (
+                <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
+              )}
+              {status === "authenticated" && (
                 <UserAccountNav
                   user={{
                     name: sessionData.user.name,
@@ -78,8 +78,8 @@ export function SiteHeader() {
                     email: sessionData.user.email,
                   }}
                 />
-              </div>
-            )}
+              )}
+            </div>
           </nav>
           <Button variant="outline" size="icon" className="flex items-center md:hidden" onClick={() => toggleFunction(!toggle)}>
             {toggle ? <X/> : <Menu/>}
