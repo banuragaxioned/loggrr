@@ -167,7 +167,7 @@ export default function ProjectsTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="font-medium">Name</TableHead>
+            <TableHead className="w-[80%] font-medium">Name</TableHead>
             <TableHead className="font-medium">Hours</TableHead>
           </TableRow>
         </TableHeader>
