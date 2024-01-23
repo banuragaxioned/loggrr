@@ -50,6 +50,8 @@ export function SiteHeader() {
       title: "Report",
     },
   ]
+  const pathToInclude = ["/", "/manage"];
+  const showMenu = !pathToInclude.includes(pathname); // returns true, for paths not present in pathToInclude
 
   posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });
 
@@ -63,8 +65,12 @@ export function SiteHeader() {
         {teamData && <TeamSwitcher teams={teamData} />}
         <div className="flex flex-1 items-center justify-end space-x-2 md:justify-end">
           <nav className="flex items-center space-x-3">
-            {pathname !== "/" && <NavMenu />}
-            {pathname !== "/" && <TimeAdd />}
+            {showMenu && (
+              <>
+                <NavMenu />
+                <TimeAdd />
+              </>
+            )}
             <ThemeToggle className="hidden md:flex" />
             <div className="hidden md:flex">
               {status === "loading" && (
