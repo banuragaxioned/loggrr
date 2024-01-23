@@ -6,7 +6,6 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
   ColumnFiltersState,
   getFilteredRowModel,
   ExpandedState,
@@ -14,12 +13,8 @@ import {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Minus, Plus } from "lucide-react";
-import IndividualData from "../../summary/individual-data";
-import { Task } from "./columns";
+import { DataTableToolbar } from "./toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,10 +29,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onExpandedChange: setExpanded,
+    getSubRows: (row: any) => row.subRows,
     getExpandedRowModel: getExpandedRowModel(),
     state: {
       columnFilters,
@@ -47,14 +42,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Search by project name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-      </div>
+      <DataTableToolbar table={table} />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -71,40 +59,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row: any) => (
+            table.getRowModel().rows.map((row) => (
               <Fragment key={row.id}>
                 <TableRow data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell: any) => (
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
-                {row.original.tasks.map((task: Task) => (
-                  <Collapsible key={task.id} asChild>
-                    <>
-                      <TableRow>
-                        <TableCell>
-                          <span className="ml-8 flex items-center gap-2">
-                            {task.members && task.members?.length > 0 && (
-                              <CollapsibleTrigger asChild>
-                                <Button variant="outline" className="group h-6 w-6 p-0">
-                                  <Plus size={16} className="group-aria-expanded:hidden" />
-                                  <Minus size={16} className="hidden group-aria-expanded:block" />
-                                </Button>
-                              </CollapsibleTrigger>
-                            )}
-                            {task.name}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="inline-block w-20 text-right">{task.hours} h</span>
-                        </TableCell>
-                      </TableRow>
-                      <CollapsibleContent asChild>
-                        <IndividualData membersData={task.members} />
-                      </CollapsibleContent>
-                    </>
-                  </Collapsible>
-                ))}
               </Fragment>
             ))
           ) : (

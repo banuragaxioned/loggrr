@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
-import { Logged, columns } from "./table/columns";
-import { DataTable } from "./table/data-table";
+import { Logged, columns } from "./columns";
+import { DataTable } from "./data-table";
+import { DashboardShell } from "@/components/ui/shell";
+import { DashboardHeader } from "@/components/ui/header";
 
 export const metadata: Metadata = {
   title: `Logged`,
@@ -14,26 +16,26 @@ async function getData(): Promise<Logged[]> {
       id: 1,
       name: "CFM",
       hours: 1187,
-      tasks: [
+      subRows: [
         {
           id: 1,
           name: "ClearForMe Ongoing retainer",
           hours: 1184.5,
-          members: [
+          subRows: [
             {
               id: 1,
               name: "Mayur S",
               hours: 74,
-              loggedHours: [
+              subRows: [
                 {
                   id: 1,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
                 {
                   id: 2,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
@@ -43,10 +45,10 @@ async function getData(): Promise<Logged[]> {
               id: 2,
               name: "Dheeraj M",
               hours: 125,
-              loggedHours: [
+              subRows: [
                 {
                   id: 1,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
@@ -58,33 +60,33 @@ async function getData(): Promise<Logged[]> {
           id: 2,
           name: "ClearForMe Test",
           hours: 74,
-          members: [
+          subRows: [
             {
               id: 1,
               name: "Shirly D",
               hours: 74,
-              loggedHours: [
+              subRows: [
                 {
                   id: 1,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
                 {
                   id: 2,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
                 {
                   id: 3,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
                 {
                   id: 4,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
@@ -94,16 +96,16 @@ async function getData(): Promise<Logged[]> {
               id: 2,
               name: "Kashif A",
               hours: 125,
-              loggedHours: [
+              subRows: [
                 {
                   id: 1,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
                 {
                   id: 2,
-                  date: "Monday, January 02, 2023",
+                  name: "Monday, January 02, 2023",
                   description: "Tickets, Meets and other project related work",
                   hours: 56,
                 },
@@ -117,12 +119,12 @@ async function getData(): Promise<Logged[]> {
       id: 2,
       name: "ML Applied",
       hours: 125,
-      tasks: [
+      subRows: [
         {
           id: 1,
           name: "Development Support Agreement",
           hours: 3,
-          members: [
+          subRows: [
             {
               id: 1,
               name: "Lorem Ipsum",
@@ -141,7 +143,7 @@ async function getData(): Promise<Logged[]> {
       id: 3,
       name: "Axioned",
       hours: 14,
-      tasks: [
+      subRows: [
         {
           id: 1,
           name: "Loggr: Internal",
@@ -161,8 +163,11 @@ export default async function Page({ params }: pageProps) {
   const data = await getData();
 
   return (
-    <div className="mb-8">
-      <DataTable columns={columns} data={data} />
-    </div>
+    <DashboardShell>
+      <DashboardHeader heading="Report Page" />
+      <div className="mb-8">
+        <DataTable columns={columns} data={data} />
+      </div>
+    </DashboardShell>
   );
 }
