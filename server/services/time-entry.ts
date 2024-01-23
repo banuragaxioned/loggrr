@@ -46,33 +46,39 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
               name: true,
             },
           },
-          timeEntry: {
-            where: {
-              date: {
-                gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
-                lte: endDate ? endDate : new Date(),
-              },
-            },
+          usersOnProject: {
             select: {
-              date: true,
-              time: true,
-              billable: true,
-              milestone: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-              task: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
               user: {
                 select: {
                   id: true,
                   name: true,
+                  image: true,
+                  timeEntry: {
+                    where: {
+                      date: {
+                        gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
+                        lte: endDate ? endDate : new Date(),
+                      },
+                    },
+                    select: {
+                      date: true,
+                      time: true,
+                      billable: true,
+                      comments: true,
+                      milestone: {
+                        select: {
+                          id: true,
+                          name: true,
+                        },
+                      },
+                      task: {
+                        select: {
+                          id: true,
+                          name: true,
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -94,14 +100,23 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
           projectBillable: project.billable,
           projectBudget: project.budget,
           projectStatus: project.status,
-          timeEntries: project.timeEntry.map((timeEntry) => {
+          users: project.usersOnProject.map((user) => {
             return {
-              user: timeEntry.user.name,
-              date: timeEntry.date,
-              time: timeEntry.time,
-              billable: timeEntry.billable,
-              milestone: timeEntry.milestone.name,
-              task: timeEntry.task?.name,
+              userId: user.user.id,
+              userName: user.user.name,
+              userImage: user.user.image,
+              userTimeEntry: user.user.timeEntry.map((timeEntry) => {
+                return {
+                  date: timeEntry.date,
+                  time: timeEntry.time,
+                  billable: timeEntry.billable,
+                  comments: timeEntry.comments,
+                  milestoneId: timeEntry.milestone.id,
+                  milestone: timeEntry.milestone.name,
+                  taskId: timeEntry.task?.id,
+                  task: timeEntry.task?.name,
+                };
+              }),
             };
           }),
         };
