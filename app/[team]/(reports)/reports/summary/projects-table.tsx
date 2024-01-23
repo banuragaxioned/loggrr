@@ -168,7 +168,9 @@ export default function ProjectsTable() {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[80%] font-medium">Name</TableHead>
-            <TableHead className="font-medium">Hours</TableHead>
+            <TableHead className="font-medium">
+              <span className="inline-block w-20 text-right">Hours</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -183,7 +185,9 @@ export default function ProjectsTable() {
                       {project.name}
                     </span>
                   </TableCell>
-                  <TableCell className="font-bold">{project.hours} h</TableCell>
+                  <TableCell className="font-bold">
+                    <span className="inline-block w-20 text-right">{project.hours} h</span>
+                  </TableCell>
                 </TableRow>
                 {project.tasks.map((task: any) => (
                   <Collapsible key={task.id} asChild>
@@ -202,7 +206,9 @@ export default function ProjectsTable() {
                             {task.name}
                           </span>
                         </TableCell>
-                        <TableCell>{task.hours} h</TableCell>
+                        <TableCell>
+                          <span className="inline-block w-20 text-right">{task.hours} h</span>
+                        </TableCell>
                       </TableRow>
                       <CollapsibleContent asChild>
                         <IndividualData key={task.expanded} membersData={task.members} />

@@ -26,7 +26,9 @@ const IndividualData = ({ membersData }: { membersData: any }) => {
                 {member.name}
               </span>
             </TableCell>
-            <TableCell className="opacity-50">{member.hours} h</TableCell>
+            <TableCell className="opacity-50">
+              <span className="inline-block w-20 text-right">{member.hours} h</span>
+            </TableCell>
           </TableRow>
           <CollapsibleContent asChild>
             <LoggedData loggedData={member.loggedHours} />
