@@ -22,7 +22,7 @@ export function SecondaryNavigation({ items }: SecondaryNavProps) {
             key={link.href}
             className={cn(
               "flex h-8 gap-2 border items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary",
-              path == link.href ? "bg-muted font-medium text-primary" : "text-muted-foreground"
+              path == link.href ? "bg-muted text-primary" : "text-muted-foreground"
             )}
           >
             {link.icon}
