@@ -113,7 +113,6 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
               userImage: user.user.image,
               userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += entry.time), 0),
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
-                console.log(timeEntry, "timeEntry");
                 const inputDate = new Date(timeEntry.date);
                 const formattedDate = inputDate.toLocaleDateString("en-US", {
                   weekday: "long",
