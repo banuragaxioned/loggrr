@@ -4,33 +4,28 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Minus, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-interface LoggedHours {
-  id: number;
-  name: string;
-  description: string;
-  hours: number;
-}
-
-interface Members {
-  id: number;
-  name: string;
-  hours: number;
-  subRows?: LoggedHours[];
-}
-
-export interface Task {
-  id: number;
-  name: string;
-  hours: number;
-  subRows?: Members[];
-}
 
 export interface Logged {
   id: number;
   name: string;
-  hours: number;
-  subRows?: Task[];
+  hours?: number;
   description?: string;
+  subRows?: {
+    id: number;
+    name: string;
+    hours?: number;
+    subRows?: {
+      id: number;
+      name: string;
+      hours?: number;
+      subRows?: {
+        id: number;
+        name: string;
+        description: string;
+        hours?: number;
+      }[];
+    }[];
+  }[];
 }
 
 export const columns: ColumnDef<Logged>[] = [
@@ -73,7 +68,7 @@ export const columns: ColumnDef<Logged>[] = [
     header: () => <span className="inline-block w-20 text-right">Hours</span>,
     cell: ({ row }) => {
       const { depth } = row;
-      const formatted = `${row.getValue("hours")} h`;
+      const formatted = `${row.getValue("hours") ?? 0} h`;
 
       return (
         <span

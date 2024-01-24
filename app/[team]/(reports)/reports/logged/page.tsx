@@ -5,168 +5,62 @@ import { Logged, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
+import { getLogged } from "@/server/services/time-entry";
 
 export const metadata: Metadata = {
   title: `Logged`,
 };
 
-async function getData(): Promise<Logged[]> {
-  return [
-    {
-      id: 1,
-      name: "CFM",
-      hours: 1187,
-      subRows: [
-        {
-          id: 1,
-          name: "ClearForMe Ongoing retainer",
-          hours: 1184.5,
-          subRows: [
-            {
-              id: 1,
-              name: "Mayur S",
-              hours: 74,
-              subRows: [
-                {
-                  id: 1,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-                {
-                  id: 2,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-              ],
-            },
-            {
-              id: 2,
-              name: "Dheeraj M",
-              hours: 125,
-              subRows: [
-                {
-                  id: 1,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: "ClearForMe Test",
-          hours: 74,
-          subRows: [
-            {
-              id: 1,
-              name: "Shirly D",
-              hours: 74,
-              subRows: [
-                {
-                  id: 1,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-                {
-                  id: 2,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-                {
-                  id: 3,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-                {
-                  id: 4,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-              ],
-            },
-            {
-              id: 2,
-              name: "Kashif A",
-              hours: 125,
-              subRows: [
-                {
-                  id: 1,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-                {
-                  id: 2,
-                  name: "Monday, January 02, 2023",
-                  description: "Tickets, Meets and other project related work",
-                  hours: 56,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "ML Applied",
-      hours: 125,
-      subRows: [
-        {
-          id: 1,
-          name: "Development Support Agreement",
-          hours: 3,
-          subRows: [
-            {
-              id: 1,
-              name: "Lorem Ipsum",
-              hours: 3,
-            },
-            {
-              id: 2,
-              name: "Lorem dolor sit amet",
-              hours: 34,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Axioned",
-      hours: 14,
-      subRows: [
-        {
-          id: 1,
-          name: "Loggr: Internal",
-          hours: 3,
-        },
-        {
-          id: 2,
-          name: "ClearForMe Test",
-          hours: 17,
-        },
-      ],
-    },
-  ];
-}
-
 export default async function Page({ params }: pageProps) {
-  const data = await getData();
+  const loggedData = await getLogged(params.team);
+
+  const transformedData = loggedData.map((logged: any) => {
+    return {
+      id: logged.clientId,
+      name: logged.clientName,
+      subRows: logged.projects.map((project: any) => {
+        const projectHours = project.users.reduce((sum: any, item: any) => (sum += item.hours), 0);
+        console.log(projectHours);
+
+        return {
+          id: project.projectId,
+          name: project.projectName,
+          hours: projectHours,
+          subRows: project.users.map((user: any) => {
+            const userHours = user.userTimeEntry.reduce((sum: any, item: any) => (sum += item.time), 0);
+
+            return {
+              id: user.userId,
+              name: user.userName,
+              hours: userHours,
+              subRows: user.userTimeEntry.map((time: any) => {
+                const inputDate = new Date(time.date);
+                const formattedDate = inputDate.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                });
+
+                return {
+                  id: time.comments,
+                  hours: time.time,
+                  name: formattedDate,
+                  description: time.comments,
+                };
+              }),
+            };
+          }),
+        };
+      }),
+    };
+  });
 
   return (
     <DashboardShell>
       <DashboardHeader heading="Logged Hours" text="View all the hours that is logged" />
       <div className="mb-8">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={transformedData} />
       </div>
     </DashboardShell>
   );

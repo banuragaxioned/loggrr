@@ -55,10 +55,11 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
                   image: true,
                   timeEntry: {
                     where: {
-                      date: {
-                        gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
-                        lte: endDate ? endDate : new Date(),
-                      },
+                      // TODO: Add conditional filter else show all data
+                      // date: {
+                      //   gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
+                      //   lte: endDate ? endDate : new Date(),
+                      // },
                     },
                     select: {
                       date: true,
