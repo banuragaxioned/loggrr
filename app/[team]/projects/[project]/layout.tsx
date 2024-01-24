@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/server/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
 import { CreditCard, FileText, HomeIcon, User } from "lucide-react";
+import { SecondaryNavigation } from "./secondary-nav";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -16,7 +17,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   const sidebarProjectsList: SidebarNavItem[] = [
     {
       title: "Overview",
-      href: `/${slug}/projects/${projectId}/`,
+      href: `/${slug}/projects/${projectId}`,
       icon: <HomeIcon height={18} width={18} />,
     },
     {
@@ -45,7 +46,10 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       <aside className="hidden w-[200px] flex-col md:flex">
         <DashboardNav items={sidebarProjectsList} />
       </aside>
-      <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
+      <main className="flex w-full flex-1 flex-col overflow-hidden">
+        <SecondaryNavigation items={sidebarProjectsList} />
+        {children}
+      </main>
     </div>
   );
 }
