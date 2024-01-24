@@ -164,7 +164,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Report Page" />
+      <DashboardHeader heading="Logged Hours" text="View all the hours that is logged" />
       <div className="mb-8">
         <DataTable columns={columns} data={data} />
       </div>

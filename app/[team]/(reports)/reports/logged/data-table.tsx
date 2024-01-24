@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -10,26 +10,36 @@ import {
   getFilteredRowModel,
   ExpandedState,
   getExpandedRowModel,
+  Row,
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { DataTableToolbar } from "./toolbar";
+import { Assignment } from "@/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
+const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
+  const regex = new RegExp(filterValue, "ig");
+  return regex.test(row.original.name);
+};
+
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    filterFromLeafRows: true,
+    filterFns: { expandingRowFilter },
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
     onExpandedChange: setExpanded,
     getSubRows: (row: any) => row.subRows,
@@ -37,6 +47,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     state: {
       columnFilters,
       expanded,
+      columnVisibility,
     },
   });
 
@@ -59,15 +70,19 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <Fragment key={row.id}>
-                <TableRow data-state={row.getIsSelected() && "selected"}>
+            table.getRowModel().rows.map((row) => {
+              if (row.depth === 0 && !row.getIsExpanded()) {
+                row.toggleExpanded(true);
+              }
+
+              return (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
-              </Fragment>
-            ))
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

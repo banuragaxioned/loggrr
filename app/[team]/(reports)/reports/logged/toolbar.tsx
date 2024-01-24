@@ -115,15 +115,16 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
 
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-4">
-      {/* <Input
-        placeholder="Filter project..."
-        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-        onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-        className="max-w-sm"
-      /> */}
-
       {/* Left Area */}
       <ul className="flex gap-2">
+        {/* <li>
+          <Input
+            placeholder="Filter project..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+            className="max-w-sm"
+          />
+        </li> */}
         {renderDropdowns}
         <li>
           <DropdownMenu>

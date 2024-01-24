@@ -43,13 +43,9 @@ export const columns: ColumnDef<Logged>[] = [
       const isExpanded = row.getIsExpanded();
       const value = getValue();
 
-      if (depth === 0) {
-        row.toggleExpanded(true);
-      }
-
       return (
         <div className={`flex items-center gap-2 ml-${depth * 8}`}>
-          {depth !== 0 && (canExpand || depth !== 3) && (
+          {depth !== 0 && canExpand && depth !== 3 && (
             <Button
               {...{
                 onClick: row.getToggleExpandedHandler(),
