@@ -58,7 +58,7 @@ export const columns: ColumnDef<Logged>[] = [
             {userImage && (
               <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
             )}
-            <span className="w-[200px]">{value}</span>
+            <span className="w-[220px]">{value}</span>
             {depth === 3 && <span className="ml-12 opacity-50">{original?.description ?? ""}</span>}
           </div>
         </div>

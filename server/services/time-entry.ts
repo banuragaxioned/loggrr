@@ -78,6 +78,7 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
                           name: true,
                         },
                       },
+                      projectId: true,
                     },
                   },
                 },
@@ -102,12 +103,17 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
           projectBudget: project.budget,
           projectStatus: project.status,
           users: project.usersOnProject.map((user) => {
+            const timeEntryBasedOnProject = user.user.timeEntry.filter(
+              (timeEntry) => timeEntry.projectId === project.id,
+            );
+
             return {
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
-              userHours: user.user.timeEntry.reduce((sum, entry) => (sum += entry.time), 0),
-              userTimeEntry: user.user.timeEntry.map((timeEntry) => {
+              userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += entry.time), 0),
+              userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
+                console.log(timeEntry, "timeEntry");
                 const inputDate = new Date(timeEntry.date);
                 const formattedDate = inputDate.toLocaleDateString("en-US", {
                   weekday: "long",
