@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
-import { CreditCard, FileText, HomeIcon, User } from "lucide-react";
+import { ClipboardCheck, Milestone, TextSearch, Users } from "lucide-react";
 import { SecondaryNavigation } from "./secondary-nav";
 
 interface DashboardLayoutProps extends projectProps {
@@ -18,22 +18,22 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     {
       title: "Overview",
       href: `/${slug}/projects/${projectId}`,
-      icon: <HomeIcon height={18} width={18} />,
+      icon: <TextSearch height={18} width={18} />,
     },
     {
       title: "Milestones",
       href: `/${slug}/projects/${projectId}/milestones`,
-      icon: <FileText height={18} width={18} />,
+      icon: <Milestone height={18} width={18} />,
     },
     {
       title: "Tasks",
       href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <CreditCard height={18} width={18} />,
+      icon: <ClipboardCheck height={18} width={18} />,
     },
     {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
-      icon: <User height={18} width={18} />,
+      icon: <Users height={18} width={18} />,
     },
   ];
 
