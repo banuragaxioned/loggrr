@@ -106,8 +106,18 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
+              userHours: user.user.timeEntry.reduce((sum, entry) => (sum += entry.time), 0),
               userTimeEntry: user.user.timeEntry.map((timeEntry) => {
+                const inputDate = new Date(timeEntry.date);
+                const formattedDate = inputDate.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                });
+
                 return {
+                  formattedDate,
                   date: timeEntry.date,
                   time: timeEntry.time,
                   billable: timeEntry.billable,

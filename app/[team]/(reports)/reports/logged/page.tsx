@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
-import { Logged, columns } from "./columns";
-import { DataTable } from "./data-table";
+import { getLogged } from "@/server/services/time-entry";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
-import { getLogged } from "@/server/services/time-entry";
+
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 export const metadata: Metadata = {
   title: `Logged`,
@@ -14,38 +15,31 @@ export const metadata: Metadata = {
 export default async function Page({ params }: pageProps) {
   const loggedData = await getLogged(params.team);
 
+  // Transformed data as per the table structure
   const transformedData = loggedData.map((logged: any) => {
+    const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
+    const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
     return {
       id: logged.clientId,
       name: logged.clientName,
+      hours: clientHours,
       subRows: logged.projects.map((project: any) => {
-        const projectHours = project.users.reduce((sum: any, item: any) => (sum += item.hours), 0);
-        console.log(projectHours);
-
+        const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
         return {
           id: project.projectId,
           name: project.projectName,
           hours: projectHours,
           subRows: project.users.map((user: any) => {
-            const userHours = user.userTimeEntry.reduce((sum: any, item: any) => (sum += item.time), 0);
-
             return {
               id: user.userId,
               name: user.userName,
-              hours: userHours,
+              hours: user.userHours,
+              image: user.userImage,
               subRows: user.userTimeEntry.map((time: any) => {
-                const inputDate = new Date(time.date);
-                const formattedDate = inputDate.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "2-digit",
-                });
-
                 return {
                   id: time.comments,
                   hours: time.time,
-                  name: formattedDate,
+                  name: time.formattedDate,
                   description: time.comments,
                 };
               }),
