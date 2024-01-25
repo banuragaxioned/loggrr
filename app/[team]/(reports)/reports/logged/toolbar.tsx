@@ -57,15 +57,6 @@ const allDropdowns = [
       { id: 3, title: "XYZ" },
     ],
   },
-  {
-    id: 4,
-    title: "Billable",
-    searchable: false,
-    options: [
-      { id: 1, title: "Billable" },
-      { id: 2, title: "Non-Billable" },
-    ],
-  },
 ];
 
 const otherFilters = [
@@ -92,22 +83,13 @@ const otherFilters = [
 export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps<Assignment>) {
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month");
-  const selectedBilling = searcParams.get("billing");
-  const [billing, setBilling] = useState(selectedBilling);
-
-  const handleBillingClick = () => {
-    if (!billing) setBilling("true");
-    if (billing === "true") setBilling("false");
-    if (billing === "false") setBilling("");
-  };
+  const selectedBilling = searcParams.get("billable");
 
   const generateBillingQuery = () => {
-    if (!billing) return "true";
-    if (billing === "true") return "false";
-    if (billing === "false") return "";
+    if (!selectedBilling) return { text: "Billable", nextValue: "true" };
+    if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
+    if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
   };
-
-  console.log(billing);
 
   const selected = false; // Fake selected
 
@@ -158,20 +140,17 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
         <li>
           <Button
             className={
-              billing === "true" || billing === "false"
+              selectedBilling === "true" || selectedBilling === "false"
                 ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
                 : ""
             }
             variant="outline"
             asChild
-            onClick={handleBillingClick}
           >
             <Link
-              href={`?${new URLSearchParams({ month: selectedMonth ?? "", billable: generateBillingQuery() ?? "" })}`}
+              href={`?${new URLSearchParams({ month: selectedMonth ?? "", billable: generateBillingQuery()?.nextValue ?? "" })}`}
             >
-              {!billing ? "Billable" : ""}
-              {billing === "true" && "Billable"}
-              {billing === "false" && "Non-Billable"}
+              {generateBillingQuery()?.text}
             </Link>
           </Button>
         </li>

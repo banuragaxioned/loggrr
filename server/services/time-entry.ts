@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import { stringToBoolean } from "@/lib/helper";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
   const response = await db.timeEntry.findMany({
@@ -23,7 +24,9 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response;
 };
 
-export const getLogged = async (slug: string, startDate?: Date | null, endDate?: Date | null) => {
+export const getLogged = async (slug: string, startDate?: Date | null, endDate?: Date | null, billing?: string) => {
+  const isBillable = stringToBoolean(billing);
+
   const query = await db.client.findMany({
     where: {
       workspace: {
@@ -56,8 +59,11 @@ export const getLogged = async (slug: string, startDate?: Date | null, endDate?:
                   timeEntry: {
                     where: {
                       date: {
-                        gte: startDate ? startDate : new Date(0), // Using new Date(0) as a default start date
-                        lte: endDate ? endDate : new Date(), // Using new Date() as a default end date
+                        gte: startDate ? startDate : new Date(0),
+                        lte: endDate ? endDate : new Date(),
+                      },
+                      billable: {
+                        ...(isBillable !== null && { equals: isBillable }),
                       },
                     },
                     select: {

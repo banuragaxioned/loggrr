@@ -91,3 +91,12 @@ export const splitIntoChunk = (array: { id: number }[], size: number) => {
 
   return chunkedData;
 };
+export const stringToBoolean = (inputString: string | undefined): boolean | null => {
+  if (inputString === "true") {
+    return true;
+  } else if (inputString === "false") {
+    return false;
+  } else {
+    return null;
+  }
+};
