@@ -28,8 +28,6 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
   const [open, setOpen] = useState(false);
   const labelToDisplay = values.options.find((value) => value.link === selectedMonth)?.title;
 
-  console.log(selectedMonth);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
