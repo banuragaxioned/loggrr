@@ -23,7 +23,7 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response;
 };
 
-export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) => {
+export const getLogged = async (slug: string, startDate?: Date | null, endDate?: Date | null) => {
   const query = await db.client.findMany({
     where: {
       workspace: {
@@ -55,11 +55,10 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
                   image: true,
                   timeEntry: {
                     where: {
-                      // TODO: Add conditional filter else show all data
-                      // date: {
-                      //   gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
-                      //   lte: endDate ? endDate : new Date(),
-                      // },
+                      date: {
+                        gte: startDate ? startDate : new Date(0), // Using new Date(0) as a default start date
+                        lte: endDate ? endDate : new Date(), // Using new Date() as a default end date
+                      },
                     },
                     select: {
                       date: true,

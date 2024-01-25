@@ -32,7 +32,7 @@ export const columns: ColumnDef<Logged>[] = [
       const userImage = depth === 2 && row.original.image;
 
       return (
-        <div className={`flex items-center gap-2 ml-${depth * 8}`}>
+        <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
           {depth !== 0 && depth !== 3 && canExpand && (
             <Button
               {...{

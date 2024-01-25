@@ -14,20 +14,24 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Plus, Upload } from "lucide-react";
+import FilterBox from "./filter-box";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {}
 
+const monthFilter = {
+  id: 1,
+  title: "Month",
+  searchable: false,
+  options: [
+    { id: 0, title: "Show All", link: "" },
+    { id: 1, title: "Current Month", link: "current" },
+    { id: 2, title: "Last 3 Months", link: "last3" },
+    { id: 3, title: "Last 6 Months", link: "last6" },
+    { id: 4, title: "Last Year", link: "last12" },
+  ],
+};
+
 const allDropdowns = [
-  {
-    id: 1,
-    title: "Month",
-    searchable: false,
-    options: [
-      { id: 1, title: "This Month" },
-      { id: 2, title: "Previous Month" },
-      { id: 3, title: "Last 3 Months" },
-    ],
-  },
   {
     id: 2,
     title: "Projects",
@@ -125,6 +129,9 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
             className="max-w-sm"
           />
         </li> */}
+        <li>
+          <FilterBox values={monthFilter} />
+        </li>
         {renderDropdowns}
         <li>
           <DropdownMenu>
