@@ -23,10 +23,12 @@ interface LoggedInterface {
 
 const FilterBox = ({ values }: { values: LoggedInterface }) => {
   const searcParams = useSearchParams();
-  const selectedMonth = searcParams.get("month");
+  const selectedMonth = searcParams.get("month") ?? "";
   const selectedBilling = searcParams.get("billable");
   const [open, setOpen] = useState(false);
   const labelToDisplay = values.options.find((value) => value.link === selectedMonth)?.title;
+
+  console.log(selectedMonth);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,7 +48,7 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
           <CommandList>
             {values.options.map((option) => (
               <CommandItem
-                value={option.link}
+                value={option.link || "all"}
                 key={option.id}
                 onSelect={() => {
                   setOpen(false);
@@ -55,10 +57,10 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
               >
                 <Link
                   href={`?${new URLSearchParams({ month: option.link, billable: selectedBilling ?? "" })}`}
-                  className="flex w-full items-center justify-between px-2 py-1.5"
+                  className="flex w-full items-center justify-between px-3 py-1.5"
                 >
                   {option.title}
-                  {selectedMonth === option.link && <Check size={16} />}
+                  <Check size={16} className={selectedMonth === option.link ? "opacity-100" : "opacity-0"} />
                 </Link>
               </CommandItem>
             ))}
