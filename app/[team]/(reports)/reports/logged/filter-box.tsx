@@ -24,11 +24,9 @@ interface LoggedInterface {
 const FilterBox = ({ values }: { values: LoggedInterface }) => {
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month");
+  const selectedBilling = searcParams.get("billable");
   const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(selectedMonth);
   const labelToDisplay = values.options.find((value) => value.link === selectedMonth)?.title;
-
-  console.log(selectedMonth, labelToDisplay);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -51,17 +49,16 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
                 value={option.link}
                 key={option.id}
                 onSelect={() => {
-                  setSelectedValue(option.link);
                   setOpen(false);
                 }}
                 className="p-0"
               >
                 <Link
-                  href={option.link ? `?${new URLSearchParams({ month: option.link })}` : "?"}
+                  href={`?${new URLSearchParams({ month: option.link, billable: selectedBilling ?? "" })}`}
                   className="flex w-full items-center justify-between px-2 py-1.5"
                 >
                   {option.title}
-                  {selectedValue === option.link && <Check size={16} />}
+                  {selectedMonth === option.link && <Check size={16} />}
                 </Link>
               </CommandItem>
             ))}

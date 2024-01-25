@@ -1,5 +1,10 @@
 "use client";
 
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { ChevronDown, Plus, Upload } from "lucide-react";
+import { useState } from "react";
+
 import { Assignment, DataTableToolbarProps } from "@/types";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,7 +18,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Plus, Upload } from "lucide-react";
 import FilterBox from "./filter-box";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {}
@@ -27,7 +31,7 @@ const monthFilter = {
     { id: 1, title: "Current Month", link: "current" },
     { id: 2, title: "Last 3 Months", link: "last3" },
     { id: 3, title: "Last 6 Months", link: "last6" },
-    { id: 4, title: "Last Year", link: "last12" },
+    { id: 4, title: "Last 1 Year", link: "last12" },
   ],
 };
 
@@ -86,6 +90,25 @@ const otherFilters = [
 ];
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps<Assignment>) {
+  const searcParams = useSearchParams();
+  const selectedMonth = searcParams.get("month");
+  const selectedBilling = searcParams.get("billing");
+  const [billing, setBilling] = useState(selectedBilling);
+
+  const handleBillingClick = () => {
+    if (!billing) setBilling("true");
+    if (billing === "true") setBilling("false");
+    if (billing === "false") setBilling("");
+  };
+
+  const generateBillingQuery = () => {
+    if (!billing) return "true";
+    if (billing === "true") return "false";
+    if (billing === "false") return "";
+  };
+
+  console.log(billing);
+
   const selected = false; // Fake selected
 
   const renderDropdowns =
@@ -131,6 +154,26 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
         </li> */}
         <li>
           <FilterBox values={monthFilter} />
+        </li>
+        <li>
+          <Button
+            className={
+              billing === "true" || billing === "false"
+                ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
+                : ""
+            }
+            variant="outline"
+            asChild
+            onClick={handleBillingClick}
+          >
+            <Link
+              href={`?${new URLSearchParams({ month: selectedMonth ?? "", billable: generateBillingQuery() ?? "" })}`}
+            >
+              {!billing ? "Billable" : ""}
+              {billing === "true" && "Billable"}
+              {billing === "false" && "Non-Billable"}
+            </Link>
+          </Button>
         </li>
         {renderDropdowns}
         <li>
