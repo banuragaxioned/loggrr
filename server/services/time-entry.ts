@@ -56,6 +56,12 @@ export const getLogged = async (
                 },
               }),
           },
+          ...(project === "active" && {
+            status: "PUBLISHED",
+          }),
+          ...(project === "archived" && {
+            status: "ARCHIVED",
+          }),
         },
         select: {
           id: true,
