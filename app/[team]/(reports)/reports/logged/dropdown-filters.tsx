@@ -27,10 +27,22 @@ const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
   const selectedProject = searcParams.get("project") ?? "";
   const selectedBilling = searcParams.get("billable");
   const [open, setOpen] = useState(false);
-  const labelToDisplay = values.options.find((value) => value.link === selectedMonth)?.title;
   const isFilterOf = values.title.toLowerCase();
 
-  console.log(selectedProject, isFilterOf);
+  const renderTitle = () => {
+    const labelToDisplay = values.options.find(
+      (value) => value.link === (isFilterOf === "month" ? selectedMonth : selectedProject),
+    )?.title;
+
+    if (isFilterOf === "month" && labelToDisplay && selectedMonth) {
+      return labelToDisplay;
+    }
+    if (isFilterOf === "projects" && labelToDisplay && selectedProject) {
+      return labelToDisplay;
+    }
+
+    return values.title;
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -38,12 +50,12 @@ const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
         asChild
         className={cn(
           "w-min",
-          selectedMonth &&
+          ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
             "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
-          {selectedMonth ? labelToDisplay : values.title}
+          {renderTitle()}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -70,7 +82,14 @@ const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
                   className="flex w-full items-center justify-between px-3 py-1.5"
                 >
                   {option.title}
-                  <Check size={16} className={selectedMonth === option.link ? "opacity-100" : "opacity-0"} />
+                  <Check
+                    size={16}
+                    className={
+                      (isFilterOf === "month" ? selectedMonth : selectedProject) === option.link
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }
+                  />
                 </Link>
               </CommandItem>
             ))}

@@ -38,7 +38,7 @@ const projectFilter = {
   options: [
     { id: 0, title: "All Projects", link: "" },
     { id: 1, title: "My Projects", link: "my" },
-    { id: 2, title: "Active", link: "active" },
+    { id: 2, title: "Active Projects", link: "active" },
     { id: 3, title: "Client Projects", link: "client" },
     { id: 4, title: "Archived Projects", link: "archived" },
   ],
