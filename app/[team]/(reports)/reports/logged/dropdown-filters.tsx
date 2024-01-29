@@ -9,9 +9,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface LoggedInterface {
-  id: number;
   title: string;
   searchable: boolean;
   options: {
@@ -21,18 +21,26 @@ interface LoggedInterface {
   }[];
 }
 
-const FilterBox = ({ values }: { values: LoggedInterface }) => {
+const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month") ?? "";
+  const selectedProject = searcParams.get("project") ?? "";
   const selectedBilling = searcParams.get("billable");
   const [open, setOpen] = useState(false);
   const labelToDisplay = values.options.find((value) => value.link === selectedMonth)?.title;
+  const isFilterOf = values.title.toLowerCase();
+
+  console.log(selectedProject, isFilterOf);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         asChild
-        className={`w-min ${selectedMonth ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20" : ""}`}
+        className={cn(
+          "w-min",
+          selectedMonth &&
+            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+        )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
           {selectedMonth ? labelToDisplay : values.title}
@@ -54,7 +62,11 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
                 className="p-0"
               >
                 <Link
-                  href={`?${new URLSearchParams({ month: option.link, billable: selectedBilling ?? "" })}`}
+                  href={`?${new URLSearchParams({
+                    month: isFilterOf === "month" ? option.link : selectedMonth,
+                    billable: selectedBilling ?? "",
+                    project: isFilterOf === "projects" ? option.link : selectedProject,
+                  })}`}
                   className="flex w-full items-center justify-between px-3 py-1.5"
                 >
                   {option.title}
@@ -69,4 +81,4 @@ const FilterBox = ({ values }: { values: LoggedInterface }) => {
   );
 };
 
-export default FilterBox;
+export default DropdownFilters;

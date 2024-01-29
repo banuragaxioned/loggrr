@@ -16,12 +16,11 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import FilterBox from "./filter-box";
+import DropdownFilters from "./dropdown-filters";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {}
 
 const monthFilter = {
-  id: 1,
   title: "Month",
   searchable: false,
   options: [
@@ -33,18 +32,19 @@ const monthFilter = {
   ],
 };
 
+const projectFilter = {
+  title: "Projects",
+  searchable: false,
+  options: [
+    { id: 0, title: "All Projects", link: "" },
+    { id: 1, title: "My Projects", link: "my" },
+    { id: 2, title: "Active", link: "active" },
+    { id: 3, title: "Client Projects", link: "client" },
+    { id: 4, title: "Archived Projects", link: "archived" },
+  ],
+};
+
 const allDropdowns = [
-  {
-    id: 2,
-    title: "Projects",
-    searchable: false,
-    options: [
-      { id: 1, title: "My Projects" },
-      { id: 2, title: "Active Projects" },
-      { id: 3, title: "Client Projects" },
-      { id: 4, title: "Archived Projects" },
-    ],
-  },
   {
     id: 3,
     title: "CFM +1 more",
@@ -82,6 +82,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month");
   const selectedBilling = searcParams.get("billable");
+  const selectedProject = searcParams.get("project");
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Billable", nextValue: "true" };
@@ -120,29 +121,42 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
       </li>
     ));
 
+  // Billing status toggle button
+  const billingStatusToggleButton = (
+    <Button
+      className={
+        selectedBilling
+          ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
+          : ""
+      }
+      variant="outline"
+      asChild
+    >
+      <Link
+        href={`?${new URLSearchParams({
+          month: selectedMonth ?? "",
+          billable: generateBillingQuery()?.nextValue ?? "",
+          project: selectedProject ?? "",
+        })}`}
+      >
+        {generateBillingQuery()?.text}
+      </Link>
+    </Button>
+  );
+
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-4">
       {/* Left Area */}
       <ul className="flex gap-2">
+        {/* Months */}
         <li>
-          <FilterBox values={monthFilter} />
+          <DropdownFilters values={monthFilter} />
         </li>
+        {/* Billing Status */}
+        <li>{billingStatusToggleButton}</li>
+        {/* Projects */}
         <li>
-          <Button
-            className={
-              selectedBilling
-                ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
-                : ""
-            }
-            variant="outline"
-            asChild
-          >
-            <Link
-              href={`?${new URLSearchParams({ month: selectedMonth ?? "", billable: generateBillingQuery()?.nextValue ?? "" })}`}
-            >
-              {generateBillingQuery()?.text}
-            </Link>
-          </Button>
+          <DropdownFilters values={projectFilter} />
         </li>
         {renderDropdowns}
         <li>
