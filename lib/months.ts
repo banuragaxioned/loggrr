@@ -6,7 +6,7 @@ export function getMonthStartAndEndDates(period: string): {
   let startDate;
   const endDate = new Date();
 
-  if (period === "current") {
+  if (!period) {
     // Current month
     startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   } else if (period === "last3") {

@@ -24,11 +24,10 @@ const monthFilter = {
   title: "Month",
   searchable: false,
   options: [
-    { id: 0, title: "Show All", link: "" },
-    { id: 1, title: "This Month", link: "current" },
-    { id: 2, title: "Last 3 Months", link: "last3" },
-    { id: 3, title: "Last 6 Months", link: "last6" },
-    { id: 4, title: "Last 1 Year", link: "last12" },
+    { id: 0, title: "This Month", link: "" },
+    { id: 1, title: "Last 3 Months", link: "last3" },
+    { id: 2, title: "Last 6 Months", link: "last6" },
+    { id: 3, title: "Last 1 Year", link: "last12" },
   ],
 };
 
