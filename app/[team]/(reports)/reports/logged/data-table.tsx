@@ -51,9 +51,25 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     },
   });
 
+  const allClients = data.map((client: any) => {
+    return {
+      id: client.id,
+      title: client.name,
+      link: `${client.id}`,
+    };
+  });
+
+  // const allPeoples = data.map((client: any) => {
+  //   return {
+  //     id: client.id,
+  //     title: client.name,
+  //     link: `${client.id}`,
+  //   };
+  // });
+
   return (
     <div>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} allClients={allClients} />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -21,7 +21,7 @@ interface LoggedInterface {
   }[];
 }
 
-const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
+const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month") ?? "";
   const selectedProject = searcParams.get("project") ?? "";
@@ -100,4 +100,4 @@ const DropdownFilters = ({ values }: { values: LoggedInterface }) => {
   );
 };
 
-export default DropdownFilters;
+export default DropdownFilter;

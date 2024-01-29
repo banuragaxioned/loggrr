@@ -2,23 +2,16 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ChevronDown, Plus, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 
 import { Assignment, DataTableToolbarProps } from "@/types";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import DropdownFilters from "./dropdown-filters";
+import DropdownFilters from "./dropdown-filter";
+import MultiSelectFilter from "./multiselect-filters";
 
-interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {}
+interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
+  allClients: {};
+}
 
 const monthFilter = {
   title: "Month",
@@ -42,82 +35,29 @@ const projectFilter = {
   ],
 };
 
-const allDropdowns = [
-  {
-    id: 3,
-    title: "CFM +1 more",
-    searchable: true,
-    options: [
-      { id: 1, title: "CFM" },
-      { id: 2, title: "Axioned" },
-      { id: 3, title: "XYZ" },
-    ],
-  },
-];
-
-const otherFilters = [
-  {
-    id: 1,
-    title: "Client",
-    options: [
-      { id: 1, title: "CFM" },
-      { id: 2, title: "ML Applied" },
-      { id: 2, title: "Axioned" },
-    ],
-  },
-  {
-    id: 2,
-    title: "People",
-    options: [
-      { id: 1, title: "CFM" },
-      { id: 2, title: "ML Applied" },
-      { id: 2, title: "Axioned" },
-    ],
-  },
-];
-
-export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps<Assignment>) {
+export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarExtendedProps<Assignment>) {
   const searcParams = useSearchParams();
   const selectedMonth = searcParams.get("month");
   const selectedBilling = searcParams.get("billable");
   const selectedProject = searcParams.get("project");
+
+  const clientFilter = {
+    title: "Clients",
+    searchable: true,
+    options: allClients,
+  };
+
+  // const peopleFilter = {
+  //   title: "Peoples",
+  //   searchable: true,
+  //   options: allClients,
+  // };
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Billable", nextValue: "true" };
     if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
     if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
   };
-
-  const selected = false; // Fake selected
-
-  const renderDropdowns =
-    Array.isArray(allDropdowns) &&
-    allDropdowns.map((dropdown) => (
-      <li key={dropdown.id}>
-        <Popover>
-          <PopoverTrigger
-            asChild
-            className={`w-min ${selected ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20" : ""}`}
-          >
-            <Button variant="outline" role="combobox" className="justify-between">
-              {dropdown.title}
-              <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0" align="start">
-            <Command>
-              {dropdown.searchable && <CommandInput placeholder="Search..." />}
-              <CommandEmpty>No options found.</CommandEmpty>
-              <CommandGroup>
-                {dropdown.options.map((option) => (
-                  <CommandItem key={option.id}>{option.title}</CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </li>
-    ));
 
   // Billing status toggle button
   const billingStatusToggleButton = (
@@ -154,35 +94,8 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
         <li>
           <DropdownFilters values={projectFilter} />
         </li>
-        {renderDropdowns}
         <li>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Plus />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[200px]">
-              {otherFilters.map((filter) => (
-                <DropdownMenuSub key={filter.id}>
-                  <DropdownMenuSubTrigger>{filter.title}</DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="p-0">
-                    <Command>
-                      <CommandInput placeholder="Search..." autoFocus={true} />
-                      <CommandList>
-                        <CommandEmpty>No option found.</CommandEmpty>
-                        <CommandGroup>
-                          {filter.options.map((option) => (
-                            <CommandItem key={option.id}>{option.title}</CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <MultiSelectFilter values={clientFilter} />
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
