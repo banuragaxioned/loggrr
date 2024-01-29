@@ -1,5 +1,7 @@
 import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
   const response = await db.timeEntry.findMany({
@@ -24,7 +26,15 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response;
 };
 
-export const getLogged = async (slug: string, startDate?: Date | null, endDate?: Date | null, billing?: string) => {
+export const getLogged = async (
+  slug: string,
+  startDate?: Date | null,
+  endDate?: Date | null,
+  billing?: string,
+  project?: string,
+) => {
+  const session = await getServerSession(authOptions);
+  const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
 
   const query = await db.client.findMany({
@@ -37,6 +47,16 @@ export const getLogged = async (slug: string, startDate?: Date | null, endDate?:
       id: true,
       name: true,
       project: {
+        where: {
+          usersOnProject: {
+            ...(loggedUserId &&
+              project === "my" && {
+                some: {
+                  userId: loggedUserId,
+                },
+              }),
+          },
+        },
         select: {
           id: true,
           name: true,

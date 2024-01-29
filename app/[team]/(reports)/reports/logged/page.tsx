@@ -16,8 +16,9 @@ export const metadata: Metadata = {
 export default async function Page({ params, searchParams }: pageProps) {
   const selectedMonth = searchParams.month;
   const selectedBilling = searchParams.billable;
+  const selectedProject = searchParams.project;
   const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
-  const loggedData = await getLogged(params.team, startDate, endDate, selectedBilling);
+  const loggedData = await getLogged(params.team, startDate, endDate, selectedBilling, selectedProject);
 
   // Transformed data as per the table structure
   const transformedData = loggedData.map((logged: any) => {
