@@ -21,8 +21,8 @@ export function SecondaryNavigation({ items }: SecondaryNavProps) {
             href={link.href!}
             key={link.href}
             className={cn(
-              "flex h-8 gap-2 border items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary",
-              path == link.href ? "bg-muted text-primary" : "text-muted-foreground"
+              "flex h-8 gap-2 border items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-gray-300 hover:bg-primary dark:hover:bg-primary-foreground",
+              path == link.href ? "bg-primary text-muted hover:text-white dark:text-background dark:hover:text-background dark:hover:bg-primary" : "text-muted-foreground"
             )}
           >
             {link.icon}
