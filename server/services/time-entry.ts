@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { stringToBoolean } from "@/lib/helper";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
   const response = await db.timeEntry.findMany({
@@ -116,7 +116,7 @@ export const getLogged = async (slug: string, startDate?: Date | null, endDate?:
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
-              userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += entry.time), 0),
+              userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0),
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
                 const inputDate = new Date(timeEntry.date);
                 const formattedDate = inputDate.toLocaleDateString("en-US", {
@@ -129,7 +129,7 @@ export const getLogged = async (slug: string, startDate?: Date | null, endDate?:
                 return {
                   formattedDate,
                   date: timeEntry.date,
-                  time: timeEntry.time,
+                  time: getTimeInHours(timeEntry.time),
                   billable: timeEntry.billable,
                   comments: timeEntry.comments,
                   milestoneId: timeEntry.milestone.id,

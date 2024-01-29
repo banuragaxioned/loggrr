@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChevronDown, Plus, Upload } from "lucide-react";
-import { useState } from "react";
 
 import { Assignment, DataTableToolbarProps } from "@/types";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +26,7 @@ const monthFilter = {
   searchable: false,
   options: [
     { id: 0, title: "Show All", link: "" },
-    { id: 1, title: "Current Month", link: "current" },
+    { id: 1, title: "This Month", link: "current" },
     { id: 2, title: "Last 3 Months", link: "last3" },
     { id: 3, title: "Last 6 Months", link: "last6" },
     { id: 4, title: "Last 1 Year", link: "last12" },
@@ -126,21 +124,13 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-4">
       {/* Left Area */}
       <ul className="flex gap-2">
-        {/* <li>
-          <Input
-            placeholder="Filter project..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
-        </li> */}
         <li>
           <FilterBox values={monthFilter} />
         </li>
         <li>
           <Button
             className={
-              selectedBilling === "true" || selectedBilling === "false"
+              selectedBilling
                 ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
                 : ""
             }
