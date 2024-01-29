@@ -39,7 +39,6 @@ const projectFilter = {
     { id: 0, title: "All Projects", link: "" },
     { id: 1, title: "My Projects", link: "my" },
     { id: 2, title: "Active Projects", link: "active" },
-    { id: 3, title: "Client Projects", link: "client" },
     { id: 4, title: "Archived Projects", link: "archived" },
   ],
 };
@@ -145,15 +144,13 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
   );
 
   return (
-    <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-4">
+    <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
       <ul className="flex gap-2">
         {/* Months */}
         <li>
           <DropdownFilters values={monthFilter} />
         </li>
-        {/* Billing Status */}
-        <li>{billingStatusToggleButton}</li>
         {/* Projects */}
         <li>
           <DropdownFilters values={projectFilter} />
@@ -188,10 +185,12 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarExtendedProps
             </DropdownMenuContent>
           </DropdownMenu>
         </li>
+        {/* Billing Status */}
+        <li>{billingStatusToggleButton}</li>
       </ul>
       {/* Right Area */}
       <div>
-        <Button variant="outline" className="flex gap-2">
+        <Button variant="outline" className="flex gap-2 disabled:opacity-50" disabled>
           <Upload size={16} />
           Export
         </Button>
