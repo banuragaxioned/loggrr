@@ -92,6 +92,9 @@ export const getLogged = async (
                         ...(isBillable !== null && { equals: isBillable }),
                       },
                     },
+                    orderBy: {
+                      date: "desc",
+                    },
                     select: {
                       date: true,
                       time: true,
