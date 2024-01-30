@@ -55,7 +55,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     return {
       id: client.id,
       title: client.name,
-      link: `${client.id}`,
     };
   });
 
