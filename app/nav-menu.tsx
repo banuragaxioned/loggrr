@@ -20,7 +20,7 @@ export function NavMenu() {
   const slug = params?.team;
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href={`/${slug}`} legacyBehavior passHref>
