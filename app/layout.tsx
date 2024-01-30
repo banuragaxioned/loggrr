@@ -56,7 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       >
         <ContextProvider>
-        <NextTopLoader showSpinner={false} color="var(--primary)" height={3} shadow={false}/>
+          {/* TODO: Add theme color from theme config */}
+        <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false}/>
           <SiteHeader />
           {children}
         </ContextProvider>
