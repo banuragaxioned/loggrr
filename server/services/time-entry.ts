@@ -77,6 +77,19 @@ export const getLogged = async (
           in: clients.split(",").map((id) => +id),
         },
       }),
+      ...(peoples && {
+        project: {
+          every: {
+            usersOnProject: {
+              some: {
+                userId: {
+                  in: peoples?.split(",").map((id) => +id),
+                },
+              },
+            },
+          },
+        },
+      }),
     },
     select: {
       id: true,

@@ -34,7 +34,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
   const isFilterOf = values.title.toLowerCase();
   const selectedClients = searchParams.get(isFilterOf);
   const [open, setOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<any>(
+  const [selectedOptions, setSelectedOptions] = useState<[string] | string[]>(
     selectedClients ? (selectedClients.split(",") as string[]) : [],
   );
 
@@ -74,20 +74,33 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
         asChild
         className={cn(
           "w-min",
-          selectedOptions.length > 0 &&
-            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+          // selectedOptions.length > 0 &&
+          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
-        <Button variant="outline" role="combobox" className="justify-between">
-          {selectedOptions.length > 0
-            ? values.options.find((item) => item.id === +selectedOptions[0])?.name
-            : values.title}
-          {selectedOptions.length > 1 && (
+        <Button variant="outline" role="combobox" className="justify-between" size="sm">
+          {values.title}
+          {selectedOptions.length > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                +{selectedOptions.length - 1} selected
+              <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
+                {selectedOptions.length}
               </Badge>
+              <div className="hidden space-x-1 lg:flex">
+                {selectedOptions.length > 1 ? (
+                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                    {selectedOptions.length} selected
+                  </Badge>
+                ) : (
+                  values.options
+                    .filter((option) => selectedOptions.includes(`${option.id}`))
+                    .map((option) => (
+                      <Badge variant="secondary" key={option.id} className="rounded-sm px-1 font-normal">
+                        {option.name}
+                      </Badge>
+                    ))
+                )}
+              </div>
             </>
           )}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

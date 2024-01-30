@@ -73,6 +73,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
       }
       variant="outline"
       asChild
+      size="sm"
     >
       <Link
         href={`?${new URLSearchParams({

@@ -58,14 +58,6 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
     },
   });
 
-  // const allPeoples = data.map((client: any) => {
-  //   return {
-  //     id: client.id,
-  //     title: client.name,
-  //     link: `${client.id}`,
-  //   };
-  // });
-
   return (
     <div>
       <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} />
