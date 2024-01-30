@@ -36,6 +36,7 @@ export default async function Page({ params, searchParams }: pageProps) {
 
   // Transformed data as per the table structure
   const transformedData = loggedData.map((logged: any) => {
+    // Clients
     const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
     const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
     return {
@@ -43,27 +44,32 @@ export default async function Page({ params, searchParams }: pageProps) {
       name: logged.clientName,
       hours: clientHours,
       subRows: logged.projects.map((project: any) => {
+        // Projects
         const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
         return {
           id: project.projectId,
           name: project.projectName,
           hours: projectHours,
-          subRows: project.users.map((user: any) => {
-            return {
-              id: user.userId,
-              name: user.userName,
-              hours: user.userHours,
-              image: user.userImage,
-              subRows: user.userTimeEntry.map((time: any) => {
-                return {
-                  id: time.comments,
-                  hours: time.time,
-                  name: time.formattedDate,
-                  description: time.comments,
-                };
-              }),
-            };
-          }),
+          subRows: project.users
+            .filter((user: any) => user.userHours > 0)
+            .map((user: any) => {
+              // Users
+              return {
+                id: user.userId,
+                name: user.userName,
+                hours: user.userHours,
+                image: user.userImage,
+                subRows: user.userTimeEntry.map((time: any) => {
+                  // Time Entries
+                  return {
+                    id: time.comments,
+                    hours: time.time,
+                    name: time.formattedDate,
+                    description: time.comments,
+                  };
+                }),
+              };
+            }),
         };
       }),
     };

@@ -146,6 +146,9 @@ export const getLogged = async (
                       billable: {
                         ...(isBillable !== null && { equals: isBillable }),
                       },
+                      time: {
+                        gt: 0, // Include only entries where time is greater than 0
+                      },
                     },
                     orderBy: {
                       date: "desc",

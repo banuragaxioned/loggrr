@@ -44,6 +44,14 @@ export const columns: ColumnDef<Logged>[] = [
               {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
             </Button>
           )}
+          {depth === 1 && !canExpand && (
+            <span
+              className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+              style={{ backgroundColor: getRandomColor(row.original.id) }}
+            >
+              {value.charAt(0)}
+            </span>
+          )}
           <div
             className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 3 ? "" : "descendent"} relative flex items-center gap-2`}
           >
