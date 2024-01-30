@@ -39,8 +39,6 @@ export const getLogged = async (
   const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
 
-  console.log(peoples);
-
   const allClients = await db.client.findMany({
     where: {
       workspace: {
@@ -113,6 +111,13 @@ export const getLogged = async (
             },
           },
           usersOnProject: {
+            where: {
+              ...(peoples && {
+                userId: {
+                  in: peoples?.split(",").map((id) => +id),
+                },
+              }),
+            },
             select: {
               user: {
                 select: {

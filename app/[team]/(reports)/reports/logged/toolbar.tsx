@@ -77,10 +77,10 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
       <Link
         href={`?${new URLSearchParams({
           month: selectedMonth ?? "",
-          billable: generateBillingQuery()?.nextValue ?? "",
           project: selectedProject ?? "",
           clients: selectedClients ?? "",
           peoples: selectedPeoples ?? "",
+          billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
         {generateBillingQuery()?.text}
