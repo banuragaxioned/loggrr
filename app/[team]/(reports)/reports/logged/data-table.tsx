@@ -20,6 +20,10 @@ import { Assignment } from "@/types";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  allClients: {
+    id: number;
+    name: string;
+  }[];
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
@@ -27,7 +31,7 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
   return regex.test(row.original.name);
 };
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, allClients }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -49,13 +53,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       expanded,
       columnVisibility,
     },
-  });
-
-  const allClients = data.map((client: any) => {
-    return {
-      id: client.id,
-      title: client.name,
-    };
   });
 
   // const allPeoples = data.map((client: any) => {

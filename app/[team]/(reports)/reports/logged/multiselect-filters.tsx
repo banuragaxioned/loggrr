@@ -67,13 +67,13 @@ const MultiSelectFilter = ({ values }: any) => {
         asChild
         className={cn(
           "w-min",
-          // selectedOptions.length > 0 &&
-          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+          selectedOptions.length > 0 &&
+            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
           {selectedOptions.length > 0
-            ? values.options.find((item: any) => item.id === +selectedOptions[0]).title
+            ? values.options.find((item: any) => item.id === +selectedOptions[0])?.name
             : values.title}
           {selectedOptions.length > 1 && (
             <>
@@ -109,7 +109,7 @@ const MultiSelectFilter = ({ values }: any) => {
                         >
                           <Check className={cn("h-4 w-4")} />
                         </div>
-                        {option.title}
+                        {option.name}
                       </>
                     </div>
                   </CommandItem>

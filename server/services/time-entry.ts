@@ -32,16 +32,34 @@ export const getLogged = async (
   endDate?: Date | null,
   billing?: string,
   project?: string,
+  selectedclients?: string,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
+
+  const allClients = await db.client.findMany({
+    where: {
+      workspace: {
+        slug: slug,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
 
   const query = await db.client.findMany({
     where: {
       workspace: {
         slug: slug,
       },
+      ...(selectedclients && {
+        id: {
+          in: selectedclients.split(",").map((id) => +id),
+        },
+      }),
     },
     select: {
       id: true,
@@ -174,5 +192,5 @@ export const getLogged = async (
     };
   });
 
-  return response;
+  return { data: response, allClients };
 };

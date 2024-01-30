@@ -51,8 +51,8 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
         asChild
         className={cn(
           "w-min",
-          // ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
-          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+          ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
+            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
