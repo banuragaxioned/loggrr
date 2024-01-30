@@ -17,15 +17,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTableToolbar } from "./toolbar";
 import { Assignment } from "@/types";
 
-export interface AllClientsInterface {
+export interface ClientAndUserInterface {
   id: number;
-  name: string;
+  name: string | null;
 }
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  allClients: AllClientsInterface[];
+  allClients: ClientAndUserInterface[];
+  allUsers: ClientAndUserInterface[];
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
@@ -33,7 +34,7 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
   return regex.test(row.original.name);
 };
 
-export function DataTable<TData, TValue>({ columns, data, allClients }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -67,7 +68,7 @@ export function DataTable<TData, TValue>({ columns, data, allClients }: DataTabl
 
   return (
     <div>
-      <DataTableToolbar table={table} allClients={allClients} />
+      <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

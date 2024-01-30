@@ -25,7 +25,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month") ?? "";
   const selectedProject = searchParams.get("project") ?? "";
-  const selectedClients = searchParams.get("selectedclients") ?? "";
+  const selectedClients = searchParams.get("clients") ?? "";
   const selectedBilling = searchParams.get("billable");
   const [open, setOpen] = useState(false);
   const isFilterOf = values.title.toLowerCase();
@@ -78,7 +78,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
                   href={`?${new URLSearchParams({
                     month: isFilterOf === "month" ? option.link : selectedMonth,
                     project: isFilterOf === "projects" ? option.link : selectedProject,
-                    selectedclients: selectedClients ?? "",
+                    clients: selectedClients ?? "",
                     billable: selectedBilling ?? "",
                   })}`}
                   className="flex w-full items-center justify-between px-3 py-1.5"

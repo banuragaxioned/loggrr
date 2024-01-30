@@ -19,21 +19,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { AllClientsInterface } from "./data-table";
+import { ClientAndUserInterface } from "./data-table";
 
 interface DropdownInterface {
   title: string;
   searchable: boolean;
-  options: AllClientsInterface[];
+  options: ClientAndUserInterface[];
 }
 
 const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedClients = searchParams.get("selectedclients");
+  const isFilterOf = values.title.toLowerCase();
+  const selectedClients = searchParams.get("clients");
   const [open, setOpen] = useState(false);
-  // const isFilterOf = values.title.toLowerCase();
   const [selectedOptions, setSelectedOptions] = useState<any>(
     selectedClients ? (selectedClients.split(",") as string[]) : [],
   );
@@ -48,7 +48,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
     [searchParams],
   );
 
-  const handleItemClick = (option: AllClientsInterface) => {
+  const handleItemClick = (option: ClientAndUserInterface) => {
     const optionId = `${option.id}`;
 
     let updatedOptions;
@@ -65,7 +65,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
 
     // Update the URL with the new selectedOptions
     const query = updatedOptions.join(",");
-    router.push(pathname + "?" + createQueryString("selectedclients", query));
+    router.push(pathname + "?" + createQueryString("clients", query));
   };
 
   return (
@@ -132,7 +132,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
                   onSelect={() => {
                     setSelectedOptions([]);
                     setOpen(false);
-                    router.push(pathname + "?" + createQueryString("selectedclients", ""));
+                    router.push(pathname + "?" + createQueryString("clients", ""));
                   }}
                   className="cursor-pointer justify-center text-center"
                 >

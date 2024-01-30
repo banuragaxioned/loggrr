@@ -8,10 +8,11 @@ import { Assignment, DataTableToolbarProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
-import { AllClientsInterface } from "./data-table";
+import { ClientAndUserInterface } from "./data-table";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
-  allClients: AllClientsInterface[];
+  allClients: ClientAndUserInterface[];
+  allUsers: ClientAndUserInterface[];
 }
 
 const monthFilter = {
@@ -36,12 +37,12 @@ const projectFilter = {
   ],
 };
 
-export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarExtendedProps<Assignment>) {
+export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTableToolbarExtendedProps<Assignment>) {
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
-  const selectedClients = searchParams.get("selectedclients");
+  const selectedClients = searchParams.get("clients");
 
   const clientFilter = {
     title: "Clients",
@@ -49,11 +50,11 @@ export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarE
     options: allClients,
   };
 
-  // const peopleFilter = {
-  //   title: "Peoples",
-  //   searchable: true,
-  //   options: allClients,
-  // };
+  const peopleFilter = {
+    title: "Peoples",
+    searchable: true,
+    options: allUsers,
+  };
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Billable", nextValue: "true" };
@@ -77,7 +78,7 @@ export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarE
           month: selectedMonth ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
           project: selectedProject ?? "",
-          selectedclients: selectedClients ?? "",
+          clients: selectedClients ?? "",
         })}`}
       >
         {generateBillingQuery()?.text}
@@ -96,6 +97,9 @@ export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarE
         {/* Projects */}
         <li>
           <DropdownFilters values={projectFilter} />
+        </li>
+        <li>
+          <MultiSelectFilter values={clientFilter} />
         </li>
         <li>
           <MultiSelectFilter values={clientFilter} />

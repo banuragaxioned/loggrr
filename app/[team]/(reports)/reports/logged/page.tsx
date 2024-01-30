@@ -17,16 +17,13 @@ export default async function Page({ params, searchParams }: pageProps) {
   const selectedMonth = searchParams.month;
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;
-  const selectedClients = searchParams.selectedclients;
+  const selectedClients = searchParams.clients;
   const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
-  const { data: loggedData, allClients } = await getLogged(
-    params.team,
-    startDate,
-    endDate,
-    selectedBilling,
-    selectedProject,
-    selectedClients,
-  );
+  const {
+    data: loggedData,
+    allClients,
+    allUsers,
+  } = await getLogged(params.team, startDate, endDate, selectedBilling, selectedProject, selectedClients);
 
   // Transformed data as per the table structure
   const transformedData = loggedData.map((logged: any) => {
@@ -67,7 +64,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     <DashboardShell>
       <DashboardHeader heading="Logged Hours" text="View all the hours that is logged" />
       <div className="mb-8">
-        <DataTable columns={columns} data={transformedData} allClients={allClients} />
+        <DataTable columns={columns} data={transformedData} allClients={allClients} allUsers={allUsers} />
       </div>
     </DashboardShell>
   );

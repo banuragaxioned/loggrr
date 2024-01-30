@@ -32,7 +32,7 @@ export const getLogged = async (
   endDate?: Date | null,
   billing?: string,
   project?: string,
-  selectedclients?: string,
+  clients?: string,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
@@ -50,14 +50,30 @@ export const getLogged = async (
     },
   });
 
+  const allUsers = await db.user.findMany({
+    where: {
+      workspaces: {
+        some: {
+          workspace: {
+            slug: slug,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
   const query = await db.client.findMany({
     where: {
       workspace: {
         slug: slug,
       },
-      ...(selectedclients && {
+      ...(clients && {
         id: {
-          in: selectedclients.split(",").map((id) => +id),
+          in: clients.split(",").map((id) => +id),
         },
       }),
     },
@@ -192,5 +208,5 @@ export const getLogged = async (
     };
   });
 
-  return { data: response, allClients };
+  return { data: response, allClients, allUsers };
 };
