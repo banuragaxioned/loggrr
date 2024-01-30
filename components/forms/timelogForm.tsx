@@ -80,7 +80,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             {
               <div key={i}>
                 <Command.Item
-                  className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-indigo-50 aria-selected:text-zinc-700 dark:aria-selected:bg-zinc-700 dark:aria-selected:text-zinc-900"
+                  className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-primary/10 aria-selected:text-primary"
                   value={`${obj.client.name} / ${obj.project.name} ${
                     obj.milestone?.name ? `/${obj.milestone.name}` : ""
                   } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
