@@ -8,9 +8,10 @@ import { Assignment, DataTableToolbarProps } from "@/types";
 import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
+import { AllClientsInterface } from "./data-table";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
-  allClients: {};
+  allClients: AllClientsInterface[];
 }
 
 const monthFilter = {

@@ -19,8 +19,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { AllClientsInterface } from "./data-table";
 
-const MultiSelectFilter = ({ values }: any) => {
+interface DropdownInterface {
+  title: string;
+  searchable: boolean;
+  options: AllClientsInterface[];
+}
+
+const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -41,14 +48,14 @@ const MultiSelectFilter = ({ values }: any) => {
     [searchParams],
   );
 
-  const handleItemClick = (option: any) => {
+  const handleItemClick = (option: AllClientsInterface) => {
     const optionId = `${option.id}`;
 
     let updatedOptions;
     // Check if the optionId is already in selectedOptions
     if (selectedOptions.includes(optionId)) {
       // Remove the optionId from selectedOptions
-      updatedOptions = selectedOptions.filter((id: any) => id !== optionId);
+      updatedOptions = selectedOptions.filter((id: string) => id !== optionId);
       setSelectedOptions(updatedOptions);
     } else {
       // Add the optionId to selectedOptions
@@ -73,7 +80,7 @@ const MultiSelectFilter = ({ values }: any) => {
       >
         <Button variant="outline" role="combobox" className="justify-between">
           {selectedOptions.length > 0
-            ? values.options.find((item: any) => item.id === +selectedOptions[0])?.name
+            ? values.options.find((item) => item.id === +selectedOptions[0])?.name
             : values.title}
           {selectedOptions.length > 1 && (
             <>
@@ -92,7 +99,7 @@ const MultiSelectFilter = ({ values }: any) => {
           <CommandEmpty>No options found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {values.options.map((option: any) => {
+              {values.options.map((option) => {
                 const isSelected = selectedOptions.includes(`${option.id}`);
                 return (
                   <CommandItem key={option.id} className="p-0">

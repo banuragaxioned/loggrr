@@ -17,13 +17,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTableToolbar } from "./toolbar";
 import { Assignment } from "@/types";
 
+export interface AllClientsInterface {
+  id: number;
+  name: string;
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  allClients: {
-    id: number;
-    name: string;
-  }[];
+  allClients: AllClientsInterface[];
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
