@@ -1,4 +1,7 @@
 import { db } from "@/server/db";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
   const response = await db.timeEntry.findMany({
@@ -23,8 +26,20 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response;
 };
 
-export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) => {
-  const query = await db.client.findMany({
+export const getLogged = async (
+  slug: string,
+  startDate?: Date | null,
+  endDate?: Date | null,
+  billing?: string,
+  project?: string,
+  clients?: string,
+  peoples?: string,
+) => {
+  const session = await getServerSession(authOptions);
+  const loggedUserId = session && session.user.id;
+  const isBillable = stringToBoolean(billing);
+
+  const allClients = await db.client.findMany({
     where: {
       workspace: {
         slug: slug,
@@ -33,7 +48,69 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
     select: {
       id: true,
       name: true,
+    },
+  });
+
+  const allUsers = await db.user.findMany({
+    where: {
+      workspaces: {
+        some: {
+          workspace: {
+            slug: slug,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const query = await db.client.findMany({
+    where: {
+      workspace: {
+        slug: slug,
+      },
+      ...(clients && {
+        id: {
+          in: clients.split(",").map((id) => +id),
+        },
+      }),
+      ...(peoples && {
+        project: {
+          every: {
+            usersOnProject: {
+              some: {
+                userId: {
+                  in: peoples?.split(",").map((id) => +id),
+                },
+              },
+            },
+          },
+        },
+      }),
+    },
+    select: {
+      id: true,
+      name: true,
       project: {
+        where: {
+          usersOnProject: {
+            ...(loggedUserId &&
+              project === "my" && {
+                some: {
+                  userId: loggedUserId,
+                },
+              }),
+          },
+          ...(project === "active" && {
+            status: "PUBLISHED",
+          }),
+          ...(project === "archived" && {
+            status: "ARCHIVED",
+          }),
+        },
         select: {
           id: true,
           name: true,
@@ -47,6 +124,13 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
             },
           },
           usersOnProject: {
+            where: {
+              ...(peoples && {
+                userId: {
+                  in: peoples?.split(",").map((id) => +id),
+                },
+              }),
+            },
             select: {
               user: {
                 select: {
@@ -56,9 +140,18 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
                   timeEntry: {
                     where: {
                       date: {
-                        gte: startDate ? startDate : new Date(new Date().setDate(new Date().getDate() - 30)),
+                        gte: startDate ? startDate : new Date(0),
                         lte: endDate ? endDate : new Date(),
                       },
+                      billable: {
+                        ...(isBillable !== null && { equals: isBillable }),
+                      },
+                      time: {
+                        gt: 0, // Include only entries where time is greater than 0
+                      },
+                    },
+                    orderBy: {
+                      date: "desc",
                     },
                     select: {
                       date: true,
@@ -77,6 +170,7 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
                           name: true,
                         },
                       },
+                      projectId: true,
                     },
                   },
                 },
@@ -101,14 +195,28 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
           projectBudget: project.budget,
           projectStatus: project.status,
           users: project.usersOnProject.map((user) => {
+            const timeEntryBasedOnProject = user.user.timeEntry.filter(
+              (timeEntry) => timeEntry.projectId === project.id,
+            );
+
             return {
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
-              userTimeEntry: user.user.timeEntry.map((timeEntry) => {
+              userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0),
+              userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
+                const inputDate = new Date(timeEntry.date);
+                const formattedDate = inputDate.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                });
+
                 return {
+                  formattedDate,
                   date: timeEntry.date,
-                  time: timeEntry.time,
+                  time: getTimeInHours(timeEntry.time),
                   billable: timeEntry.billable,
                   comments: timeEntry.comments,
                   milestoneId: timeEntry.milestone.id,
@@ -124,5 +232,5 @@ export const getLogged = async (slug: string, startDate?: Date, endDate?: Date) 
     };
   });
 
-  return response;
+  return { data: response, allClients, allUsers };
 };
