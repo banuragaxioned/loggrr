@@ -91,9 +91,6 @@ export function NavMenu() {
                   </div>
                 </NavigationMenuLink>
               </li>
-              <Link href={`/${slug}/reports/summary`} legacyBehavior passHref>
-                <ListItem title="Summary">View who is assigned to what project.</ListItem>
-              </Link>
               <Link href={`/${slug}/reports/assigned`} legacyBehavior passHref>
                 <ListItem title="Assigned">View who is assigned to what project.</ListItem>
               </Link>
