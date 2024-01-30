@@ -22,10 +22,11 @@ interface LoggedInterface {
 }
 
 const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
-  const searcParams = useSearchParams();
-  const selectedMonth = searcParams.get("month") ?? "";
-  const selectedProject = searcParams.get("project") ?? "";
-  const selectedBilling = searcParams.get("billable");
+  const searchParams = useSearchParams();
+  const selectedMonth = searchParams.get("month") ?? "";
+  const selectedProject = searchParams.get("project") ?? "";
+  const selectedClients = searchParams.get("selectedclients") ?? "";
+  const selectedBilling = searchParams.get("billable");
   const [open, setOpen] = useState(false);
   const isFilterOf = values.title.toLowerCase();
 
@@ -50,8 +51,8 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
         asChild
         className={cn(
           "w-min",
-          ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
-            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+          // ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
+          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
@@ -76,8 +77,9 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
                 <Link
                   href={`?${new URLSearchParams({
                     month: isFilterOf === "month" ? option.link : selectedMonth,
-                    billable: selectedBilling ?? "",
                     project: isFilterOf === "projects" ? option.link : selectedProject,
+                    selectedclients: selectedClients ?? "",
+                    billable: selectedBilling ?? "",
                   })}`}
                   className="flex w-full items-center justify-between px-3 py-1.5"
                 >

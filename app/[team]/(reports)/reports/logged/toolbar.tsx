@@ -36,10 +36,11 @@ const projectFilter = {
 };
 
 export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarExtendedProps<Assignment>) {
-  const searcParams = useSearchParams();
-  const selectedMonth = searcParams.get("month");
-  const selectedBilling = searcParams.get("billable");
-  const selectedProject = searcParams.get("project");
+  const searchParams = useSearchParams();
+  const selectedMonth = searchParams.get("month");
+  const selectedBilling = searchParams.get("billable");
+  const selectedProject = searchParams.get("project");
+  const selectedClients = searchParams.get("selectedclients");
 
   const clientFilter = {
     title: "Clients",
@@ -62,11 +63,11 @@ export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarE
   // Billing status toggle button
   const billingStatusToggleButton = (
     <Button
-      className={
-        selectedBilling
-          ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
-          : ""
-      }
+      // className={
+      //   selectedBilling
+      //     ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
+      //     : ""
+      // }
       variant="outline"
       asChild
     >
@@ -75,6 +76,7 @@ export function DataTableToolbar<TData>({ table, allClients }: DataTableToolbarE
           month: selectedMonth ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
           project: selectedProject ?? "",
+          selectedclients: selectedClients ?? "",
         })}`}
       >
         {generateBillingQuery()?.text}

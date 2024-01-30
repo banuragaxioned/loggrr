@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-
-import Link from "next/link";
+import React, { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, ChevronDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -16,27 +17,48 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
 const MultiSelectFilter = ({ values }: any) => {
-  const searcParams = useSearchParams();
-  // const selectedMonth = searcParams.get("month") ?? "";
-  // const selectedProject = searcParams.get("project") ?? "";
-  // const selectedBilling = searcParams.get("billable");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedClients = searchParams.get("selectedclients");
   const [open, setOpen] = useState(false);
-  const isFilterOf = values.title.toLowerCase();
-  const [selectedOptions, setSelectedOptions] = useState<any>([]);
+  // const isFilterOf = values.title.toLowerCase();
+  const [selectedOptions, setSelectedOptions] = useState<any>(
+    selectedClients ? (selectedClients.split(",") as string[]) : [],
+  );
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
 
   const handleItemClick = (option: any) => {
-    const optionAlreadyPresent = selectedOptions.find((item: any) => item.id === option.id);
-    if (!optionAlreadyPresent) {
-      setSelectedOptions([...selectedOptions, option]);
+    const optionId = `${option.id}`;
+
+    let updatedOptions;
+    // Check if the optionId is already in selectedOptions
+    if (selectedOptions.includes(optionId)) {
+      // Remove the optionId from selectedOptions
+      updatedOptions = selectedOptions.filter((id: any) => id !== optionId);
+      setSelectedOptions(updatedOptions);
     } else {
-      setSelectedOptions(selectedOptions.filter((item: any) => item.id !== option.id));
+      // Add the optionId to selectedOptions
+      updatedOptions = [...selectedOptions, optionId];
+      setSelectedOptions(updatedOptions);
     }
+
+    // Update the URL with the new selectedOptions
+    const query = updatedOptions.join(",");
+    router.push(pathname + "?" + createQueryString("selectedclients", query));
   };
 
   return (
@@ -45,12 +67,14 @@ const MultiSelectFilter = ({ values }: any) => {
         asChild
         className={cn(
           "w-min",
-          selectedOptions.length > 0 &&
-            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
+          // selectedOptions.length > 0 &&
+          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
         )}
       >
         <Button variant="outline" role="combobox" className="justify-between">
-          {selectedOptions.length > 0 ? selectedOptions[0].title : values.title}
+          {selectedOptions.length > 0
+            ? values.options.find((item: any) => item.id === +selectedOptions[0]).title
+            : values.title}
           {selectedOptions.length > 1 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
@@ -69,7 +93,7 @@ const MultiSelectFilter = ({ values }: any) => {
           <CommandGroup>
             <CommandList>
               {values.options.map((option: any) => {
-                const isSelected = selectedOptions.find((item: any) => item.id === option.id);
+                const isSelected = selectedOptions.includes(`${option.id}`);
                 return (
                   <CommandItem key={option.id} className="p-0">
                     <div
@@ -101,6 +125,7 @@ const MultiSelectFilter = ({ values }: any) => {
                   onSelect={() => {
                     setSelectedOptions([]);
                     setOpen(false);
+                    router.push(pathname + "?" + createQueryString("selectedclients", ""));
                   }}
                   className="cursor-pointer justify-center text-center"
                 >
