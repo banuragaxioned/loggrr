@@ -43,6 +43,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
   const selectedClients = searchParams.get("clients");
+  const selectedPeoples = searchParams.get("peoples");
 
   const clientFilter = {
     title: "Clients",
@@ -79,6 +80,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
           billable: generateBillingQuery()?.nextValue ?? "",
           project: selectedProject ?? "",
           clients: selectedClients ?? "",
+          peoples: selectedPeoples ?? "",
         })}`}
       >
         {generateBillingQuery()?.text}
@@ -102,7 +104,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
           <MultiSelectFilter values={clientFilter} />
         </li>
         <li>
-          <MultiSelectFilter values={clientFilter} />
+          <MultiSelectFilter values={peopleFilter} />
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>

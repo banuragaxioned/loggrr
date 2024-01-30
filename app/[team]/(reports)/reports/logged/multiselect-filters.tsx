@@ -32,7 +32,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isFilterOf = values.title.toLowerCase();
-  const selectedClients = searchParams.get("clients");
+  const selectedClients = searchParams.get(isFilterOf);
   const [open, setOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<any>(
     selectedClients ? (selectedClients.split(",") as string[]) : [],
@@ -65,7 +65,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
 
     // Update the URL with the new selectedOptions
     const query = updatedOptions.join(",");
-    router.push(pathname + "?" + createQueryString("clients", query));
+    router.push(pathname + "?" + createQueryString(isFilterOf, query));
   };
 
   return (
@@ -132,7 +132,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
                   onSelect={() => {
                     setSelectedOptions([]);
                     setOpen(false);
-                    router.push(pathname + "?" + createQueryString("clients", ""));
+                    router.push(pathname + "?" + createQueryString(isFilterOf, ""));
                   }}
                   className="cursor-pointer justify-center text-center"
                 >

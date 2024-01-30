@@ -18,12 +18,21 @@ export default async function Page({ params, searchParams }: pageProps) {
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;
   const selectedClients = searchParams.clients;
+  const selectedPeoples = searchParams.peoples;
   const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
   const {
     data: loggedData,
     allClients,
     allUsers,
-  } = await getLogged(params.team, startDate, endDate, selectedBilling, selectedProject, selectedClients);
+  } = await getLogged(
+    params.team,
+    startDate,
+    endDate,
+    selectedBilling,
+    selectedProject,
+    selectedClients,
+    selectedPeoples,
+  );
 
   // Transformed data as per the table structure
   const transformedData = loggedData.map((logged: any) => {

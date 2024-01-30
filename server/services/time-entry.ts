@@ -33,10 +33,13 @@ export const getLogged = async (
   billing?: string,
   project?: string,
   clients?: string,
+  peoples?: string,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
+
+  console.log(peoples);
 
   const allClients = await db.client.findMany({
     where: {
