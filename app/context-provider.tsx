@@ -13,14 +13,12 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
       <PHProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <SessionProvider>
-            <MenuProvider>
-              {children}
-            </MenuProvider>
-            </SessionProvider>
+            <MenuProvider>{children}</MenuProvider>
+          </SessionProvider>
+          <Toaster richColors />
         </ThemeProvider>
       </PHProvider>
       <Analytics />
-      <Toaster richColors />
       <TailwindIndicator />
     </>
   );
