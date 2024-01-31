@@ -11,17 +11,43 @@ import {
   Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
-import { Users } from "./columns";
+import { toast } from "sonner";
+import { Users, getColumn } from "./columns";
+import { useRouter } from "next/navigation";
 
-export function Table<TData, TValue>({ columns, data }: TableProps<Users, TValue>) {
+interface MemberTableProps<TData> {
+  data: TData[];
+  team: string;
+  projectId: number;
+}
+
+export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps<Users>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
   const rowClickHandler = (row: Row<Users>) => location.assign(`member/${row.original.id}`);
 
+  const router = useRouter();
+
+  const removeMember = async (userId: number) => {
+    console.log({ team, userId, projectId});
+    const response = await fetch("/api/team/project/members/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ team, userId, projectId}),
+    });
+
+    console.log(response);
+    if (response.ok) toast.success("User removed");
+
+    router.refresh();  
+  };
+
   const tableConfig = {
     data,
-    columns,
+    columns: getColumn({ removeMember }),
     state: {
       sorting,
       columnFilters,
