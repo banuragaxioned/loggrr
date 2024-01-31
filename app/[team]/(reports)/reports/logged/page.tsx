@@ -77,7 +77,7 @@ export default async function Page({ params, searchParams }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Logged Hours" text="View all the hours that is logged" />
+      <DashboardHeader heading="Logged Hours" text="View the hours that are logged." />
       <div className="mb-8">
         <DataTable columns={columns} data={transformedData} allClients={allClients} allUsers={allUsers} />
       </div>
