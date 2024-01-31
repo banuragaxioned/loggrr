@@ -51,14 +51,14 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className="w-min">
         <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
-          <span
+          {/* <span
             className={cn(
               ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
                 "text-indigo-600",
             )}
-          >
-            {values.icon}
-          </span>
+          > */}
+          {values.icon}
+          {/* </span> */}
           {renderTitle()}
         </Button>
       </PopoverTrigger>

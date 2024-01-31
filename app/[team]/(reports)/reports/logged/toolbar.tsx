@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { BookUser, Calendar, CircleDollarSign, List, ListRestart, Upload, Users } from "lucide-react";
+import { Briefcase, Calendar, CircleDollarSign, FolderCog, ListRestart, Upload, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -32,7 +32,7 @@ const monthFilter = {
 const projectFilter = {
   title: "Projects",
   searchable: false,
-  icon: <List size={16} />,
+  icon: <FolderCog size={16} />,
   options: [
     { id: 0, title: "All Projects", link: "" },
     { id: 1, title: "My Projects", link: "my" },
@@ -52,7 +52,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   const clientFilter = {
     title: "Clients",
     searchable: true,
-    icon: <BookUser size={16} />,
+    icon: <Briefcase size={16} />,
     options: allClients,
   };
 

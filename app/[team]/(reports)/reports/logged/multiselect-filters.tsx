@@ -82,7 +82,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className="w-min">
         <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
-          <span className={cn(selectedOptions.length && "text-indigo-600")}>{values.icon}</span>
+          {values.icon}
           {values.title}
           {selectedOptions.length > 0 && (
             <>
