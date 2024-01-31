@@ -1,11 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { Minus, Plus } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { getRandomColor } from "@/lib/random-colors";
+import { Button } from "@/components/ui/button";
 
 export interface Logged {
   id: number;

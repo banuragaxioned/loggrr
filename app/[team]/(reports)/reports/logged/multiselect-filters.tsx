@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Check, ChevronDown } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,6 +24,7 @@ import { ClientAndUserInterface } from "./data-table";
 interface DropdownInterface {
   title: string;
   searchable: boolean;
+  icon?: React.ReactNode;
   options: ClientAndUserInterface[];
 }
 
@@ -68,25 +69,28 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
     router.push(pathname + "?" + createQueryString(isFilterOf, query));
   };
 
+  useEffect(() => {
+    if (selectedClients) {
+      const options = selectedClients.split(",") as string[];
+      setSelectedOptions(options);
+    } else {
+      setSelectedOptions([]);
+    }
+  }, [selectedClients]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        asChild
-        className={cn(
-          "w-min",
-          // selectedOptions.length > 0 &&
-          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
-        )}
-      >
-        <Button variant="outline" role="combobox" className="justify-between" size="sm">
+      <PopoverTrigger asChild className="w-min">
+        <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
+          {values.icon}
           {values.title}
           {selectedOptions.length > 0 && (
             <>
-              <Separator orientation="vertical" className="mx-2 h-4" />
+              <Separator orientation="vertical" className="h-4" />
               <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
                 {selectedOptions.length}
               </Badge>
-              <div className="hidden space-x-1 lg:flex">
+              <div className="hidden lg:flex">
                 {selectedOptions.length > 1 ? (
                   <Badge variant="secondary" className="rounded-sm px-1 font-normal">
                     {selectedOptions.length} selected
@@ -103,7 +107,6 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
               </div>
             </>
           )}
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
