@@ -84,7 +84,7 @@ export const Card = ({
       }}
       className="mx-auto -mt-12 h-[30rem] w-full max-w-5xl rounded-[30px] border-4 border-[#6C6C6C] bg-[#222222] p-6 shadow-2xl md:h-[40rem]"
     >
-      <div className="h-full w-full overflow-hidden rounded-2xl bg-muted p-4">
+      <div className="h-full w-full overflow-hidden rounded-2xl bg-background p-4">
         <motion.div className="relative rounded-md" style={{ translateY: translate }}>
           {screen}
         </motion.div>

@@ -1,6 +1,10 @@
 "use client";
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { FeaturesSection } from "./features";
+import { SiteHeader } from "./site-header";
+import { SiteFooter } from "./site-footer";
+import { TimeEntry } from "@/components/time-entry";
 
 export function HeroSection() {
   return (
@@ -10,8 +14,9 @@ export function HeroSection() {
         titleComponent={
           <>
             <h1 className="text-4xl font-semibold text-foreground">
-              Simply the hassle of <br />
-              <span className="mt-1 text-4xl font-bold leading-none md:text-[6rem]">Time Tracking</span>
+              Time tracking
+              <br />
+              <span className="mt-1 text-4xl font-bold leading-none md:text-[6rem]">Simplified</span>
             </h1>
           </>
         }
@@ -21,5 +26,9 @@ export function HeroSection() {
 }
 
 export function ScreenContent() {
-  return <div className="h-full flex-col items-center justify-center text-center">Coming soon™</div>;
+  return (
+    <>
+      <SiteHeader />
+    </>
+  );
 }
