@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Upload } from "lucide-react";
+import { BookUser, Calendar, CircleDollarSign, List, ListRestart, Upload, Users } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
+
 import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
@@ -18,6 +20,7 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
 const monthFilter = {
   title: "Month",
   searchable: false,
+  icon: <Calendar size={16} />,
   options: [
     { id: 0, title: "This Month", link: "" },
     { id: 1, title: "Last 3 Months", link: "last3" },
@@ -29,6 +32,7 @@ const monthFilter = {
 const projectFilter = {
   title: "Projects",
   searchable: false,
+  icon: <List size={16} />,
   options: [
     { id: 0, title: "All Projects", link: "" },
     { id: 1, title: "My Projects", link: "my" },
@@ -48,33 +52,29 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   const clientFilter = {
     title: "Clients",
     searchable: true,
+    icon: <BookUser size={16} />,
     options: allClients,
   };
 
   const peopleFilter = {
     title: "Peoples",
     searchable: true,
+    icon: <Users size={16} />,
     options: allUsers,
   };
 
+  const isResetButtonVisibile =
+    selectedMonth || selectedBilling || selectedProject || selectedClients || selectedPeoples;
+
   const generateBillingQuery = () => {
-    if (!selectedBilling) return { text: "Billable", nextValue: "true" };
+    if (!selectedBilling) return { text: "Hours", nextValue: "true" };
     if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
     if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
   };
 
   // Billing status toggle button
   const billingStatusToggleButton = (
-    <Button
-      className={
-        selectedBilling
-          ? "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20"
-          : ""
-      }
-      variant="outline"
-      asChild
-      size="sm"
-    >
+    <Button className="flex gap-1.5" variant="outline" asChild size="sm">
       <Link
         href={`?${new URLSearchParams({
           month: selectedMonth ?? "",
@@ -84,6 +84,14 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
+        <CircleDollarSign
+          size={18}
+          className={cn(
+            selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
+            selectedBilling === "false" && "text-slate-400",
+            !selectedBilling && "text-black",
+          )}
+        />
         {generateBillingQuery()?.text}
       </Link>
     </Button>
@@ -92,7 +100,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
-      <ul className="flex gap-2">
+      <ul className="flex items-center gap-2">
         {/* Months */}
         <li>
           <DropdownFilters values={monthFilter} />
@@ -109,6 +117,16 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
+        <li>
+          {isResetButtonVisibile && false && (
+            <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
+              <Link href={`?`}>
+                Reset
+                <ListRestart size={16} />
+              </Link>
+            </Button>
+          )}
+        </li>
       </ul>
       {/* Right Area */}
       <div>
