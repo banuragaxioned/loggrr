@@ -1,10 +1,8 @@
 "use client";
+
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { FeaturesSection } from "./features";
 import { SiteHeader } from "./site-header";
-import { SiteFooter } from "./site-footer";
-import { TimeEntry } from "@/components/time-entry";
 
 export function HeroSection() {
   return (

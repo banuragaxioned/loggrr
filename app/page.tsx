@@ -9,11 +9,11 @@ export const metadata = {
 
 export default async function Home() {
   return (
-    <>
+    <div className="container">
       <HeroSection />
       <FeaturesSection />
       <JoinWatchlist />
       <SiteFooter />
-    </>
+    </div>
   );
 }
