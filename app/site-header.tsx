@@ -3,7 +3,7 @@
 import * as React from "react";
 import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
-import { siteConfig } from "@/config/site";
+import { excludedNavRoutes, siteConfig } from "@/config/site";
 import { Clock, Loader } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { UserAccountNav } from "@/components/user-account";
@@ -26,8 +26,8 @@ export function SiteHeader() {
   const params = useParams();
   const slug = params?.team;
 
-  const { toggle, toggleFunction } = React.useContext(MenuContext)
-  
+  const { toggle, toggleFunction } = React.useContext(MenuContext);
+
   const mobileLinks: MainNavItem[] = [
     {
       href: `/${slug}/projects`,
@@ -49,16 +49,15 @@ export function SiteHeader() {
       href: `/${slug}/skills/report`,
       title: "Report",
     },
-  ]
-  const pathToInclude = ["/", "/manage"];
-  const showMenu = !pathToInclude.includes(pathname); // returns true, for paths not present in pathToInclude
+  ];
+  const showMenu = !excludedNavRoutes.includes(pathname); // returns true, for paths not present in pathToInclude
 
   posthog.identify(String(sessionData?.user.id), { email: sessionData?.user.email, name: sessionData?.user.name });
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center space-x-4">
-        <Link href="/" className="items-center space-x-2 flex">
+        <Link href="/" className="flex items-center space-x-2">
           <Clock className="h-6 w-6" />
           <span className="font-bold sm:inline-block">{siteConfig.name}</span>
         </Link>
@@ -87,10 +86,15 @@ export function SiteHeader() {
               )}
             </div>
           </nav>
-          <Button variant="outline" size="icon" className="flex items-center md:hidden" onClick={() => toggleFunction(!toggle)}>
-            {toggle ? <X/> : <Menu/>}
+          <Button
+            variant="outline"
+            size="icon"
+            className="flex items-center md:hidden"
+            onClick={() => toggleFunction(!toggle)}
+          >
+            {toggle ? <X /> : <Menu />}
           </Button>
-          {toggle && ( <MobileNav toggleFunction={toggleFunction} toggle={toggle} items={mobileLinks}/>)}
+          {toggle && <MobileNav toggleFunction={toggleFunction} toggle={toggle} items={mobileLinks} />}
         </div>
       </div>
     </header>

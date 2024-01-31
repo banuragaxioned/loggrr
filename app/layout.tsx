@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
 import { ContextProvider } from "./context-provider";
 import { SiteHeader } from "./site-header";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <ContextProvider>
           {/* TODO: Add theme color from theme config */}
-        <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false}/>
+          <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false} />
           <SiteHeader />
           {children}
         </ContextProvider>

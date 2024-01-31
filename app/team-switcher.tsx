@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Boxes, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowRight, Boxes, Check, ChevronsUpDown } from "lucide-react";
 import { Role } from "@prisma/client";
 import { useRouter, useParams } from "next/navigation";
 
@@ -35,6 +35,20 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
     if (team) {
       setSelectedTeam(team);
     }
+  }
+
+  if (teamData.teams.length === 1 && !params.team) {
+    return (
+      <Button
+        size="sm"
+        onClick={() => {
+          router.push(`/${teamData.teams[0].slug}`);
+        }}
+      >
+        Continue
+        <ArrowRight className="ml-2 h-4 w-4" />
+      </Button>
+    );
   }
 
   if (teamData.teams.length <= 1) {
