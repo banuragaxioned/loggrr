@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Check, ChevronDown } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -80,16 +80,9 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        asChild
-        className={cn(
-          "w-min",
-          // selectedOptions.length > 0 &&
-          //   "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
-        )}
-      >
+      <PopoverTrigger asChild className="w-min">
         <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
-          {values.icon}
+          <span className={cn(selectedOptions.length && "text-indigo-600")}>{values.icon}</span>
           {values.title}
           {selectedOptions.length > 0 && (
             <>

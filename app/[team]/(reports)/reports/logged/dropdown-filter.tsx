@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-
 import Link from "next/link";
-import { Check, ChevronDown } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Check } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 interface LoggedInterface {
   title: string;
@@ -49,16 +49,16 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        asChild
-        className={cn(
-          "w-min",
-          ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
-            "bg-indigo-100 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-500 dark:bg-indigo-600/20 dark:text-white dark:hover:bg-indigo-500/20",
-        )}
-      >
+      <PopoverTrigger asChild className="w-min">
         <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
-          {values.icon}
+          <span
+            className={cn(
+              ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
+                "text-indigo-600",
+            )}
+          >
+            {values.icon}
+          </span>
           {renderTitle()}
         </Button>
       </PopoverTrigger>

@@ -89,7 +89,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
           className={cn(
             selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
             selectedBilling === "false" && "text-slate-400",
-            !selectedBilling && "text-black",
+            !selectedBilling && "text-black dark:text-white",
           )}
         />
         {generateBillingQuery()?.text}
@@ -118,7 +118,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
         <li>
-          {isResetButtonVisibile && false && (
+          {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
               <Link href={`?`}>
                 Reset
