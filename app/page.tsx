@@ -1,7 +1,7 @@
-import { HeroSection } from "./hero";
-import { FeaturesSection } from "./features";
-import { SiteFooter } from "./site-footer";
-import { JoinWatchlist } from "./join-waitlist";
+import { HeroSection } from "../components/marketing/hero";
+import { FeaturesSection } from "../components/marketing/features";
+import { SiteFooter } from "../components/marketing/site-footer";
+import { JoinWatchlist } from "../components/marketing/join-waitlist";
 
 export const metadata = {
   title: "Loggr - Time tracking made simple",
@@ -9,7 +9,7 @@ export const metadata = {
 
 export default async function Home() {
   return (
-    <div className="container">
+    <div className="container selection:bg-foreground selection:text-background">
       <HeroSection />
       <FeaturesSection />
       <JoinWatchlist />

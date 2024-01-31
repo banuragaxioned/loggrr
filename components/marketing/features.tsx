@@ -1,6 +1,6 @@
 import React from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { Bot, Brain, BrainCircuit, Clipboard, File, FileSignature, Table, Timer } from "lucide-react";
+import { BookOpen, Bot, LucideGanttChartSquare, Timer } from "lucide-react";
 
 export function FeaturesSection() {
   return (
@@ -30,11 +30,11 @@ const items = [
     icon: <Timer className="h-4 w-4" />,
   },
   {
-    title: "Manage work ",
-    description: "Dive into the transformative power of technology.",
+    title: "Manage work allocation",
+    description: "Allocate work to your team and track their progress.",
     header: <Skeleton />,
     className: "md:col-span-1",
-    icon: <File className="h-4 w-4" />,
+    icon: <LucideGanttChartSquare className="h-4 w-4" />,
   },
   {
     title: "Smart suggestions",
@@ -45,9 +45,9 @@ const items = [
   },
   {
     title: "Designed for transparent teams",
-    description: "Understand the impact of effective communication in our lives.",
+    description: "Built to be transparent and open by default - letting everyone know what's going on.",
     header: <Skeleton />,
     className: "md:col-span-2",
-    icon: <Table className="h-4 w-4" />,
+    icon: <BookOpen className="h-4 w-4" />,
   },
 ];

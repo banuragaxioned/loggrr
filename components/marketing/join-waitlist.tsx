@@ -12,6 +12,7 @@ export function JoinWatchlist() {
       </p>
       <div className="flex w-full max-w-sm items-center space-x-2">
         <Input type="email" placeholder="hello@me.com" />
+        {/* TODO: Need to make this functional */}
         <Button type="submit">Notify</Button>
       </div>
     </div>

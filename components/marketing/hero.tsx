@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { SiteHeader } from "./site-header";
+import { SiteHeader } from "../../app/site-header";
 
 export function HeroSection() {
   return (
