@@ -130,7 +130,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
       </ul>
       {/* Right Area */}
       <div>
-        <Button variant="outline" className="flex gap-2 disabled:opacity-50" disabled>
+        <Button variant="outline" size="sm" className="flex gap-2 disabled:opacity-50" disabled>
           <Upload size={16} />
           Export
         </Button>
