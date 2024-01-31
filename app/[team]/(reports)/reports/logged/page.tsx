@@ -18,7 +18,7 @@ export default async function Page({ params, searchParams }: pageProps) {
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;
   const selectedClients = searchParams.clients;
-  const selectedPeoples = searchParams.peoples;
+  const selectedMembers = searchParams.members;
   const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
   const {
     data: loggedData,
@@ -31,7 +31,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedBilling,
     selectedProject,
     selectedClients,
-    selectedPeoples,
+    selectedMembers,
   );
 
   // Transformed data as per the table structure

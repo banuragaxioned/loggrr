@@ -47,7 +47,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
   const selectedClients = searchParams.get("clients");
-  const selectedPeoples = searchParams.get("peoples");
+  const selectedMembers = searchParams.get("members");
 
   const clientFilter = {
     title: "Clients",
@@ -57,14 +57,14 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   };
 
   const peopleFilter = {
-    title: "Peoples",
+    title: "Members",
     searchable: true,
     icon: <Users size={16} />,
     options: allUsers,
   };
 
   const isResetButtonVisibile =
-    selectedMonth || selectedBilling || selectedProject || selectedClients || selectedPeoples;
+    selectedMonth || selectedBilling || selectedProject || selectedClients || selectedMembers;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -80,7 +80,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
           month: selectedMonth ?? "",
           project: selectedProject ?? "",
           clients: selectedClients ?? "",
-          peoples: selectedPeoples ?? "",
+          members: selectedMembers ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
