@@ -1,13 +1,16 @@
 "use client";
+
 import { useState, useEffect, FormEvent } from "react";
+import dayjs from "dayjs";
+import { toast } from "sonner";
+
+import { TimeEntryDataObj } from "@/types";
+import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./date-picker";
+
 import { TimeLogForm } from "./forms/timelogForm";
-import { Project } from "@/types";
-import { TimeEntryDataObj } from "@/types";
-import dayjs from "dayjs";
-import { toast } from "sonner";
 import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntryProps {
@@ -21,15 +24,26 @@ export interface EditReferenceObj {
   id: number;
 }
 
-export const getDateStr = (date: Date) =>
-  date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
-
 export type EntryData = { data: TimeEntryDataObj; status: number };
 
+/**
+ * * getDateString: returns date in format Wed, Jan 31
+ */
+export const getDateString = (date: Date) => {
+  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+};
+
+/**
+ * * getDates: returns dates in array format upto specified dates
+ */
 export const getDates = (date: Date) => {
-  let arr = [],
-    i = -2;
-  for (i; i < 3; i++) arr.push(dayjs(date).add(i, "day").toDate());
+  const arr = [];
+
+  // Update i to add further dates -1 will show 1 day before and 1 will show 1 day after
+  for (let i = 0; i <= 0; i++) {
+    arr.push(dayjs(date).add(i, "day").toDate());
+  }
+
   return arr;
 };
 
@@ -109,8 +123,11 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => entries.data[getDateStr(dateInArr)]) || entries.status === 0) && getApiCall();
+    (!dates.find((dateInArr) => entries.data[getDateString(dateInArr)]) || entries.status === 0) && getApiCall();
   }, [dates]);
+
+  const dayTotalTime = entries.data[getDateString(new Date(date))]?.dayTotal.toFixed(2);
+  console.log(dayTotalTime);
 
   return (
     <div className="w-full">
@@ -119,10 +136,20 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
-        <h4 className="flex justify-between px-4 py-2">
-          Time logged for the day
-          <span className="normal-nums">{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
-        </h4>
+        <p className="flex justify-between p-4 font-medium">
+          Total time logged for the day
+          <span className="normal-nums">{dayTotalTime ?? 0} h</span>
+        </p>
+
+        <TimeEntriesList
+          entries={{
+            ...entries.data[getDateString(new Date(date))],
+          }}
+          status={entries.status}
+          deleteHandler={deleteApiCall}
+          editHandler={editHandler}
+          edit={edit}
+        />
       </div>
       <TimeLogForm
         team={team}
@@ -131,15 +158,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         edit={edit}
         setEdit={setEdit}
         submitHandler={submitHandler}
-      />
-      <TimeEntriesList
-        entries={{
-          ...entries.data[getDateStr(new Date(date))],
-        }}
-        status={entries.status}
-        deleteHandler={deleteApiCall}
-        editHandler={editHandler}
-        edit={edit}
       />
     </div>
   );

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { GetSetDateProps, TimeEntryDataObj } from "@/types";
 import { getDates } from "./time-entry";
 import dayjs from "dayjs";
-import { getDateStr } from "./time-entry";
+import { getDateString } from "./time-entry";
 
 interface InlineDateProps extends GetSetDateProps {
   setDates: Dispatch<Date[]>;
@@ -36,17 +36,18 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
         </Button>
       </li>
       {dates.map((dateInArr, i) => {
-        const dateString = getDateStr(dateInArr);
+        const dateString = getDateString(dateInArr);
         const [day, month, dateNum] = dateString.replace(",", "").split(" ");
         const loggedTime = entries[dateString]?.dayTotal;
         const isNotClickable = dayjs(dateInArr).isAfter(dayjs());
+
         return (
           <li
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
             className={cn(
               `flex basis-[23%] items-center justify-center gap-2 text-center ${
-                dateString === getDateStr(date)
+                dateString === getDateString(date)
                   ? "relative text-primary before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-primary before:indent-[-9999px] before:content-['a']"
                   : ""
               } ${isNotClickable ? "disabled" : "cursor-pointer"}`,

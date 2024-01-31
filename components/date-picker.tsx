@@ -32,14 +32,15 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
 
 export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant={"outline"} size={"sm"} className={cn("flex px-2 py-0")} ref={buttonRef}>
-          <CalendarIcon className="h-5 w-6" />
+        <Button variant="outline" size="icon" className="p-1.5" ref={buttonRef}>
+          <CalendarIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent align="start" className="w-auto p-0">
         <Calendar
           mode="single"
           selected={date}
