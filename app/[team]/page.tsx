@@ -23,8 +23,8 @@ export default async function Dashboard({ params }: pageProps) {
   const loggedTimeTotal = loggedTime.map((entry) => entry.time).reduce((sum: number, num: number) => sum + num, 0);
 
   return (
-    <div className="col-span-12 grid w-full grid-cols-12 gap-4">
-      <main className="col-span-12 flex flex-col gap-4 p-1 lg:col-span-6">
+    <div className="col-span-12 mb-6 grid w-full grid-cols-12 gap-4">
+      <main className="col-span-12 flex flex-col gap-4 lg:col-span-6">
         <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
       <aside className="hidden basis-1/4 space-y-4 lg:col-span-6 lg:block">

@@ -36,8 +36,9 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="p-1.5" ref={buttonRef}>
-          <CalendarIcon />
+        <Button variant="outline" size="sm" className="flex gap-1.5" ref={buttonRef}>
+          <CalendarIcon size={16} />
+          <span className="text-sm">Pick a date</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-auto p-0">
@@ -50,6 +51,7 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
           }}
           toDate={new Date()}
           initialFocus
+          defaultMonth={date}
         />
       </PopoverContent>
     </Popover>

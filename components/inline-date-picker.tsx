@@ -41,16 +41,18 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           isNotClickable ? "disabled" : "cursor-pointer",
         )}
       >
-        <span className="text-sm font-medium tracking-tighter">{dateString}</span>
-        {loggedTime && (
-          <Circle
-            className={cn(
-              "h-2 w-2 fill-destructive stroke-none",
-              loggedTime >= 7 && "fill-success",
-              loggedTime >= 4 && "fill-orange-600",
-            )}
-          />
-        )}
+        <span className="relative text-sm font-medium tracking-tighter">
+          {dateString}
+          {loggedTime && (
+            <Circle
+              className={cn(
+                "absolute -right-4 top-1.5 h-2 w-2 fill-destructive stroke-none",
+                loggedTime >= 7 && "fill-success",
+                loggedTime < 4 && "fill-orange-600",
+              )}
+            />
+          )}
+        </span>
       </li>
     );
   });

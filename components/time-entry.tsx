@@ -12,6 +12,7 @@ import { ClassicDatePicker } from "./date-picker";
 
 import { TimeLogForm } from "./forms/timelogForm";
 import { SelectedData } from "./forms/timelogForm";
+import { Card } from "./ui/card";
 
 interface TimeEntryProps {
   team: string;
@@ -130,13 +131,21 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-2 rounded-xl border">
+      <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
-          <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
+          <ClassicDatePicker date={date} setDate={setDate} />
         </div>
+        <TimeLogForm
+          team={team}
+          projects={projects}
+          date={date}
+          edit={edit}
+          setEdit={setEdit}
+          submitHandler={submitHandler}
+        />
         {dayTotalTime && (
-          <p className="flex justify-between px-6 font-medium">
+          <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day
             <span className="normal-nums">{dayTotalTime} h</span>
           </p>
@@ -150,15 +159,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           editHandler={editHandler}
           edit={edit}
         />
-      </div>
-      <TimeLogForm
-        team={team}
-        projects={projects}
-        date={date}
-        edit={edit}
-        setEdit={setEdit}
-        submitHandler={submitHandler}
-      />
+      </Card>
     </div>
   );
 };

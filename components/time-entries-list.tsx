@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { CalendarClock, Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
 
+import { getRandomColor } from "@/lib/random-colors";
 import { TimeEntryData } from "@/types";
 
 import { Skeleton } from "./ui/skeleton";
@@ -25,11 +26,17 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
       <li key={entryData.project.id} className="px-2">
         {/* Project related details  */}
         <Card className="overflow-hidden shadow-none">
-          <div className="flex w-full justify-between bg-background p-4">
-            <p className="flex gap-x-1 font-medium">
-              {entryData?.project?.name} - <span>{entryData?.project.client?.name}</span>
+          <div className="flex w-full justify-between bg-background px-3 py-2">
+            <p className="flex items-center gap-x-2 text-sm font-medium">
+              <span
+                className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                style={{ backgroundColor: getRandomColor(entryData.project.id) }}
+              >
+                {entryData?.project?.name.charAt(0)}
+              </span>
+              {entryData?.project?.name} - {entryData?.project.client?.name}
             </p>
-            <span className="normal-nums">{entryData?.total.toFixed(2)} h</span>
+            <span className="text-sm font-semibold normal-nums">{entryData?.total.toFixed(2)} h</span>
           </div>
           <Separator />
           {/* Milestones data */}
@@ -49,26 +56,26 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
 
             return (
               <Fragment key={i}>
-                <div className="group relative flex justify-between bg-secondary px-4 py-2.5 last:mb-0">
+                <div className="group relative flex justify-between bg-secondary px-3 py-2 last:mb-0">
                   <div className="flex flex-col justify-between gap-y-4">
                     <div className="flex gap-x-4">
                       {data.milestone?.name && (
-                        <p className="flex items-center gap-1.5 gap-x-1 font-medium">
+                        <p className="flex items-center gap-1.5 gap-x-1 text-sm font-medium opacity-80">
                           <Rocket className="text-primary" size={18} />
                           {data.milestone.name}
                         </p>
                       )}
                       {data.task?.name && (
-                        <p className="flex gap-x-1 font-medium">
+                        <p className="flex gap-x-1 text-sm font-medium">
                           <List className="text-primary" />
                           {data.task.name}
                         </p>
                       )}
                     </div>
-                    <p>{data?.comments}</p>
+                    <p className="text-sm opacity-60">{data?.comments}</p>
                   </div>
                   <div className="flex flex-col text-right">
-                    <span className="font-semibold normal-nums">{data?.time.toFixed(2)} h</span>
+                    <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
                     {/* Billing Status */}
                     {data?.billable ? (
                       <span className="text-sm text-success">Billable</span>
