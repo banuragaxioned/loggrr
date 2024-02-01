@@ -38,7 +38,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
             </p>
             <span className="text-sm font-semibold normal-nums">{entryData?.total.toFixed(2)} h</span>
           </div>
-          <Separator />
+          <Separator className="dark:bg-white/20" />
           {/* Milestones data */}
           {entryData?.data?.map((data, i) => {
             const projectObj = {
@@ -92,7 +92,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                     </div>
                   </div>
                 </div>
-                {i !== entryData?.data.length - 1 && <Separator />}
+                {i !== entryData?.data.length - 1 && <Separator className="dark:bg-white/20" />}
               </Fragment>
             );
           })}
