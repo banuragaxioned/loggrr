@@ -1,11 +1,15 @@
-import { Skeleton } from "./ui/skeleton";
-import { TimeEntryData } from "@/types";
+import { Fragment } from "react";
 import { CalendarClock, Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
+
+import { TimeEntryData } from "@/types";
+
+import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
-import { EditReferenceObj } from "./time-entry";
-import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
+
+import { EditReferenceObj } from "./time-entry";
+import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntries {
   entries: TimeEntryData;
@@ -19,7 +23,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData) => (
       <li key={entryData.project.id} className="px-2">
-        {/* project name  */}
+        {/* Project related details  */}
         <Card className="overflow-hidden shadow-none">
           <div className="flex w-full justify-between bg-background p-4">
             <p className="flex gap-x-1 font-medium">
@@ -28,7 +32,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
             <span className="normal-nums">{entryData?.total.toFixed(2)} h</span>
           </div>
           <Separator />
-          {/* milestone data */}
+          {/* Milestones data */}
           {entryData?.data?.map((data, i) => {
             const projectObj = {
               id: entryData.project.id,
@@ -44,8 +48,8 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
             };
 
             return (
-              <>
-                <div className="group relative flex justify-between bg-secondary px-4 py-2.5 last:mb-0" key={i}>
+              <Fragment key={i}>
+                <div className="group relative flex justify-between bg-secondary px-4 py-2.5 last:mb-0">
                   <div className="flex flex-col justify-between gap-y-4">
                     <div className="flex gap-x-4">
                       {data.milestone?.name && (
@@ -82,7 +86,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                   </div>
                 </div>
                 {i !== entryData?.data.length - 1 && <Separator />}
-              </>
+              </Fragment>
             );
           })}
         </Card>
@@ -98,7 +102,30 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
 
   return (
     <ul className="flex w-full flex-col gap-y-2 overflow-y-auto pb-2">
-      {status === 0 ? <Skeleton className="h-20 w-full" /> : status > 0 ? renderEntries : <li>Something went wrong</li>}
+      {status === 0 ? (
+        <div className="p-2">
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-6 w-1/4" />
+          </div>
+          <div className="mb-2 flex flex-col gap-2">
+            <div className="flex justify-between">
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-6 w-[80px]" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-6 w-[80px]" />
+            </div>
+          </div>
+        </div>
+      ) : status > 0 ? (
+        renderEntries
+      ) : (
+        <li>Something went wrong</li>
+      )}
     </ul>
   );
 };

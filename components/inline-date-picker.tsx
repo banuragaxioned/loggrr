@@ -1,10 +1,12 @@
 import { useEffect, Dispatch } from "react";
 import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import dayjs from "dayjs";
+
 import { cn } from "@/lib/utils";
 import { GetSetDateProps, TimeEntryDataObj } from "@/types";
+
+import { Button } from "@/components/ui/button";
 import { getDates } from "./time-entry";
-import dayjs from "dayjs";
 import { getDateString } from "./time-entry";
 
 interface InlineDateProps extends GetSetDateProps {
@@ -14,72 +16,59 @@ interface InlineDateProps extends GetSetDateProps {
 }
 
 export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: InlineDateProps) => {
-  const clickHandler = (date: Date) => setDates(getDates(date));
+  const goToDate = (goTo: number) => {
+    const selectedDate = dayjs(dates[0]).add(goTo, "day").toDate();
+    setDate(selectedDate);
+    setDates(getDates(selectedDate));
+  };
 
+  // To update the date based on selected date from picker
   useEffect(() => {
-    if (!dates.includes(date)) {
-      clickHandler(date);
-      setDates(getDates(date));
-    }
-  }, [date]);
+    setDates(getDates(date));
+  }, [date, setDates]);
+
+  const renderDates = dates.map((dateInArr, i) => {
+    const dateString = getDateString(dateInArr);
+    const loggedTime = entries[dateString]?.dayTotal;
+    const isNotClickable = dayjs(dateInArr).isAfter(dayjs());
+
+    return (
+      <li
+        key={i}
+        onClick={() => !isNotClickable && setDate(dateInArr)}
+        className={cn(
+          "flex w-full items-center justify-center gap-2 text-center",
+          isNotClickable ? "disabled" : "cursor-pointer",
+        )}
+      >
+        <span className="text-sm font-medium tracking-tighter">{dateString}</span>
+        {loggedTime && (
+          <Circle
+            className={cn(
+              "h-2 w-2 fill-destructive stroke-none",
+              loggedTime >= 7 && "fill-success",
+              loggedTime >= 4 && "fill-orange-600",
+            )}
+          />
+        )}
+      </li>
+    );
+  });
 
   return (
     <ul className="flex w-full gap-x-2">
       <li className="flex cursor-pointer items-center">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => clickHandler(dayjs(dates[0]).add(-1, "day").toDate())}
-          title="Prev"
-        >
+        <Button variant="outline" size="icon" onClick={() => goToDate(-1)} title="Prev">
           <ChevronLeft size={20} />
         </Button>
       </li>
-      {dates.map((dateInArr, i) => {
-        const dateString = getDateString(dateInArr);
-        const [day, month, dateNum] = dateString.replace(",", "").split(" ");
-        const loggedTime = entries[dateString]?.dayTotal;
-        const isNotClickable = dayjs(dateInArr).isAfter(dayjs());
-
-        return (
-          <li
-            key={i}
-            onClick={() => !isNotClickable && setDate(dateInArr)}
-            className={cn(
-              `flex w-full items-center justify-center gap-2 text-center ${
-                dateString === getDateString(date)
-                  ? "relative text-primary before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-primary before:indent-[-9999px] before:content-['a']"
-                  : ""
-              } ${isNotClickable ? "disabled" : "cursor-pointer"}`,
-            )}
-          >
-            <span className="text-sm font-medium tracking-tighter">
-              {day} {month} {dateNum}
-            </span>
-            {loggedTime && (
-              <Circle
-                className={cn(
-                  "h-2 w-2 stroke-none",
-                  `${loggedTime >= 7 ? "fill-success" : loggedTime >= 4 ? "fill-orange-600" : "fill-destructive"}`,
-                )}
-              />
-            )}
-          </li>
-        );
-      })}
+      {renderDates}
       <li>
         <Button
           variant="outline"
           size="icon"
           className={cn(`${dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
-          onClick={() =>
-            dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) &&
-            clickHandler(
-              dayjs(dates[dates.length - 1])
-                .add(1, "day")
-                .toDate(),
-            )
-          }
+          onClick={() => dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) && goToDate(1)}
           title="Next"
         >
           <ChevronRight size={20} />
