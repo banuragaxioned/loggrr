@@ -29,7 +29,7 @@ export const getLogged = async (
   billing?: string,
   project?: string,
   clients?: string,
-  peoples?: string,
+  members?: string,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
@@ -73,13 +73,13 @@ export const getLogged = async (
           in: clients.split(",").map((id) => +id),
         },
       }),
-      ...(peoples && {
+      ...(members && {
         project: {
           every: {
             usersOnProject: {
               some: {
                 userId: {
-                  in: peoples?.split(",").map((id) => +id),
+                  in: members?.split(",").map((id) => +id),
                 },
               },
             },
@@ -121,9 +121,9 @@ export const getLogged = async (
           },
           usersOnProject: {
             where: {
-              ...(peoples && {
+              ...(members && {
                 userId: {
-                  in: peoples?.split(",").map((id) => +id),
+                  in: members?.split(",").map((id) => +id),
                 },
               }),
             },
