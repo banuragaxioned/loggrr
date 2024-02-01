@@ -26,7 +26,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
       <li key={entryData.project.id} className="px-2">
         {/* Project related details  */}
         <Card className="overflow-hidden shadow-none">
-          <div className="flex w-full justify-between bg-background px-3 py-2">
+          <div className="flex w-full justify-between px-3 py-2">
             <p className="flex items-center gap-x-2 text-sm font-medium">
               <span
                 className="flex h-6 w-6 items-center justify-center rounded-full text-white"

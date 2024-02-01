@@ -41,7 +41,7 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
           <span className="text-sm">Pick a date</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
+      <PopoverContent align="end" className="w-auto p-0">
         <Calendar
           mode="single"
           selected={date}

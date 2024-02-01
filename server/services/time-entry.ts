@@ -4,26 +4,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
-  const response = await db.timeEntry.findMany({
+  const response = await db.timeEntry.aggregate({
     where: {
-      userId: userId,
+      userId,
       date: {
         gte: new Date(new Date().setDate(new Date().getDate() - 7)),
       },
       workspace: {
-        slug: slug,
+        slug,
       },
     },
-    select: {
+    _sum: {
       time: true,
-      project: {
-        select: {
-          name: true,
-        },
-      },
     },
   });
-  return response;
+
+  return response._sum.time ?? 0;
 };
 
 export const getLogged = async (

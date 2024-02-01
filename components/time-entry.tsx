@@ -63,16 +63,12 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
-  const getApiCall = () =>
-    fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+  const getApiCall = () => {
+    return fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`)
       .then((res) => res.json())
       .then((res) => setEntries({ data: { ...entries.data, ...res }, status: 1 }))
       .catch((e) => setEntries({ data: {}, status: -1 }));
+  };
 
   const deleteApiCall = (id: number) =>
     fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
@@ -127,7 +123,10 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     (!dates.find((dateInArr) => entries.data[getDateString(dateInArr)]) || entries.status === 0) && getApiCall();
   }, [dates]);
 
-  const dayTotalTime = entries.data[getDateString(new Date(date))]?.dayTotal.toFixed(2);
+  const dayTotalTime = entries.data[getDateString(new Date(date))]?.projectsLog.reduce(
+    (sum, item) => (sum += item.total),
+    0,
+  );
 
   return (
     <div className="w-full">
@@ -147,7 +146,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day
-            <span className="normal-nums">{dayTotalTime} h</span>
+            <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
           </p>
         )}
         <TimeEntriesList

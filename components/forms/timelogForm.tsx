@@ -336,7 +336,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         <div
           className={`${
             isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
-          } flex items-center justify-between rounded-b-xl bg-zinc-50 px-5 py-[10px] dark:bg-zinc-900`}
+          } flex items-center justify-between rounded-b-xl bg-secondary px-5 py-[10px]`}
         >
           <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
             {/* drop down */}
@@ -348,7 +348,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               label={selectedData?.project?.name || "Project"}
               selectedItem={selectedData?.project?.name}
               handleSelect={(option) => selectHandler(option, projects, projectCallback)}
-              disable={!selectedData?.client?.id}
+              // disable={!selectedData?.client?.id}
             />
             <ComboBox
               tabIndex={3}
