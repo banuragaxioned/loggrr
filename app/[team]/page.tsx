@@ -24,10 +24,10 @@ export default async function Dashboard({ params }: pageProps) {
 
   return (
     <div className="col-span-12 grid w-full grid-cols-12 gap-4">
-      <main className="col-span-12 flex flex-col gap-4 p-1 lg:col-span-9">
+      <main className="col-span-12 flex flex-col gap-4 p-1 lg:col-span-6">
         <TimeEntry team={team} projects={projects ? projects : []} />
       </main>
-      <aside className="hidden basis-1/4 space-y-4 lg:col-span-3 lg:block">
+      <aside className="hidden basis-1/4 space-y-4 lg:col-span-6 lg:block">
         <CategoryDataBar
           title="Logged hours"
           subtitle="Last 7 days"

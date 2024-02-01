@@ -27,12 +27,12 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
     <ul className="flex w-full gap-x-2">
       <li className="flex cursor-pointer items-center">
         <Button
-          variant={"outline"}
-          size="sm"
-          onClick={() => clickHandler(dayjs(dates[0]).add(-3, "day").toDate())}
+          variant="outline"
+          size="icon"
+          onClick={() => clickHandler(dayjs(dates[0]).add(-1, "day").toDate())}
           title="Prev"
         >
-          <ChevronLeft />
+          <ChevronLeft size={20} />
         </Button>
       </li>
       {dates.map((dateInArr, i) => {
@@ -46,7 +46,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
             key={i}
             onClick={() => !isNotClickable && setDate(dateInArr)}
             className={cn(
-              `flex basis-[23%] items-center justify-center gap-2 text-center ${
+              `flex w-full items-center justify-center gap-2 text-center ${
                 dateString === getDateString(date)
                   ? "relative text-primary before:absolute before:bottom-0 before:block before:h-[2px] before:w-4/5 before:bg-primary before:indent-[-9999px] before:content-['a']"
                   : ""
@@ -62,27 +62,27 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
                   "h-2 w-2 stroke-none",
                   `${loggedTime >= 7 ? "fill-success" : loggedTime >= 4 ? "fill-orange-600" : "fill-destructive"}`,
                 )}
-              ></Circle>
+              />
             )}
           </li>
         );
       })}
       <li>
         <Button
-          variant={"outline"}
-          size="sm"
-          className={cn(` ${dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
+          variant="outline"
+          size="icon"
+          className={cn(`${dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
           onClick={() =>
             dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) &&
             clickHandler(
               dayjs(dates[dates.length - 1])
-                .add(3, "day")
+                .add(1, "day")
                 .toDate(),
             )
           }
           title="Next"
         >
-          <ChevronRight />
+          <ChevronRight size={20} />
         </Button>
       </li>
     </ul>

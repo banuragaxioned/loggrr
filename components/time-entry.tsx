@@ -127,20 +127,20 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   }, [dates]);
 
   const dayTotalTime = entries.data[getDateString(new Date(date))]?.dayTotal.toFixed(2);
-  console.log(dayTotalTime);
 
   return (
     <div className="w-full">
-      <div className="rounded-xl border">
+      <div className="flex flex-col gap-2 rounded-xl border">
         <div className="flex justify-between gap-2 border-b p-2">
           <ClassicDatePicker date={date} setDate={setDate} />
           <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
-        <p className="flex justify-between p-4 font-medium">
-          Total time logged for the day
-          <span className="normal-nums">{dayTotalTime ?? 0} h</span>
-        </p>
-
+        {dayTotalTime && (
+          <p className="flex justify-between px-6 font-medium">
+            Total time logged for the day
+            <span className="normal-nums">{dayTotalTime} h</span>
+          </p>
+        )}
         <TimeEntriesList
           entries={{
             ...entries.data[getDateString(new Date(date))],
