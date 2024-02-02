@@ -67,10 +67,9 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
       const data = await response.json();
-      console.log(data);
       setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching time entries", error);
       setEntries({ data: {}, status: "error" });
     }
   }, [team, date]);
