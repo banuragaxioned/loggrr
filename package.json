@@ -75,7 +75,7 @@
     "tailwind-merge": "^2.2.1",
     "timezone-soft": "^1.5.2",
     "ts-node": "^10.9.2",
-    "vaul": "^0.8.9",
+    "vaul": "^0.9.0",
     "zod": "^3.22.4",
     "zustand": "^4.5.0"
   },
