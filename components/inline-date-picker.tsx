@@ -10,37 +10,21 @@ import { getDates } from "./time-entry";
 import { getDateString } from "./time-entry";
 
 interface InlineDateProps extends GetSetDateProps {
-  setDates: Dispatch<Date[]>;
-  dates: Date[];
   entries: TimeEntryDataObj;
 }
 
-export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: InlineDateProps) => {
+export const InlineDatePicker = ({ date, setDate, entries }: InlineDateProps) => {
   const goToDate = (goTo: number) => {
-    const selectedDate = dayjs(dates[0]).add(goTo, "day").toDate();
+    const selectedDate = dayjs(date).add(goTo, "day").toDate();
     setDate(selectedDate);
-    setDates(getDates(selectedDate));
   };
 
-  // To update the date based on selected date from picker
-  useEffect(() => {
-    setDates(getDates(date));
-  }, [date, setDates]);
-
-  const renderDates = dates.map((dateInArr, i) => {
-    const dateString = getDateString(dateInArr);
+  const renderDate = () => {
+    const dateString = getDateString(date);
     const loggedTime = entries[dateString]?.dayTotal;
-    const isNotClickable = dayjs(dateInArr).isAfter(dayjs());
 
     return (
-      <li
-        key={i}
-        onClick={() => !isNotClickable && setDate(dateInArr)}
-        className={cn(
-          "flex w-full items-center justify-center gap-2 text-center",
-          isNotClickable ? "disabled" : "cursor-pointer",
-        )}
-      >
+      <li className="flex w-full items-center justify-center gap-2 text-center">
         <span className="relative text-sm font-medium tracking-tighter">
           {dateString}
           {loggedTime && (
@@ -55,7 +39,7 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
         </span>
       </li>
     );
-  });
+  };
 
   return (
     <ul className="flex w-full gap-x-2">
@@ -64,13 +48,13 @@ export const InlineDatePicker = ({ date, setDate, setDates, dates, entries }: In
           <ChevronLeft size={20} />
         </Button>
       </li>
-      {renderDates}
+      {renderDate()}
       <li>
         <Button
           variant="outline"
           size="icon"
-          className={cn(`${dayjs(dates[dates.length - 1]).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
-          onClick={() => dayjs(dates[dates.length - 1]).isBefore(dayjs().subtract(1, "day")) && goToDate(1)}
+          className={cn(`${dayjs(date).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
+          onClick={() => dayjs(date).isBefore(dayjs().subtract(1, "day")) && goToDate(1)}
           title="Next"
         >
           <ChevronRight size={20} />

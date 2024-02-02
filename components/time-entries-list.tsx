@@ -101,13 +101,13 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
     ))
   ) : (
     <li className="flex flex-col items-center justify-center space-y-2 p-12">
-      <CalendarClock className="h-8 w-8" />
-      <h2 className="text-xl font-bold">No Timesheet Entries</h2>
+      <CalendarClock size={32} />
+      <h2>No Timesheet Entries</h2>
       <p>You haven&apos;t made any timesheet entries for the selected date.</p>
     </li>
   );
 
-  const loadingSkeleton = (
+  const skeletonLoader = (
     <div className="p-2">
       <div className="mb-2 flex items-center justify-between gap-4">
         <Skeleton className="h-6 w-3/4" />
@@ -130,7 +130,7 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
 
   return (
     <ul className="flex w-full flex-col gap-y-2 overflow-y-auto pb-2">
-      {status === "loading" && loadingSkeleton}
+      {status === "loading" && skeletonLoader}
       {status === "success" && renderEntries}
       {status === "error" && <li className="p-4 text-center text-destructive">Something went wrong</li>}
     </ul>

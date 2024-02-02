@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent, useMemo } from "react";
+import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 
@@ -52,7 +52,6 @@ const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", 
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
@@ -65,16 +64,16 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   /*
    * getTimeEntries: The following function will return the time entries of the specified dates
    */
-  const getTimeEntries = async () => {
+  const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
       const data = await response.json();
-      setEntries({ data: { ...entries.data, ...data }, status: "success" });
+      setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setEntries({ data: {}, status: "error" });
     }
-  };
+  }, [team, date]);
 
   /*
    * deleteTimeEntry: The following function will return the time entry of the specified id
@@ -132,9 +131,8 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => entries.data[getDateString(dateInArr)]) || entries.status === "loading") &&
-      getTimeEntries();
-  }, [dates]);
+    getTimeEntries();
+  }, [getTimeEntries]);
 
   const dayTotalTime = useMemo(
     () => entries.data[getDateString(new Date(date))]?.projectsLog.reduce((sum, item) => (sum += item.total), 0),
@@ -145,7 +143,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     <div className="w-full">
       <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
-          <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
+          <InlineDatePicker date={date} setDate={setDate} entries={entries.data} />
           <ClassicDatePicker date={date} setDate={setDate} />
         </div>
         <TimeLogForm
