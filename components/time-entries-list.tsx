@@ -74,7 +74,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                     </div>
                     <p className="text-sm opacity-60">{data?.comments}</p>
                   </div>
-                  <div className="flex flex-col text-right">
+                  <div className="flex min-w-[100px] flex-col text-right">
                     <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
                     {/* Billing Status */}
                     {data?.billable ? (
