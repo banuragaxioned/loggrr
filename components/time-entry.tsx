@@ -55,7 +55,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
-  const editHandler = (obj: SelectedData, id: number) => {
+  const editEntryHandler = (obj: SelectedData, id: number) => {
     setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
   };
 
@@ -165,8 +165,8 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
             ...entries.data[getDateString(new Date(date))],
           }}
           status={entries.status}
-          deleteHandler={deleteTimeEntry}
-          editHandler={editHandler}
+          deleteEntryHandler={deleteTimeEntry}
+          editEntryHandler={editEntryHandler}
           edit={edit}
         />
       </Card>

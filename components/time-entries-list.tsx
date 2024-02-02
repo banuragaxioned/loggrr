@@ -15,12 +15,12 @@ import { SelectedData } from "./forms/timelogForm";
 interface TimeEntries {
   entries: TimeEntryData;
   status: string;
-  deleteHandler: (id: number) => void;
-  editHandler: (obj: SelectedData, id: number) => void;
+  deleteEntryHandler: (id: number) => void;
+  editEntryHandler: (obj: SelectedData, id: number) => void;
   edit: EditReferenceObj;
 }
 
-export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, edit }: TimeEntries) => {
+export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData) => (
       <li key={entryData.project.id} className="px-2">
@@ -83,10 +83,10 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
                       <span className="text-sm">Non-Billable</span>
                     )}
                     <div className="mt-2 flex justify-end gap-x-2 md:invisible md:group-hover:visible">
-                      <Button size="icon" variant="outline" onClick={() => editHandler(tempObj, data.id)}>
+                      <Button size="icon" variant="outline" onClick={() => editEntryHandler(tempObj, data.id)}>
                         {edit.isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
                       </Button>
-                      <Button size="icon" variant="outline" onClick={() => deleteHandler(data.id)}>
+                      <Button size="icon" variant="outline" onClick={() => deleteEntryHandler(data.id)}>
                         <Trash size={16} />
                       </Button>
                     </div>
