@@ -143,7 +143,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     <div className="w-full">
       <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
-          <InlineDatePicker date={date} setDate={setDate} entries={entries.data} />
+          <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
           <ClassicDatePicker date={date} setDate={setDate} />
         </div>
         <TimeLogForm

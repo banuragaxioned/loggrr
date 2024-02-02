@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { getDateString } from "./time-entry";
 
 interface InlineDateProps extends GetSetDateProps {
-  entries: TimeEntryDataObj;
+  dayTotalTime: number;
 }
 
-export const InlineDatePicker = ({ date, setDate, entries }: InlineDateProps) => {
+export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProps) => {
   const goToDate = (goTo: number) => {
     const selectedDate = dayjs(date).add(goTo, "day").toDate();
     setDate(selectedDate);
@@ -19,18 +19,17 @@ export const InlineDatePicker = ({ date, setDate, entries }: InlineDateProps) =>
 
   const renderDate = () => {
     const dateString = getDateString(date);
-    const loggedTime = entries[dateString]?.dayTotal;
 
     return (
       <li className="flex w-full items-center justify-center gap-2 text-center">
         <span className="relative text-sm font-medium tracking-tighter">
           {dateString}
-          {loggedTime && (
+          {dayTotalTime && (
             <Circle
               className={cn(
                 "absolute -right-4 top-1.5 h-2 w-2 fill-destructive stroke-none",
-                loggedTime >= 7 && "fill-success",
-                loggedTime < 4 && "fill-orange-600",
+                dayTotalTime >= 7 && "fill-success",
+                dayTotalTime < 4 && "fill-orange-600",
               )}
             />
           )}
