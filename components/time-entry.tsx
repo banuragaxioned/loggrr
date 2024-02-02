@@ -8,7 +8,6 @@ import { TimeEntryDataObj } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
-import { ClassicDatePicker } from "./date-picker";
 
 import { TimeLogForm } from "./forms/timelogForm";
 import { SelectedData } from "./forms/timelogForm";
@@ -144,7 +143,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
-          <ClassicDatePicker date={date} setDate={setDate} />
         </div>
         <TimeLogForm
           team={team}
