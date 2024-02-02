@@ -1,14 +1,18 @@
 "use client";
-import { useState, useEffect, FormEvent } from "react";
+
+import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
+import dayjs from "dayjs";
+import { toast } from "sonner";
+
+import { TimeEntryDataObj } from "@/types";
+import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 import { ClassicDatePicker } from "./date-picker";
+
 import { TimeLogForm } from "./forms/timelogForm";
-import { Project } from "@/types";
-import { TimeEntryDataObj } from "@/types";
-import dayjs from "dayjs";
-import { toast } from "sonner";
 import { SelectedData } from "./forms/timelogForm";
+import { Card } from "./ui/card";
 
 interface TimeEntryProps {
   team: string;
@@ -21,15 +25,26 @@ export interface EditReferenceObj {
   id: number;
 }
 
-export const getDateStr = (date: Date) =>
-  date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+export type EntryData = { data: TimeEntryDataObj; status: string };
 
-export type EntryData = { data: TimeEntryDataObj; status: number };
+/*
+ * getDateString: returns date in format Wed, Jan 31
+ */
+export const getDateString = (date: Date) => {
+  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+};
 
+/*
+ * getDates: returns dates in array format upto specified dates
+ */
 export const getDates = (date: Date) => {
-  let arr = [],
-    i = -2;
-  for (i; i < 3; i++) arr.push(dayjs(date).add(i, "day").toDate());
+  const arr = [];
+
+  // Update i to add further dates -1 will show 1 day before and 1 will show 1 day after
+  for (let i = 0; i <= 0; i++) {
+    arr.push(dayjs(date).add(i, "day").toDate());
+  }
+
   return arr;
 };
 
@@ -37,40 +52,47 @@ const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", 
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
-  //0 = loading, 1 = loaded with success , -1 = failed to fetch
-  const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
+  const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
-  const editHandler = (obj: SelectedData, id: number) => {
+  const editEntryHandler = (obj: SelectedData, id: number) => {
     setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
   };
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
-  const getApiCall = () =>
-    fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => setEntries({ data: { ...entries.data, ...res }, status: 1 }))
-      .catch((e) => setEntries({ data: {}, status: -1 }));
+  /*
+   * getTimeEntries: The following function will return the time entries of the specified dates
+   */
+  const getTimeEntries = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
+      const data = await response.json();
+      setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
+    } catch (error) {
+      console.error(error);
+      setEntries({ data: {}, status: "error" });
+    }
+  }, [team, date]);
 
-  const deleteApiCall = (id: number) =>
-    fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        getApiCall();
-        toast.success("Time entry deleted");
-      })
-      .catch((e) => toast.error("Something went wrong"));
+  /*
+   * deleteTimeEntry: The following function will return the time entry of the specified id
+   */
+  const deleteTimeEntry = async (id: number) => {
+    try {
+      const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
+
+      getTimeEntries();
+      toast.success("Time entry deleted");
+    } catch (error) {
+      console.error("Error deleting time entry:", error);
+      toast.error("Something went wrong");
+    }
+  };
 
   //submit handler
   const submitHandler = async (
@@ -103,44 +125,51 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       const arr =
         recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
       edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
-      getApiCall();
+      getTimeEntries();
     } else toast.error("Something went wrong,try again");
     clearForm();
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => entries.data[getDateStr(dateInArr)]) || entries.status === 0) && getApiCall();
-  }, [dates]);
+    getTimeEntries();
+  }, [getTimeEntries]);
+
+  const dayTotalTime = useMemo(
+    () => entries.data[getDateString(new Date(date))]?.projectsLog.reduce((sum, item) => (sum += item.total), 0),
+    [entries.data, date],
+  );
 
   return (
     <div className="w-full">
-      <div className="rounded-xl border">
+      <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
+          <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
           <ClassicDatePicker date={date} setDate={setDate} />
-          <InlineDatePicker date={date} setDate={setDate} dates={dates} setDates={setDates} entries={entries.data} />
         </div>
-        <h4 className="flex justify-between px-4 py-2">
-          Time logged for the day
-          <span className="normal-nums">{entries.data[getDateStr(new Date(date))]?.dayTotal.toFixed(2)}</span>
-        </h4>
-      </div>
-      <TimeLogForm
-        team={team}
-        projects={projects}
-        date={date}
-        edit={edit}
-        setEdit={setEdit}
-        submitHandler={submitHandler}
-      />
-      <TimeEntriesList
-        entries={{
-          ...entries.data[getDateStr(new Date(date))],
-        }}
-        status={entries.status}
-        deleteHandler={deleteApiCall}
-        editHandler={editHandler}
-        edit={edit}
-      />
+        <TimeLogForm
+          team={team}
+          projects={projects}
+          date={date}
+          edit={edit}
+          setEdit={setEdit}
+          submitHandler={submitHandler}
+        />
+        {dayTotalTime && (
+          <p className="mb-2 flex justify-between px-5 font-medium">
+            Total time logged for the day
+            <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
+          </p>
+        )}
+        <TimeEntriesList
+          entries={{
+            ...entries.data[getDateString(new Date(date))],
+          }}
+          status={entries.status}
+          deleteEntryHandler={deleteTimeEntry}
+          editEntryHandler={editEntryHandler}
+          edit={edit}
+        />
+      </Card>
     </div>
   );
 };

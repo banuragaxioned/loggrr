@@ -77,22 +77,20 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             key={i}
             className="cmdk-group-heading:text-outline-dark select-none text-sm [&_[cmdk-group-heading]]:px-5 [&_[cmdk-group-heading]]:py-2"
           >
-            {
-              <div key={i}>
-                <Command.Item
-                  className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-primary/10 aria-selected:text-primary"
-                  value={`${obj.client.name} / ${obj.project.name} ${
-                    obj.milestone?.name ? `/${obj.milestone.name}` : ""
-                  } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
-                  onSelect={() => {
-                    setSelectedData(obj);
-                    setFocus(false);
-                  }}
-                >
-                  {renderList(obj)}
-                </Command.Item>
-              </div>
-            }
+            <div key={i}>
+              <Command.Item
+                className="group w-full cursor-pointer px-5 py-2 aria-selected:bg-primary/10 aria-selected:text-primary"
+                value={`${obj.client.name} / ${obj.project.name} ${
+                  obj.milestone?.name ? `/${obj.milestone.name}` : ""
+                } ${obj.task?.name ? `/${obj.task?.name}` : ""} `}
+                onSelect={() => {
+                  setSelectedData(obj);
+                  setFocus(false);
+                }}
+              >
+                {renderList(obj)}
+              </Command.Item>
+            </div>
           </Command.Group>
         )
       );
@@ -217,149 +215,151 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
   }, [edit]);
 
   return (
-    <div
-      ref={timeLogFormRef}
-      className={`${
-        isFocus ? "border-primary shadow-lg ring-1 ring-primary ring-offset-0" : "border-border"
-      } border-box z-[3] mx-auto my-5 w-full rounded-xl border bg-transparent`}
-    >
-      <form
-        onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
-        onKeyDown={(e) =>
-          e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)
-        }
-      >
-        <Command label="Command Menu" className="text-content-light relative">
-          <div
-            className={`${
-              commentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border"
-            } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
-          >
-            {selectedData?.project ? (
-              <div ref={commentParentRef} className="flex basis-[70%] items-center">
-                <MessageSquare
-                  onClick={() => setCommentFocus(true)}
-                  className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
-                />
-                <input
-                  tabIndex={5}
-                  ref={commentRef}
-                  className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
-                  placeholder="Add comment about what you..."
-                  value={selectedData?.comment ? selectedData.comment : ""}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onFocus={() => setCommentFocus(true)}
-                  onBlur={() => setCommentFocus(false)}
-                />
-              </div>
-            ) : (
-              <div className="flex basis-[70%] items-center">
-                <SearchIcon onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
-                <Command.Input
-                  tabIndex={1}
-                  ref={inputRef}
-                  className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
-                  placeholder="Select or start typing"
-                  onFocus={() => setFocus(true)}
-                  onClick={(e) => e.stopPropagation()}
-                  onValueChange={setSearch}
-                  onBlur={(e) => {
-                    e.target.value = "";
-                    setTimeout(() => setFocus(false), 125);
-                  }}
-                />
-              </div>
-            )}
-            <span className="flex items-center gap-4">
-              <Input
-                tabIndex={6}
-                type="text"
-                placeholder="7:30"
-                className={`${
-                  errors?.time
-                    ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                    : "border-border focus:border-primary focus:ring-primary"
-                } placeholder:text-disabled-light w-[60px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none`}
-                value={selectedData?.time}
-                onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-                ref={timeInputRef}
-              />
-              <Toggle
-                tabIndex={7}
-                ref={checkobxRef}
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  selectedData?.project?.billable &&
-                  setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-                }
-                className={cn(
-                  `${
-                    selectedData?.project?.billable
-                      ? "text-success hover:text-success focus:bg-success/10"
-                      : "text-muted"
-                  }`,
-                )}
-              >
-                <CircleDollarSign className="h-6 w-6" />
-              </Toggle>
-              <Button
-                size="sm"
-                type="submit"
-                disabled={!formValidator()}
-                tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-                className={`disabled:disabled border disabled:hover:bg-primary`}
-              >
-                {edit.isEditing ? "Save" : "Submit"}
-              </Button>
-            </span>
-          </div>
-          <Command.List
-            className={`z-10 w-[calc(100%)] ${
-              isFocus ? "border-primary" : "border-border"
-            } text-content-light overflow-y-hidden bg-transparent transition-all duration-200 ease-in hover:overflow-y-auto  ${
-              isFocus ? "max-h-[146px]" : "max-h-[0]"
-            }`}
-          >
-            {inputRef.current && inputRef.current?.value?.length < 1 && (
-              <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently used</Command>
-            )}
-            <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">No results found</Command.Empty>
-            {inputRef.current && inputRef.current?.value?.length > 0
-              ? renderGroup(suggestions)
-              : renderGroup(recentlyUsed)}
-          </Command.List>
-        </Command>
-      </form>
-
+    <div className="p-2">
       <div
-        className={`${
-          isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
-        } flex items-center justify-between rounded-b-xl bg-zinc-50 px-5 py-[10px] dark:bg-zinc-900`}
+        ref={timeLogFormRef}
+        className={cn(
+          "border-box z-[3] mx-auto w-full rounded-xl border bg-transparent",
+          isFocus ? "border-primary shadow-lg ring-1 ring-primary ring-offset-0" : "border-border",
+        )}
       >
-        <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
-          {/* drop down */}
-          <ComboBox
-            tabIndex={2}
-            searchable
-            icon={<Folder className={`h-4 w-4`} />}
-            options={projects}
-            label={selectedData?.project?.name || "Project"}
-            selectedItem={selectedData?.project?.name}
-            handleSelect={(option) => selectHandler(option, projects, projectCallback)}
-            disable={!selectedData?.client?.id}
-          />
-          <ComboBox
-            tabIndex={3}
-            searchable
-            icon={<Rocket className={`h-4 w-4`} />}
-            options={projectMilestone}
-            label={selectedData?.milestone?.name || "Milestone"}
-            selectedItem={selectedData?.milestone?.name}
-            handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
-            disable={!selectedData?.project?.id}
-          />
-          {
+        <form
+          onSubmit={(e) => submitHandler(e, handleClearForm, recentlyUsed, selectedData)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, recentlyUsed, selectedData)
+          }
+        >
+          <Command label="Command Menu" className="text-content-light relative">
+            <div
+              className={`${
+                commentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border"
+              } flex items-center justify-between rounded-t-xl border-b px-[18px] py-[7px]`}
+            >
+              {selectedData?.project ? (
+                <div ref={commentParentRef} className="flex basis-[70%] items-center">
+                  <MessageSquare
+                    onClick={() => setCommentFocus(true)}
+                    className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
+                  />
+                  <input
+                    tabIndex={5}
+                    ref={commentRef}
+                    className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
+                    placeholder="Add comment on what you did..."
+                    value={selectedData?.comment ? selectedData.comment : ""}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onFocus={() => setCommentFocus(true)}
+                    onBlur={() => setCommentFocus(false)}
+                  />
+                </div>
+              ) : (
+                <div className="flex basis-[70%] items-center">
+                  <SearchIcon onClick={openSearch} className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2" />
+                  <Command.Input
+                    tabIndex={1}
+                    ref={inputRef}
+                    className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
+                    placeholder="Type to search and select a project..."
+                    onFocus={() => setFocus(true)}
+                    onClick={(e) => e.stopPropagation()}
+                    onValueChange={setSearch}
+                    onBlur={(e) => {
+                      e.target.value = "";
+                      setTimeout(() => setFocus(false), 125);
+                    }}
+                  />
+                </div>
+              )}
+              <span className="flex items-center gap-4">
+                <Input
+                  tabIndex={6}
+                  type="text"
+                  placeholder="7:30"
+                  className={`${
+                    errors?.time
+                      ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                      : "border-border focus:border-primary focus:ring-primary"
+                  } placeholder:text-disabled-light w-[60px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none`}
+                  value={selectedData?.time}
+                  onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                  ref={timeInputRef}
+                />
+                <Toggle
+                  tabIndex={7}
+                  ref={checkobxRef}
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    selectedData?.project?.billable &&
+                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                  }
+                  className={cn(
+                    `${
+                      selectedData?.project?.billable
+                        ? "text-success hover:text-success focus:bg-success/10"
+                        : "text-muted"
+                    }`,
+                  )}
+                >
+                  <CircleDollarSign className="h-6 w-6" />
+                </Toggle>
+                <Button
+                  size="sm"
+                  type="submit"
+                  disabled={!formValidator()}
+                  tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
+                  className={`disabled:disabled border disabled:hover:bg-primary`}
+                >
+                  {edit.isEditing ? "Save" : "Submit"}
+                </Button>
+              </span>
+            </div>
+            <Command.List
+              className={`z-10 w-[calc(100%)] ${
+                isFocus ? "border-primary" : "border-border"
+              } text-content-light overflow-y-hidden bg-transparent transition-all duration-200 ease-in hover:overflow-y-auto  ${
+                isFocus ? "max-h-[146px]" : "max-h-[0]"
+              }`}
+            >
+              {inputRef.current && inputRef.current?.value?.length < 1 && (
+                <Command className="inline-flex items-center gap-2 p-[12px] text-sm">Recently used</Command>
+              )}
+              <Command.Empty className="inline-flex items-center gap-2 p-[12px] text-sm">
+                No results found
+              </Command.Empty>
+              {inputRef.current && inputRef.current?.value?.length > 0
+                ? renderGroup(suggestions)
+                : renderGroup(recentlyUsed)}
+            </Command.List>
+          </Command>
+        </form>
+        <div
+          className={`${
+            isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
+          } flex items-center justify-between rounded-b-xl bg-secondary px-5 py-[10px]`}
+        >
+          <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
+            {/* drop down */}
+            <ComboBox
+              tabIndex={2}
+              searchable
+              icon={<Folder className={`h-4 w-4`} />}
+              options={projects}
+              label={selectedData?.project?.name || "Project"}
+              selectedItem={selectedData?.project?.name}
+              handleSelect={(option) => selectHandler(option, projects, projectCallback)}
+              // disable={!selectedData?.client?.id}
+            />
+            <ComboBox
+              tabIndex={3}
+              searchable
+              icon={<Rocket className={`h-4 w-4`} />}
+              options={projectMilestone}
+              label={selectedData?.milestone?.name || "Milestone"}
+              selectedItem={selectedData?.milestone?.name}
+              handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
+              disable={!selectedData?.project?.id}
+            />
             <ComboBox
               tabIndex={4}
               searchable
@@ -370,19 +370,19 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
               disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
             />
-          }
+          </div>
+          <Button
+            tabIndex={9}
+            variant="outline"
+            onClick={handleClearForm}
+            size="sm"
+            type="submit"
+            disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
+            className={`text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary`}
+          >
+            Clear
+          </Button>
         </div>
-        <Button
-          tabIndex={9}
-          variant="outline"
-          onClick={handleClearForm}
-          size="sm"
-          type="submit"
-          disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
-          className={`text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary`}
-        >
-          Clear
-        </Button>
       </div>
     </div>
   );
