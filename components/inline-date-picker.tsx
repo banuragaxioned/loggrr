@@ -1,4 +1,3 @@
-import { useEffect, Dispatch } from "react";
 import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
 import dayjs from "dayjs";
 
@@ -6,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { GetSetDateProps, TimeEntryDataObj } from "@/types";
 
 import { Button } from "@/components/ui/button";
-import { getDates } from "./time-entry";
 import { getDateString } from "./time-entry";
 
 interface InlineDateProps extends GetSetDateProps {

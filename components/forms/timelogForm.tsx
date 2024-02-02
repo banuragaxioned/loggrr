@@ -360,18 +360,16 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
               disable={!selectedData?.project?.id}
             />
-            {
-              <ComboBox
-                tabIndex={4}
-                searchable
-                icon={<List className={`h-4 w-4`} />}
-                options={projectTask}
-                label={selectedData?.task?.name || "Task"}
-                selectedItem={selectedData?.task?.name}
-                handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-                disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
-              />
-            }
+            <ComboBox
+              tabIndex={4}
+              searchable
+              icon={<List className={`h-4 w-4`} />}
+              options={projectTask}
+              label={selectedData?.task?.name || "Task"}
+              selectedItem={selectedData?.task?.name}
+              handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
+              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
+            />
           </div>
           <Button
             tabIndex={9}
