@@ -31,12 +31,13 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
 };
 
 export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const todaysDate = new Date();
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="flex gap-1.5" ref={buttonRef}>
+        <Button variant="outline" size="sm" className="flex gap-1.5">
           <CalendarIcon size={16} />
           <span className="text-sm">Pick a date</span>
         </Button>
@@ -44,14 +45,16 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
       <PopoverContent align="end" className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={(select) => {
-            setDate(select);
-            buttonRef.current?.click();
-          }}
-          toDate={new Date()}
           initialFocus
+          selected={date}
           defaultMonth={date}
+          toDate={todaysDate}
+          onSelect={(select) => {
+            if (select) {
+              setDate(select);
+            }
+            setOpen(false);
+          }}
         />
       </PopoverContent>
     </Popover>

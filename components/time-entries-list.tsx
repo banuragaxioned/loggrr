@@ -14,7 +14,7 @@ import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntries {
   entries: TimeEntryData;
-  status: number;
+  status: string;
   deleteHandler: (id: number) => void;
   editHandler: (obj: SelectedData, id: number) => void;
   edit: EditReferenceObj;
@@ -107,32 +107,32 @@ export const TimeEntriesList = ({ entries, status, deleteHandler, editHandler, e
     </li>
   );
 
+  const loadingSkeleton = (
+    <div className="p-2">
+      <div className="mb-2 flex items-center justify-between gap-4">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-6 w-1/4" />
+      </div>
+      <div className="mb-2 flex flex-col gap-2">
+        <div className="flex justify-between">
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-6 w-[80px]" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-6 w-[80px]" />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <ul className="flex w-full flex-col gap-y-2 overflow-y-auto pb-2">
-      {status === 0 ? (
-        <div className="p-2">
-          <div className="mb-2 flex items-center justify-between gap-4">
-            <Skeleton className="h-6 w-3/4" />
-            <Skeleton className="h-6 w-1/4" />
-          </div>
-          <div className="mb-2 flex flex-col gap-2">
-            <div className="flex justify-between">
-              <Skeleton className="h-6 w-1/4" />
-              <Skeleton className="h-6 w-[80px]" />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-6 w-[80px]" />
-            </div>
-          </div>
-        </div>
-      ) : status > 0 ? (
-        renderEntries
-      ) : (
-        <li>Something went wrong</li>
-      )}
+      {status === "loading" && loadingSkeleton}
+      {status === "success" && renderEntries}
+      {status === "error" && <li className="p-4 text-center text-destructive">Something went wrong</li>}
     </ul>
   );
 };

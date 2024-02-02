@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useMemo } from "react";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 
@@ -25,17 +25,17 @@ export interface EditReferenceObj {
   id: number;
 }
 
-export type EntryData = { data: TimeEntryDataObj; status: number };
+export type EntryData = { data: TimeEntryDataObj; status: string };
 
-/**
- * * getDateString: returns date in format Wed, Jan 31
+/*
+ * getDateString: returns date in format Wed, Jan 31
  */
 export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
 };
 
-/**
- * * getDates: returns dates in array format upto specified dates
+/*
+ * getDates: returns dates in array format upto specified dates
  */
 export const getDates = (date: Date) => {
   const arr = [];
@@ -54,8 +54,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [dates, setDates] = useState<Date[]>(getDates(date));
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
-  //0 = loading, 1 = loaded with success , -1 = failed to fetch
-  const [entries, setEntries] = useState<EntryData>({ data: {}, status: 0 });
+  const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
   const editHandler = (obj: SelectedData, id: number) => {
     setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
@@ -63,25 +62,38 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
-  const getApiCall = () => {
-    return fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`)
-      .then((res) => res.json())
-      .then((res) => setEntries({ data: { ...entries.data, ...res }, status: 1 }))
-      .catch((e) => setEntries({ data: {}, status: -1 }));
+  /*
+   * getTimeEntries: The following function will return the time entries of the specified dates
+   */
+  const getTimeEntries = async () => {
+    try {
+      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify(dates)}`);
+      const data = await response.json();
+      setEntries({ data: { ...entries.data, ...data }, status: "success" });
+    } catch (error) {
+      console.log(error);
+      setEntries({ data: {}, status: "error" });
+    }
   };
 
-  const deleteApiCall = (id: number) =>
-    fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        getApiCall();
-        toast.success("Time entry deleted");
-      })
-      .catch((e) => toast.error("Something went wrong"));
+  /*
+   * deleteTimeEntry: The following function will return the time entry of the specified id
+   */
+  const deleteTimeEntry = async (id: number) => {
+    try {
+      const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
+
+      getTimeEntries();
+      toast.success("Time entry deleted");
+    } catch (error) {
+      console.error("Error deleting time entry:", error);
+      toast.error("Something went wrong");
+    }
+  };
 
   //submit handler
   const submitHandler = async (
@@ -114,18 +126,19 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       const arr =
         recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
       edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
-      getApiCall();
+      getTimeEntries();
     } else toast.error("Something went wrong,try again");
     clearForm();
   };
 
   useEffect(() => {
-    (!dates.find((dateInArr) => entries.data[getDateString(dateInArr)]) || entries.status === 0) && getApiCall();
+    (!dates.find((dateInArr) => entries.data[getDateString(dateInArr)]) || entries.status === "loading") &&
+      getTimeEntries();
   }, [dates]);
 
-  const dayTotalTime = entries.data[getDateString(new Date(date))]?.projectsLog.reduce(
-    (sum, item) => (sum += item.total),
-    0,
+  const dayTotalTime = useMemo(
+    () => entries.data[getDateString(new Date(date))]?.projectsLog.reduce((sum, item) => (sum += item.total), 0),
+    [entries.data, date],
   );
 
   return (
@@ -154,7 +167,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
             ...entries.data[getDateString(new Date(date))],
           }}
           status={entries.status}
-          deleteHandler={deleteApiCall}
+          deleteHandler={deleteTimeEntry}
           editHandler={editHandler}
           edit={edit}
         />
