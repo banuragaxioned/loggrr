@@ -30,7 +30,7 @@ export type EntryData = { data: TimeEntryDataObj; status: string };
  * getDateString: returns date in format Wed, Jan 31
  */
 export const getDateString = (date: Date) => {
-  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
 /*
@@ -67,6 +67,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
       const data = await response.json();
+      console.log(data);
       setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
     } catch (error) {
       console.error(error);

@@ -71,6 +71,7 @@ export async function GET(req: Request) {
         day: "2-digit",
         month: "short",
         weekday: "short",
+        year: "numeric",
       }),
     );
 
@@ -137,7 +138,9 @@ export async function GET(req: Request) {
         day: "2-digit",
         month: "short",
         weekday: "short",
+        year: "numeric",
       });
+
       const check = dateStrs.includes(currentDateStr);
       const project = { ...current?.project };
       const data = {
