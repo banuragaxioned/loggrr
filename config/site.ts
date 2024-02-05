@@ -1,6 +1,6 @@
 export interface NavItem {
   title: string;
-  href?: string;
+  href: string;
   disabled?: boolean;
   external?: boolean;
 }
@@ -64,3 +64,6 @@ export const reportConfig: ReportingConfig[] = [
     path: "/available",
   },
 ];
+
+// routes that don't need nav menu
+export const excludedNavRoutes = ["/", "/thanks", "/manage"];

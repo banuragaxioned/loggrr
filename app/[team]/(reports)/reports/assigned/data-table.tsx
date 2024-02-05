@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, Dispatch } from "react";
 import { DataTableStructure } from "@/components/data-table/structure";
 import {
@@ -13,7 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import dayjs from "dayjs";
-import { useSubmit } from "@/hooks/useSubmit";
+import { useSubmit } from "@/hooks/use-submit";
 import { AllocationDetails, Assignment } from "@/types";
 import { TableSkeleton } from "@/components/data-table/skeleton";
 
