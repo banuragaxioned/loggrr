@@ -61,6 +61,6 @@ export const isMember = async (slug: string, userId: number) => {
 
     return response;
   } catch (err) {
-    console.log(err);
+    // TODO
   }
 };

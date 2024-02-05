@@ -70,7 +70,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       const data = await response.json();
       setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
     } catch (error) {
-      console.error(error);
       setEntries({ data: {}, status: "error" });
     }
   }, [team, date]);
@@ -89,7 +88,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       getTimeEntries();
       toast.success("Time entry deleted");
     } catch (error) {
-      console.error("Error deleting time entry:", error);
       toast.error("Something went wrong");
     }
   };
