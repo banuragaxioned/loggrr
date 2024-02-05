@@ -36,11 +36,6 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
 
   const links = [
     {
-      id: 1,
-      title: "Home",
-      href: `/${slug}`,
-    },
-    {
       id: 2,
       title: "Projects",
       subLinks: [
@@ -141,7 +136,7 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
         </div>
-        <div className="mt-2 p-4">
+        <div className="max-h-[calc(100vh-129px)] overflow-y-auto p-4">
           <ul className="flex flex-col space-y-4">
             {links.map((link) => (
               <li key={link.id}>
