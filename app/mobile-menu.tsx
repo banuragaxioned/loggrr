@@ -108,9 +108,9 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
       subLinks: [
         {
           id: 1,
-          title: "Summary",
-          description: "View who is assigned to what project.",
-          href: `/${slug}/reports/summary`,
+          title: "Assigned",
+          description: "View how many hours have been logged.",
+          href: `/${slug}/reports/logged`,
         },
         {
           id: 2,
@@ -120,12 +120,6 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         },
         {
           id: 3,
-          title: "Assigned",
-          description: "View how many hours have been logged.",
-          href: `/${slug}/reports/logged`,
-        },
-        {
-          id: 4,
           title: "Available",
           description: "View who is available for work.",
           href: `/${slug}/reports/available`,
