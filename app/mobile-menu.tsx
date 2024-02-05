@@ -135,7 +135,7 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
           <Menu size={24} />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full">
+      <SheetContent side="left" className="w-full">
         <div className="mt-8 flex items-center justify-between">
           <ThemeToggle />
           {status === "authenticated" && (
