@@ -6,21 +6,12 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { ChevronRight, LogOut, Menu, Settings } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
-import { UserAccountNav } from "@/components/user-account";
 import { UserAvatar } from "@/components/user-avatar";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 interface UserPropsInterface {
   status: string | null | undefined;
@@ -137,50 +128,30 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
           <ThemeToggle />
         </div>
         <div className="max-h-[calc(100vh-129px)] overflow-y-auto p-4">
-          <ul className="flex flex-col space-y-4">
-            {links.map((link) => (
-              <li key={link.id}>
-                {Array.isArray(link.subLinks) && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="flex items-center">
-                        {link.title} <ChevronRight className="ml-2" size={18} />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent avoidCollisions={false} align="start" className="sm:max-w-80">
-                      {link.subLinkTitle && (
-                        <>
-                          <DropdownMenuLabel>
-                            <div className="flex flex-col space-y-3 rounded-sm bg-gradient-to-b from-muted/50 to-muted px-2 py-4">
-                              <p className="text-base font-medium leading-none">{link.subLinkTitle}</p>
-                              <span className="line-clamp-2 text-sm font-normal leading-snug text-muted-foreground">
-                                {link.subLinkDescription}
-                              </span>
-                            </div>
-                          </DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
-                      <DropdownMenuGroup>
-                        {link.subLinks.map((subLink) => (
-                          <DropdownMenuItem key={subLink.id}>
-                            <Link href={subLink.href}>
-                              <SheetClose className="flex w-full flex-col space-y-1 p-1">
-                                <p className="text-sm font-medium leading-none">{subLink.title}</p>
-                                <span className="line-clamp-2 text-left text-sm leading-snug text-muted-foreground">
-                                  {subLink.description}
-                                </span>
-                              </SheetClose>
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </li>
+          <Accordion type="single" collapsible className="w-full">
+            {links.map((link, index) => (
+              <AccordionItem value={`${link.id}`} className={cn(index === links.length - 1 && "border-none")}>
+                <AccordionTrigger className="py-2 font-normal hover:no-underline">
+                  <span className="text-base">{link.title}</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {link.subLinks.map((subLink) => (
+                    <Link href={subLink.href} key={subLink.id}>
+                      <SheetClose className="flex w-full space-y-1 py-2">
+                        <ChevronRight size={16} className="mr-[4px] mt-[4px] opacity-50" />
+                        <div className="w-full text-left">
+                          <p className="text-sm font-medium leading-none">{subLink.title}</p>
+                          <span className="line-clamp-2 text-left text-sm leading-snug text-muted-foreground">
+                            {subLink.description}
+                          </span>
+                        </div>
+                      </SheetClose>
+                    </Link>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </ul>
+          </Accordion>
         </div>
         {/* Avatar area */}
         {status === "authenticated" && (
