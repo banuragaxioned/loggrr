@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { useParams } from "next/navigation";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { ChevronRight, Menu } from "lucide-react";
+import { ChevronRight, LogOut, Menu, Settings } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -19,6 +20,7 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/s
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
 import { UserAccountNav } from "@/components/user-account";
+import { UserAvatar } from "@/components/user-avatar";
 
 interface UserPropsInterface {
   status: string | null | undefined;
@@ -135,24 +137,15 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
           <Menu size={24} />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-full">
-        <div className="mt-8 flex items-center justify-between">
+      <SheetContent side="right" className="w-full p-0">
+        <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          {status === "authenticated" && (
-            <UserAccountNav
-              user={{
-                name,
-                image,
-                email,
-              }}
-            />
-          )}
         </div>
-        <div className="mt-6">
+        <div className="mt-2 p-4">
           <ul className="flex flex-col space-y-4">
             {links.map((link) => (
               <li key={link.id}>
-                {Array.isArray(link.subLinks) ? (
+                {Array.isArray(link.subLinks) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center">
@@ -189,15 +182,44 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                ) : (
-                  <Link href={`/${slug}`}>
-                    <SheetClose>Home</SheetClose>
-                  </Link>
                 )}
               </li>
             ))}
           </ul>
         </div>
+        {/* Avatar area */}
+        {status === "authenticated" && (
+          <div className="absolute bottom-0 left-0 flex w-full items-center border-t px-3 py-2">
+            <UserAvatar user={{ name: name ?? null, image: image ?? null }} className="h-10 w-10 bg-slate-300" />
+            <div className="ml-2">
+              <p className="font-medium">{name}</p>
+              <p className="w-[200px] truncate text-sm text-zinc-600 dark:text-zinc-100">{email}</p>
+            </div>
+            {/* CTAs */}
+            <div className="ml-auto flex gap-2">
+              <Button variant="outline" size="icon" asChild>
+                <Link href="/manage">
+                  <SheetClose>
+                    <Settings size={20} />
+                  </SheetClose>
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() =>
+                  signOut({
+                    callbackUrl: `${window.location.origin}/`,
+                  })
+                }
+              >
+                <SheetClose>
+                  <LogOut size={20} />
+                </SheetClose>
+              </Button>
+            </div>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );

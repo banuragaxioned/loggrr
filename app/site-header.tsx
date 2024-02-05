@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import posthog from "posthog-js";
 import { Clock, Loader } from "lucide-react";
 
-import { siteConfig } from "@/config/site";
+import { excludedNavRoutes, siteConfig } from "@/config/site";
 
 import { ThemeToggle } from "./theme-toggle";
 import { NavMenu } from "./nav-menu";
@@ -15,6 +15,7 @@ import TeamSwitcher from "./team-switcher";
 import { TimeAdd } from "@/components/time-add";
 import { UserAccountNav } from "@/components/user-account";
 import { MobileNavMenu } from "./mobile-menu";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -22,6 +23,9 @@ export function SiteHeader() {
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
 
   posthog.identify(String(userId), { email, name });
+
+  const isNavVisible = !excludedNavRoutes.includes(pathname);
+  console.log(isNavVisible);
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -35,9 +39,9 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav>
             {/* Desktop Navigation */}
-            <div className="hidden items-center space-x-3 md:flex">
-              {pathname !== "/" && <NavMenu />}
-              {pathname !== "/" && <TimeAdd />}
+            <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
+              {isNavVisible && <NavMenu />}
+              {isNavVisible && <TimeAdd />}
               <ThemeToggle />
               {status === "loading" && (
                 <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
@@ -53,7 +57,7 @@ export function SiteHeader() {
               )}
             </div>
             {/* Mobile Menu */}
-            {pathname !== "/" && (
+            {isNavVisible && (
               <div className="ml-auto flex space-x-2 md:hidden">
                 <>
                   <TimeAdd />
