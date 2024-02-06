@@ -88,7 +88,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       getTimeEntries();
       toast.success("Time entry deleted");
     } catch (error) {
-      console.error("Error deleting time entry:", error);
       toast.error("Something went wrong");
     }
   };
