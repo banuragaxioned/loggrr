@@ -97,14 +97,14 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         {
           id: 1,
           title: "Assigned",
-          description: "View how many hours have been logged.",
-          href: `/${slug}/reports/logged`,
+          description: "View who is assigned to what project.",
+          href: `/${slug}/reports/assigned`,
         },
         {
           id: 2,
           title: "Logged",
-          description: "View who is assigned to what project.",
-          href: `/${slug}/reports/assigned`,
+          description: "View how many hours have been logged.",
+          href: `/${slug}/reports/logged`,
         },
         {
           id: 3,
