@@ -67,7 +67,12 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
       const data = await response.json();
-      setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
+      // TODO: refactor this later (if not entries found)
+      if (Object.keys(data).length > 0) {
+        setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
+      } else {
+        setEntries({ data: {}, status: "success" });
+      }
     } catch (error) {
       console.error("Error fetching time entries", error);
       setEntries({ data: {}, status: "error" });
@@ -78,6 +83,10 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    * deleteTimeEntry: The following function will return the time entry of the specified id
    */
   const deleteTimeEntry = async (id: number) => {
+    // TODO: Implement a confirmation modal for deleting entry
+    const isConfirmed = confirm("Do you want to delete this time entry?");
+    if (!isConfirmed) return;
+
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
         method: "DELETE",
