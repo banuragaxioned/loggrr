@@ -21,5 +21,5 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  return <>{children}</>;
+  return <div className="container">{children}</div>;
 }
