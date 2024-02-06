@@ -97,14 +97,14 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         {
           id: 1,
           title: "Assigned",
-          description: "View how many hours have been logged.",
-          href: `/${slug}/reports/logged`,
+          description: "View who is assigned to what project.",
+          href: `/${slug}/reports/assigned`,
         },
         {
           id: 2,
           title: "Logged",
-          description: "View who is assigned to what project.",
-          href: `/${slug}/reports/assigned`,
+          description: "View how many hours have been logged.",
+          href: `/${slug}/reports/logged`,
         },
         {
           id: 3,
@@ -130,7 +130,11 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         <div className="max-h-[calc(100vh-129px)] overflow-y-auto p-4">
           <Accordion type="single" collapsible className="w-full">
             {links.map((link, index) => (
-              <AccordionItem value={`${link.id}`} className={cn(index === links.length - 1 && "border-none")}>
+              <AccordionItem
+                key={link.id}
+                value={`${link.id}`}
+                className={cn(index === links.length - 1 && "border-none")}
+              >
                 <AccordionTrigger className="py-2 font-normal hover:no-underline">
                   <span className="text-base">{link.title}</span>
                 </AccordionTrigger>
@@ -178,6 +182,7 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
                     callbackUrl: `${window.location.origin}/`,
                   })
                 }
+                asChild
               >
                 <SheetClose>
                   <LogOut size={20} />

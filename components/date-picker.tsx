@@ -1,4 +1,4 @@
-import React, { Dispatch, Ref, RefAttributes, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
@@ -10,6 +10,10 @@ import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
 import { GetSetDateProps } from "@/types";
+
+interface DatePickerProps extends GetSetDateProps {
+  children?: React.ReactNode;
+}
 
 export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
@@ -30,7 +34,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   );
 };
 
-export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
+export const ClassicDatePicker = ({ date, setDate, children }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
   const todaysDate = new Date();
 
@@ -39,10 +43,11 @@ export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="flex gap-1.5">
           <CalendarIcon size={16} />
-          <span className="text-sm">Pick a date</span>
+          {!children && <span className="text-sm">Pick a date</span>}
+          {children}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-auto p-0">
+      <PopoverContent align="center" className="w-auto p-0">
         <Calendar
           mode="single"
           initialFocus

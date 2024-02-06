@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { CalendarClock, Edit, List, ListRestart, Rocket, Trash } from "lucide-react";
+import { CalendarClock, Edit, ListRestart, Trash } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { TimeEntryData } from "@/types";
@@ -58,38 +58,42 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               <Fragment key={i}>
                 <div className="group relative flex justify-between bg-secondary px-3 py-2 last:mb-0">
                   <div className="flex flex-col justify-between gap-y-4">
-                    <div className="flex gap-x-4">
+                    <div className="flex flex-col gap-y-2">
                       {data.milestone?.name && (
                         <p className="flex items-center gap-1.5 gap-x-1 text-sm font-medium opacity-80">
-                          <Rocket className="text-primary" size={18} />
-                          {data.milestone.name}
+                          Milestone - {data.milestone.name}
                         </p>
                       )}
                       {data.task?.name && (
-                        <p className="flex gap-x-1 text-sm font-medium">
-                          <List className="text-primary" />
-                          {data.task.name}
-                        </p>
+                        <p className="flex items-center gap-x-1 text-sm font-medium">Task - {data.task.name}</p>
                       )}
+                      <p className="flex items-center gap-x-1 text-sm opacity-60">{data?.comments}</p>
                     </div>
-                    <p className="text-sm opacity-60">{data?.comments}</p>
                   </div>
                   <div className="flex min-w-[100px] flex-col text-right">
-                    <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
+                    <div className="mb-1 flex items-center justify-between">
+                      <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
+                        <span
+                          onClick={() => editEntryHandler(tempObj, data.id)}
+                          className="cursor-pointer rounded border bg-white p-1 hover:opacity-75 dark:bg-black"
+                        >
+                          {edit.isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
+                        </span>
+                        <span
+                          onClick={() => deleteEntryHandler(data.id)}
+                          className="cursor-pointer rounded border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
+                        >
+                          <Trash size={16} />
+                        </span>
+                      </div>
+                      <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
+                    </div>
                     {/* Billing Status */}
                     {data?.billable ? (
                       <span className="text-sm text-success">Billable</span>
                     ) : (
                       <span className="text-sm">Non-Billable</span>
                     )}
-                    <div className="mt-2 flex justify-end gap-x-2 md:invisible md:group-hover:visible">
-                      <Button size="icon" variant="outline" onClick={() => editEntryHandler(tempObj, data.id)}>
-                        {edit.isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
-                      </Button>
-                      <Button size="icon" variant="outline" onClick={() => deleteEntryHandler(data.id)}>
-                        <Trash size={16} />
-                      </Button>
-                    </div>
                   </div>
                 </div>
                 {i !== entryData?.data.length - 1 && <Separator className="dark:bg-white/20" />}
@@ -100,7 +104,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-2 p-12">
+    <li className="flex flex-col items-center justify-center space-y-2 p-12 text-center">
       <CalendarClock size={32} />
       <h2>No Timesheet Entries</h2>
       <p>You haven&apos;t made any timesheet entries for the selected date.</p>

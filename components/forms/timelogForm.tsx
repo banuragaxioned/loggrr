@@ -336,7 +336,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         <div
           className={`${
             isFocus ? "border-t border-primary border-t-border" : "border-t-0 border-border"
-          } flex items-center justify-between rounded-b-xl bg-secondary px-5 py-[10px]`}
+          } flex items-center justify-between overflow-y-auto rounded-b-xl bg-secondary px-5 py-[10px]`}
         >
           <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
             {/* drop down */}

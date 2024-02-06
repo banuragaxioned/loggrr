@@ -8,7 +8,6 @@ import { TimeEntryDataObj } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
-import { ClassicDatePicker } from "./date-picker";
 
 import { TimeLogForm } from "./forms/timelogForm";
 import { SelectedData } from "./forms/timelogForm";
@@ -31,7 +30,7 @@ export type EntryData = { data: TimeEntryDataObj; status: string };
  * getDateString: returns date in format Wed, Jan 31
  */
 export const getDateString = (date: Date) => {
-  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short" });
+  return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
 /*
@@ -66,10 +65,16 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    */
   const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&date=${date}`);
       const data = await response.json();
-      setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
+      // TODO: refactor this later (if no entries found)
+      if (Object.keys(data).length > 0) {
+        setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
+      } else {
+        setEntries({ data: {}, status: "success" });
+      }
     } catch (error) {
+      console.error("Error fetching time entries", error);
       setEntries({ data: {}, status: "error" });
     }
   }, [team, date]);
@@ -78,6 +83,10 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    * deleteTimeEntry: The following function will return the time entry of the specified id
    */
   const deleteTimeEntry = async (id: number) => {
+    // TODO: Implement a confirmation modal for deleting entry
+    const isConfirmed = confirm("Do you want to delete this time entry?");
+    if (!isConfirmed) return;
+
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
         method: "DELETE",
@@ -142,7 +151,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       <Card className="shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
-          <ClassicDatePicker date={date} setDate={setDate} />
         </div>
         <TimeLogForm
           team={team}

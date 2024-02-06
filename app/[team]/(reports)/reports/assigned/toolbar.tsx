@@ -80,7 +80,7 @@ export function DataTableToolbar<TData>({
   const startDateValidator = (date: Date) => date && setStartDate(date);
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
-      <div className="flex flex-1 flex-wrap items-center space-x-2">
+      <div className="flex flex-1 flex-wrap items-center gap-2">
         <DatePicker date={startDate} setDate={startDateValidator} />
         <Input
           placeholder="Filter names..."
