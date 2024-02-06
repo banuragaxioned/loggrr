@@ -67,7 +67,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
       const data = await response.json();
-      // TODO: refactor this later (if not entries found)
+      // TODO: refactor this later (if no entries found)
       if (Object.keys(data).length > 0) {
         setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
       } else {
