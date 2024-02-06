@@ -63,17 +63,16 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const team = searchParams.get("team");
-  const dates = searchParams.get("dates");
-  const dateStrs: string[] =
-    dates &&
-    JSON.parse(dates)?.map((date: Date) =>
-      new Date(date).toLocaleDateString("en-us", {
-        day: "2-digit",
-        month: "short",
-        weekday: "short",
-        year: "numeric",
-      }),
-    );
+  const date = searchParams.get("date");
+
+  if (!date) return new Response("No date provided", { status: 403 });
+
+  const dateStr: string = new Date(date).toLocaleDateString("en-us", {
+    day: "2-digit",
+    month: "short",
+    weekday: "short",
+    year: "numeric",
+  });
 
   try {
     const session = await getServerSession(authOptions);
@@ -141,7 +140,7 @@ export async function GET(req: Request) {
         year: "numeric",
       });
 
-      const check = dateStrs.includes(currentDateStr);
+      const check = dateStr === currentDateStr;
       const project = { ...current?.project };
       const data = {
         id: current.id,

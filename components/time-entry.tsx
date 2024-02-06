@@ -65,7 +65,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    */
   const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&dates=${JSON.stringify([date])}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&date=${date}`);
       const data = await response.json();
       // TODO: refactor this later (if no entries found)
       if (Object.keys(data).length > 0) {
