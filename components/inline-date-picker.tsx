@@ -29,9 +29,9 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
             {dayTotalTime && (
               <Circle
                 className={cn(
-                  "absolute right-0 top-0 h-2 w-2 fill-destructive stroke-none",
+                  "absolute -right-1 -top-1 h-3 w-3 stroke-none",
                   dayTotalTime >= 7 && "fill-success",
-                  dayTotalTime < 4 && "fill-orange-600",
+                  dayTotalTime < 7 && "fill-destructive",
                 )}
               />
             )}

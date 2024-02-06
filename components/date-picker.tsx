@@ -41,7 +41,7 @@ export const ClassicDatePicker = ({ date, setDate, children }: DatePickerProps) 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant={children ? "ghost" : "outline"} size="sm" className="flex gap-1.5">
+        <Button variant="outline" size="sm" className="flex gap-1.5">
           <CalendarIcon size={16} />
           {!children && <span className="text-sm">Pick a date</span>}
           {children}
