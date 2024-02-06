@@ -100,7 +100,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
-      <ul className="flex items-center gap-2">
+      <ul className="flex flex-wrap items-center gap-2">
         {/* Months */}
         <li>
           <DropdownFilters values={monthFilter} />
