@@ -23,11 +23,6 @@ export function NavMenu() {
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href={`/${slug}`} legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-4 md:w-[350px] lg:grid-cols-1">

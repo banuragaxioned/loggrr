@@ -100,7 +100,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-2 p-12">
+    <li className="flex flex-col items-center justify-center space-y-2 p-12 text-center">
       <CalendarClock size={32} />
       <h2>No Timesheet Entries</h2>
       <p>You haven&apos;t made any timesheet entries for the selected date.</p>
