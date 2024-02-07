@@ -83,7 +83,6 @@ export async function GET(req: Request) {
     const { user } = session;
 
     // check if the user has permission to the current team/workspace id if not return 403
-    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
     if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
@@ -130,12 +129,14 @@ export async function GET(req: Request) {
         date: true,
       },
       orderBy: {
-        projectId: "asc",
+        project: {
+          name: "asc", // Shows projects by name in ascending order
+        },
       },
     });
 
     const updatedResponse = response.reduce(
-      (acc: any, current) => {
+      (acc: TimeEntryData, current) => {
         // Accumulate day total here
         const dayTotal = +(acc.dayTotal + current.time / 60).toFixed(2);
 
@@ -151,7 +152,7 @@ export async function GET(req: Request) {
         // Accumulate projects here
         const projectsLog = [...acc.projectsLog];
         const projectObj = { id: current.project.id, name: current.project.name, client: current.project.client };
-        const index = projectsLog.findIndex((obj: any) => obj?.project?.id === current.project.id);
+        const index = projectsLog.findIndex((obj) => obj?.project?.id === current.project.id); // Check if project exists
         if (index > -1) {
           projectsLog[index]?.data.push(data);
           projectsLog[index].total += current?.time / 60;

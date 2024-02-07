@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { CalendarClock, Edit, ListRestart, Trash } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
-import { TimeEntryData } from "@/types";
+import { TimeEntryDataObj } from "@/types";
 
 import { Skeleton } from "./ui/skeleton";
 import { Card } from "./ui/card";
@@ -12,7 +12,7 @@ import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
 
 interface TimeEntries {
-  entries: TimeEntryData;
+  entries: TimeEntryDataObj;
   status: string;
   deleteEntryHandler: (id: number) => void;
   editEntryHandler: (obj: SelectedData, id: number) => void;

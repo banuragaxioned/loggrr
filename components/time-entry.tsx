@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 
-import { TimeEntryData } from "@/types";
+import { TimeEntryDataObj } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
@@ -23,7 +23,10 @@ export interface EditReferenceObj {
   id: number;
 }
 
-export type EntryData = { data: TimeEntryData; status: string };
+export type EntryData = {
+  data: TimeEntryDataObj;
+  status: string;
+};
 
 /*
  * getDateString: returns date in format Wed, Jan 31
@@ -52,7 +55,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`);
       const data = await response.json();
-      // TODO: refactor this later (if no entries found)
       if (Object.keys(data).length > 0) {
         setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
       } else {
@@ -80,9 +82,10 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
 
       getTimeEntries();
-      toast.success("Time entry deleted");
+      toast.success("Time entry deleted!");
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong!");
+      console.error("Error deleting time entry", error);
     }
   };
 
@@ -126,7 +129,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log(error);
+      console.log("Error submitting form!", error);
     }
   };
 
