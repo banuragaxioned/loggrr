@@ -340,16 +340,14 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           } flex items-center justify-between overflow-y-auto rounded-b-xl bg-secondary px-5 py-[10px]`}
         >
           <div ref={dropdownRef} className="inline-flex items-center gap-x-2 text-xs">
-            {/* drop down */}
             <ComboBox
               tabIndex={2}
               searchable
               icon={<Folder className={`h-4 w-4`} />}
               options={projects}
-              label={selectedData?.project?.name || "Project"}
+              label={selectedData?.project?.name ?? "Project"}
               selectedItem={selectedData?.project?.name}
               handleSelect={(option) => selectHandler(option, projects, projectCallback)}
-              // disable={!selectedData?.client?.id}
             />
             <ComboBox
               tabIndex={3}
@@ -359,7 +357,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               label={selectedData?.milestone?.name || "Milestone"}
               selectedItem={selectedData?.milestone?.name}
               handleSelect={(option) => selectHandler(option, projectMilestone, milestoneCallback)}
-              disable={!selectedData?.project?.id}
+              disabled={!selectedData?.project?.id}
             />
             <ComboBox
               tabIndex={4}
@@ -369,7 +367,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               label={selectedData?.task?.name || "Task"}
               selectedItem={selectedData?.task?.name}
               handleSelect={(option: string) => selectHandler(option, projectTask, taskCallback)}
-              disable={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
+              disabled={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
             />
           </div>
           <Button

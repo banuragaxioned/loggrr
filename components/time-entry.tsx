@@ -8,9 +8,9 @@ import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 
-import { TimeLogForm } from "./forms/timelogForm";
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
+import { TimeLogFormV2 } from "./forms/timelogForm-v2";
 
 interface TimeEntryProps {
   team: string;
@@ -97,12 +97,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   /*
    * submitTimeEntry: The following function will return the time entry of the specified id
    */
-  const submitTimeEntry = async (
-    e: FormEvent,
-    clearForm: Function,
-    recentlyUsed: SelectedData[],
-    selectedData: SelectedData = {},
-  ) => {
+  const submitTimeEntry = async (e: FormEvent, clearForm: Function, selectedData: SelectedData = {}) => {
     e.preventDefault();
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task } = selectedData || {};
@@ -126,9 +121,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       });
       if (response.ok) {
         toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
-        const arr =
-          recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
-        edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
+        edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : null;
         getTimeEntries();
         clearForm();
       }
@@ -150,7 +143,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogForm
+        <TimeLogFormV2
           team={team}
           projects={projects}
           date={date}
