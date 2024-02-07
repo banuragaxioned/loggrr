@@ -101,40 +101,48 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     }
   };
 
-  //submit handler
-  const submitHandler = async (
+  /*
+   * submitTimeEntry: The following function will return the time entry of the specified id
+   */
+  const submitTimeEntry = async (
     e: FormEvent,
     clearForm: Function,
     recentlyUsed: SelectedData[],
     selectedData: SelectedData = {},
   ) => {
     e.preventDefault();
-    const defaultBodyObj = {
+    if (!selectedData) return;
+    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const dateToStoreInDB = new Date(date).toISOString().split("T")[0]; // Extracts only the date
+
+    const dataToSend = {
       team,
-      project: selectedData?.project?.id,
-      milestone: selectedData?.milestone?.id,
-      time: Number(hoursToDecimal(selectedData?.time ? selectedData.time : "0")) * 60,
-      comments: selectedData?.comment?.trim(),
-      billable: selectedData?.billable ? true : false,
-      task: selectedData?.task?.id,
-      date: new Date(date),
+      project: project?.id,
+      milestone: milestone?.id,
+      time: Number(hoursToDecimal(time ?? "0")) * 60,
+      comments: comment?.trim(),
+      billable: billable ? true : false,
+      task: task?.id,
+      date: dateToStoreInDB,
     };
 
-    const response = await fetch("/api/team/time-entry", {
-      method: `${edit.isEditing ? "PUT" : "POST"}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(edit.isEditing ? { ...defaultBodyObj, id: edit.id } : defaultBodyObj),
-    });
-    if (response.ok) {
-      toast.success("Entry Updated");
-      const arr =
-        recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
-      edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
-      getTimeEntries();
-    } else toast.error("Something went wrong,try again");
-    clearForm();
+    try {
+      const response = await fetch("/api/team/time-entry", {
+        method: `${edit.isEditing ? "PUT" : "POST"}`,
+        body: JSON.stringify(edit.isEditing ? { ...dataToSend, id: edit.id } : dataToSend),
+      });
+      if (response.ok) {
+        toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
+        const arr =
+          recentlyUsed.length < 3 ? [selectedData, ...recentlyUsed] : [selectedData, ...recentlyUsed.slice(0, 1)];
+        edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : setRecent(arr);
+        getTimeEntries();
+        clearForm();
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -158,7 +166,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           date={date}
           edit={edit}
           setEdit={setEdit}
-          submitHandler={submitHandler}
+          submitHandler={submitTimeEntry}
         />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
