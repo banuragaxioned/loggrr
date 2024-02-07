@@ -9,7 +9,7 @@ import { getDateString } from "./time-entry";
 import { ClassicDatePicker } from "./date-picker";
 
 interface InlineDateProps extends GetSetDateProps {
-  dayTotalTime: number;
+  dayTotalTime?: number;
 }
 
 export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProps) => {

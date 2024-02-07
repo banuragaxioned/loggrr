@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 
-import { TimeEntryDataObj } from "@/types";
+import { TimeEntryData } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
@@ -23,7 +23,7 @@ export interface EditReferenceObj {
   id: number;
 }
 
-export type EntryData = { data: TimeEntryDataObj; status: string };
+export type EntryData = { data: TimeEntryData; status: string };
 
 /*
  * getDateString: returns date in format Wed, Jan 31
@@ -50,7 +50,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    */
   const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&date=${date}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`);
       const data = await response.json();
       // TODO: refactor this later (if no entries found)
       if (Object.keys(data).length > 0) {
@@ -134,10 +134,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     getTimeEntries();
   }, [getTimeEntries]);
 
-  const dayTotalTime = useMemo(
-    () => entries.data[getDateString(new Date(date))]?.projectsLog.reduce((sum, item) => (sum += item.total), 0),
-    [entries.data, date],
-  );
+  const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
   return (
     <div className="w-full">
@@ -160,9 +157,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           </p>
         )}
         <TimeEntriesList
-          entries={{
-            ...entries.data[getDateString(new Date(date))],
-          }}
+          entries={entries.data}
           status={entries.status}
           deleteEntryHandler={deleteTimeEntry}
           editEntryHandler={editEntryHandler}

@@ -1,8 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
+import { parse, formatISO } from "date-fns";
+
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { TimeEntryDataObj } from "@/types";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -67,12 +68,8 @@ export async function GET(req: Request) {
 
   if (!date) return new Response("No date provided", { status: 403 });
 
-  const dateStr: string = new Date(date).toLocaleDateString("en-us", {
-    day: "2-digit",
-    month: "short",
-    weekday: "short",
-    year: "numeric",
-  });
+  const parsedDate = parse(date, "EEE, MMM dd, yyyy", new Date());
+  const isoDateString = `${formatISO(parsedDate, { representation: "date" })}T00:00:00.000Z`;
 
   try {
     const session = await getServerSession(authOptions);
@@ -94,6 +91,9 @@ export async function GET(req: Request) {
         userId: user.id,
         workspace: {
           slug: team ? team : "",
+        },
+        date: {
+          equals: isoDateString,
         },
       },
       select: {
@@ -132,43 +132,40 @@ export async function GET(req: Request) {
       },
     });
 
-    const restructuredData = response.reduce((prev: TimeEntryDataObj, current) => {
-      const currentDateStr = current.date.toLocaleDateString("en-us", {
-        day: "2-digit",
-        month: "short",
-        weekday: "short",
-        year: "numeric",
-      });
+    const dayTotal = +(response.reduce((sum, item) => (sum += item.time), 0) / 60).toFixed(2);
+    const transformedData: any = [];
+    const projectsMap: any = {};
 
-      const check = dateStr === currentDateStr;
-      const project = { ...current?.project };
-      const data = {
-        id: current.id,
-        billable: current.billable,
-        time: current.time / 60,
-        milestone: current.milestone,
-        task: current.task,
-        comments: current.comments,
-      };
-      const projectObj = { id: current.project.id, name: current.project.name, client: current.project.client };
-      if (check && prev[currentDateStr]) {
-        const previous = prev[currentDateStr];
-        let index = previous.projectsLog.findIndex((obj) => obj?.project?.id === project?.id);
-        if (index > -1) {
-          previous.projectsLog[index]?.data.push(data);
-          previous.projectsLog[index].total += current?.time / 60;
-          previous.dayTotal += current.time / 60;
-        } else check && previous.projectsLog?.push({ project: projectObj, data: [data], total: current?.time / 60 });
-      } else if (check)
-        prev[currentDateStr] = {
-          dayTotal: current?.time / 60,
-          projectsLog: [{ project: projectObj, data: [data], total: current?.time / 60 }],
+    response.forEach((log) => {
+      if (!projectsMap[log.project.id]) {
+        projectsMap[log.project.id] = {
+          project: log.project,
+          data: [],
+          total: 0,
         };
+        transformedData.push(projectsMap[log.project.id]);
+      }
+      projectsMap[log.project.id].data.push({
+        id: log.id,
+        billable: log.billable,
+        time: log.time / 60,
+        milestone: log.milestone,
+        task: log.task,
+        comments: log.comments,
+      });
+      projectsMap[log.project.id].total += log.time / 60;
+    });
 
-      return prev;
-    }, {});
+    const updatedResponse = {
+      dayTotal,
+      projectsLog: transformedData,
+    };
 
-    return new Response(JSON.stringify(restructuredData));
+    if (updatedResponse.projectsLog.length < 1 || dayTotal === 0) {
+      return new Response(JSON.stringify({}));
+    }
+
+    return new Response(JSON.stringify(updatedResponse));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
