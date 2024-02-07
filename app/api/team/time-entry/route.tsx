@@ -4,6 +4,7 @@ import { parse, formatISO } from "date-fns";
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
+import { TimeEntryData } from "@/types";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -68,6 +69,7 @@ export async function GET(req: Request) {
 
   if (!date) return new Response("No date provided", { status: 403 });
 
+  // Searching for time entries based on particular day
   const parsedDate = parse(date, "EEE, MMM dd, yyyy", new Date());
   const isoDateString = `${formatISO(parsedDate, { representation: "date" })}T00:00:00.000Z`;
 
@@ -85,7 +87,7 @@ export async function GET(req: Request) {
     if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
       return new Response("Unauthorized", { status: 403 });
     }
-    //schema goes here
+
     const response = await db.timeEntry.findMany({
       where: {
         userId: user.id,
@@ -132,36 +134,43 @@ export async function GET(req: Request) {
       },
     });
 
-    const dayTotal = +(response.reduce((sum, item) => (sum += item.time), 0) / 60).toFixed(2);
-    const transformedData: any = [];
-    const projectsMap: any = {};
+    const updatedResponse = response.reduce(
+      (acc: any, current) => {
+        // Accumulate day total here
+        const dayTotal = +(acc.dayTotal + current.time / 60).toFixed(2);
 
-    response.forEach((log) => {
-      if (!projectsMap[log.project.id]) {
-        projectsMap[log.project.id] = {
-          project: log.project,
-          data: [],
-          total: 0,
+        const data = {
+          id: current.id,
+          billable: current.billable,
+          time: current.time / 60,
+          milestone: current.milestone,
+          task: current.task,
+          comments: current.comments,
         };
-        transformedData.push(projectsMap[log.project.id]);
-      }
-      projectsMap[log.project.id].data.push({
-        id: log.id,
-        billable: log.billable,
-        time: log.time / 60,
-        milestone: log.milestone,
-        task: log.task,
-        comments: log.comments,
-      });
-      projectsMap[log.project.id].total += log.time / 60;
-    });
 
-    const updatedResponse = {
-      dayTotal,
-      projectsLog: transformedData,
-    };
+        // Accumulate projects here
+        const projectsLog = [...acc.projectsLog];
+        const projectObj = { id: current.project.id, name: current.project.name, client: current.project.client };
+        const index = projectsLog.findIndex((obj: any) => obj?.project?.id === current.project.id);
+        if (index > -1) {
+          projectsLog[index]?.data.push(data);
+          projectsLog[index].total += current?.time / 60;
+        } else {
+          projectsLog.push({ project: projectObj, data: [data], total: current?.time / 60 });
+        }
 
-    if (updatedResponse.projectsLog.length < 1 || dayTotal === 0) {
+        return {
+          dayTotal,
+          projectsLog,
+        };
+      },
+      {
+        dayTotal: 0,
+        projectsLog: [],
+      },
+    );
+
+    if (updatedResponse.projectsLog.length < 1 || updatedResponse.dayTotal === 0) {
       return new Response(JSON.stringify({}));
     }
 
