@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
-import dayjs from "dayjs";
+import { addDays, isAfter } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { GetSetDateProps } from "@/types";
@@ -13,8 +13,10 @@ interface InlineDateProps extends GetSetDateProps {
 }
 
 export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProps) => {
+  const isNextDateNotSelectable = isAfter(addDays(new Date(date), 1), new Date());
+
   const goToDate = (goTo: number) => {
-    const selectedDate = dayjs(date).add(goTo, "day").toDate();
+    const selectedDate = addDays(date, goTo);
     setDate(selectedDate);
   };
 
@@ -53,8 +55,12 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
         <Button
           variant="outline"
           size="icon"
-          className={cn(`${dayjs(date).isAfter(dayjs().subtract(1, "day")) ? "disabled" : ""}`)}
-          onClick={() => dayjs(date).isBefore(dayjs().subtract(1, "day")) && goToDate(1)}
+          onClick={() => {
+            if (!isNextDateNotSelectable) {
+              goToDate(1);
+            }
+          }}
+          disabled={isNextDateNotSelectable}
           title="Next"
         >
           <ChevronRight size={20} />

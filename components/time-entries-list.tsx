@@ -5,7 +5,6 @@ import { getRandomColor } from "@/lib/random-colors";
 import { TimeEntryData } from "@/types";
 
 import { Skeleton } from "./ui/skeleton";
-import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
 

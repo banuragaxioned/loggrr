@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
-import dayjs from "dayjs";
 import { toast } from "sonner";
 
 import { TimeEntryDataObj } from "@/types";
@@ -31,20 +30,6 @@ export type EntryData = { data: TimeEntryDataObj; status: string };
  */
 export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
-};
-
-/*
- * getDates: returns dates in array format upto specified dates
- */
-export const getDates = (date: Date) => {
-  const arr = [];
-
-  // Update i to add further dates -1 will show 1 day before and 1 will show 1 day after
-  for (let i = 0; i <= 0; i++) {
-    arr.push(dayjs(date).add(i, "day").toDate());
-  }
-
-  return arr;
 };
 
 const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
