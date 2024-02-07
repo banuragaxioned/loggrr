@@ -53,6 +53,8 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               time: `${data.time}`,
             };
 
+            const isEditing = edit.isEditing && edit.id === data.id;
+
             return (
               <Fragment key={i}>
                 <div className="group relative flex justify-between bg-secondary px-3 py-2 last:mb-0">
@@ -69,14 +71,14 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       <p className="flex items-center gap-x-1 text-sm opacity-60">{data?.comments}</p>
                     </div>
                   </div>
-                  <div className="flex min-w-[100px] flex-col text-right">
+                  <div className="flex min-w-[100px] select-none flex-col text-right">
                     <div className="mb-1 flex items-center justify-between">
                       <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
                         <span
                           onClick={() => editEntryHandler(tempObj, data.id)}
                           className="cursor-pointer rounded border bg-white p-1 hover:opacity-75 dark:bg-black"
                         >
-                          {edit.isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
+                          {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
                         </span>
                         <span
                           onClick={() => deleteEntryHandler(data.id)}

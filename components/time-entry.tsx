@@ -20,7 +20,7 @@ interface TimeEntryProps {
 export interface EditReferenceObj {
   obj: SelectedData | {};
   isEditing: boolean;
-  id: number;
+  id: number | null;
 }
 
 export type EntryData = {
@@ -39,11 +39,16 @@ const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", 
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: 0 });
+  const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
-    setEdit({ obj, isEditing: edit.isEditing ? false : true, id });
+    const currentlyEditing = edit.id;
+    if (currentlyEditing === id) {
+      setEdit({ obj: {}, isEditing: false, id: null });
+    } else {
+      setEdit({ obj, isEditing: true, id });
+    }
   };
 
   const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
