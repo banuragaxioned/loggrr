@@ -1,5 +1,5 @@
-import React, { Dispatch, FormEvent, useEffect, useRef, useState } from "react";
-import { CircleDollarSign, Folder, List, MessageSquare, Rocket, SearchIcon } from "lucide-react";
+import React, { Dispatch, FormEvent, useEffect, useState } from "react";
+import { CircleDollarSign, Folder, List, MessageSquare, Rocket } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Command } from "cmdk";
@@ -33,19 +33,32 @@ type ErrorsObj = {
   time?: boolean;
 };
 
+const initialDataState = {
+  client: undefined,
+  project: undefined,
+  milestone: null,
+  task: null,
+  comment: "",
+  time: "",
+  billable: false,
+};
+
 export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) => {
   const [onCommentFocus, setOnCommentFocus] = useState<boolean>(false);
-  const [selectedData, setSelectedData] = useState<SelectedData>({});
+  const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
 
   const handleClearForm = () => {
-    setSelectedData({});
+    setSelectedData(initialDataState);
+    setErrors({});
   };
 
-  const formValidator = () =>
-    selectedData?.comment?.trim().length && selectedData?.time && selectedData?.project && !errors?.time;
+  const formValidator = () => {
+    const { project, comment, time, milestone } = selectedData || {};
+    return project && milestone && comment?.trim().length && time && !errors?.time;
+  };
 
   const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
@@ -54,10 +67,17 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
   };
 
   /*
+   * dropdownSelectHandler: takes ID of selected project and add its data
+   */
+  const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
+    const foundData = arr.find((obj) => obj.id === +selected);
+    callback(foundData);
+  };
+
+  /*
    * projectCallback: function called when project is selected
    */
   const projectCallback = (selected: Project) => {
-    console.log(selected);
     setSelectedData({
       ...selectedData,
       client: selected?.client,
@@ -77,6 +97,7 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
           ...prevData,
           milestone: undefined,
           task: undefined,
+          billable: prevData.project?.billable ? true : false,
         };
       });
     }
@@ -87,28 +108,26 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
    */
   const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
 
-  //task callback
+  /*
+   * taskCallback: function called when task is selected
+   */
   const taskCallback = (selected: Milestone) => {
     const data: SelectedData = { ...selectedData, task: selected };
     setSelectedData(data);
   };
 
   /*
-   * dropdownSelectHandler: takes ID of selected project and add its data
+   * setCommentText: sets the comment text in the form
    */
-  const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
-    const foundData = arr.find((obj) => obj.id === +selected);
-    callback(foundData);
-  };
-
-  //set comment
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
   useEffect(() => {
-    edit.isEditing ? setSelectedData(edit.obj) : handleClearForm();
+    if (edit.isEditing) {
+      setSelectedData(edit.obj);
+    } else {
+      handleClearForm();
+    }
   }, [edit]);
-
-  console.log(selectedData, "selected data");
 
   return (
     <div className="p-2">
@@ -177,7 +196,7 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                   tabIndex={5}
                   className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
                   placeholder="Add comment on what you did..."
-                  value={selectedData?.comment ? selectedData.comment : ""}
+                  value={selectedData?.comment ?? ""}
                   onChange={(e) => setCommentText(e.target.value)}
                   onFocus={() => setOnCommentFocus(true)}
                   onBlur={() => setOnCommentFocus(false)}
@@ -194,11 +213,9 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                       setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
                     }
                     className={cn(
-                      `${
-                        selectedData?.project?.billable
-                          ? "text-success hover:text-success focus:bg-success/10"
-                          : "text-muted"
-                      }`,
+                      selectedData?.project?.billable
+                        ? "text-success hover:text-success focus:bg-success/10"
+                        : "text-slate-400",
                     )}
                   >
                     <CircleDollarSign className="h-6 w-6" />
@@ -208,20 +225,25 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                   tabIndex={7}
                   type="text"
                   placeholder="7:30"
-                  className={`${
+                  className={cn(
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                      : "border-border focus:border-primary focus:ring-primary"
-                  } placeholder:text-disabled-light w-[60px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none`}
+                      : "border-border focus:border-primary focus:ring-primary",
+                    "placeholder:text-disabled-light focus:outline-none` w-[66px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out",
+                  )}
                   value={selectedData?.time}
-                  onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                  onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
                 />
                 <Button
                   size="sm"
                   type="submit"
                   disabled={!formValidator()}
-                  tabIndex={selectedData?.comment && selectedData?.time && selectedData?.task ? 8 : -1}
-                  className={`disabled:disabled border disabled:hover:bg-primary`}
+                  tabIndex={
+                    selectedData?.project && selectedData.milestone && selectedData?.comment && selectedData?.time
+                      ? 8
+                      : -1
+                  }
+                  className="disabled:disabled border disabled:hover:bg-primary"
                 >
                   {edit.isEditing ? "Save" : "Submit"}
                 </Button>
