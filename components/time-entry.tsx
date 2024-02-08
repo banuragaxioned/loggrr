@@ -121,7 +121,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       });
       if (response.ok) {
         toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
-        edit.isEditing ? setEdit((prev) => ({ ...prev, isEditing: false })) : null;
+        edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         getTimeEntries();
         clearForm();
       }
@@ -143,14 +143,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogFormV2
-          team={team}
-          projects={projects}
-          date={date}
-          edit={edit}
-          setEdit={setEdit}
-          submitHandler={submitTimeEntry}
-        />
+        <TimeLogFormV2 team={team} projects={projects} date={date} edit={edit} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day

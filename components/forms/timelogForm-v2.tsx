@@ -25,7 +25,6 @@ interface TimelogProps {
   projects: Project[];
   date: Date;
   edit: EditReferenceObj;
-  setEdit: Dispatch<EditReferenceObj>;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
 }
 
@@ -204,22 +203,22 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
               </div>
               <span className="flex items-center gap-4">
                 {selectedData.project?.billable && (
-                  <Toggle
+                  <Button
                     tabIndex={6}
                     variant="outline"
-                    size="sm"
+                    size="icon"
+                    type="button"
                     onClick={() =>
                       selectedData?.project?.billable &&
                       setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
                     }
                     className={cn(
-                      selectedData?.project?.billable
-                        ? "text-success hover:text-success focus:bg-success/10"
-                        : "text-slate-400",
+                      selectedData.billable && "text-success hover:text-success",
+                      !selectedData.billable && "text-slate-400 hover:text-slate-400",
                     )}
                   >
-                    <CircleDollarSign className="h-6 w-6" />
-                  </Toggle>
+                    <CircleDollarSign size={20} />
+                  </Button>
                 )}
                 <Input
                   tabIndex={7}
@@ -245,7 +244,7 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                   }
                   className="disabled:disabled border disabled:hover:bg-primary"
                 >
-                  {edit.isEditing ? "Save" : "Submit"}
+                  {edit.isEditing ? "Update" : "Submit"}
                 </Button>
               </span>
             </div>

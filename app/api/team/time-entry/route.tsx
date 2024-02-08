@@ -105,6 +105,7 @@ export async function GET(req: Request) {
           select: {
             id: true,
             name: true,
+            billable: true,
             client: {
               select: {
                 id: true,
@@ -151,7 +152,12 @@ export async function GET(req: Request) {
 
         // Accumulate projects here
         const projectsLog = [...acc.projectsLog];
-        const projectObj = { id: current.project.id, name: current.project.name, client: current.project.client };
+        const projectObj = {
+          id: current.project.id,
+          name: current.project.name,
+          billable: current.project.billable,
+          client: current.project.client,
+        };
         const index = projectsLog.findIndex((obj) => obj?.project?.id === current.project.id); // Check if project exists
         if (index > -1) {
           projectsLog[index]?.data.push(data);

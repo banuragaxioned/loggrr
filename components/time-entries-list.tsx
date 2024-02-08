@@ -47,6 +47,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             };
             const tempObj = {
               ...data,
+              billable: data.billable,
               comment: data.comments,
               client: entryData.project.client,
               project: projectObj,
