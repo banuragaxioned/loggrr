@@ -74,7 +74,7 @@
   height: 42px;
   top: -30px;
   left: -20.5px;
-  @apply border border-gray-200 absolute;
+  @apply absolute border border-gray-200;
   border-bottom-left-radius: 6px;
   border-right: transparent;
   border-top: transparent;
