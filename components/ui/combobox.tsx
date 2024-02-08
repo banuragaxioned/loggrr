@@ -17,12 +17,6 @@ type InlineComboboxProps = {
   selectHandler?: (id: number) => void;
 };
 
-type ProjectProps = {
-  id: number;
-  name: string;
-  billable: boolean;
-};
-
 type ComboBoxProps = {
   icon?: React.ReactElement;
   options: any[];
@@ -30,8 +24,8 @@ type ComboBoxProps = {
   label: string;
   tabIndex?: number;
   disabled?: boolean;
-  selectedItem: ProjectProps;
-  handleSelect?: (item: number) => void;
+  selectedItem: any;
+  handleSelect?: (item: string) => void;
   placeholder?: string;
 };
 
@@ -47,8 +41,6 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   handleSelect,
 }) => {
   const [open, setOpen] = useState(false);
-
-  console.log(selectedItem, "selected");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -94,13 +86,11 @@ const ComboBox: React.FC<ComboBoxProps> = ({
               >
                 <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
                 {options?.map((item) => {
-                  console.log(item.id);
                   return (
                     <CommandItem
                       key={item.id}
-                      value={item.id}
-                      onSelect={(val: number) => {
-                        console.log(val, "value");
+                      value={`${item.id}`}
+                      onSelect={(val: string) => {
                         handleSelect && handleSelect(val);
                         setOpen(false);
                       }}

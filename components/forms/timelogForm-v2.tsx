@@ -36,11 +36,9 @@ type ErrorsObj = {
 export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) => {
   const [onCommentFocus, setOnCommentFocus] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<SelectedData>({});
-  const [projectMilestone, setprojectmilestone] = useState<Milestone[]>([]);
-  const [projectTask, setprojectTask] = useState<Milestone[]>([]);
+  const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
+  const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
-
-  console.log(selectedData);
 
   const handleClearForm = () => {
     setSelectedData({});
@@ -55,24 +53,38 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
     setSelectedData({ ...selectedData, time: time });
   };
 
-  //project select handler callback
+  /*
+   * projectCallback: function called when project is selected
+   */
   const projectCallback = (selected: Project) => {
-    setprojectmilestone((prev) => {
-      const milestone = selected?.milestone;
-      return milestone ? milestone : [];
-    });
-    setprojectTask((prev) => {
-      const task = selected?.task;
-      return task ? task : [];
-    });
+    console.log(selected);
     setSelectedData({
       ...selectedData,
       client: selected?.client,
       project: { id: selected.id, name: selected?.name, billable: selected?.billable },
     });
+    setProjectMilestones(() => {
+      const milestone = selected?.milestone;
+      return milestone ? milestone : [];
+    });
+    setprojectTasks(() => {
+      const task = selected?.task;
+      return task ? task : [];
+    });
+    if (selected.id !== selectedData.project?.id) {
+      setSelectedData((prevData) => {
+        return {
+          ...prevData,
+          milestone: undefined,
+          task: undefined,
+        };
+      });
+    }
   };
 
-  //milestone select handler callback
+  /*
+   * milestoneCallback: function called when milestone is selected
+   */
   const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
 
   //task callback
@@ -84,10 +96,9 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
   /*
    * dropdownSelectHandler: takes ID of selected project and add its data
    */
-  const dropdownSelectHandler = (name: string, arr: Milestone[], callback: Function) => {
-    const selected = arr.filter((obj) => obj.name.toLocaleLowerCase() === name.toLocaleLowerCase())[0];
-    console.log(selected);
-    callback(selected);
+  const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
+    const foundData = arr.find((obj) => obj.id === +selected);
+    callback(foundData);
   };
 
   //set comment
@@ -96,6 +107,8 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
   useEffect(() => {
     edit.isEditing ? setSelectedData(edit.obj) : handleClearForm();
   }, [edit]);
+
+  console.log(selectedData, "selected data");
 
   return (
     <div className="p-2">
@@ -107,29 +120,29 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
             searchable
             icon={<Folder size={16} />}
             options={projects}
-            label={selectedData?.project?.name || "Project"}
+            label="Project"
             selectedItem={selectedData?.project}
-            handleSelect={(option) => dropdownSelectHandler(option, projects, projectCallback)}
+            handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
           />
           <ComboBox
             tabIndex={3}
             searchable
             icon={<Rocket size={16} />}
-            options={projectMilestone}
-            label={selectedData?.milestone?.name || "Milestone"}
+            options={projectMilestones}
+            label="Milestone"
             selectedItem={selectedData?.milestone}
-            handleSelect={(option) => dropdownSelectHandler(option, projectMilestone, milestoneCallback)}
+            handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
             disabled={!selectedData?.project?.id}
           />
           <ComboBox
             tabIndex={4}
             searchable
             icon={<List size={16} />}
-            options={projectTask}
-            label={selectedData?.task?.name || "Task"}
+            options={projectTasks}
+            label="Task"
             selectedItem={selectedData?.task}
-            handleSelect={(option: string) => dropdownSelectHandler(option, projectTask, taskCallback)}
-            disabled={!(selectedData?.project?.id && selectedData?.milestone?.id) || !selectedData?.task?.id}
+            handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+            disabled={!(selectedData?.project?.id && selectedData?.milestone?.id)}
           />
         </div>
         <Button
@@ -171,8 +184,28 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                 />
               </div>
               <span className="flex items-center gap-4">
+                {selectedData.project?.billable && (
+                  <Toggle
+                    tabIndex={6}
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      selectedData?.project?.billable &&
+                      setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                    }
+                    className={cn(
+                      `${
+                        selectedData?.project?.billable
+                          ? "text-success hover:text-success focus:bg-success/10"
+                          : "text-muted"
+                      }`,
+                    )}
+                  >
+                    <CircleDollarSign className="h-6 w-6" />
+                  </Toggle>
+                )}
                 <Input
-                  tabIndex={6}
+                  tabIndex={7}
                   type="text"
                   placeholder="7:30"
                   className={`${
@@ -183,24 +216,6 @@ export const TimeLogFormV2 = ({ projects, edit, submitHandler }: TimelogProps) =
                   value={selectedData?.time}
                   onChangeCapture={(e) => handleLoggedTimeInput(e.currentTarget.value)}
                 />
-                <Toggle
-                  tabIndex={7}
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    selectedData?.project?.billable &&
-                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-                  }
-                  className={cn(
-                    `${
-                      selectedData?.project?.billable
-                        ? "text-success hover:text-success focus:bg-success/10"
-                        : "text-muted"
-                    }`,
-                  )}
-                >
-                  <CircleDollarSign className="h-6 w-6" />
-                </Toggle>
                 <Button
                   size="sm"
                   type="submit"
