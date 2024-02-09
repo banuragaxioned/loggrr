@@ -1,8 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { CircleDollarSign, Folder, List, MessageSquare, Rocket } from "lucide-react";
+import { CircleDollarSign, Folder, Info, List, MessageSquare, Rocket } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Command } from "cmdk";
 import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
@@ -136,13 +135,21 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
     }
   }, [edit, projects]);
 
+  const renderFormText = () => {
+    if (!selectedData.project?.id) return "Select a project from the above dropdown";
+    if (!selectedData.milestone?.id) return "Select a milestone from the above dropdown";
+    return "Add comment on what you did...";
+  };
+
+  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
+
   return (
     <div className="p-2">
-      <div className="flex items-center justify-between overflow-y-auto rounded-t-xl bg-secondary px-5 py-[10px]">
+      <div className="flex items-center justify-between overflow-y-auto rounded-t-xl bg-secondary px-3 py-2">
         <div className="inline-flex items-center gap-x-2 text-xs">
           {/* Dropdown selections */}
           <ComboBox
-            tabIndex={2}
+            tabIndex={1}
             searchable
             icon={<Folder size={16} />}
             options={projects}
@@ -151,7 +158,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
           />
           <ComboBox
-            tabIndex={3}
+            tabIndex={2}
             searchable
             icon={<Rocket size={16} />}
             options={projectMilestones}
@@ -161,24 +168,24 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             disabled={!selectedData?.project?.id}
           />
           <ComboBox
-            tabIndex={4}
+            tabIndex={3}
             searchable
             icon={<List size={16} />}
             options={projectTasks}
             label="Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            disabled={!(selectedData?.project?.id && selectedData?.milestone?.id)}
+            disabled={!isProjectAndMilestoneSelected}
           />
         </div>
         <Button
-          tabIndex={9}
+          tabIndex={8}
           variant="outline"
           onClick={handleClearForm}
           size="sm"
           type="submit"
           disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
-          className={`text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary`}
+          className="text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary"
         >
           Clear
         </Button>
@@ -189,75 +196,76 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
           onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
           autoComplete="off"
         >
-          <Command label="Command Menu" className="text-content-light relative">
-            <div
-              className={`${
-                onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border"
-              } flex items-center justify-between rounded-b-xl px-[18px] py-[7px]`}
-            >
-              <div className="flex basis-[70%] items-center">
-                <MessageSquare
-                  onClick={() => setOnCommentFocus(true)}
-                  className="text-info-light h-[18px] w-[18px] shrink-0 stroke-2"
-                />
-                <input
-                  tabIndex={5}
-                  className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 text-sm focus:outline-0 focus:ring-0"
-                  placeholder="Add comment on what you did..."
-                  value={selectedData?.comment ?? ""}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onFocus={() => setOnCommentFocus(true)}
-                  onBlur={() => setOnCommentFocus(false)}
-                />
-              </div>
-              <span className="flex items-center gap-4">
-                {selectedData.project?.billable && (
-                  <Button
-                    tabIndex={6}
-                    variant="outline"
-                    size="icon"
-                    type="button"
-                    onClick={() =>
-                      selectedData?.project?.billable &&
-                      setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-                    }
-                    className={cn(
-                      selectedData.billable && "text-success hover:text-success",
-                      !selectedData.billable && "text-slate-400 hover:text-slate-400",
-                    )}
-                  >
-                    <CircleDollarSign size={20} />
-                  </Button>
-                )}
-                <Input
-                  tabIndex={7}
-                  type="text"
-                  placeholder="7:30"
-                  className={cn(
-                    errors?.time
-                      ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                      : "border-border focus:border-primary focus:ring-primary",
-                    "placeholder:text-disabled-light focus:outline-none` w-[66px] select-none rounded-md border bg-transparent text-center text-sm leading-none transition-all duration-75 ease-out",
-                  )}
-                  value={selectedData?.time}
-                  onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-                />
-                <Button
-                  size="sm"
-                  type="submit"
-                  disabled={!formValidator()}
-                  tabIndex={
-                    selectedData?.project && selectedData.milestone && selectedData?.comment && selectedData?.time
-                      ? 8
-                      : -1
-                  }
-                  className="disabled:disabled border disabled:hover:bg-primary"
-                >
-                  {edit.isEditing ? "Update" : "Submit"}
-                </Button>
-              </span>
+          <div
+            className={cn(
+              onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border",
+              "flex items-center justify-between rounded-b-xl px-3 py-2",
+              !isProjectAndMilestoneSelected && "pointer-events-none",
+            )}
+          >
+            <div className="ml-2 flex basis-[70%] items-center">
+              {!isProjectAndMilestoneSelected ? (
+                <Info className="shrink-0 text-gray-500" size={18} />
+              ) : (
+                <MessageSquare onClick={() => setOnCommentFocus(true)} className="shrink-0" size={18} />
+              )}
+              <input
+                tabIndex={isProjectAndMilestoneSelected ? 4 : -1}
+                className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 py-1.5 text-sm focus:outline-0 focus:ring-0"
+                placeholder={renderFormText()}
+                value={selectedData?.comment ?? ""}
+                onChange={(e) => setCommentText(e.target.value)}
+                onFocus={() => setOnCommentFocus(true)}
+                onBlur={() => setOnCommentFocus(false)}
+              />
             </div>
-          </Command>
+            <span className="flex items-center gap-4">
+              {selectedData.project?.billable && (
+                <Button
+                  tabIndex={isProjectAndMilestoneSelected ? 5 : -1}
+                  variant="outline"
+                  size="icon"
+                  type="button"
+                  onClick={() =>
+                    selectedData?.project?.billable &&
+                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                  }
+                  className={cn(
+                    selectedData.billable && "text-success hover:text-success",
+                    !selectedData.billable && "text-slate-400 hover:text-slate-400",
+                  )}
+                >
+                  <CircleDollarSign size={20} />
+                </Button>
+              )}
+              <Input
+                tabIndex={isProjectAndMilestoneSelected ? 6 : -1}
+                type="text"
+                placeholder="7:30"
+                className={cn(
+                  errors?.time
+                    ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                    : "border-border focus:border-primary focus:ring-primary",
+                  "placeholder:text-disabled-light focus:outline-none` h-9 w-[66px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out",
+                )}
+                value={selectedData?.time}
+                onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+              />
+              <Button
+                size="sm"
+                type="submit"
+                disabled={!formValidator()}
+                tabIndex={
+                  selectedData?.project && selectedData.milestone && selectedData?.comment && selectedData?.time
+                    ? 7
+                    : -1
+                }
+                className="disabled:disabled border disabled:hover:bg-primary"
+              >
+                {edit.isEditing ? "Update" : "Submit"}
+              </Button>
+            </span>
+          </div>
         </form>
       </div>
     </div>

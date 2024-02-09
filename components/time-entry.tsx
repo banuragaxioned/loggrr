@@ -81,7 +81,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
 
       getTimeEntries();
-      toast.success("Time entry deleted!");
+      toast("Time entry deleted!");
     } catch (error) {
       toast.error("Something went wrong!");
       console.error("Error deleting time entry", error);
