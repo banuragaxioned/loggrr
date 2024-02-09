@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { CircleDollarSign, Folder, Info, List, MessageSquare, Rocket } from "lucide-react";
+import { CircleDollarSign, Folder, Info, List, ListRestart, MessageSquare, Rocket } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ComboBox } from "../ui/combobox";
@@ -136,9 +136,9 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
   }, [edit, projects]);
 
   const renderFormText = () => {
-    if (!selectedData.project?.id) return "Select a project from the above dropdown";
-    if (!selectedData.milestone?.id) return "Select a milestone from the above dropdown";
-    return "Add comment on what you did...";
+    if (!selectedData.project?.id) return "Select a project first...";
+    if (!selectedData.milestone?.id) return "Select a milestone...";
+    return "Add a comment...";
   };
 
   const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
@@ -178,17 +178,18 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             disabled={!isProjectAndMilestoneSelected}
           />
         </div>
-        <Button
-          tabIndex={8}
-          variant="outline"
-          onClick={handleClearForm}
-          size="sm"
-          type="submit"
-          disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
-          className="text-content-light hover:border-info-light border  border-border bg-transparent px-[12px] py-[7px] text-xs leading-none focus:border-primary focus:ring-1 focus:ring-primary"
-        >
-          Clear
-        </Button>
+        {(selectedData?.milestone || selectedData?.project || selectedData?.task) && (
+          <Button
+            tabIndex={8}
+            variant="outline"
+            onClick={handleClearForm}
+            size="icon"
+            type="button"
+            disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
+          >
+            <ListRestart size={16} />
+          </Button>
+        )}
       </div>
       <div className="border-box z-[3] mx-auto w-full rounded-b-xl border bg-transparent">
         <form
@@ -250,6 +251,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
                 )}
                 value={selectedData?.time}
                 onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                disabled={!isProjectAndMilestoneSelected}
               />
               <Button
                 size="sm"

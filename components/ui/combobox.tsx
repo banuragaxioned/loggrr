@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { UseFormSetValue } from "react-hook-form";
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -46,7 +46,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          title={selectedItem?.name}
+          title={`Select a ${label}`}
           variant="outline"
           role="combobox"
           size="sm"
@@ -94,9 +94,10 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                         handleSelect && handleSelect(val);
                         setOpen(false);
                       }}
-                      className="w-full cursor-pointer"
+                      className="w-full cursor-pointer justify-between"
                     >
                       {item.name}
+                      {selectedItem?.id === item.id && <Check size={16} className="shrink-0" />}
                     </CommandItem>
                   );
                 })}
