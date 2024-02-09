@@ -16,11 +16,12 @@ import { TimeAdd } from "@/components/time-add";
 import { UserAccountNav } from "@/components/user-account";
 import { MobileNavMenu } from "./mobile-menu";
 import { cn } from "@/lib/utils";
+import { CommandMenu } from "@/components/command-action";
 
 export function SiteHeader() {
   const params = useParams();
   const pathname = usePathname();
-  const slug = params?.team;
+  const slug = decodeURIComponent(params.team as string);
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
 
@@ -39,6 +40,7 @@ export function SiteHeader() {
         {teamData && <TeamSwitcher teams={teamData} />}
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav>
+            {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
