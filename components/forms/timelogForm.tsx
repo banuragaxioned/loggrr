@@ -121,11 +121,20 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
 
   useEffect(() => {
     if (edit.isEditing) {
+      const foundProject = projects.find((project) => project.id === edit.obj.project?.id);
       setSelectedData(edit.obj);
+      setProjectMilestones(() => {
+        const milestone = foundProject?.milestone;
+        return milestone ? milestone : [];
+      });
+      setprojectTasks(() => {
+        const task = foundProject?.task;
+        return task ? task : [];
+      });
     } else {
       handleClearForm();
     }
-  }, [edit]);
+  }, [edit, projects]);
 
   return (
     <div className="p-2">
@@ -178,6 +187,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         <form
           onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
           onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
+          autoComplete="off"
         >
           <Command label="Command Menu" className="text-content-light relative">
             <div

@@ -10,6 +10,17 @@ import { Separator } from "./ui/separator";
 
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 interface TimeEntries {
   entries: TimeEntryDataObj;
@@ -77,16 +88,34 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
                         <span
                           onClick={() => editEntryHandler(tempObj, data.id)}
-                          className="cursor-pointer rounded border bg-white p-1 hover:opacity-75 dark:bg-black"
+                          className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
                         >
                           {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
                         </span>
-                        <span
-                          onClick={() => deleteEntryHandler(data.id)}
-                          className="cursor-pointer rounded border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
-                        >
-                          <Trash size={16} />
-                        </span>
+                        {/* Open a modal on delete click */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <span className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black">
+                              <Trash size={16} />
+                            </span>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
+                              <DialogDescription>
+                                This action cannot be undone. This will permanently delete your time entry.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <Button type="button" variant="outline" size="sm" asChild>
+                                <DialogClose>Cancel</DialogClose>
+                              </Button>
+                              <Button type="button" size="sm" onClick={() => deleteEntryHandler(data.id)} asChild>
+                                <DialogClose>Delete</DialogClose>
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                       <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
                     </div>

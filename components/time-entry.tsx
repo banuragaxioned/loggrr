@@ -18,7 +18,7 @@ interface TimeEntryProps {
 }
 
 export interface EditReferenceObj {
-  obj: SelectedData | {};
+  obj: SelectedData;
   isEditing: boolean;
   id: number | null;
 }
@@ -34,8 +34,6 @@ export type EntryData = {
 export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
-
-const setRecent = (arr: SelectedData[]) => localStorage.setItem("loggr-recent", JSON.stringify(arr));
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const [date, setDate] = useState<Date>(new Date());
@@ -75,10 +73,6 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
    * deleteTimeEntry: The following function will return the time entry of the specified id
    */
   const deleteTimeEntry = async (id: number) => {
-    // TODO: Implement a confirmation modal for deleting entry
-    const isConfirmed = confirm("Do you want to delete this time entry?");
-    if (!isConfirmed) return;
-
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
         method: "DELETE",
