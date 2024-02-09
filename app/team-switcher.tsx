@@ -20,7 +20,7 @@ interface Team {
   role: Role;
 }
 
-interface Teams extends React.HTMLAttributes<HTMLDivElement> {
+interface Teams {
   teams: Team[];
 }
 
