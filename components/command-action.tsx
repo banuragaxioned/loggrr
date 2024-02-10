@@ -10,19 +10,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import {
-  Calendar,
-  Calculator,
-  User,
-  Moon,
-  SunMedium,
-  Boxes,
-  Folder,
-  Building2,
-  BarChart2,
-  BarChart3,
-  Users2,
-} from "lucide-react";
+import { User, Moon, SunMedium, Boxes, Folder, Building2, BarChart2, BarChart3, Users, Group } from "lucide-react";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -41,8 +29,8 @@ interface CommandPropType {
 const MenuLinks = [
   { title: "Projects", href: "/projects", icon: Folder },
   { title: "Clients", href: "/clients", icon: Building2 },
-  { title: "Workspace Members", href: "/members", icon: Users2 },
-  { title: "Groups", href: "/groups", icon: Users2 },
+  { title: "Workspace Members", href: "/members", icon: Users },
+  { title: "Groups", href: "/groups", icon: Group },
   { title: "Reports - Logged", href: "/reports/logged", icon: BarChart2 },
   { title: "Reports - Assigned", href: "/reports/assigned", icon: BarChart3 },
 ];
