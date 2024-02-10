@@ -38,9 +38,9 @@ export function SiteHeader() {
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
         {teamData && <TeamSwitcher teams={teamData} />}
+        {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav>
-            {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
