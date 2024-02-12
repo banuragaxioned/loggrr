@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { CalendarClock, Edit, ListRestart, Trash } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
 import { TimeEntryDataObj } from "@/types";
 
@@ -69,7 +70,13 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
 
             return (
               <Fragment key={i}>
-                <div className="group relative flex justify-between bg-secondary px-3 py-2 last:mb-0">
+                <div
+                  className={cn(
+                    "group relative flex justify-between border-2 border-transparent bg-secondary px-3 py-2 last:mb-0",
+                    isEditing && "border-black/80",
+                    i === entryData?.data.length - 1 && "rounded-b-xl",
+                  )}
+                >
                   <div className="flex flex-col justify-between gap-y-4">
                     <div className="flex flex-col gap-y-2">
                       {data.milestone?.name && (
