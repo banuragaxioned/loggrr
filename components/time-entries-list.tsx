@@ -1,19 +1,30 @@
 import { Fragment } from "react";
 import { CalendarClock, Edit, ListRestart, Trash } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
-import { TimeEntryData } from "@/types";
+import { TimeEntryDataObj } from "@/types";
 
 import { Skeleton } from "./ui/skeleton";
-import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
 
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 interface TimeEntries {
-  entries: TimeEntryData;
+  entries: TimeEntryDataObj;
   status: string;
   deleteEntryHandler: (id: number) => void;
   editEntryHandler: (obj: SelectedData, id: number) => void;
@@ -48,15 +59,24 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             };
             const tempObj = {
               ...data,
+              billable: data.billable,
               comment: data.comments,
               client: entryData.project.client,
               project: projectObj,
               time: `${data.time}`,
             };
 
+            const isEditing = edit.isEditing && edit.id === data.id;
+
             return (
               <Fragment key={i}>
-                <div className="group relative flex justify-between bg-secondary px-3 py-2 last:mb-0">
+                <div
+                  className={cn(
+                    "group relative flex justify-between border border-transparent bg-secondary px-3 py-2 last:mb-0",
+                    isEditing && "border-black/50",
+                    i === entryData?.data.length - 1 && "rounded-b-xl",
+                  )}
+                >
                   <div className="flex flex-col justify-between gap-y-4">
                     <div className="flex flex-col gap-y-2">
                       {data.milestone?.name && (
@@ -70,21 +90,39 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       <p className="flex items-center gap-x-1 text-sm opacity-60">{data?.comments}</p>
                     </div>
                   </div>
-                  <div className="flex min-w-[100px] flex-col text-right">
+                  <div className="flex min-w-[100px] select-none flex-col text-right">
                     <div className="mb-1 flex items-center justify-between">
                       <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
                         <span
                           onClick={() => editEntryHandler(tempObj, data.id)}
-                          className="cursor-pointer rounded border bg-white p-1 hover:opacity-75 dark:bg-black"
+                          className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
                         >
-                          {edit.isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
+                          {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
                         </span>
-                        <span
-                          onClick={() => deleteEntryHandler(data.id)}
-                          className="cursor-pointer rounded border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
-                        >
-                          <Trash size={16} />
-                        </span>
+                        {/* Open a modal on delete click */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <span className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black">
+                              <Trash size={16} />
+                            </span>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
+                              <DialogDescription>
+                                This action cannot be undone. This will permanently delete your time entry.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <Button type="button" variant="outline" size="sm" asChild>
+                                <DialogClose>Cancel</DialogClose>
+                              </Button>
+                              <Button type="button" size="sm" onClick={() => deleteEntryHandler(data.id)} asChild>
+                                <DialogClose>Delete</DialogClose>
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                       <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
                     </div>
