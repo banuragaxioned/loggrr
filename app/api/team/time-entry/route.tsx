@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { parse, formatISO } from "date-fns";
+import { NextRequest, NextResponse } from "next/server";
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
@@ -20,54 +21,12 @@ const commonValidationObj = {
 const TimeEntrySchema = z.object(commonValidationObj);
 const TimeEntryUpdateSchema = z.object({ ...commonValidationObj, id: z.number().min(1) });
 
-export async function POST(req: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return new Response("Unauthorized", { status: 403 });
-    }
-
-    const { user } = session;
-
-    const json = await req.json();
-    const body = TimeEntrySchema.parse(json);
-
-    // check if the user has permission to the current team/workspace id if not return 403
-    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
-    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
-    }
-    //schema goes here
-    const timeEntry = await db.timeEntry.create({
-      data: {
-        time: body.time,
-        comments: body.comments,
-        milestoneId: body.milestone,
-        billable: body.billable,
-        userId: user.id,
-        projectId: body.project,
-        date: new Date(body.date),
-        taskId: body.task,
-        workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
-      },
-    });
-    return new Response(JSON.stringify(timeEntry));
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 });
-    }
-
-    return new Response(null, { status: 500 });
-  }
-}
-
-export async function GET(req: Request) {
-  const searchParams = new URL(req.url).searchParams;
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
   const team = searchParams.get("team");
   const date = searchParams.get("date");
 
-  if (!date) return new Response("No date provided", { status: 403 });
+  if (!date) return NextResponse.json({ error: "No date provided" }, { status: 403 });
 
   // Searching for time entries based on particular day
   const parsedDate = parse(date, "EEE, MMM dd, yyyy", new Date());
@@ -76,15 +35,13 @@ export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
-      return new Response("Unauthorized", { status: 403 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
 
     const { user } = session;
 
     // check if the user has permission to the current team/workspace id if not return 403
     if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
+      return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
     const response = await db.timeEntry.findMany({
@@ -101,6 +58,8 @@ export async function GET(req: Request) {
         id: true,
         billable: true,
         comments: true,
+        time: true,
+        date: true,
         project: {
           select: {
             id: true,
@@ -126,8 +85,6 @@ export async function GET(req: Request) {
             name: true,
           },
         },
-        time: true,
-        date: true,
       },
       orderBy: {
         project: {
@@ -177,74 +134,72 @@ export async function GET(req: Request) {
       },
     );
 
-    if (updatedResponse.projectsLog.length < 1 || updatedResponse.dayTotal === 0) {
-      return new Response(JSON.stringify({}));
-    }
+    if (updatedResponse.projectsLog.length < 1 || updatedResponse.dayTotal === 0) return NextResponse.json({});
 
-    return new Response(JSON.stringify(updatedResponse));
+    return NextResponse.json(updatedResponse);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 });
+      return NextResponse.json({ error: error.issues }, { status: 422 });
     }
 
-    return new Response(null, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
-export async function DELETE(req: Request) {
-  const searchParams = new URL(req.url).searchParams;
-  const team = searchParams.get("team");
-  const id = searchParams.get("id") as string;
-
+export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
-      return new Response("Unauthorized", { status: 403 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
 
     const { user } = session;
+
+    const json = await req.json();
+    const body = TimeEntrySchema.parse(json);
+
     // check if the user has permission to the current team/workspace id if not return 403
-    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
-    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
+    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
+      return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
-    //schema goes here
-    const query = await db.timeEntry.delete({
-      where: {
-        id: +id,
+
+    const timeEntry = await db.timeEntry.create({
+      data: {
+        time: body.time,
+        comments: body.comments,
+        milestoneId: body.milestone,
+        billable: body.billable,
+        userId: user.id,
+        projectId: body.project,
+        date: new Date(body.date),
+        taskId: body.task,
+        workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
-
-    return new Response(JSON.stringify(query));
+    return NextResponse.json(timeEntry);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 });
+      return NextResponse.json({ error: error.issues }, { status: 422 });
     }
 
-    return new Response(null, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
-      return new Response("Unauthorized", { status: 403 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
 
     const { user } = session;
     const json = await req.json();
     const body = TimeEntryUpdateSchema.parse(json);
 
     // check if the user has permission to the current team/workspace id if not return 403
-    // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
     if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
+      return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
-    //schema goes here
     const query = await db.timeEntry.update({
       where: {
         id: body.id,
@@ -260,12 +215,45 @@ export async function PUT(req: Request) {
       },
     });
 
-    return new Response(JSON.stringify(query));
+    return NextResponse.json(query);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 });
+      return NextResponse.json({ error: error.issues }, { status: 422 });
     }
 
-    return new Response(null, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const team = searchParams.get("team");
+  const id = searchParams.get("id") as string;
+
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
+
+    const { user } = session;
+
+    // check if the user has permission to the current team/workspace id if not return 403
+    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
+      return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
+    }
+
+    const query = await db.timeEntry.delete({
+      where: {
+        id: +id,
+      },
+    });
+
+    return NextResponse.json(query);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.issues }, { status: 422 });
+    }
+
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
