@@ -1,9 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { NewMilestoneForm } from "@/components/forms/milestonesForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { db } from "@/server/db";
 import { pageProps } from "@/types";
+import { getProjects } from "@/server/services/project";
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
@@ -11,6 +12,8 @@ export default async function Page({ params }: pageProps) {
   if (!project) {
     return null;
   }
+
+  const projectList = await getProjects(team);
 
   const milestoneList = await db.milestone.findMany({
     where: {
@@ -22,10 +25,12 @@ export default async function Page({ params }: pageProps) {
       },
     },
   });
+  console.log(milestoneList, 'milestone', team);
+
   return (
     <DashboardShell>
       <DashboardHeader heading="Milestones" text="Manage all the Milestones for your project">
-        <Button variant="outline">Edit</Button>
+        <NewMilestoneForm projectList={projectList} team={team} />
       </DashboardHeader>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -116,6 +121,19 @@ export default async function Page({ params }: pageProps) {
             <p className="text-xs text-muted-foreground">+201 since last hour</p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mt-7">
+        <span className="inline-block capitalize text-gray-500 mb-2">{team}</span>
+        {milestoneList && milestoneList.map((item, index) => {
+          return (
+            <div key={index} className="border p-3 rounded-md mb-5">
+              <h4 className="capitalize">{`Milestone name : ${item.name}`}</h4>
+              <p>{`Month cycle: ${item?.startDate?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${item?.endDate?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}</p>
+              <p>{`Budget : ${item.budget}`}</p>
+            </div>
+          )
+        })}
       </div>
     </DashboardShell>
   );

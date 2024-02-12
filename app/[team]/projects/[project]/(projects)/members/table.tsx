@@ -30,7 +30,6 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
   const router = useRouter();
 
   const removeMember = async (userId: number) => {
-    console.log({ team, userId, projectId});
     const response = await fetch("/api/team/project/members/delete", {
       method: "DELETE",
       headers: {
