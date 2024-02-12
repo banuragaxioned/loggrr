@@ -11,7 +11,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
   return (
     <>
       <PHProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SessionProvider>
             <MenuProvider>{children}</MenuProvider>
           </SessionProvider>
