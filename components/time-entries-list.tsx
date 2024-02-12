@@ -72,8 +72,8 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               <Fragment key={i}>
                 <div
                   className={cn(
-                    "group relative flex justify-between border-2 border-transparent bg-secondary px-3 py-2 last:mb-0",
-                    isEditing && "border-black/80",
+                    "group relative flex justify-between border border-transparent bg-secondary px-3 py-2 last:mb-0",
+                    isEditing && "border-black/50",
                     i === entryData?.data.length - 1 && "rounded-b-xl",
                   )}
                 >
