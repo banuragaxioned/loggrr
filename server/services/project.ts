@@ -176,34 +176,31 @@ export async function projectAccess(projectId: number) {
 }
 
 export const getAllProjects = async (userId: number) => {
-  const projects = await db.user.findUnique({
+  const projects = await db.project.findMany({
     where: {
-      id: userId,
-    },
-    select: {
       usersOnProject: {
-        select: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-              billable: true,
-              client: { select: { id: true, name: true } },
-              milestone: { select: { id: true, budget: true, projectId: true, name: true } },
-              timeEntry: { select: { id: true, time: true, projectId: true } },
-              task: { select: { id: true, name: true } },
-            },
-          },
+        some: {
+          userId,
         },
       },
     },
+    select: {
+      id: true,
+      name: true,
+      billable: true,
+      client: { select: { id: true, name: true } },
+      milestone: { select: { id: true, budget: true, projectId: true, name: true } },
+      timeEntry: { select: { id: true, time: true, projectId: true } },
+      task: { select: { id: true, name: true } },
+    },
   });
-  return projects?.usersOnProject.map((projectList) => ({
-    id: projectList.project.id,
-    name: projectList.project.name,
-    billable: projectList.project.billable,
-    milestone: projectList.project.milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
-    task: projectList.project.task.map((task) => ({ id: task.id, name: task.name })),
-    client: projectList.project.client,
+
+  return projects?.map((project) => ({
+    id: project.id,
+    name: project.name,
+    billable: project.billable,
+    milestone: project.milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
+    task: project.task.map((task) => ({ id: task.id, name: task.name })),
+    client: project.client,
   }));
 };
