@@ -72,7 +72,7 @@ export function SiteHeader() {
             )}
           </nav>
         </div>
-        {!userId && (
+        {status !== "loading" && status !== "authenticated" && (
           <Button variant="default" size="sm" onClick={() => signIn()}>
             Sign in
           </Button>
