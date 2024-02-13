@@ -6,7 +6,8 @@ import { db } from "@/server/db";
 const deleteMilestoneSchema = z.object({
   team: z.string().min(1),
   id: z.number(),
-  
+  projectId: z.number().min(1),
+
 });
 
 export async function DELETE(req: Request) {
@@ -28,7 +29,12 @@ export async function DELETE(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    await db.milestone.delete({ where: { id: body.id } });
+    await db.milestone.delete({
+      where: {
+        id: body.id,
+        projectId: body.projectId
+      }
+    });
 
     return new Response(null, { status: 204 });
   } catch (error) {
