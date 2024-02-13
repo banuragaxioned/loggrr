@@ -23,6 +23,7 @@ import { ClassicDatePicker } from "./date-picker";
 import { Milestone, Project } from "@/types";
 import { ComboBox } from "./ui/combobox";
 import { Input } from "./ui/input";
+import { Badge } from "./ui/badge";
 
 export type SelectedData = {
   client?: Milestone;
@@ -47,6 +48,24 @@ const initialDataState = {
   time: "1.50",
   billable: false,
 };
+
+const TIME_CHIPS = [
+  {
+    id: 1,
+    title: "+15mins",
+    incrementBy: 0.25, // in hours
+  },
+  {
+    id: 2,
+    title: "+45mins",
+    incrementBy: 0.75, // in hours
+  },
+  {
+    id: 3,
+    title: "+90mins",
+    incrementBy: 1.5, // in hours
+  },
+];
 
 export function TimeAdd({ projects }: { projects: Project[] }) {
   const [date, setDate] = useState<Date>(new Date());
@@ -143,6 +162,17 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
     }
   };
 
+  const renderTimeChips = TIME_CHIPS.map((chip) => (
+    <Badge
+      key={chip.id}
+      variant="secondary"
+      className="w-[80px] cursor-pointer justify-center rounded-full py-1.5"
+      onClick={() => handleTimeUpdate("increase", chip.incrementBy)}
+    >
+      {chip.title}
+    </Badge>
+  ));
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -204,7 +234,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-              <div className="relative flex w-full items-center">
+              <div className="relative mb-3 flex w-full items-center">
                 <Button
                   variant="outline"
                   size="icon"
@@ -218,13 +248,14 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   <span className="sr-only">Decrease by an hour</span>
                 </Button>
                 <Input
+                  tabIndex={-1}
                   type="text"
                   placeholder="7.30"
                   className={cn(
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                      : "border-border focus:border-primary focus:ring-primary",
-                    "mx-3 h-20 w-full select-none rounded-md border bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
+                      : "focus:border-primary focus:ring-primary",
+                    "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
                   )}
                   value={selectedData?.time}
                   onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
@@ -245,6 +276,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   <span className="sr-only">Increase by an hour</span>
                 </Button>
               </div>
+              <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
             </div>
             <DrawerFooter className="mb-4">
               <Button type="submit" disabled={!formValidator()}>
