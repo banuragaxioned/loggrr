@@ -134,9 +134,12 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
    */
   const handleTimeUpdate = (action: "increase" | "descrease", timeVariation: number) => {
     const previousTime = +selectedData.time;
-    if (previousTime && !isNaN(previousTime)) {
+    if (!isNaN(previousTime)) {
       const timeToUpdate = action === "increase" ? previousTime + timeVariation : previousTime - timeVariation;
       setSelectedData({ ...selectedData, time: timeToUpdate.toFixed(2) });
+      if (timeToUpdate > 0) {
+        setErrors({ ...errors, time: false });
+      }
     }
   };
 
@@ -227,14 +230,15 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
                 />
                 {/* Indicator */}
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">Hours</span>
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
+                  Hour{+selectedData.time > 1 && "s"}
+                </span>
                 <Button
                   variant="outline"
                   size="icon"
                   type="button"
                   className="h-8 w-8 shrink-0 rounded-full"
                   onClick={() => handleTimeUpdate("increase", 1)}
-                  disabled={+selectedData.time >= 9}
                   title="Increase by an hour"
                 >
                   <Plus className="h-4 w-4" />
