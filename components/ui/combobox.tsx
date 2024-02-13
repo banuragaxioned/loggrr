@@ -52,7 +52,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           size="sm"
           tabIndex={searchable && open ? -1 : tabIndex}
           disabled={disabled}
-          className="flex justify-between"
+          className="flex w-full justify-between"
         >
           {icon}
           <span className="mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">

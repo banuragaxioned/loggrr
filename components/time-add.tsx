@@ -1,7 +1,14 @@
 "use client";
 
-import * as React from "react";
-import { CalendarIcon, CalendarPlus, ListPlus, Minus, Plus } from "lucide-react";
+import React, { useState } from "react";
+import { CalendarIcon, CalendarPlus, Folder, List, ListPlus, Minus, Plus, Rocket } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { format } from "date-fns";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -13,69 +20,120 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { toast } from "sonner";
-import { Calendar } from "./ui/calendar";
 import { createTimeLog } from "@/app/_actions/create-timelog-action";
+import { ClassicDatePicker } from "./date-picker";
 
-const data = [
-  {
-    time: 90,
-  },
-  {
-    time: 120,
-  },
-  {
-    time: 180,
-  },
-  {
-    time: 240,
-  },
-  {
-    time: 300,
-  },
-  {
-    time: 360,
-  },
-  {
-    time: 420,
-  },
-];
+import { Milestone, Project } from "@/types";
+import { ComboBox } from "./ui/combobox";
+import { Input } from "./ui/input";
 
-export function TimeAdd() {
-  const [time, setTime] = React.useState(60);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  });
+export type SelectedData = {
+  client?: Milestone;
+  project?: Project;
+  milestone?: Milestone | null;
+  task?: Milestone | null;
+  comment?: string | null;
+  time?: string;
+  billable?: boolean;
+};
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    data.projectId = "1";
-    data.milestoneId = "1";
-    const result = await createTimeLog(data, "axioned", 1, time);
-    if (result.success) {
-      toast("Time entry was created");
-      form.reset();
-    } else {
-      toast("Something went wrong.");
+type ErrorsObj = {
+  time?: boolean;
+};
+
+const initialDataState = {
+  client: undefined,
+  project: undefined,
+  milestone: null,
+  task: null,
+  comment: "",
+  time: "",
+  billable: false,
+};
+
+export function TimeAdd({ projects }: { projects: Project[] }) {
+  const [date, setDate] = useState<Date>(new Date());
+  const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
+  const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
+  const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
+  const [errors, setErrors] = useState<ErrorsObj>({});
+
+  const handleClearForm = () => {
+    setSelectedData(initialDataState);
+  };
+
+  const formValidator = () => {
+    const { project, comment, time, milestone } = selectedData || {};
+    return project && milestone && comment?.trim().length && time && !errors?.time;
+  };
+
+  /*
+   * dropdownSelectHandler: takes ID of selected project and add its data
+   */
+  const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
+    const foundData = arr.find((obj) => obj.id === +selected);
+    callback(foundData);
+  };
+
+  /*
+   * projectCallback: function called when project is selected
+   */
+  const projectCallback = (selected: Project) => {
+    setSelectedData({
+      ...selectedData,
+      client: selected?.client,
+      project: { id: selected.id, name: selected?.name, billable: selected?.billable },
+    });
+    setProjectMilestones(() => {
+      const milestone = selected?.milestone;
+      return milestone ? milestone : [];
+    });
+    setprojectTasks(() => {
+      const task = selected?.task;
+      return task ? task : [];
+    });
+    if (selected.id !== selectedData.project?.id) {
+      setSelectedData((prevData) => {
+        return {
+          ...prevData,
+          milestone: undefined,
+          task: undefined,
+          billable: prevData.project?.billable ? true : false,
+        };
+      });
     }
-  }
+  };
 
-  const [projectOpen, setProjectOpen] = React.useState(false);
-  const [milestoneOpen, setMilestoneOpen] = React.useState(false);
-  const [dateOpen, setDateOpen] = React.useState(false);
+  /*
+   * milestoneCallback: function called when milestone is selected
+   */
+  const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
 
-  function onClick(adjustment: number) {
-    setTime(Math.max(15, Math.min(480, time + adjustment)));
-  }
+  /*
+   * taskCallback: function called when task is selected
+   */
+  const taskCallback = (selected: Milestone) => {
+    const data: SelectedData = { ...selectedData, task: selected };
+    setSelectedData(data);
+  };
+
+  /*
+   * setCommentText: sets the comment text in the form
+   */
+  const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
+
+  const handleLoggedTimeInput = (time: string) => {
+    const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
+    numberPattern.test(time) ? setErrors({ ...errors, time: false }) : setErrors({ ...errors, time: true });
+    setSelectedData({ ...selectedData, time: time });
+  };
+
+  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
 
   return (
     <Drawer>
@@ -88,9 +146,84 @@ export function TimeAdd() {
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
             <DrawerTitle>Add Time</DrawerTitle>
-            <DrawerDescription>Track your time for the day</DrawerDescription>
+            <DrawerDescription>Add your time for the day</DrawerDescription>
           </DrawerHeader>
-          <Form {...form}>
+          <form>
+            {/* Form/Drawer Body */}
+            <div className="w-full p-4">
+              <div className="mb-3 w-full">
+                {/* <p className="mb-1 text-sm text-muted-foreground">Date</p> */}
+                <ClassicDatePicker date={date} setDate={setDate} />
+              </div>
+              <div className="mb-3 w-full">
+                <ComboBox
+                  searchable
+                  icon={<Folder size={16} />}
+                  options={projects}
+                  label="Project"
+                  selectedItem={selectedData?.project}
+                  handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+                />
+              </div>
+              <div className="mb-3 w-full">
+                <ComboBox
+                  searchable
+                  icon={<Rocket size={16} />}
+                  options={projectMilestones}
+                  label="Milestone"
+                  selectedItem={selectedData?.milestone}
+                  handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+                  disabled={!selectedData?.project?.id}
+                />
+              </div>
+              <div className="mb-3 w-full">
+                <ComboBox
+                  searchable
+                  icon={<List size={16} />}
+                  options={projectTasks}
+                  label="Task"
+                  selectedItem={selectedData?.task}
+                  handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+                  disabled={!isProjectAndMilestoneSelected}
+                />
+              </div>
+              <div className="mb-3 w-full">
+                <Input
+                  disabled={!isProjectAndMilestoneSelected}
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={selectedData?.comment ?? ""}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+              </div>
+              <div className="w-full">
+                <Input
+                  type="text"
+                  placeholder="7:30"
+                  className={cn(
+                    errors?.time
+                      ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                      : "border-border focus:border-primary focus:ring-primary",
+                    "h-20 w-full select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none",
+                  )}
+                  value={selectedData?.time}
+                  onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                  disabled={!isProjectAndMilestoneSelected}
+                />
+              </div>
+            </div>
+            <DrawerFooter className="mb-4">
+              <Button type="submit" disabled={!formValidator()}>
+                Submit
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline" onClick={() => handleClearForm()}>
+                  Cancel
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
+          {/* <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4">
               <FormField
                 control={form.control}
@@ -98,29 +231,7 @@ export function TimeAdd() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Date</FormLabel>
-                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="center">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                          initialFocus
-                          onDayClick={() => setDateOpen(false)}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <ClassicDatePicker date={date} setDate={setDate} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -265,7 +376,7 @@ export function TimeAdd() {
                 </DrawerClose>
               </DrawerFooter>
             </form>
-          </Form>
+          </Form> */}
         </div>
       </DrawerContent>
     </Drawer>

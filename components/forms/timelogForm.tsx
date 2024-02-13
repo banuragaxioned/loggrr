@@ -19,9 +19,7 @@ export type SelectedData = {
 };
 
 interface TimelogProps {
-  team: string;
   projects: Project[];
-  date: Date;
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
 }

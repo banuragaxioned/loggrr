@@ -18,8 +18,9 @@ import { MobileNavMenu } from "./mobile-menu";
 import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/command-action";
 import { Button } from "@/components/ui/button";
+import { Project } from "@/types";
 
-export function SiteHeader() {
+export function SiteHeader({ projects }: { projects: Project[] }) {
   const params = useParams();
   const pathname = usePathname();
   const slug = params.team && decodeURIComponent(params.team as string);
@@ -44,7 +45,7 @@ export function SiteHeader() {
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
-              {isNavVisible && <TimeAdd />}
+              {isNavVisible && <TimeAdd projects={projects} />}
               <ThemeToggle />
               {status === "loading" && (
                 <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
@@ -64,7 +65,7 @@ export function SiteHeader() {
             {isNavVisible && (
               <div className="ml-auto flex space-x-2 md:hidden">
                 <>
-                  <TimeAdd />
+                  <TimeAdd projects={projects} />
                   {teamData && <TeamSwitcher teams={teamData} />}
                   <MobileNavMenu userProps={{ status, name, image, email }} />
                 </>

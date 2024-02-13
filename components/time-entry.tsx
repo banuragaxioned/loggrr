@@ -137,7 +137,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogForm team={team} projects={projects} date={date} edit={edit} submitHandler={submitTimeEntry} />
+        <TimeLogForm projects={projects} edit={edit} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day
