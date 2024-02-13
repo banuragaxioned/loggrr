@@ -214,12 +214,13 @@ interface ProjectLog {
 }
 
 export interface TimeEntryData {
-  projectsLog: ProjectLog[];
   dayTotal: number;
+  projectsLog: ProjectLog[];
 }
 
 export interface TimeEntryDataObj {
-  [key: string]: TimeEntryData;
+  dayTotal?: number;
+  projectsLog?: ProjectLog[];
 }
 
 export type Milestone = {

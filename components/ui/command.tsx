@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { type DialogProps } from "@radix-ui/react-dialog";
-import { Command as CommandPrimitive } from "cmdk";
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -116,8 +116,28 @@ const CommandItem = React.forwardRef<
 
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
+const CommandSubItem = React.forwardRef<
+  React.ElementRef<typeof CommandItem>,
+  React.ComponentPropsWithoutRef<typeof CommandItem>
+>(({ className, ...props }, ref) => {
+  const search = useCommandState((state) => state.search);
+  if (!search) return null;
+  return (
+    <CommandItem
+      ref={ref}
+      className={cn(
+        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+
+CommandSubItem.displayName = CommandPrimitive.Item.displayName;
+
 const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-  return <span className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)} {...props} />;
+  return <span className={cn("ml-auto text-xs text-muted-foreground", className)} {...props} />;
 };
 CommandShortcut.displayName = "CommandShortcut";
 
@@ -129,6 +149,7 @@ export {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandSubItem,
   CommandShortcut,
   CommandSeparator,
 };

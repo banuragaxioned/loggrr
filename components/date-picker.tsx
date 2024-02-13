@@ -1,4 +1,4 @@
-import React, { Dispatch, Ref, RefAttributes, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
@@ -10,6 +10,10 @@ import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
 import { GetSetDateProps } from "@/types";
+
+interface DatePickerProps extends GetSetDateProps {
+  children?: React.ReactNode;
+}
 
 export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   return (
@@ -30,25 +34,32 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   );
 };
 
-export const ClassicDatePicker = ({ date, setDate }: GetSetDateProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
+export const ClassicDatePicker = ({ date, setDate, children }: DatePickerProps) => {
+  const [open, setOpen] = useState(false);
+  const todaysDate = new Date();
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant={"outline"} size={"sm"} className={cn("flex px-2 py-0")} ref={buttonRef}>
-          <CalendarIcon className="h-5 w-6" />
+        <Button variant="outline" size="sm" className="flex gap-1.5">
+          <CalendarIcon size={16} />
+          {!children && <span className="text-sm">Pick a date</span>}
+          {children}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent align="center" className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={(select) => {
-            setDate(select);
-            buttonRef.current?.click();
-          }}
-          toDate={new Date()}
           initialFocus
+          selected={date}
+          defaultMonth={date}
+          toDate={todaysDate}
+          onSelect={(select) => {
+            if (select) {
+              setDate(select);
+            }
+            setOpen(false);
+          }}
         />
       </PopoverContent>
     </Popover>

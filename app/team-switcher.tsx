@@ -1,13 +1,16 @@
 "use client";
 
 import * as React from "react";
+import { Boxes, Check, ChevronRight, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useParams } from "next/navigation";
+
+import { Role } from "@prisma/client";
 import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Boxes, Check, ChevronsUpDown } from "lucide-react";
-import { Role } from "@prisma/client";
-import { useRouter, useParams } from "next/navigation";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
@@ -20,7 +23,7 @@ interface Team {
   role: Role;
 }
 
-interface Teams extends React.HTMLAttributes<HTMLDivElement> {
+interface Teams {
   teams: Team[];
 }
 
@@ -28,13 +31,35 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(teamData.teams[0]);
+  const [selectedTeam, setSelectedTeam] = React.useState<Team>();
 
-  if (params?.team && selectedTeam.slug !== params.team) {
+  React.useEffect(() => {
+    if (teamData.teams.length === 1) {
+      setSelectedTeam(teamData.teams[0]);
+    }
+  }, [teamData]);
+
+  if (params?.team && selectedTeam?.slug !== params.team) {
     const team = teamData.teams.find((item) => item.slug === params.team);
     if (team) {
       setSelectedTeam(team);
     }
+  }
+
+  if (teamData.teams.length === 1 && !params.team) {
+    return (
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => {
+          router.push(`/${teamData.teams[0].slug}`);
+        }}
+        className="flex gap-2"
+      >
+        Dashboard
+        <ChevronRight size={16} />
+      </Button>
+    );
   }
 
   if (teamData.teams.length <= 1) {
@@ -50,10 +75,10 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           role="combobox"
           aria-expanded={open}
           aria-label="Select a team"
-          className={cn("w-52 justify-between", className)}
+          className={cn("w-40 justify-between", className)}
         >
           <Boxes className="mr-2 h-5 w-5" />
-          {selectedTeam.name}
+          {selectedTeam?.name ?? "Select workspace"}
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -64,17 +89,17 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
               <CommandItem
                 key={item.slug}
                 onSelect={() => {
-                  setSelectedTeam(item);
-                  router.push(`/${item.slug}`);
                   setOpen(false);
                 }}
-                className="text-sm"
+                className="p-0"
               >
-                <Boxes className="mr-2 h-5 w-5" />
-                {item.name}
-                <Check
-                  className={cn("ml-auto h-4 w-4", selectedTeam.slug === item.slug ? "opacity-100" : "opacity-0")}
-                />
+                <Link href={`/${item.slug}`} className="flex w-full items-center justify-between px-2 py-1.5">
+                  <Boxes className="mr-2 h-5 w-5" />
+                  {item.name}
+                  <Check
+                    className={cn("ml-auto h-4 w-4", selectedTeam?.slug === item.slug ? "opacity-100" : "opacity-0")}
+                  />
+                </Link>
               </CommandItem>
             ))}
           </CommandList>

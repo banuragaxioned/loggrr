@@ -18,7 +18,7 @@ export default async function Page({ params, searchParams }: pageProps) {
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;
   const selectedClients = searchParams.clients;
-  const selectedPeoples = searchParams.peoples;
+  const selectedMembers = searchParams.members;
   const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
   const {
     data: loggedData,
@@ -31,7 +31,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedBilling,
     selectedProject,
     selectedClients,
-    selectedPeoples,
+    selectedMembers,
   );
 
   // Transformed data as per the table structure
@@ -43,41 +43,43 @@ export default async function Page({ params, searchParams }: pageProps) {
       id: logged.clientId,
       name: logged.clientName,
       hours: clientHours,
-      subRows: logged.projects.map((project: any) => {
-        // Projects
-        const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
-        return {
-          id: project.projectId,
-          name: project.projectName,
-          hours: projectHours,
-          subRows: project.users
-            .filter((user: any) => user.userHours > 0)
-            .map((user: any) => {
-              // Users
-              return {
-                id: user.userId,
-                name: user.userName,
-                hours: user.userHours,
-                image: user.userImage,
-                subRows: user.userTimeEntry.map((time: any) => {
-                  // Time Entries
-                  return {
-                    id: time.comments,
-                    hours: time.time,
-                    name: time.formattedDate,
-                    description: time.comments,
-                  };
-                }),
-              };
-            }),
-        };
-      }),
+      subRows: logged.projects
+        .filter((project: any) => project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0) > 0) // filter out projects if logged hour is zero
+        .map((project: any) => {
+          // Projects
+          const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
+          return {
+            id: project.projectId,
+            name: project.projectName,
+            hours: projectHours,
+            subRows: project.users
+              .filter((user: any) => user.userHours > 0) // filter users by userHours
+              .map((user: any) => {
+                // Users
+                return {
+                  id: user.userId,
+                  name: user.userName,
+                  hours: user.userHours,
+                  image: user.userImage,
+                  subRows: user.userTimeEntry.map((time: any) => {
+                    // Time Entries
+                    return {
+                      id: time.comments,
+                      hours: time.time,
+                      name: time.formattedDate,
+                      description: time.comments,
+                    };
+                  }),
+                };
+              }),
+          };
+        }),
     };
   });
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Logged Hours" text="View all the hours that is logged" />
+      <DashboardHeader heading="Logged Hours" text="View the hours that are logged." />
       <div className="mb-8">
         <DataTable columns={columns} data={transformedData} allClients={allClients} allUsers={allUsers} />
       </div>

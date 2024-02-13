@@ -10,7 +10,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -22,11 +21,6 @@ export function NavMenu() {
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href={`/${slug}`} legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>

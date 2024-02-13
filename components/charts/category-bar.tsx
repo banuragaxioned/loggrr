@@ -13,7 +13,7 @@ interface CategoryBarProps {
 
 export default function CategoryDataBar(input: CategoryBarProps) {
   return (
-    <Card>
+    <Card className="bg-white shadow-none dark:bg-black">
       <Flex className="items-center font-semibold">
         <Text className="pb-2">{input.title}</Text>
         <Text className="flex items-center pb-2 text-xs">
