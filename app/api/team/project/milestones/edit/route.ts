@@ -2,13 +2,12 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { ProjectInterval } from "@prisma/client";
 
-const milestoneCreateSchema = z.object({
-  budget: z.number().min(1),
+const editMilestoneSchema = z.object({
   team: z.string().min(1),
-  projectId: z.number().min(1),
-  name: z.string().min(3).max(25),
+  id: z.number(),
+  name: z.string().min(1),
+  budget: z.number().min(1),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
 });
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = milestoneCreateSchema.parse(json);
+    const body = editMilestoneSchema.parse(json);
 
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
@@ -32,26 +31,19 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const milestone = await db.milestone.create({
+    const client = await db.milestone.update({
+      where: {
+        id: body?.id,
+      },
       data: {
-        name: body.name,
-        workspace: {
-          connect: {
-            slug: body.team,
-          },
-        },
-        project: {
-          connect: {
-            id: body.projectId,
-          },
-        },
-        startDate: body.startDate,
-        endDate: body.endDate,
-        budget: body.budget,
+        name: body?.name,
+        startDate: body?.startDate,
+        endDate: body?.endDate,
+        budget: body?.budget,
       },
     });
 
-    return new Response(JSON.stringify(milestone));
+    return new Response(JSON.stringify(client));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
