@@ -30,7 +30,7 @@ export type SelectedData = {
   milestone?: Milestone | null;
   task?: Milestone | null;
   comment?: string | null;
-  time?: string;
+  time: string;
   billable?: boolean;
 };
 
@@ -44,7 +44,7 @@ const initialDataState = {
   milestone: null,
   task: null,
   comment: "",
-  time: "",
+  time: "1.50",
   billable: false,
 };
 
@@ -127,6 +127,19 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
 
   const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
 
+  /*
+   * handleTimeUpdate: function to increase or decrease time based on provided value
+   * action: increase | decrease
+   * timeVariation: Hours to increase or decrease
+   */
+  const handleTimeUpdate = (action: "increase" | "descrease", timeVariation: number) => {
+    const previousTime = +selectedData.time;
+    if (previousTime && !isNaN(previousTime)) {
+      const timeToUpdate = action === "increase" ? previousTime + timeVariation : previousTime - timeVariation;
+      setSelectedData({ ...selectedData, time: timeToUpdate.toFixed(2) });
+    }
+  };
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -188,20 +201,45 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-              <div className="w-full">
+              <div className="relative flex w-full items-center">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  type="button"
+                  className="h-8 w-8 shrink-0 rounded-full"
+                  onClick={() => handleTimeUpdate("descrease", 1)}
+                  disabled={errors.time || +selectedData.time <= 1}
+                  title="Decrease by an hour"
+                >
+                  <Minus className="h-4 w-4" />
+                  <span className="sr-only">Decrease by an hour</span>
+                </Button>
                 <Input
                   type="text"
-                  placeholder="7:30"
+                  placeholder="7.30"
                   className={cn(
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                       : "border-border focus:border-primary focus:ring-primary",
-                    "h-20 w-full select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none",
+                    "mx-3 h-20 w-full select-none rounded-md border bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
                   )}
                   value={selectedData?.time}
                   onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-                  disabled={!isProjectAndMilestoneSelected}
                 />
+                {/* Indicator */}
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">Hours</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  type="button"
+                  className="h-8 w-8 shrink-0 rounded-full"
+                  onClick={() => handleTimeUpdate("increase", 1)}
+                  disabled={+selectedData.time >= 9}
+                  title="Increase by an hour"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="sr-only">Increase by an hour</span>
+                </Button>
               </div>
             </div>
             <DrawerFooter className="mb-4">
