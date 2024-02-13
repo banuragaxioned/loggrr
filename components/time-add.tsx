@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CalendarPlus, Folder, List, ListPlus, Minus, Plus, Rocket } from "lucide-react";
+import { CalendarPlus, CircleDollarSign, Folder, List, ListPlus, Minus, Plus, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -186,11 +186,14 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
             <DrawerTitle>Add Time</DrawerTitle>
             <DrawerDescription>Add your time for the day</DrawerDescription>
           </DrawerHeader>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
             {/* Form/Drawer Body */}
-            <div className="w-full p-4">
+            <div className="w-full p-4 pb-0">
               <div className="mb-3 w-full">
-                {/* <p className="mb-1 text-sm text-muted-foreground">Date</p> */}
                 <ClassicDatePicker date={date} setDate={setDate} />
               </div>
               <div className="mb-3 w-full">
@@ -234,6 +237,23 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
+              <Button
+                tabIndex={isProjectAndMilestoneSelected ? 5 : -1}
+                variant="outline"
+                size="icon"
+                type="button"
+                onClick={() =>
+                  selectedData?.project?.billable &&
+                  setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                }
+                className={cn(
+                  selectedData.project?.billable ? "visible opacity-100" : "invisible opacity-0",
+                  selectedData.billable && "text-success hover:text-success",
+                  !selectedData.billable && "text-slate-400 hover:text-slate-400",
+                )}
+              >
+                <CircleDollarSign size={20} />
+              </Button>
               <div className="relative mb-3 flex w-full items-center">
                 <Button
                   variant="outline"
@@ -276,7 +296,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   <span className="sr-only">Increase by an hour</span>
                 </Button>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
+              <div className="mb-3 flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
             </div>
             <DrawerFooter className="mb-4">
               <Button type="submit" disabled={!formValidator()}>
