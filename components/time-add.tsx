@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { CalendarPlus, CircleDollarSign, Folder, List, ListPlus, Minus, Plus, Rocket } from "lucide-react";
+import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -24,6 +25,8 @@ import { Milestone, Project } from "@/types";
 import { ComboBox } from "./ui/combobox";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 export type SelectedData = {
   client?: Milestone;
@@ -58,16 +61,19 @@ const TIME_CHIPS = [
   {
     id: 2,
     title: "+45mins",
-    incrementBy: 0.75, // in hours
+    incrementBy: 0.75,
   },
   {
     id: 3,
-    title: "+90mins",
-    incrementBy: 1.5, // in hours
+    title: "+1hour",
+    incrementBy: 1,
   },
 ];
 
 export function TimeAdd({ projects }: { projects: Project[] }) {
+  const { team } = useParams();
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
@@ -152,13 +158,54 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
    * timeVariation: Hours to increase or decrease
    */
   const handleTimeUpdate = (action: "increase" | "descrease", timeVariation: number) => {
-    const previousTime = +selectedData.time;
+    const previousTime = +selectedData.time.split(":").join(".");
     if (!isNaN(previousTime)) {
       const timeToUpdate = action === "increase" ? previousTime + timeVariation : previousTime - timeVariation;
       setSelectedData({ ...selectedData, time: timeToUpdate.toFixed(2) });
       if (timeToUpdate > 0) {
         setErrors({ ...errors, time: false });
       }
+    } else {
+      // If any text is entered
+      setSelectedData({ ...selectedData, time: `${(0 + timeVariation).toFixed(2)}` });
+      setErrors({ ...errors, time: false });
+    }
+  };
+  const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
+
+  /*
+   * submitTimeEntry: The following function will return the time entry of the specified id
+   */
+  const submitTimeEntry = async () => {
+    if (!selectedData) return;
+    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const dateToStoreInDB = new Date(date).toISOString().split("T")[0]; // Extracts only the date
+
+    const dataToSend = {
+      team,
+      project: project?.id,
+      milestone: milestone?.id,
+      time: Number(hoursToDecimal(time ?? "0")) * 60,
+      comments: comment?.trim(),
+      billable: billable ? true : false,
+      task: task?.id,
+      date: dateToStoreInDB,
+    };
+
+    try {
+      const response = await fetch("/api/team/time-entry", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+      });
+      if (response.ok) {
+        toast.success(`Added time entry in ${project?.name}`);
+        // getTimeEntries();
+        // router.refresh();
+        handleClearForm();
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.log("Error submitting form!", error);
     }
   };
 
@@ -174,7 +221,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
   ));
 
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="default" size="icon">
           <CalendarPlus className="h-6 w-6" />
@@ -189,14 +236,18 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (formValidator()) {
+                submitTimeEntry();
+                setOpen(false);
+              }
             }}
           >
             {/* Form/Drawer Body */}
-            <div className="w-full p-4 pb-0">
-              <div className="mb-3 w-full">
+            <div className="flex w-full flex-col gap-3 p-4 pb-0">
+              <div className="w-full">
                 <ClassicDatePicker date={date} setDate={setDate} />
               </div>
-              <div className="mb-3 w-full">
+              <div className="w-full">
                 <ComboBox
                   searchable
                   icon={<Folder size={16} />}
@@ -206,7 +257,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
                 />
               </div>
-              <div className="mb-3 w-full">
+              <div className="w-full">
                 <ComboBox
                   searchable
                   icon={<Rocket size={16} />}
@@ -217,7 +268,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   disabled={!selectedData?.project?.id}
                 />
               </div>
-              <div className="mb-3 w-full">
+              <div className="w-full">
                 <ComboBox
                   searchable
                   icon={<List size={16} />}
@@ -228,7 +279,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   disabled={!isProjectAndMilestoneSelected}
                 />
               </div>
-              <div className="mb-3 w-full">
+              <div className="w-full">
                 <Input
                   disabled={!isProjectAndMilestoneSelected}
                   type="text"
@@ -237,24 +288,21 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-              <Button
-                tabIndex={isProjectAndMilestoneSelected ? 5 : -1}
-                variant="outline"
-                size="icon"
-                type="button"
-                onClick={() =>
-                  selectedData?.project?.billable &&
-                  setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-                }
-                className={cn(
-                  selectedData.project?.billable ? "visible opacity-100" : "invisible opacity-0",
-                  selectedData.billable && "text-success hover:text-success",
-                  !selectedData.billable && "text-slate-400 hover:text-slate-400",
-                )}
-              >
-                <CircleDollarSign size={20} />
-              </Button>
-              <div className="relative mb-3 flex w-full items-center">
+              <div className="flex w-full items-center gap-2">
+                <Switch
+                  checked={selectedData.billable}
+                  onCheckedChange={() =>
+                    selectedData?.project?.billable &&
+                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                  }
+                  disabled={!selectedData?.project?.billable}
+                  id="billable-hours"
+                />
+                <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
+                  Billable
+                </Label>
+              </div>
+              <div className="relative flex w-full items-center">
                 <Button
                   variant="outline"
                   size="icon"
@@ -282,7 +330,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                 />
                 {/* Indicator */}
                 <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
-                  Hour{+selectedData.time > 1 && "s"}
+                  Hour{+selectedData.time.split(":").join(".") > 1 && "s"}
                 </span>
                 <Button
                   variant="outline"
@@ -296,7 +344,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   <span className="sr-only">Increase by an hour</span>
                 </Button>
               </div>
-              <div className="mb-3 flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
+              <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
             </div>
             <DrawerFooter className="mb-4">
               <Button type="submit" disabled={!formValidator()}>
