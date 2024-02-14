@@ -14,6 +14,7 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import { useRouter } from "next/navigation";
+import { format, startOfToday } from "date-fns";
 
 interface TimeEntryProps {
   team: string;
@@ -41,7 +42,7 @@ export const getDateString = (date: Date) => {
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
 
@@ -101,7 +102,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     e.preventDefault();
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task } = selectedData || {};
-    const dateToStoreInDB = new Date(date).toISOString().split("T")[0]; // Extracts only the date
+    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
       team,

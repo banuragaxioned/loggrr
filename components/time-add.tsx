@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { format, startOfToday } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -74,7 +75,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(startOfToday());
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
@@ -180,8 +181,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
   const submitTimeEntry = async () => {
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task } = selectedData || {};
-    const dateToStoreInDB = new Date(date).toISOString().split("T")[0]; // Extracts only the date
-
+    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date; // Extracts only the date
     const dataToSend = {
       team,
       project: project?.id,
