@@ -38,7 +38,7 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
       body: JSON.stringify({ team, userId, projectId}),
     });
 
-    console.log(response);
+console.log(response);
     if (response.ok) toast.success("User removed");
 
     router.refresh();  
