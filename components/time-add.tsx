@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +26,7 @@ import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 export type SelectedData = {
   client?: Milestone;
@@ -79,6 +79,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
+  const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
@@ -158,7 +159,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
    * timeVariation: Hours to increase or decrease
    */
   const handleTimeUpdate = (action: "increase" | "descrease", timeVariation: number) => {
-    const previousTime = +selectedData.time.split(":").join(".");
+    const previousTime = +selectedData.time.replace(":", ".");
     if (!isNaN(previousTime)) {
       const timeToUpdate = action === "increase" ? previousTime + timeVariation : previousTime - timeVariation;
       setSelectedData({ ...selectedData, time: timeToUpdate.toFixed(2) });
@@ -199,8 +200,8 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
       });
       if (response.ok) {
         toast.success(`Added time entry in ${project?.name}`);
-        // getTimeEntries();
-        // router.refresh();
+        setUpdateTime();
+        router.refresh();
         handleClearForm();
       }
     } catch (error) {
@@ -297,6 +298,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                   }
                   disabled={!selectedData?.project?.billable}
                   id="billable-hours"
+                  className="rotate-180 data-[state=checked]:bg-success"
                 />
                 <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
                   Billable
@@ -330,7 +332,7 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                 />
                 {/* Indicator */}
                 <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
-                  Hour{+selectedData.time.split(":").join(".") > 1 && "s"}
+                  Hour{+selectedData.time.replace(":", ".") > 1 && "s"}
                 </span>
                 <Button
                   variant="outline"

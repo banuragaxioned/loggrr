@@ -3,6 +3,8 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
+
 import { TimeEntryDataObj } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
@@ -11,6 +13,7 @@ import { InlineDatePicker } from "./inline-date-picker";
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
+import { useRouter } from "next/navigation";
 
 interface TimeEntryProps {
   team: string;
@@ -36,6 +39,8 @@ export const getDateString = (date: Date) => {
 };
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
+  const router = useRouter();
+  const updateTime = useTimeEntryState((state) => state.updateTime);
   const [date, setDate] = useState<Date>(new Date());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
@@ -81,6 +86,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
 
       getTimeEntries();
+      router.refresh();
       toast("Time entry deleted!");
     } catch (error) {
       toast.error("Something went wrong!");
@@ -118,6 +124,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         getTimeEntries();
         clearForm();
+        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong!");
@@ -127,7 +134,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   useEffect(() => {
     getTimeEntries();
-  }, [getTimeEntries]);
+  }, [getTimeEntries, updateTime]);
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 

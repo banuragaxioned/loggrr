@@ -36,6 +36,7 @@ export default function CategoryDataBar(input: CategoryBarProps) {
         markerValue={(input.markerValue / input.maxValue) * 100}
         className="mt-3 text-sm"
         tooltip={`${Math.round((input.markerValue / input.maxValue) * 100)}%`}
+        showAnimation
       />
     </Card>
   );
