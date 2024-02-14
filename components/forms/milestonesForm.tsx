@@ -20,11 +20,7 @@ import {
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { InlineCombobox } from "../ui/combobox";
-import { Activity, Milestone, User } from "lucide-react";
 import { CalendarDateRangePicker } from "@/components/date-picker";
-import { ProjectInterval } from "@prisma/client";
-import { Client, AllUsersWithAllocation, Project } from "@/types";
 
 const formSchema = z.object({
   milestone: z.string().min(3).max(25, "Milestone name should be between 3 and 25 characters"),
@@ -47,29 +43,31 @@ export function NewMilestoneForm({ team, project }: NewProjectFormProps) {
     resolver: zodResolver(formSchema),
   });
 
-  const intervalList = Object.values(ProjectInterval).map((value, i) => ({ id: i, name: value }));
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/team/project/milestones/add", {
-      method: "POST",
-      body: JSON.stringify({
-        budget: Number(values.budget),
-        team: team,
-        name: values.milestone,
-        startDate: new Date(values.date),
-        endDate: values.enddate ? new Date(values.enddate) : null,
-        projectId: +project
-      }),
-    });
+    try {
+      const response = await fetch("/api/team/project/milestones", {
+        method: "POST",
+        body: JSON.stringify({
+          budget: Number(values.budget),
+          team: team,
+          name: values.milestone,
+          startDate: new Date(values.date),
+          endDate: values.enddate ? new Date(values.enddate) : null,
+          projectId: +project
+        }),
+      });
 
-    if (!response?.ok) {
-      return toast.error("Something went wrong");
+      if (!response?.ok) {
+        return toast.error("Failed to create a new Milestone");
+      }
+
+      form.reset();
+      SheetCloseButton.current?.click();
+      toast.success("A new Milestone was created");
+      router.refresh();
+    } catch (error) {
+      console.error("Error creating a new Milestone:", error);
     }
-
-    form.reset();
-    SheetCloseButton.current?.click();
-    toast.success("A new Milestone was created");
-    router.refresh();
   }
 
   const handleOpenChange = (e: boolean) => e && form.reset();

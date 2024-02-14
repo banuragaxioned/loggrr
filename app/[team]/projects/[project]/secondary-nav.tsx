@@ -1,9 +1,9 @@
 "use client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import Link from "next/link";
-import { cn } from "../../../../lib/utils";
+import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { SidebarNavItem } from "../../../../types";
+import { SidebarNavItem } from "@/types";
 
 interface SecondaryNavProps {
   items: SidebarNavItem[];
