@@ -18,7 +18,7 @@ export default async function Dashboard({ params }: pageProps) {
     return notFound();
   }
 
-  const projects = await getAllProjects(user.id);
+  const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id);
 
   return (

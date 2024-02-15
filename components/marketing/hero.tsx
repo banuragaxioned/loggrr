@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { SiteHeader } from "@/app/site-header";
 
 export function HeroSection() {
   return (
@@ -23,5 +24,9 @@ export function HeroSection() {
 }
 
 export function ScreenContent() {
-  return <div>Landing page content</div>;
+  return (
+    <>
+      <SiteHeader />
+    </>
+  );
 }

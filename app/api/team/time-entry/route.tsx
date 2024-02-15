@@ -39,8 +39,10 @@ export async function GET(req: NextRequest) {
 
     const { user } = session;
 
+    const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === team);
+
     // check if the user has permission to the current team/workspace id if not return 403
-    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
+    if (!foundWorkspace) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
@@ -157,8 +159,10 @@ export async function POST(req: NextRequest) {
     const json = await req.json();
     const body = TimeEntrySchema.parse(json);
 
+    const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === body.team);
+
     // check if the user has permission to the current team/workspace id if not return 403
-    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
+    if (!foundWorkspace) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
@@ -195,14 +199,19 @@ export async function PUT(req: NextRequest) {
     const json = await req.json();
     const body = TimeEntryUpdateSchema.parse(json);
 
+    const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === body.team);
+
     // check if the user has permission to the current team/workspace id if not return 403
-    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
+    if (!foundWorkspace) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
     const query = await db.timeEntry.update({
       where: {
         id: body.id,
+        workspace: {
+          slug: body.team,
+        },
       },
       data: {
         time: body.time,
@@ -237,8 +246,10 @@ export async function DELETE(req: NextRequest) {
 
     const { user } = session;
 
+    const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === team);
+
     // check if the user has permission to the current team/workspace id if not return 403
-    if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
+    if (!foundWorkspace) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 

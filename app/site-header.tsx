@@ -20,12 +20,13 @@ import { CommandMenu } from "@/components/command-action";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types";
 
-export function SiteHeader({ projects }: { projects: Project[] }) {
+export function SiteHeader({ projects }: { projects?: Project[] }) {
   const params = useParams();
   const pathname = usePathname();
   const slug = params.team && decodeURIComponent(params.team as string);
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
+  const filteredProjects = projects?.filter((project) => project.workspace === slug);
 
   posthog.identify(String(userId), { email, name });
 
@@ -45,7 +46,7 @@ export function SiteHeader({ projects }: { projects: Project[] }) {
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
-              {isNavVisible && <TimeAdd projects={projects} />}
+              {isNavVisible && filteredProjects && <TimeAdd projects={filteredProjects} />}
               <ThemeToggle />
               {status === "loading" && (
                 <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
@@ -65,7 +66,7 @@ export function SiteHeader({ projects }: { projects: Project[] }) {
             {isNavVisible && (
               <div className="ml-auto flex space-x-2 md:hidden">
                 <>
-                  <TimeAdd projects={projects} />
+                  {filteredProjects && <TimeAdd projects={filteredProjects} />}
                   {teamData && <TeamSwitcher teams={teamData} />}
                   <MobileNavMenu userProps={{ status, name, image, email }} />
                 </>

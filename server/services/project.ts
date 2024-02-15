@@ -175,7 +175,7 @@ export async function projectAccess(projectId: number) {
   return hasAccess;
 }
 
-export const getAllProjects = async (userId: number) => {
+export const getAllProjects = async (userId?: number, team?: string) => {
   const projects = await db.project.findMany({
     where: {
       usersOnProject: {
@@ -183,6 +183,11 @@ export const getAllProjects = async (userId: number) => {
           userId,
         },
       },
+      ...(team && {
+        workspace: {
+          slug: team,
+        },
+      }),
     },
     select: {
       id: true,
@@ -192,6 +197,7 @@ export const getAllProjects = async (userId: number) => {
       milestone: { select: { id: true, budget: true, projectId: true, name: true } },
       timeEntry: { select: { id: true, time: true, projectId: true } },
       task: { select: { id: true, name: true } },
+      workspace: { select: { slug: true } },
     },
   });
 
@@ -202,5 +208,6 @@ export const getAllProjects = async (userId: number) => {
     milestone: project.milestone.map((milestone) => ({ id: milestone.id, name: milestone.name })),
     task: project.task.map((task) => ({ id: task.id, name: task.name })),
     client: project.client,
+    workspace: project.workspace.slug,
   }));
 };

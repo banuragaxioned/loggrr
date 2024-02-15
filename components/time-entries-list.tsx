@@ -73,7 +73,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                 <div
                   className={cn(
                     "group relative flex justify-between border border-transparent bg-secondary px-3 py-2 last:mb-0",
-                    isEditing && "border-black/50 dark:border-white/50",
+                    isEditing && "border-muted-foreground",
                     i === entryData?.data.length - 1 && "rounded-b-xl",
                   )}
                 >

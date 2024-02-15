@@ -72,7 +72,7 @@ const TIME_CHIPS = [
   },
 ];
 
-export function TimeAdd({ projects }: { projects: Project[] }) {
+export function TimeAdd({ projects }: { projects?: Project[] }) {
   const dateToSend = useTimeEntryState((state) => state.date);
   const { team } = useParams();
   const router = useRouter();
@@ -259,10 +259,10 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                 <ComboBox
                   searchable
                   icon={<Folder size={16} />}
-                  options={projects}
+                  options={projects ?? []}
                   label="Project"
                   selectedItem={selectedData?.project}
-                  handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+                  handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
                 />
               </div>
               <div className="w-full">
