@@ -17,7 +17,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm Install
+        run: pnpm install
       - name: Install Playwright
         run: npx playwright install
       - name: Run tests
