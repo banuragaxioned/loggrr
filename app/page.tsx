@@ -1,7 +1,7 @@
-import { HeroSection } from "../components/marketing/hero";
-import { FeaturesSection } from "../components/marketing/features";
-import { SiteFooter } from "../components/marketing/site-footer";
-import { JoinWatchlist } from "../components/marketing/join-waitlist";
+import { HeroSection } from "@/components/marketing/hero";
+import { FeaturesSection } from "@/components/marketing/features";
+import { SiteFooter } from "@/components/marketing/site-footer";
+import { JoinWatchlist } from "@/components/marketing/join-waitlist";
 
 export const metadata = {
   title: "Loggr - Time tracking made simple",
