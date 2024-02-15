@@ -42,9 +42,19 @@ export const getDateString = (date: Date) => {
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
+  const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
   const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
+
+  // This sets the date to the store which we can utilize for quick action time
+  useEffect(() => {
+    setQuickActionDate(date);
+
+    return () => {
+      setQuickActionDate(null);
+    };
+  }, [date, setQuickActionDate]);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     const currentlyEditing = edit.id;

@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
+
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +29,6 @@ import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 export type SelectedData = {
   client?: Milestone;
@@ -72,6 +73,7 @@ const TIME_CHIPS = [
 ];
 
 export function TimeAdd({ projects }: { projects: Project[] }) {
+  const dateToSend = useTimeEntryState((state) => state.date);
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -81,6 +83,11 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
   const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
+
+  // This sets the date to the quick action from home
+  useEffect(() => {
+    setDate(dateToSend ?? startOfToday());
+  }, [dateToSend]);
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
@@ -353,7 +360,13 @@ export function TimeAdd({ projects }: { projects: Project[] }) {
                 Submit
               </Button>
               <DrawerClose asChild>
-                <Button variant="outline" onClick={() => handleClearForm()}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleClearForm();
+                    setDate(dateToSend ?? startOfToday());
+                  }}
+                >
                   Cancel
                 </Button>
               </DrawerClose>

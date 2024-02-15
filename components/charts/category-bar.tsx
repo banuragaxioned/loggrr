@@ -16,10 +16,10 @@ export default function CategoryDataBar(input: CategoryBarProps) {
   const percent = markerValue <= maxValue ? (markerValue / maxValue) * 100 : 100;
 
   return (
-    <Card className="bg-white shadow-none dark:bg-black">
+    <Card className="flex flex-col gap-3 bg-white shadow-none dark:bg-black">
       <Flex className="items-center font-semibold">
-        <Text className="pb-2">{title}</Text>
-        <Text className="flex items-center pb-2 text-xs">
+        <Text>{title}</Text>
+        <Text className="flex items-center text-xs">
           <Info className="mx-1" size={16} />
           {subtitle}
         </Text>
@@ -37,7 +37,7 @@ export default function CategoryDataBar(input: CategoryBarProps) {
         values={values ? values : [25, 25, 25, 25]}
         colors={["rose", "orange", "yellow", "emerald"]}
         markerValue={percent}
-        className="mt-3 text-sm"
+        className="text-sm"
         tooltip={`${Math.round(percent)}%`}
         showAnimation
       />
