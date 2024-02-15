@@ -52,7 +52,7 @@ const items = [
     icon: <Scaling className="h-4 w-4" />,
   },
   {
-    title: "Simplified work allocation",
+    title: "Simplified work allocation 🚧",
     description: "Know what's on your plate, work to your team and track their progress.",
     header: <Skeleton />,
     className: "md:col-span-1",
