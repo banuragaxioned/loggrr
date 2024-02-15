@@ -3,6 +3,8 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
+
 import { TimeEntryDataObj } from "@/types";
 import { Project } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
@@ -11,6 +13,8 @@ import { InlineDatePicker } from "./inline-date-picker";
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
+import { useRouter } from "next/navigation";
+import { format, startOfToday } from "date-fns";
 
 interface TimeEntryProps {
   team: string;
@@ -36,9 +40,22 @@ export const getDateString = (date: Date) => {
 };
 
 export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
-  const [date, setDate] = useState<Date>(new Date());
+  const router = useRouter();
+  const updateTime = useTimeEntryState((state) => state.updateTime);
+  const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
+  const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
+  const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
+
+  // This sets the date to the store which we can utilize for quick action time
+  useEffect(() => {
+    setQuickActionDate(date);
+
+    return () => {
+      resetTimeEntryStates();
+    };
+  }, [date, setQuickActionDate, resetTimeEntryStates]);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     const currentlyEditing = edit.id;
@@ -81,6 +98,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
 
       getTimeEntries();
+      router.refresh();
       toast("Time entry deleted!");
     } catch (error) {
       toast.error("Something went wrong!");
@@ -95,7 +113,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     e.preventDefault();
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task } = selectedData || {};
-    const dateToStoreInDB = new Date(date).toISOString().split("T")[0]; // Extracts only the date
+    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
       team,
@@ -118,6 +136,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         getTimeEntries();
         clearForm();
+        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong!");
@@ -127,7 +146,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   useEffect(() => {
     getTimeEntries();
-  }, [getTimeEntries]);
+  }, [getTimeEntries, updateTime]);
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
@@ -137,7 +156,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogForm team={team} projects={projects} date={date} edit={edit} submitHandler={submitTimeEntry} />
+        <TimeLogForm projects={projects} edit={edit} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day

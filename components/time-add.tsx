@@ -1,7 +1,13 @@
 "use client";
 
-import * as React from "react";
-import { CalendarIcon, CalendarPlus, ListPlus, Minus, Plus } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { format, startOfToday } from "date-fns";
+
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -13,72 +19,217 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { toast } from "sonner";
-import { Calendar } from "./ui/calendar";
-import { createTimeLog } from "@/app/_actions/create-timelog-action";
+import { ClassicDatePicker } from "./date-picker";
 
-const data = [
+import { Milestone, Project } from "@/types";
+import { ComboBox } from "./ui/combobox";
+import { Input } from "./ui/input";
+import { Badge } from "./ui/badge";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+
+export type SelectedData = {
+  client?: Milestone;
+  project?: Project;
+  milestone?: Milestone | null;
+  task?: Milestone | null;
+  comment?: string | null;
+  time: string;
+  billable?: boolean;
+};
+
+type ErrorsObj = {
+  time?: boolean;
+};
+
+const initialDataState = {
+  client: undefined,
+  project: undefined,
+  milestone: null,
+  task: null,
+  comment: "",
+  time: "1.50",
+  billable: false,
+};
+
+const TIME_CHIPS = [
   {
-    time: 90,
+    id: 1,
+    title: "+15 mins",
+    incrementBy: 0.25, // in hours
   },
   {
-    time: 120,
+    id: 2,
+    title: "+45 mins",
+    incrementBy: 0.75,
   },
   {
-    time: 180,
-  },
-  {
-    time: 240,
-  },
-  {
-    time: 300,
-  },
-  {
-    time: 360,
-  },
-  {
-    time: 420,
+    id: 3,
+    title: "+1 hour",
+    incrementBy: 1,
   },
 ];
 
-export function TimeAdd() {
-  const [time, setTime] = React.useState(60);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  });
+export function TimeAdd({ projects }: { projects?: Project[] }) {
+  const dateToSend = useTimeEntryState((state) => state.date);
+  const { team } = useParams();
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = useState<Date>(startOfToday());
+  const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
+  const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
+  const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
+  const [errors, setErrors] = useState<ErrorsObj>({});
+  const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    data.projectId = "1";
-    data.milestoneId = "1";
-    const result = await createTimeLog(data, "axioned", 1, time);
-    if (result.success) {
-      toast("Time entry was created");
-      form.reset();
-    } else {
-      toast("Something went wrong.");
+  // This sets the date to the quick action from home
+  useEffect(() => {
+    setDate(dateToSend ?? startOfToday());
+  }, [dateToSend]);
+
+  const handleClearForm = () => {
+    setSelectedData(initialDataState);
+  };
+
+  const formValidator = () => {
+    const { project, comment, time, milestone } = selectedData || {};
+    return project && milestone && comment?.trim().length && time && !errors?.time;
+  };
+
+  /*
+   * dropdownSelectHandler: takes ID of selected project and add its data
+   */
+  const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
+    const foundData = arr.find((obj) => obj.id === +selected);
+    callback(foundData);
+  };
+
+  /*
+   * projectCallback: function called when project is selected
+   */
+  const projectCallback = (selected: Project) => {
+    setSelectedData({
+      ...selectedData,
+      client: selected?.client,
+      project: { id: selected.id, name: selected?.name, billable: selected?.billable },
+    });
+    setProjectMilestones(() => {
+      const milestone = selected?.milestone;
+      return milestone ? milestone : [];
+    });
+    setprojectTasks(() => {
+      const task = selected?.task;
+      return task ? task : [];
+    });
+    if (selected.id !== selectedData.project?.id) {
+      setSelectedData((prevData) => {
+        return {
+          ...prevData,
+          milestone: undefined,
+          task: undefined,
+          billable: prevData.project?.billable ? true : false,
+        };
+      });
     }
-  }
+  };
 
-  const [projectOpen, setProjectOpen] = React.useState(false);
-  const [milestoneOpen, setMilestoneOpen] = React.useState(false);
-  const [dateOpen, setDateOpen] = React.useState(false);
+  /*
+   * milestoneCallback: function called when milestone is selected
+   */
+  const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
 
-  function onClick(adjustment: number) {
-    setTime(Math.max(15, Math.min(480, time + adjustment)));
-  }
+  /*
+   * taskCallback: function called when task is selected
+   */
+  const taskCallback = (selected: Milestone) => {
+    const data: SelectedData = { ...selectedData, task: selected };
+    setSelectedData(data);
+  };
+
+  /*
+   * setCommentText: sets the comment text in the form
+   */
+  const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
+
+  const handleLoggedTimeInput = (time: string) => {
+    const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
+    numberPattern.test(time) ? setErrors({ ...errors, time: false }) : setErrors({ ...errors, time: true });
+    setSelectedData({ ...selectedData, time: time });
+  };
+
+  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
+
+  /*
+   * handleTimeUpdate: function to increase or decrease time based on provided value
+   * action: increase | decrease
+   * timeVariation: Hours to increase or decrease
+   */
+  const handleTimeUpdate = (action: "increase" | "descrease", timeVariation: number) => {
+    const previousTime = +selectedData.time.replace(":", ".");
+    if (!isNaN(previousTime)) {
+      const timeToUpdate = action === "increase" ? previousTime + timeVariation : previousTime - timeVariation;
+      setSelectedData({ ...selectedData, time: timeToUpdate.toFixed(2) });
+      if (timeToUpdate > 0) {
+        setErrors({ ...errors, time: false });
+      }
+    } else {
+      // If any text is entered
+      setSelectedData({ ...selectedData, time: `${(0 + timeVariation).toFixed(2)}` });
+      setErrors({ ...errors, time: false });
+    }
+  };
+  const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
+
+  /*
+   * submitTimeEntry: The following function will return the time entry of the specified id
+   */
+  const submitTimeEntry = async () => {
+    if (!selectedData) return;
+    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date; // Extracts only the date
+    const dataToSend = {
+      team,
+      project: project?.id,
+      milestone: milestone?.id,
+      time: Number(hoursToDecimal(time ?? "0")) * 60,
+      comments: comment?.trim(),
+      billable: billable ? true : false,
+      task: task?.id,
+      date: dateToStoreInDB,
+    };
+
+    try {
+      const response = await fetch("/api/team/time-entry", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+      });
+      if (response.ok) {
+        toast.success(`Added time entry in ${project?.name}`);
+        setUpdateTime();
+        router.refresh();
+        handleClearForm();
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.log("Error submitting form!", error);
+    }
+  };
+
+  const renderTimeChips = TIME_CHIPS.map((chip) => (
+    <Badge
+      key={chip.id}
+      variant="secondary"
+      className="w-[80px] cursor-pointer justify-center rounded-full py-1.5"
+      onClick={() => handleTimeUpdate("increase", chip.incrementBy)}
+    >
+      {chip.title}
+    </Badge>
+  ));
 
   return (
-    <Drawer>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="default" size="icon">
           <CalendarPlus className="h-6 w-6" />
@@ -88,210 +239,141 @@ export function TimeAdd() {
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
             <DrawerTitle>Add Time</DrawerTitle>
-            <DrawerDescription>Track your time for the day</DrawerDescription>
+            <DrawerDescription>Add your time for the day</DrawerDescription>
           </DrawerHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4">
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Date</FormLabel>
-                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="center">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                          initialFocus
-                          onDayClick={() => setDateOpen(false)}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="projectId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Project</FormLabel>
-                    <Popover open={projectOpen} onOpenChange={setProjectOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value
-                              ? projects.find((project) => project.value === field.value)?.label
-                              : "Select project"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[352px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Search project..." />
-                          <CommandEmpty>No project found.</CommandEmpty>
-                          <CommandGroup>
-                            {projects.map((project) => (
-                              <CommandItem
-                                value={project.label}
-                                key={project.value}
-                                onSelect={() => {
-                                  form.setValue("projectId", project.value);
-                                  setProjectOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    project.value === field.value ? "opacity-100" : "opacity-0",
-                                  )}
-                                />
-                                {project.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="milestoneId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Milestone</FormLabel>
-                    <Popover open={milestoneOpen} onOpenChange={setMilestoneOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                          >
-                            {field.value
-                              ? projects.find((milestone) => milestone.value === field.value)?.label
-                              : "Select milestone"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[352px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Search milestone..." />
-                          <CommandEmpty>No milestones found.</CommandEmpty>
-                          <CommandGroup>
-                            {projects.map((milestone) => (
-                              <CommandItem
-                                value={milestone.label}
-                                key={milestone.value}
-                                onSelect={() => {
-                                  form.setValue("milestoneId", milestone.value);
-                                  setMilestoneOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    milestone.value === field.value ? "opacity-100" : "opacity-0",
-                                  )}
-                                />
-                                {milestone.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="space-x-2l flex items-center justify-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (formValidator()) {
+                submitTimeEntry();
+                setOpen(false);
+              }
+            }}
+          >
+            {/* Form/Drawer Body */}
+            <div className="flex w-full flex-col gap-3 p-4 pb-0">
+              <div className="w-full">
+                <ClassicDatePicker date={date} setDate={setDate} />
+              </div>
+              <div className="w-full">
+                <ComboBox
+                  searchable
+                  icon={<Folder size={16} />}
+                  options={projects ?? []}
+                  label="Project"
+                  selectedItem={selectedData?.project}
+                  handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
+                />
+              </div>
+              <div className="w-full">
+                <ComboBox
+                  searchable
+                  icon={<Rocket size={16} />}
+                  options={projectMilestones}
+                  label="Milestone"
+                  selectedItem={selectedData?.milestone}
+                  handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+                  disabled={!selectedData?.project?.id}
+                />
+              </div>
+              <div className="w-full">
+                <ComboBox
+                  searchable
+                  icon={<List size={16} />}
+                  options={projectTasks}
+                  label="Task"
+                  selectedItem={selectedData?.task}
+                  handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+                  disabled={!isProjectAndMilestoneSelected}
+                />
+              </div>
+              <div className="w-full">
+                <Input
+                  disabled={!isProjectAndMilestoneSelected}
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={selectedData?.comment ?? ""}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+              </div>
+              <div className="flex w-full items-center gap-2">
+                <Switch
+                  checked={selectedData.billable}
+                  onCheckedChange={() =>
+                    selectedData?.project?.billable &&
+                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                  }
+                  disabled={!selectedData?.project?.billable}
+                  id="billable-hours"
+                  className="rotate-180 data-[state=checked]:bg-success"
+                />
+                <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
+                  Billable
+                </Label>
+              </div>
+              <div className="relative flex w-full items-center">
                 <Button
                   variant="outline"
                   size="icon"
                   type="button"
                   className="h-8 w-8 shrink-0 rounded-full"
-                  onClick={() => onClick(-15)}
-                  disabled={time <= 15}
+                  onClick={() => handleTimeUpdate("descrease", 1)}
+                  disabled={errors.time || +selectedData.time <= 1}
+                  title="Decrease by an hour"
                 >
                   <Minus className="h-4 w-4" />
-                  <span className="sr-only">Decrease</span>
+                  <span className="sr-only">Decrease by an hour</span>
                 </Button>
-                <div className="flex-1 text-center">
-                  <div className="text-7xl font-bold tracking-tighter"> {time}</div>
-                  <div className="text-[0.70rem] uppercase text-muted-foreground">minutes</div>
-                </div>
+                <Input
+                  tabIndex={-1}
+                  type="text"
+                  placeholder="7.30"
+                  className={cn(
+                    errors?.time
+                      ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                      : "focus:border-primary focus:ring-primary",
+                    "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
+                  )}
+                  value={selectedData?.time}
+                  onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                />
+                {/* Indicator */}
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
+                  Hour{+selectedData.time.replace(":", ".") > 1 && "s"}
+                </span>
                 <Button
                   variant="outline"
                   size="icon"
                   type="button"
                   className="h-8 w-8 shrink-0 rounded-full"
-                  onClick={() => onClick(15)}
-                  disabled={time >= 480}
+                  onClick={() => handleTimeUpdate("increase", 1)}
+                  title="Increase by an hour"
                 >
                   <Plus className="h-4 w-4" />
-                  <span className="sr-only">Increase</span>
+                  <span className="sr-only">Increase by an hour</span>
                 </Button>
               </div>
-              <DrawerFooter>
-                <Button type="submit">Submit</Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </form>
-          </Form>
+              <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
+            </div>
+            <DrawerFooter className="mb-4">
+              <Button type="submit" disabled={!formValidator()}>
+                Submit
+              </Button>
+              <DrawerClose asChild>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleClearForm();
+                    setDate(dateToSend ?? startOfToday());
+                  }}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
         </div>
       </DrawerContent>
     </Drawer>
   );
 }
-
-const projects = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
-
-const FormSchema = z.object({
-  milestoneId: z.string({
-    required_error: "Please select a milestone.",
-  }),
-  date: z.date({
-    required_error: "A date is required.",
-  }),
-  projectId: z.string({
-    required_error: "A project is required.",
-  }),
-});

@@ -19,9 +19,7 @@ export type SelectedData = {
 };
 
 interface TimelogProps {
-  team: string;
   projects: Project[];
-  date: Date;
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
 }
@@ -186,6 +184,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             size="icon"
             type="button"
             disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
+            className="ml-2 shrink-0"
           >
             <ListRestart size={16} />
           </Button>

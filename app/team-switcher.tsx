@@ -75,14 +75,14 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           role="combobox"
           aria-expanded={open}
           aria-label="Select a team"
-          className={cn("w-40 justify-between", className)}
+          className={cn("min-w-44 justify-between", className)}
         >
-          <Boxes className="mr-2 h-5 w-5" />
-          {selectedTeam?.name ?? "Select workspace"}
+          {selectedTeam?.name && <Boxes className="mr-2 h-5 w-5 shrink-0" />}
+          {selectedTeam?.name ?? "Select Workspace"}
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-52 p-0">
+      <PopoverContent className="w-52 p-0" align="start">
         <Command>
           <CommandList>
             {teamData.teams.map((item) => (

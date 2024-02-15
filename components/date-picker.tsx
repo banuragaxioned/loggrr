@@ -13,6 +13,7 @@ import { GetSetDateProps } from "@/types";
 
 interface DatePickerProps extends GetSetDateProps {
   children?: React.ReactNode;
+  align?: "center" | "start" | "end";
 }
 
 export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
@@ -34,20 +35,24 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   );
 };
 
-export const ClassicDatePicker = ({ date, setDate, children }: DatePickerProps) => {
+export const ClassicDatePicker = ({ date, setDate, children, align = "center" }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
   const todaysDate = new Date();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="flex gap-1.5">
-          <CalendarIcon size={16} />
-          {!children && <span className="text-sm">Pick a date</span>}
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn("flex w-full justify-start gap-1.5", children && "w-[170px]")}
+        >
+          <CalendarIcon className="shrink-0" size={16} />
+          {date && !children ? format(date, "PPP") : !children && <span className="text-sm">Pick a date</span>}
           {children}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="center" className="w-auto p-0">
+      <PopoverContent align={align} className="w-auto p-0">
         <Calendar
           mode="single"
           initialFocus
