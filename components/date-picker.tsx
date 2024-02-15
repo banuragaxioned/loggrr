@@ -42,8 +42,12 @@ export const ClassicDatePicker = ({ date, setDate, children, align = "center" }:
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="flex w-full justify-start gap-1.5">
-          <CalendarIcon size={16} />
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn("flex w-full justify-start gap-1.5", children && "w-[170px]")}
+        >
+          <CalendarIcon className="shrink-0" size={16} />
           {date && !children ? format(date, "PPP") : !children && <span className="text-sm">Pick a date</span>}
           {children}
         </Button>

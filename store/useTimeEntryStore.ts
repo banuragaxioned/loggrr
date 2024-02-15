@@ -10,7 +10,7 @@ interface TimeEntryState {
 interface TimeEntryStateActions {
   setUpdateTime: () => void;
   setQuickActionDate: (date: Date | null) => void;
-  reset: () => void;
+  resetTimeEntryStates: () => void;
 }
 
 // Initialize a default state
@@ -33,7 +33,7 @@ const createTimeEntryState = () => {
         date: input,
       }));
     },
-    reset() {
+    resetTimeEntryStates() {
       set(INITIAL_STATE);
     },
   }));

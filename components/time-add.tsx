@@ -57,17 +57,17 @@ const initialDataState = {
 const TIME_CHIPS = [
   {
     id: 1,
-    title: "+15mins",
+    title: "+15 mins",
     incrementBy: 0.25, // in hours
   },
   {
     id: 2,
-    title: "+45mins",
+    title: "+45 mins",
     incrementBy: 0.75,
   },
   {
     id: 3,
-    title: "+1hour",
+    title: "+1 hour",
     incrementBy: 1,
   },
 ];

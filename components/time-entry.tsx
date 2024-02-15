@@ -43,6 +43,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
   const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
+  const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
   const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
@@ -52,9 +53,9 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     setQuickActionDate(date);
 
     return () => {
-      setQuickActionDate(null);
+      resetTimeEntryStates();
     };
-  }, [date, setQuickActionDate]);
+  }, [date, setQuickActionDate, resetTimeEntryStates]);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     const currentlyEditing = edit.id;
