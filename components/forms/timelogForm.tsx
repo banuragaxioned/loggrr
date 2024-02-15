@@ -184,6 +184,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             size="icon"
             type="button"
             disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
+            className="ml-2 shrink-0"
           >
             <ListRestart size={16} />
           </Button>
