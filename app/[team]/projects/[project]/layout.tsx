@@ -42,11 +42,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   }
 
   return (
-    <div className="grid gap-12">
-      <main className="flex w-full flex-1 flex-col overflow-hidden">
-        <SecondaryNavigation items={sidebarProjectsList} />
-        {children}
-      </main>
-    </div>
+    <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
+      <SecondaryNavigation items={sidebarProjectsList} />
+      {children}
+    </main>
   );
 }

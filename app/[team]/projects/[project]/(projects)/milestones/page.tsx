@@ -1,7 +1,8 @@
-
 import { pageProps } from "@/types";
 import MilestoneData from "./milestone-data";
 import { getMilestones } from "@/server/services/project";
+import { DashboardShell } from "@/components/ui/shell";
+import { DashboardHeader } from "@/components/ui/header";
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
@@ -12,10 +13,10 @@ export default async function Page({ params }: pageProps) {
     return null;
   }
 
-
   return (
-    <div>
+    <DashboardShell>
+      <DashboardHeader heading="Milestones" text="Manage all the Milestones for your project"></DashboardHeader>
       <MilestoneData milestoneList={milestoneList} team={team} project={project} />
-    </div>
+    </DashboardShell>
   );
 }
