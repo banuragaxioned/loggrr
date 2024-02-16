@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function JoinWatchlist() {
   return (
-    <div className="mx-auto flex h-[30rem] w-full max-w-xl flex-col items-center justify-center gap-4 p-4">
+    <div className="mx-auto flex h-[30rem] w-full max-w-2xl flex-col items-center justify-center gap-4 p-4">
       <h1 className="text-center text-4xl">Join the waitlist</h1>
       <p className="text-center">
         We want to make time tracking and team collaboration &quot;syncing up&quot; simple. Whether you&apos;re an

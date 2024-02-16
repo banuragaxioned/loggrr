@@ -1,5 +1,5 @@
 import { Card, CategoryBar, Flex, Text } from "@tremor/react";
-import { CalendarDays } from "lucide-react";
+import { Info } from "lucide-react";
 
 interface CategoryBarProps {
   values?: number[];
@@ -12,30 +12,34 @@ interface CategoryBarProps {
 }
 
 export default function CategoryDataBar(input: CategoryBarProps) {
+  const { markerValue, maxValue, title, subtitle, values, type } = input;
+  const percent = markerValue <= maxValue ? (markerValue / maxValue) * 100 : 100;
+
   return (
-    <Card className="bg-white shadow-none dark:bg-black">
+    <Card className="flex flex-col gap-3 bg-white shadow-none dark:bg-black">
       <Flex className="items-center font-semibold">
-        <Text className="pb-2">{input.title}</Text>
-        <Text className="flex items-center pb-2 text-xs">
-          <CalendarDays className="mx-1 h-4 w-4" />
-          {input.subtitle}
+        <Text>{title}</Text>
+        <Text className="flex items-center text-xs">
+          <Info className="mx-1" size={16} />
+          {subtitle}
         </Text>
       </Flex>
       <Flex>
-        <Text>
-          <span className="text-3xl font-semibold normal-nums text-primary">{input.markerValue}</span> /{" "}
+        <Text className="flex items-baseline gap-0.5">
+          <span className="relative top-0.5 text-3xl font-semibold normal-nums text-primary">{markerValue}</span>/
           <span className="normal-nums">
-            {input.maxValue}
-            {input.type === "hours" ? "h" : ""}
+            {maxValue}
+            {type === "hours" ? "h" : ""}
           </span>
         </Text>
       </Flex>
       <CategoryBar
-        values={input.values ? input.values : [25, 25, 25, 25]}
+        values={values ? values : [25, 25, 25, 25]}
         colors={["rose", "orange", "yellow", "emerald"]}
-        markerValue={(input.markerValue / input.maxValue) * 100}
-        className="mt-3 text-sm"
-        tooltip={`${Math.round((input.markerValue / input.maxValue) * 100)}%`}
+        markerValue={percent}
+        className="text-sm"
+        tooltip={`${Math.round(percent)}%`}
+        showAnimation
       />
     </Card>
   );

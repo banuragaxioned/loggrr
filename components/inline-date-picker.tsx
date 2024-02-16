@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight, Circle } from "lucide-react";
-import { addDays, isAfter } from "date-fns";
+import { ChevronLeft, ChevronRight, Circle, Redo2 } from "lucide-react";
+import { addDays, isAfter, isToday, startOfToday } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import { GetSetDateProps } from "@/types";
@@ -51,7 +51,21 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
         </Button>
       </li>
       {renderDate()}
-      <li>
+      <li className="relative">
+        {!isToday(date) && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setDate(startOfToday());
+            }}
+            title="Go to today"
+            className="absolute bottom-0 right-11"
+          >
+            <Redo2 size={16} />
+            <p className="ml-2 hidden sm:block">Today</p>
+          </Button>
+        )}
         <Button
           variant="outline"
           size="icon"

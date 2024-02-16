@@ -1,12 +1,15 @@
 import "./globals.css";
 import { Metadata, Viewport } from "next";
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
+import NextTopLoader from "nextjs-toploader";
+
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 import { ContextProvider } from "./context-provider";
 import { SiteHeader } from "./site-header";
-import NextTopLoader from "nextjs-toploader";
+import { getAllProjects } from "@/server/services/project";
+import { getCurrentUser } from "@/server/session";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -44,7 +47,11 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+
+  const projects = await getAllProjects(user?.id);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -58,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ContextProvider>
           {/* TODO: Add theme color from theme config */}
           <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false} />
-          <SiteHeader />
+          <SiteHeader projects={projects} />
           {children}
         </ContextProvider>
       </body>
