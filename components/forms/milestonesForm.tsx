@@ -25,8 +25,8 @@ import { format } from "date-fns";
 
 const formSchema = z.object({
   name: z.string().min(3).max(25, "Milestone name should be between 3 and 25 characters"),
-  budget: z.string().min(1, "Please provide a budget"),
-  date: z.coerce.date(),
+  budget: z.union([z.string().min(1, "Please provide a budget"), z.number()]),
+  startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
 });
 
@@ -52,9 +52,9 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
     if (edit.isEditing) {
       form.reset({
         ...edit.obj,
-        budget: `${edit.obj.budget}`,
-        date: new Date(edit.obj.startDate),
-        endDate: edit.obj.endDate ? new Date(edit.obj.endDate) : null,
+        budget: edit.obj.budget,
+        startDate: new Date(edit.obj.startDate),
+        endDate: new Date(edit.obj.endDate),
       });
     }
   }, [edit, form]);
@@ -64,7 +64,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       return;
     }
 
-    const startDateToStoreInDB = format(values.date, "yyyy-MM-dd"); // Extracts only the date
+    const startDateToStoreInDB = format(values.startDate, "yyyy-MM-dd"); // Extracts only the date
     const endDateToStoreInDB = format(values.endDate || new Date(), "yyyy-MM-dd");
 
     const data = {
@@ -113,7 +113,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button className="w-14 absolute right-[15px]">Add</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
@@ -137,7 +137,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
             />
             <FormField
               control={form.control}
-              name="date"
+              name="startDate"
               render={({ field }) => {
                 return (
                   <FormItem className="col-span-2 mt-2">
@@ -165,7 +165,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                   <FormItem className="col-span-2 mt-2">
                     <FormLabel>Budget</FormLabel>
                     <FormControl className="mt-2">
-                      <Input type="number" placeholder="Budget" {...field} />
+                      <Input placeholder="Budget" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

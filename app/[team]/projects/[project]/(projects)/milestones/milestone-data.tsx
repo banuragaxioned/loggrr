@@ -5,8 +5,6 @@ import { Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { DashboardHeader } from "@/components/ui/header";
-import { DashboardShell } from "@/components/ui/shell";
 import {
   Dialog,
   DialogClose,
@@ -92,14 +90,12 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
               endDate: item.endDate,
             };
 
-            const isEditing = edit.isEditing && edit.id === item.id;
-
             return (
               <div key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
                 <div>
                   <p className="capitalize">Name: {item.name}</p>
                   <p>
-                    Month cycle: {format(item?.startDate, "MMM dd, yyyy")} -{format(item?.endDate, "MMM dd, yyyy")}
+                    Time Period: {format(item?.startDate, "MMM dd, yyyy")} - {format(item?.endDate, "MMM dd, yyyy")}
                   </p>
                   <p>Total Budget (Hrs) : {item.budget}</p>
                 </div>
