@@ -40,7 +40,7 @@ interface NewProjectFormProps {
   setMilestones: Function;
 }
 
-export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, setIsFormOpen }: NewProjectFormProps) {
+export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, setIsFormOpen, milestones, setMilestones }: NewProjectFormProps) {
   const router = useRouter();
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
@@ -48,6 +48,10 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  useEffect(() => {
+    router.refresh()
+  }, [])
 
   useEffect(() => {
     if (edit.isEditing) {
@@ -61,7 +65,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   }, [edit]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
+    
     if (edit.isEditing && JSON.stringify(values) === JSON.stringify(edit.obj)) {
       return;
     }
@@ -89,9 +93,9 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the milestone`);
       }
 
+      setMilestones(milestones);
       form.reset();
       SheetCloseButton.current?.click();
-      window.location.reload();
     } catch (error) {
       toast.error("Something went wrong!");
       console.error("Error creating a new Milestone:", error);
@@ -140,7 +144,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                 <FormItem className="col-span-2 mt-2">
                   <FormLabel>Date Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} {...field} />
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} {...field} startDate={field.value} enddate={form.getValues().enddate} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -166,7 +170,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                 <Button type="button" variant="outline" onClick={() => {
                   setEdit({ obj: {}, isEditing: false, id: null });
                   setIsFormOpen(false);
-                }}>
+                }} ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>

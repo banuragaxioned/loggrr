@@ -204,3 +204,24 @@ export const getAllProjects = async (userId: number) => {
     client: project.client,
   }));
 };
+
+export const getMilestones = async (projectId: number, team: string ) => {
+  const milestoneList = await db.milestone.findMany({
+    where: {
+      workspace: {
+        slug: team,
+      },
+      project: {
+        id: +projectId,
+      },
+    },
+  });
+
+  return milestoneList.map((milestone) => ({
+    id: milestone.id,
+    name: milestone.name,
+    budget: milestone.budget,
+    startDate: milestone.startDate,
+    endDate: milestone.endDate,
+  }));
+}
