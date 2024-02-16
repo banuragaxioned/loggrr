@@ -113,7 +113,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button className="w-14 absolute right-[15px]">Add</Button>
+        <Button className="w-14 absolute right-0">Add</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
