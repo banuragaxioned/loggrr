@@ -80,6 +80,8 @@ export const authOptions: NextAuthOptions = {
               role: Role.USER,
             },
           });
+
+          // Email here
         }
       }
     },
