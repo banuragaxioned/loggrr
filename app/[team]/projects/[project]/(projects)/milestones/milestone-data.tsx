@@ -78,8 +78,7 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      {milestoneList.length ? <span className="mt-7 inline-block capitalize text-gray-500">{team}</span> : null}
-      <div className="flex flex-wrap gap-5">
+      <div className="flex flex-wrap gap-5 mt-7">
         {Array.isArray(milestoneList) && milestoneList.length ? (
           milestoneList.map((item, index) => {
             const tempObj = {
