@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import { addYears, format } from "date-fns";
+import { addYears, format, startOfDay } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
@@ -37,7 +37,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
 
 export const ClassicDatePicker = ({ date, setDate, children, align = "center" }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
-  const todaysDate = new Date();
+  const todaysDate = startOfDay(new Date());
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -76,26 +76,26 @@ export function CalendarDateRangePicker({
   isOngoing,
   setOngoing,
   startDate,
-  enddate
+  endDate
 }: {
   setVal: UseFormSetValue<AssignFormValues> | any;
   isOngoing?: boolean;
   startDate?: any;
-  enddate?: any;
+  endDate?: any;
   setOngoing: Dispatch<SetStateAction<boolean>>;
 }) {
+  
   const [date, setDate] = useState<DateRange | any>({
-    from: startDate ? new Date(startDate) : new Date(),
-    to: enddate ? new Date(enddate) : new Date(),
+    from: startDate ? startOfDay(startDate) : startOfDay(new Date()),
+    to: endDate ? startOfDay(endDate) : startOfDay(new Date()),
   });
 
   useEffect(() => {
-      if (date?.from) {
-        setVal("date", date?.from);
-        setVal("enddate", date?.from);
-      }
-      if (date?.to) setVal("enddate", date?.to);
-  
+    if (date?.from) {
+      setVal("date", date?.from);
+      setVal("enddate", date?.from);
+    }
+    if (date?.to) setVal("enddate", date?.to);
   }, [date]);
 
   const handleChecked = (evt: boolean) => {

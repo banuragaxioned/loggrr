@@ -50,10 +50,6 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   });
 
   useEffect(() => {
-    router.refresh()
-  }, [])
-
-  useEffect(() => {
     if (edit.isEditing) {
       form.reset({
         ...edit.obj,
@@ -61,7 +57,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         date: new Date(edit.obj.startDate),
         enddate: edit.obj.endDate ? new Date(edit.obj.endDate) : null,
       });
-    }
+    } 
   }, [edit]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -93,9 +89,9 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the milestone`);
       }
 
-      setMilestones(milestones);
       form.reset();
       SheetCloseButton.current?.click();
+      window.location.reload();
     } catch (error) {
       toast.error("Something went wrong!");
       console.error("Error creating a new Milestone:", error);
@@ -144,7 +140,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                 <FormItem className="col-span-2 mt-2">
                   <FormLabel>Date Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} {...field} startDate={field.value} enddate={form.getValues().enddate} />
+                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} {...field} startDate={field.value} endDate={form.getValues().enddate} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
