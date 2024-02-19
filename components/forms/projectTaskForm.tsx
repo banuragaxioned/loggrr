@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,7 +39,6 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   const router = useRouter();
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
-  const [isOngoing, setOngoing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -66,13 +65,13 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
     };
 
     try {
-      const response = await fetch("/api/team/project/milestones", {
-        method: `${edit.isEditing ? "PUT" : "POST"}`,
+      const response = await fetch("/api/team/project/task", {
+        method: edit.isEditing ? "PUT" : "POST",
         body: JSON.stringify(edit.isEditing ? { ...data, id: edit.id } : data),
       });
 
       if (response?.ok) {
-        toast.success(`${edit.isEditing ? "Updated" : "Added"} Task in the project`);
+        toast.success(`Task ${edit.isEditing ? "updated" : "added"} successfully in the project`);
         setIsFormOpen(false);
         if (edit.isEditing) {
           setEdit({ obj: {}, isEditing: false, id: null });
@@ -82,7 +81,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
         SheetCloseButton.current?.click();
         router.refresh();
       } else {
-        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the task in the project. Please try again.`);
+        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the task.`);
       }
     } catch (error) {
       toast.error("Something went wrong!");
@@ -108,7 +107,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
         <Form {...form}>
           <SheetHeader>
             <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Task</SheetTitle>
-            <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
+            <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
             <FormField

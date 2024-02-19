@@ -119,7 +119,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         <Form {...form}>
           <SheetHeader>
             <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Milestone</SheetTitle>
-            <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
+            <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
             <FormField

@@ -48,7 +48,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
 
   const deleteTask = async (id: number) => {
     try {
-      const response = await fetch("/api/team/project/tasks", {
+      const response = await fetch("/api/team/project/task", {
         method: "DELETE",
         body: JSON.stringify({
           id,
