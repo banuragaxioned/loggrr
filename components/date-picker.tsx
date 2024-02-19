@@ -21,7 +21,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="outline"
           className={cn("w-[280px] justify-start text-left font-normal", !date && "text-muted-foreground")}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -76,27 +76,26 @@ export function CalendarDateRangePicker({
   isOngoing,
   setOngoing,
   startDate,
+  endDate
 }: {
   setVal: UseFormSetValue<AssignFormValues> | any;
   isOngoing?: boolean;
   startDate?: any;
+  endDate?: any;
   setOngoing: Dispatch<SetStateAction<boolean>>;
 }) {
+  
   const [date, setDate] = useState<DateRange | any>({
     from: startDate ? startDate : new Date(),
-    to: startDate ? startDate : new Date(),
+    to: endDate ? endDate : new Date(),
   });
 
   useEffect(() => {
-    if (startDate) {
-      setVal(date);
-    } else {
-      if (date?.from) {
-        setVal("date", date?.from);
-        setVal("enddate", date?.from);
-      }
-      if (date?.to) setVal("enddate", date?.to);
+    if (date?.from) {
+      setVal("startDate", date?.from);
+      setVal("endDate", date?.from);
     }
+    if (date?.to) setVal("endDate", date?.to);
   }, [date]);
 
   const handleChecked = (evt: boolean) => {

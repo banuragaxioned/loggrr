@@ -42,6 +42,27 @@ export const getMembers = async (team: string) => {
   return flatMemberList;
 };
 
+export const getProjectMembers = async ({ projectId, team }: { team: string, projectId: number }) => {
+
+  const membersList = await db.usersOnProject.findMany({
+    where: { id: projectId, workspace: { slug: team } },
+    select: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          status: true,
+        },
+      },
+    },
+  });
+
+  return membersList?.map((list) => list.user) || [];
+
+};
+
 export const isMember = async (slug: string, userId: number) => {
   try {
     const response = await db.userWorkspace.findFirstOrThrow({

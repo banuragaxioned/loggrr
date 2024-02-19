@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import { subDays } from "date-fns";
 
 export const getMembersByProjectId = async (slug: string, projectId: number) => {
   const data = await db.project.findUnique({
@@ -212,6 +213,71 @@ export const getAllProjects = async (userId?: number, team?: string) => {
   }));
 };
 
+export const getMilestones = async (projectId: number, team: string ) => {
+  const milestoneList = await db.milestone.findMany({
+    where: {
+      workspace: {
+        slug: team,
+      },
+      project: {
+        id: +projectId,
+      },
+    },
+  });
+
+  return milestoneList.map((milestone) => ({
+    id: milestone.id,
+    name: milestone.name,
+    budget: milestone.budget,
+    startDate: milestone.startDate,
+    endDate: milestone.endDate,
+  }));
+}
+
+export const teamMemberStats = async (team: string, project: number) => {
+  const teamMembers = await db.$transaction([
+    db.timeEntry.groupBy({
+      by: ["userId"],
+      where: {
+        workspace: {
+          slug: team,
+        },
+        projectId: +project,
+        // get current 30 days
+        date: {
+          gte: subDays(new Date(), 30),
+        },
+      },
+      orderBy: {
+        _count: {
+          userId: "asc",
+        },
+      },
+    }),
+    db.timeEntry.groupBy({
+      by: ["userId"],
+      where: {
+        workspace: {
+          slug: team,
+        },
+        projectId: +project,
+        // get last 30 days
+        date: {
+          gte: subDays(new Date(), 60),
+          lte: subDays(new Date(), 30),
+        },
+      },
+      orderBy: {
+        _count: {
+          userId: "asc",
+        },
+      },
+    }),
+  ]);
+
+  return teamMembers
+}
+
 export const getTasks = async (projectId: number, team: string) => {
   const tasks = await db.task.findMany({
     where: {
@@ -219,7 +285,7 @@ export const getTasks = async (projectId: number, team: string) => {
         slug: team,
       },
       project: {
-        id: projectId,
+        id: +projectId,
       },
     },
     select: {

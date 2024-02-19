@@ -9,7 +9,7 @@ const addUserSchema = z.object({
   userId: z.number(),
 });
 
-export async function POST(req: Request) {
+export async function DELETE(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
