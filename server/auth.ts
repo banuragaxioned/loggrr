@@ -8,7 +8,7 @@ import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
 
-import Email from "./email-templates/welcome";
+import Email from "@/email/welcome";
 import { siteConfig } from "@/config/site";
 import { sendEmail } from "@/lib/email";
 
