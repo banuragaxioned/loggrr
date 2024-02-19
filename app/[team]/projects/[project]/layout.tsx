@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
 import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
-import { CreditCard, FileText, HomeIcon, User } from "lucide-react";
+import { ClipboardCheck, Milestone, TextSearch, Users } from "lucide-react";
+import { SecondaryNavigation } from "./secondary-nav";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -16,23 +17,23 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   const sidebarProjectsList: SidebarNavItem[] = [
     {
       title: "Overview",
-      href: `/${slug}/projects/${projectId}/`,
-      icon: <HomeIcon height={18} width={18} />,
+      href: `/${slug}/projects/${projectId}`,
+      icon: <TextSearch height={18} width={18} />,
     },
     {
       title: "Milestones",
       href: `/${slug}/projects/${projectId}/milestones`,
-      icon: <FileText height={18} width={18} />,
+      icon: <Milestone height={18} width={18} />,
     },
     {
       title: "Tasks",
       href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <CreditCard height={18} width={18} />,
+      icon: <ClipboardCheck height={18} width={18} />,
     },
     {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
-      icon: <User height={18} width={18} />,
+      icon: <Users height={18} width={18} />,
     },
   ];
 
@@ -41,11 +42,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   }
 
   return (
-    <div className="grid gap-12 md:grid-cols-[200px_1fr]">
-      <aside className="hidden w-[200px] flex-col md:flex">
-        <DashboardNav items={sidebarProjectsList} />
-      </aside>
-      <main className="flex w-full flex-1 flex-col overflow-hidden">{children}</main>
-    </div>
+    <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
+      <SecondaryNavigation items={sidebarProjectsList} />
+      {children}
+    </main>
   );
 }
