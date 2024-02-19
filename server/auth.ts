@@ -1,10 +1,16 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
+import { render } from "@react-email/render";
+
+// import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
+
+import Email from "./email/email";
+import { siteConfig } from "@/config/site";
+import { sendEmail } from "@/lib/email";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -73,7 +79,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, isNewUser }) {
       if (isNewUser && user.email) {
         if (user.email.endsWith("@axioned.com")) {
-          await db.userWorkspace.create({
+          const createdUser = await db.userWorkspace.create({
             data: {
               workspaceId: 1,
               userId: +user.id,
@@ -81,7 +87,35 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          // Email here
+          const fetchedUser = await db.user.findFirst({
+            where: {
+              id: createdUser.id,
+            },
+            select: {
+              name: true,
+              email: true,
+            },
+          });
+
+          if (!fetchedUser) return;
+
+          // TODO: Replace hardcode values with workspace data
+          const emailHtml = render(
+            Email({
+              username: fetchedUser.name,
+              inviteLink: `${siteConfig.url}/axioned`,
+              teamName: "Axioned",
+              siteName: siteConfig.name,
+            }),
+          );
+
+          const options = {
+            to: fetchedUser.email,
+            subject: "You've joined Axioned workspace",
+            html: emailHtml,
+          };
+
+          await sendEmail(options);
         }
       }
     },
