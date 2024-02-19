@@ -3,7 +3,7 @@ import { Button, Column, Heading, Hr, Img, Link, Preview, Row, Section, Text } f
 import { Tailwind } from "@react-email/tailwind";
 import * as React from "react";
 
-interface EmailProps {
+interface WelcomeEmailProps {
   username: string | null;
   userImage?: string;
   teamName: string;
@@ -11,8 +11,8 @@ interface EmailProps {
   siteName: string;
 }
 
-export const Email = ({ username, userImage, teamName, inviteLink, siteName }: EmailProps) => {
-  const previewText = `Welcome ${username} on ${teamName} workspace`;
+const WelcomeEmail = ({ username, userImage, teamName, inviteLink, siteName }: WelcomeEmailProps) => {
+  const previewText = `Welcome to ${teamName} workspace`;
 
   return (
     <>
@@ -64,4 +64,4 @@ export const Email = ({ username, userImage, teamName, inviteLink, siteName }: E
   );
 };
 
-export default Email;
+export default WelcomeEmail;

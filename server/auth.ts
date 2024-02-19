@@ -8,7 +8,7 @@ import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
 
-import Email from "./email/email";
+import Email from "./email-templates/welcome";
 import { siteConfig } from "@/config/site";
 import { sendEmail } from "@/lib/email";
 
@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, isNewUser }) {
       if (isNewUser && user.email) {
         if (user.email.endsWith("@axioned.com")) {
-          const createdUser = await db.userWorkspace.create({
+          await db.userWorkspace.create({
             data: {
               workspaceId: 1,
               userId: +user.id,
@@ -87,22 +87,12 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          const fetchedUser = await db.user.findFirst({
-            where: {
-              id: createdUser.id,
-            },
-            select: {
-              name: true,
-              email: true,
-            },
-          });
-
-          if (!fetchedUser) return;
+          if (!user) return;
 
           // TODO: Replace hardcode values with workspace data
           const emailHtml = render(
             Email({
-              username: fetchedUser.name,
+              username: user.name ?? "Folk",
               inviteLink: `${siteConfig.url}/axioned`,
               teamName: "Axioned",
               siteName: siteConfig.name,
@@ -110,7 +100,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           const options = {
-            to: fetchedUser.email,
+            to: user.email,
             subject: "You've joined Axioned workspace",
             html: emailHtml,
           };
