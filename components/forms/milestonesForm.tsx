@@ -102,12 +102,13 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   }
 
   const handleOpenChange = (e: boolean) => {
-    if (!edit.isEditing) {
-      setIsFormOpen(e);
-    } else {
+    if(edit.isEditing){
       setEdit({ obj: {}, isEditing: e, id: null });
-      setIsFormOpen(e);
     }
+    if (!e) {
+      form.reset({name: '', startDate: new Date(), endDate: new Date(), budget: ''});
+    }
+    setIsFormOpen(e);
   };
 
   return (
