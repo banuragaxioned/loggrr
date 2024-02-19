@@ -60,7 +60,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   }, [edit, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (edit.isEditing && JSON.stringify(values) === JSON.stringify(edit.obj)) {
+    if (edit.isEditing && values === edit.obj) {
       return;
     }
 

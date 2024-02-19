@@ -1,13 +1,13 @@
 "use client";
 
+import { Delete, Edit, MoreVertical } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
-import { UserAvatar } from "@/components/user-avatar";
-import { cn } from "@/lib/utils";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Archive, Delete, Edit, MoreVertical } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export type Users = {
   id: number;
@@ -21,7 +21,7 @@ interface GetColumn {
   removeMember: (userId: number) => void;
 }
 
-export const getColumn = ({ removeMember  }: GetColumn) => {
+export const getColumn = ({ removeMember }: GetColumn) => {
   const columns: ColumnDef<Users>[] = [
     {
       accessorKey: "name",
@@ -61,7 +61,7 @@ export const getColumn = ({ removeMember  }: GetColumn) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  size={"sm"}
+                  size="sm"
                   className="h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground"
                   title="More"
                 >
@@ -73,9 +73,11 @@ export const getColumn = ({ removeMember  }: GetColumn) => {
                   <Edit height={16} width={16} className="mr-2" />
                   Edit
                 </div>
-                <div className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-destructive"
-                  onClick={() => (removeMember(row.original.id))}>
-                  <Delete height={16} width={16} className="mr-2" />
+                <div
+                  className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-destructive"
+                  onClick={() => removeMember(row.original.id)}
+                >
+                  <Delete size={16} className="mr-2" />
                   Remove
                 </div>
               </PopoverContent>

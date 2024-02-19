@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import { subDays } from "date-fns";
 
 export const getMembersByProjectId = async (slug: string, projectId: number) => {
   const data = await db.project.findUnique({
@@ -231,4 +232,48 @@ export const getMilestones = async (projectId: number, team: string ) => {
     startDate: milestone.startDate,
     endDate: milestone.endDate,
   }));
+}
+
+export const teamMemberStats = async (team: string, project: number) => {
+  const teamMembers = await db.$transaction([
+    db.timeEntry.groupBy({
+      by: ["userId"],
+      where: {
+        workspace: {
+          slug: team,
+        },
+        projectId: +project,
+        // get current 30 days
+        date: {
+          gte: subDays(new Date(), 30),
+        },
+      },
+      orderBy: {
+        _count: {
+          userId: "asc",
+        },
+      },
+    }),
+    db.timeEntry.groupBy({
+      by: ["userId"],
+      where: {
+        workspace: {
+          slug: team,
+        },
+        projectId: +project,
+        // get last 30 days
+        date: {
+          gte: subDays(new Date(), 60),
+          lte: subDays(new Date(), 30),
+        },
+      },
+      orderBy: {
+        _count: {
+          userId: "asc",
+        },
+      },
+    }),
+  ]);
+
+  return teamMembers
 }

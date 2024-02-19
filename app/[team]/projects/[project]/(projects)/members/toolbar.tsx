@@ -1,14 +1,15 @@
 "use client";
 
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { ListRestart } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { clientStatuses } from "@/config/filters";
 import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
-import { ListRestart } from "lucide-react";
+import { clientStatuses } from "@/config/filters";
 import { DataTableToolbarProps } from "@/types";
 import { removeDuplicatesFromArray } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
   const client = useSearchParams().get("client");
@@ -18,13 +19,16 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
   const uniqueClientList = removeDuplicatesFromArray(
     table.options.data.map((client: { clientName: string }) => client.clientName) as [],
   );
+
   const clientList = uniqueClientList.map((name: string) => ({
     label: name,
     value: name,
   }));
+
   useEffect(() => {
     client && table.getColumn("clientName")?.setFilterValue(Array(client));
   }, []);
+
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       <div className="flex flex-1 items-center space-x-2">

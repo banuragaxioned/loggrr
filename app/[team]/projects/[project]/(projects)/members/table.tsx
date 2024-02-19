@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import { DataTableStructure } from "@/components/data-table/structure";
 import { TableProps } from "@/types";
@@ -32,16 +33,12 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
   const removeMember = async (userId: number) => {
     const response = await fetch("/api/team/project/members/delete", {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ team, userId, projectId}),
+      body: JSON.stringify({ team, userId, projectId }),
     });
 
-console.log(response);
     if (response.ok) toast.success("User removed");
 
-    router.refresh();  
+    router.refresh();
   };
 
   const tableConfig = {
@@ -63,7 +60,7 @@ console.log(response);
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
       rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer group hover:bg-accent" }}
+      className="cursor-pointer group hover:bg-accent"
     />
   );
 }
