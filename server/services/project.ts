@@ -212,7 +212,7 @@ export const getAllProjects = async (userId?: number, team?: string) => {
   }));
 };
 
-const getTasks = async (projectId: number, team: string) => {
+export const getTasks = async (projectId: number, team: string) => {
   const tasks = await db.task.findMany({
     where: {
       workspace: {
