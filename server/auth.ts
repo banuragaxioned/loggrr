@@ -1,10 +1,16 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
+import { render } from "@react-email/render";
+
+// import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
+
+import Email from "@/email/welcome";
+import { siteConfig } from "@/config/site";
+import { sendEmail } from "@/lib/email";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -80,6 +86,26 @@ export const authOptions: NextAuthOptions = {
               role: Role.USER,
             },
           });
+
+          if (!user) return;
+
+          // TODO: Replace hardcode values with workspace data
+          const emailHtml = render(
+            Email({
+              username: user.name ?? "Folk",
+              inviteLink: `${siteConfig.url}/axioned`,
+              teamName: "Axioned",
+              siteName: siteConfig.name,
+            }),
+          );
+
+          const options = {
+            to: user.email,
+            subject: "You've joined Axioned workspace",
+            html: emailHtml,
+          };
+
+          await sendEmail(options);
         }
       }
     },
