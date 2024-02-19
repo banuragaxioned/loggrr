@@ -1,9 +1,8 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
-import { db } from "@/server/db";
+import { db, prisma } from "@/server/db";
 import { Role } from "@prisma/client";
 
 /**
@@ -29,7 +28,7 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -47,18 +46,6 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
-    // EmailProvider({
-    //   server: {
-    //     host: env.EMAIL_HOST,
-    //     port: Number(env.EMAIL_PORT),
-    //     auth: {
-    //       user: env.EMAIL_USER,
-    //       pass: env.EMAIL_PASSWORD,
-    //     },
-    //   },
-    //   from: env.EMAIL_FROM,
-    //   maxAge: 24 * 60 * 60,
-    // }),
     /**
      * ...add more providers here
      *

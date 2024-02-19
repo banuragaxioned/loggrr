@@ -7,11 +7,6 @@ export async function getSkills(team: Workspace["slug"]) {
       id: true,
       name: true,
     },
-    where: {
-      workspace: {
-        slug: team,
-      },
-    },
   });
 
   const users = await db.skillScore.findMany({

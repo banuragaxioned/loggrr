@@ -1,10 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { dashboardConfig } from "@/config/dashboard";
 import { getCurrentUser } from "@/server/session";
-import { DashboardNav } from "@/components/nav";
-import { SidebarNavItem } from "@/types";
-import { CreditCard, FileTextIcon, User } from "lucide-react";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
