@@ -27,8 +27,8 @@ export interface MiilestoneDataProps {
     id: number;
     name: string;
     budget: number;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: Date | null;
+    endDate?: Date | null;
   }[];
   team: string;
   project: number;
