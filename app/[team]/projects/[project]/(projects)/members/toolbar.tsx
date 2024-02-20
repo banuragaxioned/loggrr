@@ -38,9 +38,6 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="w-40 lg:w-64"
         />
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
-        )}
         {table.getColumn("clientName") && (
           <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
         )}

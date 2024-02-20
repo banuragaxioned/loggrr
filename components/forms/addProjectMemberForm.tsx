@@ -46,9 +46,6 @@ export function AddMemberInProject({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch("/api/team/project/members/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         team: team,
         projectId: project,

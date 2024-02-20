@@ -44,6 +44,7 @@ export async function POST(req: Request) {
         name: true,
         email: true,
         image: true,
+        createdAt: true,
       },
     });
 

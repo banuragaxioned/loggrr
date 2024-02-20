@@ -51,9 +51,8 @@ export const getProjectMembers = async ({ projectId, team }: { team: string, pro
         select: {
           id: true,
           name: true,
-          email: true,
           image: true,
-          status: true,
+          createdAt: true,
         },
       },
     },
