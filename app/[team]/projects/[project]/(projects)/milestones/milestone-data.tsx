@@ -22,13 +22,13 @@ import {
 
 import { NewMilestoneForm } from "@/components/forms/milestonesForm";
 
-export interface MiilestoneDataProps {
+export interface MilestoneDataProps {
   milestoneList: {
     id: number;
     name: string;
     budget: number;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: Date | null;
+    endDate?: Date | null;
   }[];
   team: string;
   project: number;
@@ -40,7 +40,7 @@ export interface EditReferenceObj {
   id: number | null;
 }
 
-const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) => {
+const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => {
   const router = useRouter();
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [isFormOpen, setIsFormOpen] = useState(false);
