@@ -337,6 +337,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                     )}
                     value={selectedData?.time}
                     onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                    onPointerDown={(e) => e.stopPropagation()}
                   />
                   {/* Indicator */}
                   <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
