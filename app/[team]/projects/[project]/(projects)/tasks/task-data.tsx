@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Trash, Hourglass } from "lucide-react";
+import { Badge } from "@tremor/react";
 import { toast } from "sonner";
 
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -88,11 +89,13 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
             };
 
             return (
-              <div key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
-                <div>
-                  <p className="capitalize">Name: {item.name}</p>
-                  <p>Total Budget (Hrs) : {item.budget}</p>
-                </div>
+              <Card key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
+                <div className="flex items-center justify-start space-x-5">
+                  <div className="flex gap-2">
+                    {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
+                    <h4 className="text-base first-letter:capitalize">{item.name}</h4>
+                  </div>
+                  </div>
                 <div className="invisible flex gap-4 group-hover:visible">
                   <button
                     onClick={() => {
@@ -128,7 +131,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                     </DialogContent>
                   </Dialog>
                 </div>
-              </div>
+              </Card>
             );
           })
         ) : (

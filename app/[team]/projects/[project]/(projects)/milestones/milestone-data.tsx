@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { Edit, Hourglass, Trash } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "@tremor/react";
 
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,10 +21,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { NewMilestoneForm } from "@/components/forms/milestonesForm";
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@tremor/react";
 
 export interface MiilestoneDataProps {
   milestoneList: {
@@ -102,7 +102,7 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
                     {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
-                    <h4 className="text-base">{item.name}</h4>
+                    <h4 className="text-base first-letter:capitalize">{item.name}</h4>
                   </div>
                   <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
                     {item.startDate && format(item.startDate, "MMM dd, yyyy")}
