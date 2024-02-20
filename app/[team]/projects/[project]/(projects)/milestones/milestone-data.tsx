@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Hourglass, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,17 @@ import {
 import { NewMilestoneForm } from "@/components/forms/milestonesForm";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@tremor/react";
 
 export interface MiilestoneDataProps {
-  milestoneList: Array<any>;
+  milestoneList: {
+    id: number;
+    name: string;
+    budget: number;
+    startDate?: Date;
+    endDate?: Date;
+  }[];
   team: string;
   project: number;
 }
@@ -78,7 +86,7 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      <div className="flex flex-wrap gap-5 mt-7">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {Array.isArray(milestoneList) && milestoneList.length ? (
           milestoneList.map((item, index) => {
             const tempObj = {
@@ -90,13 +98,16 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
             };
 
             return (
-              <div key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
-                <div>
-                  <p className="capitalize">Name: {item.name}</p>
-                  <p>
-                    Time Period: {format(item?.startDate, "MMM dd, yyyy")} - {format(item?.endDate, "MMM dd, yyyy")}
+              <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
+                <div className="flex items-center justify-start space-x-5">
+                  <div className="flex gap-2">
+                    {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
+                    <h4 className="text-base">{item.name}</h4>
+                  </div>
+                  <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
+                    {item.startDate && format(item.startDate, "MMM dd, yyyy")}
+                    {item.endDate && <span> - {format(item.endDate, "MMM dd, yyyy")}</span>}
                   </p>
-                  <p>Total Budget (Hrs) : {item.budget}</p>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">
                   <button
@@ -119,7 +130,8 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
                       <DialogHeader>
                         <DialogTitle>Are you sure to delete this milestone?</DialogTitle>
                         <DialogDescription>
-                          This action cannot be undone. This will permanently delete your milestone.
+                          This action cannot be undone. This will permanently delete your milestone and all assocaited
+                          time entries.
                         </DialogDescription>
                       </DialogHeader>
                       <DialogFooter>
@@ -133,7 +145,7 @@ const MilestoneData = ({ milestoneList, team, project }: MiilestoneDataProps) =>
                     </DialogContent>
                   </Dialog>
                 </div>
-              </div>
+              </Card>
             );
           })
         ) : (
