@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { cn } from "@/lib/utils";
-import { ClassicDatePicker } from "./date-picker";
+import { ClassicDatePickerOverDrawer } from "./date-picker";
 
 import { Milestone, Project } from "@/types";
 import { ComboBox } from "./ui/combobox";
@@ -253,7 +253,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
             {/* Form/Drawer Body */}
             <div className="flex w-full flex-col gap-3 p-4 pb-0">
               <div className="w-full">
-                <ClassicDatePicker date={date} setDate={setDate} />
+                <ClassicDatePickerOverDrawer date={date} setDate={setDate} />
               </div>
               <div className="w-full">
                 <ComboBox
