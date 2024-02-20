@@ -55,59 +55,6 @@ export const ClassicDatePicker = ({ date, setDate, children, align = "center" }:
       <PopoverContent align={align} className="w-auto p-0">
         <Calendar
           mode="single"
-          initialFocus
-          selected={date}
-          defaultMonth={date}
-          toDate={todaysDate}
-          onSelect={(select) => {
-            if (select) {
-              setDate(select);
-            }
-            setOpen(false);
-          }}
-        />
-      </PopoverContent>
-    </Popover>
-  );
-};
-
-export const ClassicDatePickerOverDrawer = ({ date, setDate, children, align = "center" }: DatePickerProps) => {
-  const [open, setOpen] = useState(false);
-  const todaysDate = new Date();
-  const popOverRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popOverRef.current && !popOverRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [popOverRef]);
-
-  return (
-    <Popover open={open}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn("flex w-full justify-start gap-1.5", children && "w-[170px]")}
-          onClick={() => setOpen(!open)}
-        >
-          <CalendarIcon className="shrink-0" size={16} />
-          {date && !children ? format(date, "PPP") : !children && <span className="text-sm">Pick a date</span>}
-          {children}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align={align} className="w-auto p-0" ref={popOverRef}>
-        <Calendar
-          mode="single"
-          initialFocus
           selected={date}
           defaultMonth={date}
           toDate={todaysDate}
