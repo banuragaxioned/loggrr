@@ -96,10 +96,10 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
               <Card key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
-                    {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
-                    <h4 className="text-base first-letter:capitalize">{item.name}</h4>
+                    {item?.budget !== null && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                    <h4 className="text-base first-letter:capitalize">{item?.name}</h4>
                   </div>
-                  </div>
+                </div>
                 <div className="invisible flex gap-4 group-hover:visible">
                   <button
                     onClick={() => {
