@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -18,19 +20,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { CalendarDateRangePicker } from "@/components/date-picker";
-import { format } from "date-fns";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(25, "Milestone name should be between 3 and 25 characters"),
+  name: z.string().min(3).max(25, "Task name should be between 3 and 25 characters"),
   budget: z.union([z.string().min(1, "Please provide a budget"), z.number()]),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
 });
 
-interface NewProjectFormProps {
+interface TaskFormProps {
   team: string;
   project: number;
   edit: { obj: any; isEditing: boolean; id: number | null };
@@ -39,11 +35,10 @@ interface NewProjectFormProps {
   setIsFormOpen: Function;
 }
 
-export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, setIsFormOpen }: NewProjectFormProps) {
+export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setIsFormOpen }: TaskFormProps) {
   const router = useRouter();
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
-  const [isOngoing, setOngoing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -53,8 +48,6 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       form.reset({
         ...edit.obj,
         budget: edit.obj.budget,
-        startDate: new Date(edit.obj.startDate),
-        endDate: new Date(edit.obj.endDate),
       });
     }
   }, [edit, form]);
@@ -64,26 +57,21 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       return;
     }
 
-    const startDateToStoreInDB = format(values.startDate, "yyyy-MM-dd"); // Extracts only the date
-    const endDateToStoreInDB = format(values.endDate || new Date(), "yyyy-MM-dd");
-
     const data = {
       budget: +values.budget,
       team: team,
       name: values.name,
-      startDate: startDateToStoreInDB,
-      endDate: endDateToStoreInDB,
       projectId: +project,
     };
 
     try {
-      const response = await fetch("/api/team/project/milestones", {
-        method: `${edit.isEditing ? "PUT" : "POST"}`,
+      const response = await fetch("/api/team/project/task", {
+        method: edit.isEditing ? "PUT" : "POST",
         body: JSON.stringify(edit.isEditing ? { ...data, id: edit.id } : data),
       });
 
       if (response?.ok) {
-        toast.success(`${edit.isEditing ? "Updated" : "Added"} Milestone in the project`);
+        toast.success(`Task ${edit.isEditing ? "updated" : "added"} successfully in the project`);
         setIsFormOpen(false);
         if (edit.isEditing) {
           setEdit({ obj: {}, isEditing: false, id: null });
@@ -93,11 +81,11 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         SheetCloseButton.current?.click();
         router.refresh();
       } else {
-        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the milestone`);
+        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the task.`);
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.error("Error creating a new Milestone:", error);
+      console.error("Error creating a new Task", error);
     }
   }
 
@@ -106,7 +94,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       setEdit({ obj: {}, isEditing: event, id: null });
     }
     if (!event) {
-      form.reset({name: '', startDate: new Date(), endDate: new Date(), budget: ''});
+      form.reset({name: '', budget: ''});
     }
     setIsFormOpen(event);
   };
@@ -119,7 +107,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       <SheetContent side="right">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Milestone</SheetTitle>
+            <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Task</SheetTitle>
             <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
@@ -128,35 +116,13 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
               name="name"
               render={({ field }) => (
                 <FormItem className="col-span-2 mt-2">
-                  <FormLabel>Milestone name</FormLabel>
+                  <FormLabel>Task name</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Milestone Name" {...field} />
+                    <Input placeholder="Task Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => {
-                return (
-                  <FormItem className="col-span-2 mt-2">
-                    <FormLabel>Date Duration</FormLabel>
-                    <FormControl className="mt-2">
-                      <CalendarDateRangePicker
-                        setVal={form.setValue}
-                        setOngoing={setOngoing}
-                        isOngoing={isOngoing}
-                        {...field}
-                        startDate={field.value}
-                        endDate={form.getValues().endDate}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
             />
             <FormField
               control={form.control}

@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { Edit, Hourglass, Trash } from "lucide-react";
-import { toast } from "sonner";
+import { Edit, Trash, Hourglass } from "lucide-react";
 import { Badge } from "@tremor/react";
+import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,15 +19,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { NewMilestoneForm } from "@/components/forms/milestonesForm";
+import { ProjectTaskForm } from "@/components/forms/projectTaskForm";
 
-export interface MilestoneDataProps {
-  milestoneList: {
+export interface TaskDataProps {
+  taskList: {
     id: number;
     name: string;
-    budget: number;
-    startDate?: Date | null;
-    endDate?: Date | null;
+    budget: number | null;
   }[];
   team: string;
   project: number;
@@ -40,7 +37,7 @@ export interface EditReferenceObj {
   id: number | null;
 }
 
-const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => {
+const TaskData = ({ taskList, team, project }: TaskDataProps) => {
   const router = useRouter();
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -54,9 +51,9 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
     }
   };
 
-  const deleteMilestone = async (id: number) => {
+  const deleteTask = async (id: number) => {
     try {
-      const response = await fetch("/api/team/project/milestones", {
+      const response = await fetch("/api/team/project/task", {
         method: "DELETE",
         body: JSON.stringify({
           id,
@@ -66,19 +63,19 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
       });
 
       if (response.ok) {
-        toast.success("Milestone deleted successfully");
+        toast.success("Task deleted successfully");
         router.refresh();
       } else {
-        toast.error("Failed to delete milestone");
+        toast.error("Failed to delete task");
       }
     } catch (error) {
-      console.error("Error in deleting milestone", error);
+      console.error("Error in deleting task", error);
     }
   };
 
   return (
     <>
-      <NewMilestoneForm
+      <ProjectTaskForm
         project={project}
         team={team}
         edit={edit}
@@ -86,28 +83,22 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {Array.isArray(milestoneList) && milestoneList.length ? (
-          milestoneList.map((item, index) => {
+      <div className="mt-7 flex flex-wrap gap-5">
+        {Array.isArray(taskList) && taskList.length ? (
+          taskList.map((item, index) => {
             const tempObj = {
               ...item,
               name: item.name,
               budget: item.budget,
-              startDate: item.startDate,
-              endDate: item.endDate,
             };
 
             return (
-              <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
+              <Card key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
-                    {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
-                    <h4 className="text-base first-letter:capitalize">{item.name}</h4>
+                    {item?.budget !== null && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                    <h4 className="text-base first-letter:capitalize">{item?.name}</h4>
                   </div>
-                  <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
-                    {item.startDate && format(item.startDate, "MMM dd, yyyy")}
-                    {item.endDate && <span> - {format(item.endDate, "MMM dd, yyyy")}</span>}
-                  </p>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">
                   <button
@@ -128,17 +119,16 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                       <DialogHeader>
-                        <DialogTitle>Are you sure to delete this milestone?</DialogTitle>
+                        <DialogTitle>Are you sure to delete this task?</DialogTitle>
                         <DialogDescription>
-                          This action cannot be undone. This will permanently delete your milestone and all assocaited
-                          time entries.
+                          This action cannot be undone. This will permanently delete your task.
                         </DialogDescription>
                       </DialogHeader>
                       <DialogFooter>
                         <Button type="button" variant="outline" size="sm" asChild>
                           <DialogClose>Cancel</DialogClose>
                         </Button>
-                        <Button type="button" size="sm" onClick={() => deleteMilestone(item.id)} asChild>
+                        <Button type="button" size="sm" onClick={() => deleteTask(item.id)} asChild>
                           <DialogClose>Delete</DialogClose>
                         </Button>
                       </DialogFooter>
@@ -149,11 +139,11 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
             );
           })
         ) : (
-          <p className="mt-7 text-gray-500">No Milestones Found</p>
+          <p className="mt-7 text-gray-500">No Tasks Found</p>
         )}
       </div>
     </>
   );
 };
 
-export default MilestoneData;
+export default TaskData;

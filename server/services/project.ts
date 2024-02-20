@@ -277,3 +277,27 @@ export const teamMemberStats = async (team: string, project: number) => {
 
   return teamMembers
 }
+
+export const getTasks = async (projectId: number, team: string) => {
+  const tasks = await db.task.findMany({
+    where: {
+      workspace: {
+        slug: team,
+      },
+      project: {
+        id: +projectId,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      budget: true,
+    },
+  });
+
+  return tasks.map((task) => ({
+    id: task.id,
+    name: task.name,
+    budget: task.budget,
+  }));
+}
