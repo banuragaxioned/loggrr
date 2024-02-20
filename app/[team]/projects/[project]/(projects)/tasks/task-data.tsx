@@ -22,7 +22,11 @@ import {
 import { ProjectTaskForm } from "@/components/forms/projectTaskForm";
 
 export interface TaskDataProps {
-  taskList: Array<any>;
+  taskList: {
+    id: number;
+    name: string;
+    budget: number | null;
+  }[];
   team: string;
   project: number;
 }
