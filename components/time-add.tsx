@@ -241,137 +241,139 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
             <DrawerTitle>Add Time</DrawerTitle>
             <DrawerDescription>Add your time for the day</DrawerDescription>
           </DrawerHeader>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (formValidator()) {
-                submitTimeEntry();
-                setOpen(false);
-              }
-            }}
-          >
-            {/* Form/Drawer Body */}
-            <div className="flex w-full flex-col gap-3 p-4 pb-0">
-              <div className="w-full">
-                <ClassicDatePicker date={date} setDate={setDate} />
+          <DrawerFooter className="mb-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (formValidator()) {
+                  submitTimeEntry();
+                  setOpen(false);
+                }
+              }}
+            >
+              {/* Form/Drawer Body */}
+              <div className="flex w-full flex-col gap-3 pb-0">
+                <div className="w-full">
+                  <ClassicDatePicker date={date} setDate={setDate} />
+                </div>
+                <div className="w-full">
+                  <ComboBox
+                    searchable
+                    icon={<Folder size={16} />}
+                    options={projects ?? []}
+                    label="Project"
+                    selectedItem={selectedData?.project}
+                    handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
+                  />
+                </div>
+                <div className="w-full">
+                  <ComboBox
+                    searchable
+                    icon={<Rocket size={16} />}
+                    options={projectMilestones}
+                    label="Milestone"
+                    selectedItem={selectedData?.milestone}
+                    handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+                    disabled={!selectedData?.project?.id}
+                  />
+                </div>
+                <div className="w-full">
+                  <ComboBox
+                    searchable
+                    icon={<List size={16} />}
+                    options={projectTasks}
+                    label="Task"
+                    selectedItem={selectedData?.task}
+                    handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+                    disabled={!isProjectAndMilestoneSelected}
+                  />
+                </div>
+                <div className="w-full">
+                  <Input
+                    disabled={!isProjectAndMilestoneSelected}
+                    type="text"
+                    placeholder="Add a comment..."
+                    value={selectedData?.comment ?? ""}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                </div>
+                <div className="flex w-full items-center gap-2">
+                  <Switch
+                    checked={selectedData.billable}
+                    onCheckedChange={() =>
+                      selectedData?.project?.billable &&
+                      setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+                    }
+                    disabled={!selectedData?.project?.billable}
+                    id="billable-hours"
+                    className="rotate-180 data-[state=checked]:bg-success"
+                  />
+                  <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
+                    Billable
+                  </Label>
+                </div>
+                <div className="relative flex w-full items-center">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    type="button"
+                    className="h-8 w-8 shrink-0 rounded-full"
+                    onClick={() => handleTimeUpdate("descrease", 1)}
+                    disabled={errors.time || +selectedData.time <= 1}
+                    title="Decrease by an hour"
+                  >
+                    <Minus className="h-4 w-4" />
+                    <span className="sr-only">Decrease by an hour</span>
+                  </Button>
+                  <Input
+                    tabIndex={-1}
+                    type="text"
+                    placeholder="7.30"
+                    className={cn(
+                      errors?.time
+                        ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
+                        : "focus:border-primary focus:ring-primary",
+                      "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
+                    )}
+                    value={selectedData?.time}
+                    onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
+                  />
+                  {/* Indicator */}
+                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
+                    Hour{+selectedData.time.replace(":", ".") > 1 && "s"}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    type="button"
+                    className="h-8 w-8 shrink-0 rounded-full"
+                    onClick={() => handleTimeUpdate("increase", 1)}
+                    title="Increase by an hour"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span className="sr-only">Increase by an hour</span>
+                  </Button>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
               </div>
-              <div className="w-full">
-                <ComboBox
-                  searchable
-                  icon={<Folder size={16} />}
-                  options={projects ?? []}
-                  label="Project"
-                  selectedItem={selectedData?.project}
-                  handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
-                />
-              </div>
-              <div className="w-full">
-                <ComboBox
-                  searchable
-                  icon={<Rocket size={16} />}
-                  options={projectMilestones}
-                  label="Milestone"
-                  selectedItem={selectedData?.milestone}
-                  handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-                  disabled={!selectedData?.project?.id}
-                />
-              </div>
-              <div className="w-full">
-                <ComboBox
-                  searchable
-                  icon={<List size={16} />}
-                  options={projectTasks}
-                  label="Task"
-                  selectedItem={selectedData?.task}
-                  handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-                  disabled={!isProjectAndMilestoneSelected}
-                />
-              </div>
-              <div className="w-full">
-                <Input
-                  disabled={!isProjectAndMilestoneSelected}
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={selectedData?.comment ?? ""}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
-              </div>
-              <div className="flex w-full items-center gap-2">
-                <Switch
-                  checked={selectedData.billable}
-                  onCheckedChange={() =>
-                    selectedData?.project?.billable &&
-                    setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-                  }
-                  disabled={!selectedData?.project?.billable}
-                  id="billable-hours"
-                  className="rotate-180 data-[state=checked]:bg-success"
-                />
-                <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
-                  Billable
-                </Label>
-              </div>
-              <div className="relative flex w-full items-center">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  type="button"
-                  className="h-8 w-8 shrink-0 rounded-full"
-                  onClick={() => handleTimeUpdate("descrease", 1)}
-                  disabled={errors.time || +selectedData.time <= 1}
-                  title="Decrease by an hour"
-                >
-                  <Minus className="h-4 w-4" />
-                  <span className="sr-only">Decrease by an hour</span>
+              <div className="mt-4 flex flex-col gap-2">
+                <Button type="submit" disabled={!formValidator()}>
+                  Submit
                 </Button>
-                <Input
-                  tabIndex={-1}
-                  type="text"
-                  placeholder="7.30"
-                  className={cn(
-                    errors?.time
-                      ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
-                      : "focus:border-primary focus:ring-primary",
-                    "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
-                  )}
-                  value={selectedData?.time}
-                  onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-                />
-                {/* Indicator */}
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">
-                  Hour{+selectedData.time.replace(":", ".") > 1 && "s"}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  type="button"
-                  className="h-8 w-8 shrink-0 rounded-full"
-                  onClick={() => handleTimeUpdate("increase", 1)}
-                  title="Increase by an hour"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="sr-only">Increase by an hour</span>
-                </Button>
+                <DrawerClose asChild>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleClearForm();
+                      setDate(dateToSend ?? startOfToday());
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </DrawerClose>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-2">{renderTimeChips}</div>
-            </div>
-            <DrawerFooter className="mb-4">
-              <Button type="submit" disabled={!formValidator()}>
-                Submit
-              </Button>
-              <DrawerClose asChild>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    handleClearForm();
-                    setDate(dateToSend ?? startOfToday());
-                  }}
-                >
-                  Cancel
-                </Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </form>
+            </form>
+          </DrawerFooter>
         </div>
       </DrawerContent>
     </Drawer>

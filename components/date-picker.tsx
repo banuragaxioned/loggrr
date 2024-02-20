@@ -1,12 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { UseFormSetValue } from "react-hook-form";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
 import { DateRange } from "react-day-picker";
+
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
 import { GetSetDateProps } from "@/types";
@@ -55,7 +56,6 @@ export const ClassicDatePicker = ({ date, setDate, children, align = "center" }:
       <PopoverContent align={align} className="w-auto p-0">
         <Calendar
           mode="single"
-          initialFocus
           selected={date}
           defaultMonth={date}
           toDate={todaysDate}
@@ -76,7 +76,7 @@ export function CalendarDateRangePicker({
   isOngoing,
   setOngoing,
   startDate,
-  endDate
+  endDate,
 }: {
   setVal: UseFormSetValue<AssignFormValues> | any;
   isOngoing?: boolean;
@@ -84,7 +84,6 @@ export function CalendarDateRangePicker({
   endDate?: any;
   setOngoing: Dispatch<SetStateAction<boolean>>;
 }) {
-  
   const [date, setDate] = useState<DateRange | any>({
     from: startDate ? startDate : new Date(),
     to: endDate ? endDate : new Date(),
