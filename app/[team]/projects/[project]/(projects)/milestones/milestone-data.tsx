@@ -102,7 +102,7 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
                     {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
-                    <h4 className="text-base first-letter:capitalize">{item.name}</h4>
+                    <h4 className="text-base">{item.name}</h4>
                   </div>
                   <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
                     {item.startDate && format(item.startDate, "MMM dd, yyyy")}

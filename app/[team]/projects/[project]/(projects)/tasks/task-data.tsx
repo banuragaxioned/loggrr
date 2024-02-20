@@ -83,7 +83,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      <div className="mt-7 flex flex-wrap gap-5">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {Array.isArray(taskList) && taskList.length ? (
           taskList.map((item, index) => {
             const tempObj = {
@@ -93,11 +93,11 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
             };
 
             return (
-              <Card key={index} className="group flex w-[45%] justify-between rounded-md border p-3">
+              <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
                     {item?.budget !== null && <Badge icon={Hourglass}>{item?.budget}</Badge>}
-                    <h4 className="text-base first-letter:capitalize">{item?.name}</h4>
+                    <h4 className="text-base">{item?.name}</h4>
                   </div>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">
