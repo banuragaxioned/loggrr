@@ -90,12 +90,13 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   }
 
   const handleOpenChange = (e: boolean) => {
-    if (!edit.isEditing) {
-      setIsFormOpen(e);
-    } else {
+    if(edit.isEditing){
       setEdit({ obj: {}, isEditing: e, id: null });
-      setIsFormOpen(e);
     }
+    if (!e) {
+      form.reset({name: '', budget: ''});
+    }
+    setIsFormOpen(e);
   };
 
   return (
