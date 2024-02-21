@@ -7,6 +7,7 @@ import { Status } from "@prisma/client";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 export type Users = {
   id: number;
@@ -44,7 +45,8 @@ export const getColumn = ({ removeMember }: GetColumn) => {
       accessorKey: "createdAt",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Added on" />,
       cell: ({ row }) => {
-        return <span>{new Date(row.original.createdAt).toLocaleDateString()}</span>;
+        const date = row.original.createdAt;
+        return <span>{date && format(new Date(date), "MMMM dd, yyyy")}</span>;
       },
       filterFn: "arrIncludesSome",
     },

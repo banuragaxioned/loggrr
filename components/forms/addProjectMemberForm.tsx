@@ -29,7 +29,13 @@ export function AddMemberInProject({
 }: {
   team: string;
   project: number;
-  users: AllUsersWithAllocation[];
+  users: {
+    id: number;
+    name: string;
+    email: string;
+    image: string;
+    createdAt: string;
+  }[]
 }) {
   const router = useRouter();
 
@@ -44,11 +50,11 @@ export function AddMemberInProject({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/team/project/members/add", {
+    const response = await fetch("/api/team/project/members", {
       method: "POST",
       body: JSON.stringify({
         team: team,
-        projectId: project,
+        projectId: +project,
         user: values.user,
       }),
     });
