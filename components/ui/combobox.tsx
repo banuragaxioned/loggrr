@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { UseFormSetValue } from "react-hook-form";
+import { Check, ChevronDown } from "lucide-react";
+
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
-import { UseFormSetValue } from "react-hook-form";
-import { Check, ChevronDown } from "lucide-react";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +66,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         side="bottom"
         align="start"
         className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
+        onPointerDown={(e) => e.stopPropagation()}
       >
         <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
           {options.length > 0 ? (
@@ -79,11 +81,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   />
                 </div>
               )}
-              <CommandList
-                className={`border border-border ${
-                  searchable ? "border-t-0" : "rounded-t-[5px]"
-                } scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
-              >
+              <CommandList className="max-h-[100px] w-full px-[5px] py-[8px]">
                 <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
                 {options?.map((item) => {
                   return (
