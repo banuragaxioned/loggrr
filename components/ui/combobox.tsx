@@ -81,7 +81,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   />
                 </div>
               )}
-              <CommandList className="max-h-[100px] w-full px-[5px] py-[8px]">
+              <CommandList className="max-h-[200px] w-full px-[5px] py-[8px]">
                 <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
                 {options?.map((item) => {
                   return (
