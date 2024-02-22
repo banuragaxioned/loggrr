@@ -34,7 +34,6 @@ export function AddMemberInProject({
     name: string;
     email: string;
     image: string;
-    createdAt: string;
   }[]
 }) {
   const router = useRouter();

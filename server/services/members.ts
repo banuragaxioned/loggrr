@@ -45,7 +45,7 @@ export const getMembers = async (team: string) => {
 export const getProjectMembers = async ({ projectId, team }: { team: string, projectId: number }) => {
 
   const membersList = await db.usersOnProject.findMany({
-    where: { id: +projectId, workspace: { slug: team } },
+    where: { projectId: +projectId, workspace: { slug: team } },
     select: {
       user: {
         select: {
