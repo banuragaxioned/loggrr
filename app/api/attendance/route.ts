@@ -6,7 +6,7 @@ const attendanceSchema = {
   name: z.string().min(3).max(25),
   email: z.string().email(),
   location: z.string().min(3).max(25),
-  startTime: z.coerce.date(),
+  startTime: z.coerce.date().optional(),
   endTime: z.coerce.date().optional(),
   status: z.boolean(),
 };
@@ -19,12 +19,14 @@ export async function POST(req: NextRequest) {
     const json = await req.json();
     const body = addAttendanceSchema.parse(json);
 
+    const currentDate = body.startTime && new Date(body.startTime);
+
     const attendance = await db.attendance.create({
       data: {
         name: body.name,
         email: body.email,
         location: body.location,
-        startTime: body.startTime,
+        startTime: currentDate,
         endTime: body.endTime,
         status: body.status,
       },
@@ -45,7 +47,6 @@ export async function GET(req: NextRequest) {
   try {
 
     const json = await req.json();
-    
     const body = addAttendanceSchema.parse(json);
 
     const response = await db.attendance.findMany({
@@ -55,10 +56,7 @@ export async function GET(req: NextRequest) {
         email: true,
         location: true,
         startTime: true,
-        endTime: true,
-        status: true,
       },
-    
     });
 
     return NextResponse.json(response);

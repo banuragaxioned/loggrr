@@ -361,7 +361,7 @@ model Attendance {
   id                Int         @id @default(autoincrement())
   name              String
   email             String      @unique
-  startTime         DateTime?
+  startTime         DateTime?   @default(now())
   endTime           DateTime?
   location          String
   status            Boolean
