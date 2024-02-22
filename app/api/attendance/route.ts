@@ -41,30 +41,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error }, { status: 500 });
   }
 }
-
-export async function GET(req: NextRequest) {
-
-  try {
-
-    const json = await req.json();
-    const body = addAttendanceSchema.parse(json);
-
-    const response = await db.attendance.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        location: true,
-        startTime: true,
-      },
-    });
-
-    return NextResponse.json(response);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.issues }, { status: 422 });
-    }
-
-    return NextResponse.json({ error }, { status: 500 });
-  }
-}

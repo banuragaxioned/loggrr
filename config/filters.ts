@@ -1,4 +1,4 @@
-import { Activity, Archive, MinusCircle, User } from "lucide-react";
+import { Activity, Archive, Building, Home, MapPin, MinusCircle, User, User2 } from "lucide-react";
 
 export const roles = [
   {
@@ -45,4 +45,11 @@ export const clientStatuses = [
     label: "Archived",
     icon: Archive,
   },
+];
+
+export const locationOptions = [
+  { label: "Work From Home", value: "work from home", icon: Home },
+  { label: "Office", value: "office", icon: Building },
+  { label: "Client Location", value: "clientLocation", icon: MapPin },
+  { label: "On Duty", value: "onDuty", icon: User2 },
 ];
