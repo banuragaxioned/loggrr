@@ -360,7 +360,7 @@ model Account {
 model Attendance {
   id                Int         @id @default(autoincrement())
   name              String
-  email             String      @unique
+  email             String      
   startTime         DateTime?   @default(now())
   endTime           DateTime?
   location          String

@@ -12,6 +12,7 @@ const attendanceSchema = {
 };
 
 const addAttendanceSchema = z.object(attendanceSchema);
+const getAttendanceSchema = z.object({...attendanceSchema, id: z.number().min(1)});
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +32,37 @@ export async function POST(req: NextRequest) {
         status: body.status,
       },
     });
+
+    return NextResponse.json(attendance);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.issues }, { status: 422 });
+    }
+
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}
+
+export async function GET(req: NextRequest) {
+
+  const searchParams = req.nextUrl.searchParams;
+  const email = searchParams.get("email");
+
+  if(!email) {
+    return NextResponse.json({ error: "Email is required" }, { status: 422 });
+  }
+  
+  try {
+
+    const attendance = await db.attendance.findUnique({
+      where: {
+        email
+      },
+      select: {
+        status: true,
+      }
+    });
+   
 
     return NextResponse.json(attendance);
   } catch (error) {

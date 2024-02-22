@@ -48,8 +48,8 @@ export const clientStatuses = [
 ];
 
 export const locationOptions = [
-  { label: "Work From Home", value: "work from home", icon: Home },
-  { label: "Office", value: "office", icon: Building },
-  { label: "Client Location", value: "clientLocation", icon: MapPin },
-  { label: "On Duty", value: "onDuty", icon: User2 },
+  { label: "Work From Home", value: "Work from Home", icon: Home },
+  { label: "Office", value: "Office", icon: Building },
+  { label: "Client Location", value: "Client Location", icon: MapPin },
+  { label: "On Duty", value: "On Duty", icon: User2 },
 ];
