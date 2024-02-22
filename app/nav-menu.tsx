@@ -94,6 +94,9 @@ export function NavMenu() {
               <Link href={`/${slug}/reports/available`} legacyBehavior passHref>
                 <ListItem title="Available">View who is available for work.</ListItem>
               </Link>
+              <Link href={`/${slug}/reports/attendance`} legacyBehavior passHref>
+                <ListItem title="Attendance">View attendance status.</ListItem>
+              </Link>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
