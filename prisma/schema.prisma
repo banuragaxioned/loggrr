@@ -365,5 +365,4 @@ model Attendance {
   endTime           DateTime?
   location          String
   status            Boolean
-  workspace         Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
