@@ -12,7 +12,6 @@ const attendanceSchema = {
 };
 
 const addAttendanceSchema = z.object(attendanceSchema);
-const getAttendanceSchema = z.object({...attendanceSchema,  id: z.number() });
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,12 +45,10 @@ export async function GET(req: NextRequest) {
   try {
 
     const json = await req.json();
-    const body = getAttendanceSchema.parse(json);
+    
+    const body = addAttendanceSchema.parse(json);
 
-    const response = await db.attendance.findUnique({
-      where: {  
-        id: body.id,
-      },
+    const response = await db.attendance.findMany({
       select: {
         id: true,
         name: true,
