@@ -19,7 +19,7 @@ export default async function Projects({ params }: pageProps) {
   return (
     <DashboardShell>
       <DashboardHeader heading="Attendance" text="This is all employees attendance" />
-      <Table columns={columns} data={attendance} />
+      {attendance && <Table columns={columns} data={attendance} />}
     </DashboardShell>
   );
 }
