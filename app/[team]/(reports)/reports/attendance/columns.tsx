@@ -48,8 +48,6 @@ export const columns: ColumnDef<Attendance>[] = [
     accessorKey: "startTime",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Sign In" />,
     cell: ({ row }) => {
-      console.log(row.original);
-      
       return (
         <span className="block w-full text-left first-letter:capitalize">{row?.original?.startTime && new Date(row.original.startTime).toLocaleTimeString()}</span>
       )
