@@ -241,4 +241,5 @@ export interface Attendance  {
   email: string | null | undefined ;
   location: string;
   startTime: string | null | undefined;
+  endTime: string | null | undefined;
 };

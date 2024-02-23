@@ -6,7 +6,6 @@ import { locationOptions } from "@/config/filters";
 import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { ListRestart } from "lucide-react";
 import { DataTableToolbarProps } from "@/types";
-import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -14,15 +13,6 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
   const client = useSearchParams().get("client");
 
   const isFiltered = table.getState().columnFilters.length > 0;
-
-  const uniqueClientList = removeDuplicatesFromArray(
-    table.options.data.map((client: { clientName: string }) => client.clientName) as [],
-  );
-
-  const clientList = uniqueClientList.map((name: string) => ({
-    label: name,
-    value: name,
-  }));
 
   useEffect(() => {
     client && table.getColumn("clientName")?.setFilterValue(Array(client));
