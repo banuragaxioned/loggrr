@@ -59,11 +59,15 @@ export async function GET(req: NextRequest) {
         email
       },
       select: {
+        id: true,
+        name: true,
+        email: true,
+        location: true,
         startTime: true,
+        endTime: true,
         status: true,
       }
     });
-   
 
     return NextResponse.json(attendance);
   } catch (error) {
