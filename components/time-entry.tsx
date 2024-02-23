@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
-import { CircleDollarSign, Clock, Folder, List, Rocket } from "lucide-react";
+import { CircleDollarSign, Clock, Folder, Info, List, Rocket } from "lucide-react";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -51,6 +51,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
+  const [recent, setRecent] = useState(null);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -62,6 +63,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   }, [date, setQuickActionDate, resetTimeEntryStates]);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
+    setRecent(null);
     const currentlyEditing = edit.id;
     if (currentlyEditing === id) {
       setEdit({ obj: {}, isEditing: false, id: null });
@@ -138,6 +140,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       if (response.ok) {
         toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
+        if (recent) setRecent(null);
         getTimeEntries();
         clearForm();
         router.refresh();
@@ -154,7 +157,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
-  console.log(recentTimeEntries, "last");
+  /*
+   * handleRecentClick: The following function adds recent state for adding new entry
+   */
+  const handleRecentClick = (selected: any) => {
+    setEdit({ obj: {}, isEditing: false, id: null });
+    setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
+  };
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
@@ -162,7 +171,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogForm projects={projects} edit={edit} submitHandler={submitTimeEntry} />
+        <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day
@@ -177,38 +186,49 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           edit={edit}
         />
       </Card>
-      <Card className="col-span-12 overflow-hidden shadow-none sm:col-span-4">
+      <Card className="sticky top-[73px] col-span-12 overflow-hidden shadow-none sm:col-span-4">
         <CardHeader className="p-4">
           <p className="text-sm font-medium text-muted-foreground">Recently used</p>
         </CardHeader>
         <Separator />
-        <CardContent className="p-0">
-          <ul className="select-none divide-y">
-            {recentTimeEntries.map((timeEntry) => {
-              return (
-                <li key={timeEntry.id} className="flex cursor-pointer flex-col gap-2 p-4 hover:bg-muted">
-                  <div className="flex items-center gap-2">
-                    <Folder size={16} />
-                    <span className="text-sm">{timeEntry.project.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Rocket size={16} />
-                    <span className="text-sm">{timeEntry.milestone.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className={cn("flex items-center gap-2", timeEntry.billable && "text-success")}>
-                      <CircleDollarSign size={16} />
-                      <span className="text-sm">{timeEntry.billable ? "Billable" : "Non-Billable"}</span>
+        <CardContent className="max-h-none overflow-y-auto p-0 sm:max-h-[calc(100vh-154px)]">
+          {recentTimeEntries.length > 0 ? (
+            <ul className="select-none divide-y">
+              {recentTimeEntries.map((timeEntry) => {
+                return (
+                  <li
+                    key={timeEntry.id}
+                    className="flex cursor-pointer flex-col gap-2 p-4 hover:bg-muted"
+                    onClick={() => handleRecentClick(timeEntry)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Folder size={16} />
+                      <span className="text-sm">{timeEntry.project.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock size={16} />
-                      <span className="text-sm">{(timeEntry.time / 60).toFixed(2)}</span>
+                      <Rocket size={16} />
+                      <span className="text-sm">{timeEntry.milestone.name}</span>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                    <div className="flex justify-between">
+                      <div className={cn("flex items-center gap-2", timeEntry.billable && "text-success")}>
+                        <CircleDollarSign size={16} />
+                        <span className="text-sm">{timeEntry.billable ? "Billable" : "Non-Billable"}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={16} />
+                        <span className="text-sm">{(timeEntry.time / 60).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="flex items-center gap-1.5 p-4 text-sm text-muted-foreground">
+              <Info size={16} />
+              <span>No time logged in past 7 days</span>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,8 @@
 import { db } from "@/server/db";
-import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { subDays } from "date-fns";
 import { getServerSession } from "next-auth";
+
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
@@ -20,6 +22,42 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   });
 
   return response._sum.time ?? 0;
+};
+
+export const getRecentEntries = async (slug: string, userId: number) => {
+  const today = new Date();
+  const sevenDaysAgo = subDays(today, 8);
+
+  const response = await db.timeEntry.findMany({
+    distinct: ["projectId"],
+    where: {
+      workspace: {
+        slug,
+      },
+      date: {
+        gte: sevenDaysAgo,
+      },
+      userId,
+    },
+    select: {
+      id: true,
+      project: true,
+      milestone: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      billable: true,
+      time: true,
+      comments: true,
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+
+  return response;
 };
 
 export const getLogged = async (
