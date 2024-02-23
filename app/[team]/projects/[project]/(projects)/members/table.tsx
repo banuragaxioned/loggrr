@@ -26,12 +26,10 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-  const rowClickHandler = (row: Row<Users>) => location.assign(`member/${row.original.id}`);
-
   const router = useRouter();
 
   const removeMember = async (userId: number) => {
-    const response = await fetch("/api/team/project/members/delete", {
+    const response = await fetch("/api/team/project/members", {
       method: "DELETE",
       body: JSON.stringify({ team, userId, projectId }),
     });
@@ -59,7 +57,6 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
     <DataTableStructure
       tableConfig={tableConfig}
       DataTableToolbar={DataTableToolbar}
-      rowClickHandler={rowClickHandler}
       className="cursor-pointer group hover:bg-accent"
     />
   );

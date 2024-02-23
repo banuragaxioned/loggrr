@@ -96,7 +96,7 @@ export async function DELETE(req: NextRequest) {
     
     const { user } = session;
 
-    const { id, projectId, team } = await req.json();
+    const { userId, projectId, team } = await req.json();
 
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
@@ -106,11 +106,8 @@ export async function DELETE(req: NextRequest) {
 
     const deleteMember = await db.usersOnProject.delete({
       where: {
-        id,
-        projectId,
-        user: {
-          id: id,
-        },
+        id: userId,
+        projectId: +projectId,
         workspace: {
           slug: team,
         },

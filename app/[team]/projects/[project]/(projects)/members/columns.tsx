@@ -55,7 +55,10 @@ export const getColumn = ({ removeMember }: GetColumn) => {
       cell: ({ row }) => {
         return (
           <div className={cn("invisible flex items-center gap-x-3 group-hover:visible")}>
-            <Trash size={16} onClick={() => removeMember(row.original.id)} className="cursor-pointer text-red-500" />
+            <Trash size={16} onClick={(e) => {
+              e.stopPropagation();
+              removeMember(row.original.id);
+            } } className="cursor-pointer text-red-500" />
           </div>
         );
       },
