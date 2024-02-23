@@ -12,7 +12,7 @@ import {
   Row,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
-import { Attendance } from "./columns";
+import { Attendance } from "@/types";
 
 export function Table<TData, TValue>({ columns, data }: TableProps<Attendance, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);

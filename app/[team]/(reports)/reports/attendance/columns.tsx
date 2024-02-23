@@ -2,14 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
+import { Attendance } from "@/types";
 
-export type Attendance = {
-  id: number;
-  name: string | null | undefined;
-  email: string;
-  location: string;
-  startTime: string | null | undefined;
-};
+
 
 export const columns: ColumnDef<Attendance>[] = [
   {

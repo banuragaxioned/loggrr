@@ -234,3 +234,11 @@ export interface GetSetDateProps {
   date: Date;
   setDate: Dispatch<Date> | any;
 }
+
+export interface Attendance  {
+  id: number;
+  name: string | null | undefined;
+  email: string;
+  location: string;
+  startTime: string | null | undefined;
+};
