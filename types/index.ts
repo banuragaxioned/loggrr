@@ -238,7 +238,7 @@ export interface GetSetDateProps {
 export interface Attendance  {
   id: number;
   name: string | null | undefined;
-  email: string;
+  email: string | null | undefined ;
   location: string;
   startTime: string | null | undefined;
 };

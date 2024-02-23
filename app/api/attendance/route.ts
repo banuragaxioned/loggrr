@@ -54,11 +54,12 @@ export async function GET(req: NextRequest) {
   
   try {
 
-    const attendance = await db.attendance.findUnique({
+    const attendance = await db.attendance.findMany({
       where: {
         email
       },
       select: {
+        startTime: true,
         status: true,
       }
     });
