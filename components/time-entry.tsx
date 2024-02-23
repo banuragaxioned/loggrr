@@ -2,6 +2,8 @@
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
+import { format, startOfToday } from "date-fns";
+import { CircleDollarSign, Clock, Folder, List, Rocket } from "lucide-react";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -11,14 +13,16 @@ import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 
 import { SelectedData } from "./forms/timelogForm";
-import { Card } from "./ui/card";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import { useRouter } from "next/navigation";
-import { format, startOfToday } from "date-fns";
+import { Separator } from "./ui/separator";
+import { cn } from "@/lib/utils";
 
 interface TimeEntryProps {
   team: string;
   projects: Project[];
+  recentTimeEntries: any[];
 }
 
 export interface EditReferenceObj {
@@ -39,7 +43,7 @@ export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
-export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
   const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
@@ -150,9 +154,11 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
+  console.log(recentTimeEntries, "last");
+
   return (
-    <div className="w-full">
-      <Card className="shadow-none">
+    <div className="grid w-full grid-cols-12 items-start gap-4">
+      <Card className="col-span-12 shadow-none sm:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
@@ -170,6 +176,40 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           editEntryHandler={editEntryHandler}
           edit={edit}
         />
+      </Card>
+      <Card className="col-span-12 overflow-hidden shadow-none sm:col-span-4">
+        <CardHeader className="p-4">
+          <p className="text-sm font-medium text-muted-foreground">Recently used</p>
+        </CardHeader>
+        <Separator />
+        <CardContent className="p-0">
+          <ul className="select-none divide-y">
+            {recentTimeEntries.map((timeEntry) => {
+              return (
+                <li key={timeEntry.id} className="flex cursor-pointer flex-col gap-2 p-4 hover:bg-muted">
+                  <div className="flex items-center gap-2">
+                    <Folder size={16} />
+                    <span className="text-sm">{timeEntry.project.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Rocket size={16} />
+                    <span className="text-sm">{timeEntry.milestone.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className={cn("flex items-center gap-2", timeEntry.billable && "text-success")}>
+                      <CircleDollarSign size={16} />
+                      <span className="text-sm">{timeEntry.billable ? "Billable" : "Non-Billable"}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} />
+                      <span className="text-sm">{(timeEntry.time / 60).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </CardContent>
       </Card>
     </div>
   );
