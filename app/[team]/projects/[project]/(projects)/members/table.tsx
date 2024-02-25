@@ -31,9 +31,9 @@ export function Table<TData, TValue>({ data, team, projectId }: MemberTableProps
   const removeMember = async (userId: number) => {
     const response = await fetch("/api/team/project/members", {
       method: "DELETE",
-      body: JSON.stringify({ team, userId, projectId }),
+      body: JSON.stringify({ team, userId, projectId: +projectId }),
     });
-
+    
     if (response.ok) toast.success("User removed");
 
     router.refresh();

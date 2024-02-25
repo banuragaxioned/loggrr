@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 const projectMemberSchema = {
   team: z.string().min(1),
   projectId: z.number(),
-  user: z.number().min(1),
+  userId: z.number().min(1),
 };
 
 const addProjectMemberSchema = z.object(projectMemberSchema);
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     const userDetails = await db.user.findUnique({
       where: {
-        id: body.user,
+        id: body.userId,
         workspaces: {
           some: {
             workspace: {
@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
         name: true,
         email: true,
         image: true,
-        createdAt: true,
       },
     });
 
@@ -97,7 +96,7 @@ export async function DELETE(req: NextRequest) {
     const { user } = session;
 
     const { userId, projectId, team } = await req.json();
-
+    
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
     if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {

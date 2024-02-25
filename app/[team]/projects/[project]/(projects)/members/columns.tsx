@@ -10,10 +10,14 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 export type Users = {
+  usersOnProject: {
+    id: number;
+    projectId: number;
+    createdAt: Date;
+  }[];
   id: number;
   name: string | null;
   image: string | null;
-  createdAt: Date;
 };
 
 interface GetColumn {
@@ -45,7 +49,7 @@ export const getColumn = ({ removeMember }: GetColumn) => {
       accessorKey: "createdAt",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Added on" />,
       cell: ({ row }) => {
-        const date = row.original.createdAt;
+        const date = row.original.usersOnProject?.[0].createdAt;
         return <span>{date && format(new Date(date), "MMMM dd, yyyy")}</span>;
       },
       filterFn: "arrIncludesSome",

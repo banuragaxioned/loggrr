@@ -52,7 +52,16 @@ export const getProjectMembers = async ({ projectId, team }: { team: string, pro
           id: true,
           name: true,
           image: true,
-          createdAt: true,
+          usersOnProject: {
+            where: {
+              projectId: +projectId,
+            },
+            select: {
+              id: true,
+              projectId: true,
+              createdAt: true,
+            }
+          }
         },
       },
     },
