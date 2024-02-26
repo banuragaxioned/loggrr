@@ -1,20 +1,34 @@
 "use client";
 
-import { Delete, Edit, MoreVertical } from "lucide-react";
+import { Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Status } from "@prisma/client";
-import { DataTableColumnHeader } from "@/components/data-table/column-header";
-import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/user-avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+
 import { cn } from "@/lib/utils";
+import { DataTableColumnHeader } from "@/components/data-table/column-header";
+import { UserAvatar } from "@/components/user-avatar";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export type Users = {
+  usersOnProject: {
+    id: number;
+    projectId: number;
+    createdAt: Date;
+  }[];
   id: number;
   name: string | null;
-  status: Status;
   image: string | null;
-  email: string;
 };
 
 interface GetColumn {
@@ -26,62 +40,64 @@ export const getColumn = ({ removeMember }: GetColumn) => {
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-      cell: ({ row }) => (
-        <div className="flex items-center gap-x-2">
-          <UserAvatar
-            user={{
-              name: row.original.name ?? "",
-              image: row.original.image ?? "",
-            }}
-            className="z-10 mr-2 inline-block h-5 w-5"
-          />
-          <span className="cursor-default">{row.original.name}</span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-x-2">
+            <UserAvatar
+              user={{
+                name: row.original.name ?? "",
+                image: row.original.image ?? "",
+              }}
+              className="z-10 mr-2 inline-block h-5 w-5"
+            />
+            <span className="cursor-default">{row.original.name}</span>
+          </div>
+        );
+      },
       filterFn: "arrIncludesSome",
     },
     {
-      accessorKey: "email",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-      filterFn: "arrIncludesSome",
-    },
-    {
-      accessorKey: "status",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+      accessorKey: "createdAt",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Added on" />,
+      cell: ({ row }) => {
+        const date = row.original.usersOnProject?.[0].createdAt;
+        return <span>{date && format(new Date(date), "MMMM dd, yyyy")}</span>;
+      },
       filterFn: "arrIncludesSome",
     },
     {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div
-            className={cn("invisible flex items-center gap-x-3 group-hover:visible")}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  size="sm"
-                  className="h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground"
-                  title="More"
-                >
-                  <MoreVertical height={16} width={16} />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto overflow-hidden p-0 text-sm">
-                <div className="disabled hover:bg-hover flex items-center border-b border-border p-2 text-primary">
-                  <Edit height={16} width={16} className="mr-2" />
-                  Edit
-                </div>
-                <div
-                  className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-destructive"
-                  onClick={() => removeMember(row.original.id)}
-                >
-                  <Delete size={16} className="mr-2" />
-                  Remove
-                </div>
-              </PopoverContent>
-            </Popover>
+          <div className={cn("invisible flex items-center gap-x-3 group-hover:visible")}>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button title="Delete">
+                  <Trash size={16} className="cursor-pointer text-destructive" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Are you sure to delete this member?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete the member from the project.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <DialogClose>Cancel</DialogClose>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => removeMember(row.original.usersOnProject?.[0].id)}
+                    asChild
+                  >
+                    <DialogClose>Delete</DialogClose>
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },
