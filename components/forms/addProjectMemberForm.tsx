@@ -7,68 +7,56 @@ import { User } from "lucide-react";
 
 import { ComboBox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
-export function AddMemberInProject({
-  team,
-  project,
-  users,
-}: {
-  team: string;
-  project: number;
-  users: {
-    id: number;
-    name: string;
-    email: string;
-    image: string;
-  }[];
-}) {
+export interface Users {
+  id: number;
+  name: string | null;
+  email: string;
+  image: string | null;
+  status?: any;
+  role?: any;
+  userGroup?: any;
+}
+
+export function AddMemberInProject({ team, project, users }: { team: string; project: number; users: Users[] }) {
   const router = useRouter();
-  const [selectedUserId, setSelectedUserId] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
-  async function onSubmit() {
+  const submitHandler = async () => {
+    if (selectedUser.id) {
+      try {
+        const response = await fetch("/api/team/project/members", {
+          method: "POST",
+          body: JSON.stringify({
+            team: team,
+            projectId: +project,
+            userData: selectedUser,
+          }),
+        });
 
-    if (selectedUserId?.id) {
-      const response = await fetch("/api/team/project/members", {
-        method: "POST",
-        body: JSON.stringify({
-          team: team,
-          projectId: +project,
-          userId: selectedUserId?.id,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success("User added");
-      } else if (response.status === 500) {
-        toast.warning("The user doesn't have an account");
-      } else {
-        toast.error("Something went wrong");
+        if (response.ok) {
+          toast.success("User added");
+          setSelectedUser(null);
+        }
+        SheetCloseButton.current?.click();
+        router.refresh();
+      } catch (error) {
+        console.error(error);
       }
-
-      SheetCloseButton.current?.click();
-      router.refresh();
     }
-  }
+  };
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
-      setSelectedUserId(null);
+      setSelectedUser(null);
     }
   };
 
   const dropdownSelectHandler = (selected: string) => {
     const selectedUser = users.find((user) => user.id === +selected);
-    setSelectedUserId(selectedUser || null);
+    setSelectedUser(selectedUser || null);
   };
 
   return (
@@ -80,7 +68,7 @@ export function AddMemberInProject({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit();
+            submitHandler();
           }}
           className="my-2 grid grid-cols-2 gap-2"
         >
@@ -90,21 +78,20 @@ export function AddMemberInProject({
           <div className="col-span-2 my-2">
             <label>User</label>
             <ComboBox
-              tabIndex={1}
               searchable
               icon={<User size={16} />}
               options={users}
               label="Members"
-              selectedItem={selectedUserId}
+              selectedItem={selectedUser}
               handleSelect={(selected) => dropdownSelectHandler(selected)}
             />
           </div>
           <div className="mt-2 flex justify-between space-x-3">
-            <Button type="submit" disabled={!selectedUserId}>
+            <Button type="submit" disabled={!selectedUser}>
               Submit
             </Button>
             <SheetClose asChild>
-              <Button type="submit" variant="outline" ref={SheetCloseButton}>
+              <Button type="button" variant="outline" ref={SheetCloseButton}>
                 Cancel
               </Button>
             </SheetClose>

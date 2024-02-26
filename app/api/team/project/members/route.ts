@@ -7,9 +7,14 @@ import { NextRequest, NextResponse } from "next/server";
 const projectMemberSchema = {
   team: z.string().min(1),
   projectId: z.number(),
-  userId: z.number().min(1),
+  userData: z.object({
+    id: z.number().min(1),
+    name: z.string(),
+    email: z.string().email(),
+    image: z.string().min(1),
+    // Add more properties as needed
+  }),
 };
-
 const addProjectMemberSchema = z.object(projectMemberSchema);
 
 export async function POST(req: NextRequest) {
@@ -31,28 +36,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
-    const userDetails = await db.user.findUnique({
-      where: {
-        id: body.userId,
-        workspaces: {
-          some: {
-            workspace: {
-              slug: body.team,
-            },
-          },
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-      },
-    });
-
-    const addMember =
-      userDetails &&
-      (await db.project.update({
+    if (body.userData) {
+      const addMember = await db.project.update({
         where: {
           id: body.projectId,
         },
@@ -61,7 +46,7 @@ export async function POST(req: NextRequest) {
             create: {
               user: {
                 connect: {
-                  id: userDetails.id,
+                  id: body.userData.id,
                 },
               },
               workspace: {
@@ -72,9 +57,10 @@ export async function POST(req: NextRequest) {
             },
           },
         },
-      }));
+      });
 
-    return NextResponse.json(addMember);
+      return NextResponse.json(addMember);
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 422 });
@@ -87,11 +73,11 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session) {
       return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
     }
-    
+
     const { user } = session;
 
     const { id, projectId, team } = await req.json();
