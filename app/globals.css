@@ -80,6 +80,11 @@
   border-top: transparent;
 }
 
+.recharts-rectangle {
+  fill: transparent;
+  cursor: pointer;
+}
+
 @layer base {
   * {
     @apply border-border;

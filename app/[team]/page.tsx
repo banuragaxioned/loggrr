@@ -2,13 +2,14 @@ import { notFound } from "next/navigation";
 
 import { getCurrentUser } from "@/server/session";
 import { getAllProjects } from "@/server/services/project";
-import { getRecentEntries, getTimelogLastWeek } from "@/server/services/time-entry";
+import { getRecentEntries, getSevenDaysDistribution, getTimelogLastWeek } from "@/server/services/time-entry";
 
 import { pageProps } from "@/types";
 import { getTimeInHours } from "@/lib/helper";
 
 import CategoryDataBar from "@/components/charts/category-bar";
 import { TimeEntry } from "@/components/time-entry";
+import TimeBarChart from "@/components/charts/time-barchart";
 
 export default async function Dashboard({ params }: pageProps) {
   const user = await getCurrentUser();
@@ -21,6 +22,7 @@ export default async function Dashboard({ params }: pageProps) {
   const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id);
   const recentTimeEntries = await getRecentEntries(team, user.id);
+  const sevenDaysDistribution = await getSevenDaysDistribution(team, user.id);
 
   const maxHourPerDay = 7.5;
 
@@ -29,7 +31,7 @@ export default async function Dashboard({ params }: pageProps) {
       <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
         <TimeEntry team={team} projects={projects ? projects : []} recentTimeEntries={recentTimeEntries} />
       </main>
-      <aside className="sticky top-[74px] hidden basis-1/4 space-y-4 lg:col-span-3 lg:block">
+      <aside className="hidden space-y-4 lg:col-span-3 lg:block">
         <CategoryDataBar
           title="Logged hours"
           subtitle="Last 7 days"
@@ -37,6 +39,7 @@ export default async function Dashboard({ params }: pageProps) {
           maxValue={maxHourPerDay * 5}
           type="hours"
         />
+        <TimeBarChart sevenDaysDistribution={sevenDaysDistribution} />
       </aside>
     </div>
   );

@@ -6,11 +6,14 @@ import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
+  const today = new Date();
+  const sevenDaysAgo = subDays(today, 7);
+
   const response = await db.timeEntry.aggregate({
     where: {
       userId,
       date: {
-        gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+        gte: sevenDaysAgo,
       },
       workspace: {
         slug,
@@ -24,6 +27,33 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response._sum.time ?? 0;
 };
 
+export const getSevenDaysDistribution = async (slug: string, userId: number) => {
+  const today = new Date();
+  const sevenDaysAgo = subDays(today, 7);
+
+  const response = await db.timeEntry.groupBy({
+    by: ["date"],
+    orderBy: {
+      date: "desc",
+    },
+    where: {
+      userId: userId,
+      workspace: {
+        slug,
+      },
+      date: {
+        gte: sevenDaysAgo,
+      },
+    },
+    _sum: {
+      time: true,
+    },
+  });
+
+  return response;
+};
+
+// Gets last 7 days entries including today with unique project IDs
 export const getRecentEntries = async (slug: string, userId: number) => {
   const today = new Date();
   const sevenDaysAgo = subDays(today, 8);
@@ -41,7 +71,18 @@ export const getRecentEntries = async (slug: string, userId: number) => {
     },
     select: {
       id: true,
-      project: true,
+      project: {
+        select: {
+          id: true,
+          name: true,
+          client: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
       milestone: {
         select: {
           id: true,
