@@ -1,11 +1,12 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { User } from "lucide-react";
 
+import { ComboBox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -15,12 +16,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
-import { ComboBox } from "../ui/combobox";
-import { User } from "lucide-react";
-import { AllUsersWithAllocation } from "@/types";
 
 export function AddMemberInProject({
   team,
@@ -34,47 +29,46 @@ export function AddMemberInProject({
     name: string;
     email: string;
     image: string;
-  }[]
+  }[];
 }) {
   const router = useRouter();
-
+  const [selectedUserId, setSelectedUserId] = useState<any>(null);
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
-  const formSchema = z.object({
-    userId: z.number().min(1, "Please select a user"),
-  });
+  async function onSubmit() {
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+    if (selectedUserId?.id) {
+      const response = await fetch("/api/team/project/members", {
+        method: "POST",
+        body: JSON.stringify({
+          team: team,
+          projectId: +project,
+          userId: selectedUserId?.id,
+        }),
+      });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/team/project/members", {
-      method: "POST",
-      body: JSON.stringify({
-        team: team,
-        projectId: +project,
-        user: values.userId,
-      }),
-    });
+      if (response.ok) {
+        toast.success("User added");
+      } else if (response.status === 500) {
+        toast.warning("The user doesn't have an account");
+      } else {
+        toast.error("Something went wrong");
+      }
 
-    if (response?.ok) toast.success("User added");
-    else if (response?.status === 500) toast.warning("The user doesn't have an account");
-    else toast.error("Something went wrong");
-
-    SheetCloseButton.current?.click();
-    router.refresh();
+      SheetCloseButton.current?.click();
+      router.refresh();
+    }
   }
 
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
-      form.reset();
+      setSelectedUserId(null);
     }
   };
 
-  const dropdownSelectHandler = (selected: string, setValue: Function) => {
-    const arr = users.find((user) => user.id === +selected);
-    setValue(arr?.id)
+  const dropdownSelectHandler = (selected: string) => {
+    const selectedUser = users.find((user) => user.id === +selected);
+    setSelectedUserId(selectedUser || null);
   };
 
   return (
@@ -83,42 +77,39 @@ export function AddMemberInProject({
         <Button>Add</Button>
       </SheetTrigger>
       <SheetContent side="right">
-        <Form {...form}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+          className="my-2 grid grid-cols-2 gap-2"
+        >
           <SheetHeader>
             <SheetTitle>Add a new User</SheetTitle>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
-            <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>User</FormLabel>
-                  <FormControl className="mt-2">
-                    <ComboBox
-                      tabIndex={1}
-                      searchable
-                      icon={<User size={16} />}
-                      options={users}
-                      label="Members"
-                      selectedItem={field.value}
-                      handleSelect={(selected: any) => dropdownSelectHandler(selected, form.setValue)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div className="col-span-2 my-2">
+            <label>User</label>
+            <ComboBox
+              tabIndex={1}
+              searchable
+              icon={<User size={16} />}
+              options={users}
+              label="Members"
+              selectedItem={selectedUserId}
+              handleSelect={(selected) => dropdownSelectHandler(selected)}
             />
-            <SheetFooter className="mt-2 justify-start space-x-3">
-              <Button type="submit">Submit</Button>
-              <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
-                  Cancel
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </form>
-        </Form>
+          </div>
+          <div className="mt-2 flex justify-between space-x-3">
+            <Button type="submit" disabled={!selectedUserId}>
+              Submit
+            </Button>
+            <SheetClose asChild>
+              <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                Cancel
+              </Button>
+            </SheetClose>
+          </div>
+        </form>
       </SheetContent>
     </Sheet>
   );

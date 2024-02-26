@@ -11,7 +11,6 @@ const projectMemberSchema = {
 };
 
 const addProjectMemberSchema = z.object(projectMemberSchema);
-const deleteProjectMemberSchema = z.object({ ...projectMemberSchema, id: z.number().min(1) });
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,8 +94,8 @@ export async function DELETE(req: NextRequest) {
     
     const { user } = session;
 
-    const { userId, projectId, team } = await req.json();
-    
+    const { id, projectId, team } = await req.json();
+
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
     if (user.workspaces.filter((workspace) => workspace.slug === team).length === 0) {
@@ -105,7 +104,7 @@ export async function DELETE(req: NextRequest) {
 
     const deleteMember = await db.usersOnProject.delete({
       where: {
-        id: userId,
+        id: id,
         projectId: +projectId,
         workspace: {
           slug: team,

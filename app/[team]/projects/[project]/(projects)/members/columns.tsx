@@ -3,11 +3,22 @@
 import { Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Status } from "@prisma/client";
+import { format } from "date-fns";
 
+import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { UserAvatar } from "@/components/user-avatar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export type Users = {
   usersOnProject: {
@@ -59,10 +70,34 @@ export const getColumn = ({ removeMember }: GetColumn) => {
       cell: ({ row }) => {
         return (
           <div className={cn("invisible flex items-center gap-x-3 group-hover:visible")}>
-            <Trash size={16} onClick={(e) => {
-              e.stopPropagation();
-              removeMember(row.original.id);
-            } } className="cursor-pointer text-red-500" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button title="Delete">
+                  <Trash size={16} className="cursor-pointer text-destructive" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Are you sure to delete this member?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete the member from the project.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <DialogClose>Cancel</DialogClose>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => removeMember(row.original.usersOnProject?.[0].id)}
+                    asChild
+                  >
+                    <DialogClose>Delete</DialogClose>
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },
