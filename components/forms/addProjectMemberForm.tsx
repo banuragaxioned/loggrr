@@ -37,7 +37,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
         });
 
         if (response.ok) {
-          toast.success("User added");
+          toast.success("User added successfully");
           setSelectedUser(null);
         }
         SheetCloseButton.current?.click();
@@ -76,7 +76,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
             <SheetTitle>Add a new User</SheetTitle>
           </SheetHeader>
           <div className="col-span-2 my-2">
-            <label>User</label>
+            <label className="mb-1 block">User</label>
             <ComboBox
               searchable
               icon={<User size={16} />}
