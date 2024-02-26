@@ -80,9 +80,13 @@
   border-top: transparent;
 }
 
-.recharts-rectangle {
-  fill: transparent;
+.recharts-rectangle, .recharts-tooltip-cursor {
   cursor: pointer;
+  pointer-events: all !important;
+}
+
+.recharts-tooltip-cursor {
+  @apply fill-muted !important;
 }
 
 @layer base {

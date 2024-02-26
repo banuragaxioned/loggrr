@@ -62,13 +62,13 @@ const TimeBarChart = ({ sevenDaysDistribution }: { sevenDaysDistribution: { _sum
   const formatXAxis = (tickItem: Date) => format(tickItem, "EEE");
 
   return (
-    <Card className="select-none p-4 shadow-none">
+    <Card className="select-none p-4 pb-0 shadow-none">
       <p className="mb-1.5 text-xs font-bold text-muted-foreground">Last 7 day distribution</p>
-      <div className="flex h-[142px] items-end justify-end">
+      <div className="flex h-[158px] items-end justify-end">
         {data ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <XAxis dataKey="date" height={16} tick={{ fontSize: 12 }} tickFormatter={formatXAxis} />
+            <BarChart data={data} onClick={(e) => setPageDate(startOfDay(e.activePayload?.[0].payload.date))}>
+              <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={formatXAxis} />
               <YAxis
                 width={16}
                 tick={{ fontSize: 12 }}
