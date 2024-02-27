@@ -1,13 +1,14 @@
 "use client";
 
+import { Dispatch } from "react";
 import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import { ChevronDown, ChevronRight } from "lucide-react";
+
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { TableInput } from "@/components/table-input";
-import { Dispatch } from "react";
 import { AllocationDetails, Assignment } from "@/types";
-import dayjs from "dayjs";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -84,8 +85,8 @@ const createDynamicColumns = (
                   projectId: subRow?.id,
                   userId: subRow?.userId,
                   isBillable: subRow?.billable,
-                  startDate: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
-                  endDate: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
+                  startDate: new Date(),
+                  endDate: new Date(),
                   team: subRow?.team,
                 }}
                 type={billable}

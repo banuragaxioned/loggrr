@@ -89,9 +89,6 @@ export function CalendarDateRangePicker({
     to: endDate ? endDate : new Date(),
   });
 
-  console.log(startDate,'start', endDate, 'end');
-  
-
   useEffect(() => {
     if (date?.from) {
       setVal("startDate", date?.from);

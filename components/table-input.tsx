@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
+import { toast } from "sonner";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { CalendarDateRangePicker as DateRangePicker } from "@/components/date-picker";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
 
 export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const billable = data.hoursObj?.billableTime || 0;
   const nonBillable = data.hoursObj?.nonBillableTime || 0;
   const totaTime = data.hoursObj?.totalTime || 0;
   const isOnGoing = data.hoursObj?.frequency === "ONGOING";
-  const [range, setRange] = useState<any>({ from: data.startDate, to: data.endDate });
+  const [range, setRange] = useState<any>({ from: new Date(), to: new Date() });
   const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable: nonBillable, billable: billable });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const onSuccess = () => {
     setSubmitted(true);
@@ -32,16 +35,13 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
     if (range?.from) {
       fetch("/api/team/allocation/update", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           billable: updatedData.billable,
           nonBillable: updatedData.nonBillable,
           total: updatedData.total,
           onGoing: Ongoing,
           startDate: new Date(range.from),
-          endDate: new Date(range.to || Ongoing ? range.to : range.from),
+          endDate: new Date(range.to),
           projectId: data.projectId,
           userId: data.userId,
           team: data.team,
@@ -52,6 +52,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           if (res.status === 200) {
             setSubmitCount((prev: number) => prev + 1);
             onSuccess();
+            setCalendarOpen(false);
           } else {
             onFailure();
           }
@@ -83,6 +84,14 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
     element.value === "" ? (element.value = 0) : null;
   };
 
+  const handleCalendarOpen = () => {
+    setCalendarOpen(true);
+  };
+
+  const handleDateSelect = (selectedRange: DateRange | undefined) => {
+    setRange(selectedRange);
+  };
+
   return (
     <Popover>
       <PopoverTrigger className="mx-auto flex  w-12 cursor-default items-center justify-center">
@@ -109,7 +118,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           <div className="mb-2 flex justify-center gap-x-[2%]">
             <div className="basis-[48%]">
               <label>Billable</label>
-              <div className="mx-auto flex basis-[90%]">
+              <div className="mx-auto mt-2 flex basis-[90%]">
                 <Input
                   className="basis-full"
                   type="number"
@@ -123,7 +132,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
             </div>
             <div className="basis-[48%]">
               <label>Non-billable</label>
-              <div className="mx-auto flex basis-[90%]">
+              <div className="mx-auto mt-2 flex basis-[90%]">
                 <Input
                   className="basis-full"
                   type="number"
@@ -136,16 +145,31 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
             </div>
           </div>
           <div>
-            <DateRangePicker
-              setVal={setRange}
-              isOngoing={Ongoing}
-              setOngoing={setOngoing}
-              startDate={new Date(data.startDate)}
-              endDate={data.endDate}
-            />
+            <Popover>
+              <PopoverTrigger>
+                <Button onClick={handleCalendarOpen} className="mt-[10px] w-full">
+                  {range
+                    ? `${range.from.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} - ${range.to.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+                    : "Select Date Range"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                {calendarOpen && (
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={range?.from}
+                    today={range?.to}
+                    selected={range}
+                    onSelect={handleDateSelect}
+                    numberOfMonths={1}
+                  />
+                )}
+              </PopoverContent>
+            </Popover>
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>
-          <Button type="submit" className="mx-auto mt-2 w-auto">
+          <Button type="submit" className="mx-auto w-auto">
             Update
           </Button>
         </form>
