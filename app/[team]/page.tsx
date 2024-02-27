@@ -9,7 +9,7 @@ import { getTimeInHours } from "@/lib/helper";
 
 import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
-// import TimeBarChart from "@/components/charts/time-barchart";
+import TimeBarChart from "@/components/charts/time-barchart";
 // import WeekHeatmap from "@/components/charts/week-heatmap";
 
 export default async function Dashboard({ params }: pageProps) {
@@ -23,7 +23,7 @@ export default async function Dashboard({ params }: pageProps) {
   const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id);
   const recentTimeEntries = await getRecentEntries(team, user.id);
-  // const oneWeekTimeEntries = await getWeekWiseEntries(team, user.id);
+  const oneWeekTimeEntries = await getWeekWiseEntries(team, user.id);
   // const sevenWeekTimeEntries = await getWeekWiseEntries(team, user.id, 7);
 
   const maxHourPerDay = 7.5;
@@ -41,8 +41,8 @@ export default async function Dashboard({ params }: pageProps) {
           maxValue={maxHourPerDay * 5}
           type="hours"
         />
-        {/* <TimeBarChart oneWeekTimeEntries={oneWeekTimeEntries} />
-        <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} /> */}
+        <TimeBarChart oneWeekTimeEntries={oneWeekTimeEntries} />
+        {/* <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} /> */}
       </aside>
     </div>
   );
