@@ -16,12 +16,6 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
 
-  console.log(data, "data");
-
-  console.log(range, "range");
-  
-  
-
   const onSuccess = () => {
     setSubmitted(true);
     toast.success("A allocation was updated");
@@ -146,7 +140,8 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
               setVal={setRange}
               isOngoing={Ongoing}
               setOngoing={setOngoing}
-              startDate={new Date(data.date)}
+              startDate={new Date(data.startDate)}
+              endDate={data.endDate}
             />
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>

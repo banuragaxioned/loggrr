@@ -37,7 +37,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
     }
   }
 
-  const rowClickHandler = (row: Row<Client>) => row.original.project > 1 ? location.assign(`projects?client=${row.original.name}`) : noActiveProject(row);
+  const rowClickHandler = (row: Row<Client>) => row.original.project > 0 ? location.assign(`projects?client=${row.original.name}`) : noActiveProject(row);
 
   const editClientNames = async (id: number, value: string) => {
     const response = await fetch("/api/team/client/edit", {

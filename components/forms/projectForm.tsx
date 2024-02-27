@@ -31,8 +31,8 @@ const formSchema = z.object({
   project: z.string().min(3).max(25, "Project name should be between 3 and 25 characters"),
   owner: z.number().int().min(1, "Please set a project owner"),
   budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
-  date: z.coerce.date(),
-  enddate: z.coerce.date().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
   billable: z.any(),
   interval: z.number().int("Please select a interval"),
 });
@@ -66,8 +66,8 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
         name: values.project,
         clientId: values.client,
         ownerId: values.owner,
-        startDate: new Date(values.date),
-        endDate: values.enddate ? new Date(values.enddate) : null,
+        startDate: new Date(values.startDate),
+        endDate: values.endDate ? new Date(values.endDate) : null,
         interval: intervalList[values.interval].name,
         billable: values.billable,
       }),
@@ -150,12 +150,19 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
             />
             <FormField
               control={form.control}
-              name="date"
+              name="startDate"
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
+                    <CalendarDateRangePicker
+                      setVal={form.setValue}
+                      setOngoing={setOngoing}
+                      isOngoing={isOngoing}
+                      startDate={field.value}
+                      endDate={form.getValues().endDate}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
