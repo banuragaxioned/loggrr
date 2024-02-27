@@ -73,7 +73,10 @@ const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum
       <div className="flex h-[158px] items-end justify-end">
         {data ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} onClick={(e) => setPageDate(startOfDay(e.activePayload?.[0].payload.date))}>
+            <BarChart
+              data={data}
+              onClick={(e) => e.activeLabel && setPageDate(startOfDay(e.activePayload?.[0].payload.date))}
+            >
               <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={formatXAxis} />
               <YAxis
                 width={16}
