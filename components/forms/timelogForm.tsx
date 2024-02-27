@@ -22,6 +22,7 @@ interface TimelogProps {
   projects: Project[];
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
+  recent: any;
 }
 
 type ErrorsObj = {
@@ -38,7 +39,7 @@ const initialDataState = {
   billable: false,
 };
 
-export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => {
+export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogProps) => {
   const [onCommentFocus, setOnCommentFocus] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
@@ -128,10 +129,21 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         const task = foundProject?.task;
         return task ? task : [];
       });
+    } else if (recent) {
+      const foundProject = projects.find((project) => project.id === recent.project?.id);
+      setSelectedData(recent);
+      setProjectMilestones(() => {
+        const milestone = foundProject?.milestone;
+        return milestone ? milestone : [];
+      });
+      setprojectTasks(() => {
+        const task = foundProject?.task;
+        return task ? task : [];
+      });
     } else {
       handleClearForm();
     }
-  }, [edit, projects]);
+  }, [edit, projects, recent]);
 
   const renderFormText = () => {
     if (!selectedData.project?.id) return "Select a project first...";

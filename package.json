@@ -70,6 +70,7 @@
     "nodemailer": "^6.9.9",
     "posthog-js": "^1.106.3",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.1",
     "react-day-picker": "^8.10.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
