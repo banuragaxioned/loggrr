@@ -84,7 +84,8 @@ const createDynamicColumns = (
                   projectId: subRow?.id,
                   userId: subRow?.userId,
                   isBillable: subRow?.billable,
-                  date: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
+                  startDate: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
+                  endDate: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
                   team: subRow?.team,
                 }}
                 type={billable}

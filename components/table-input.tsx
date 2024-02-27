@@ -10,11 +10,17 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const nonBillable = data.hoursObj?.nonBillableTime || 0;
   const totaTime = data.hoursObj?.totalTime || 0;
   const isOnGoing = data.hoursObj?.frequency === "ONGOING";
-  const [range, setRange] = useState<any>(null);
+  const [range, setRange] = useState<any>({ from: data.startDate, to: data.endDate });
   const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable: nonBillable, billable: billable });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
+
+  console.log(data, "data");
+
+  console.log(range, "range");
+  
+  
 
   const onSuccess = () => {
     setSubmitted(true);
