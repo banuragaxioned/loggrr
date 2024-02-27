@@ -2,23 +2,33 @@
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
+import { format, startOfToday } from "date-fns";
+import { useRouter } from "next/navigation";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
-import { TimeEntryDataObj } from "@/types";
-import { Project } from "@/types";
+import { Milestone, Project, TimeEntryDataObj } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
 
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
-import { useRouter } from "next/navigation";
-import { format, startOfToday } from "date-fns";
+import RecentEntries from "./recent-entries";
+
+export interface RecentEntryProps {
+  id: number;
+  project?: Project;
+  milestone?: Milestone;
+  billable?: boolean;
+  time?: number;
+  comments?: string | null;
+}
 
 interface TimeEntryProps {
   team: string;
   projects: Project[];
+  recentTimeEntries: RecentEntryProps[];
 }
 
 export interface EditReferenceObj {
@@ -39,14 +49,16 @@ export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
-export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
+  const pageDate = useTimeEntryState((state) => state.date);
   const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
   const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
   const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
+  const [recent, setRecent] = useState(null);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -57,7 +69,15 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
     };
   }, [date, setQuickActionDate, resetTimeEntryStates]);
 
+  // This sets the date from the distribution widgets
+  useEffect(() => {
+    if (pageDate) {
+      setDate(pageDate);
+    }
+  }, [pageDate, setDate]);
+
   const editEntryHandler = (obj: SelectedData, id: number) => {
+    setRecent(null);
     const currentlyEditing = edit.id;
     if (currentlyEditing === id) {
       setEdit({ obj: {}, isEditing: false, id: null });
@@ -134,6 +154,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
       if (response.ok) {
         toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
+        if (recent) setRecent(null);
         getTimeEntries();
         clearForm();
         router.refresh();
@@ -150,13 +171,21 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
+  /*
+   * handleRecentClick: The following function adds recent state for adding new entry
+   */
+  const handleRecentClick = (selected: any) => {
+    setEdit({ obj: {}, isEditing: false, id: null });
+    setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
+  };
+
   return (
-    <div className="w-full">
-      <Card className="shadow-none">
+    <div className="grid w-full grid-cols-12 items-start gap-4">
+      <Card className="col-span-12 shadow-none sm:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
-        <TimeLogForm projects={projects} edit={edit} submitHandler={submitTimeEntry} />
+        <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
           <p className="mb-2 flex justify-between px-5 font-medium">
             Total time logged for the day
@@ -171,6 +200,7 @@ export const TimeEntry = ({ team, projects }: TimeEntryProps) => {
           edit={edit}
         />
       </Card>
+      <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
     </div>
   );
 };

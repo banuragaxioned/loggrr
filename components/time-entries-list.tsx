@@ -142,7 +142,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-2 p-12 text-center">
+    <li className="flex flex-col items-center justify-center space-y-2 p-11 text-center">
       <CalendarClock size={32} />
       <h2>No Timesheet Entries</h2>
       <p>You haven&apos;t made any timesheet entries for the selected date.</p>
@@ -171,7 +171,12 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
   );
 
   return (
-    <ul className="flex w-full flex-col gap-y-2 overflow-y-auto pb-2">
+    <ul
+      className={cn(
+        "flex w-full flex-col gap-y-2 overflow-y-auto pb-2",
+        entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
+      )}
+    >
       {status === "loading" && skeletonLoader}
       {status === "success" && renderEntries}
       {status === "error" && <li className="p-4 text-center text-destructive">Something went wrong</li>}

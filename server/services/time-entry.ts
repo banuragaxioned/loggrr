@@ -1,14 +1,19 @@
 import { db } from "@/server/db";
-import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { subDays } from "date-fns";
 import { getServerSession } from "next-auth";
+
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
+  const today = new Date();
+  const sevenDaysAgo = subDays(today, 7);
+
   const response = await db.timeEntry.aggregate({
     where: {
       userId,
       date: {
-        gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+        gte: sevenDaysAgo,
       },
       workspace: {
         slug,
@@ -20,6 +25,80 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   });
 
   return response._sum.time ?? 0;
+};
+
+export const getWeekWiseEntries = async (slug: string, userId: number, weekCount: number = 1) => {
+  const today = new Date();
+  const totalDaysinSelectedWeek = subDays(today, weekCount * 7);
+
+  const response = await db.timeEntry.groupBy({
+    by: ["date"],
+    orderBy: {
+      date: "desc",
+    },
+    where: {
+      userId: userId,
+      workspace: {
+        slug,
+      },
+      date: {
+        gte: totalDaysinSelectedWeek,
+      },
+    },
+    _sum: {
+      time: true,
+    },
+  });
+
+  return response;
+};
+
+// Gets last 7 days entries including today with unique project IDs
+export const getRecentEntries = async (slug: string, userId: number) => {
+  const today = new Date();
+  const sevenDaysAgo = subDays(today, 8);
+
+  const response = await db.timeEntry.findMany({
+    distinct: ["projectId"],
+    where: {
+      workspace: {
+        slug,
+      },
+      date: {
+        gte: sevenDaysAgo,
+      },
+      userId,
+    },
+    select: {
+      id: true,
+      project: {
+        select: {
+          id: true,
+          name: true,
+          client: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+      milestone: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      billable: true,
+      time: true,
+      comments: true,
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+
+  return response;
 };
 
 export const getLogged = async (
