@@ -10,6 +10,7 @@ interface TimeEntryState {
 interface TimeEntryStateActions {
   setUpdateTime: () => void;
   setQuickActionDate: (date: Date | null) => void;
+  setPageDate: (date: Date | null) => void;
   resetTimeEntryStates: () => void;
 }
 
@@ -29,6 +30,11 @@ const createTimeEntryState = () => {
       }));
     },
     setQuickActionDate(input) {
+      set(() => ({
+        date: input,
+      }));
+    },
+    setPageDate(input) {
       set(() => ({
         date: input,
       }));
