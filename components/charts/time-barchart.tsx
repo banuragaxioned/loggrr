@@ -8,6 +8,12 @@ import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
+export interface TimeEntrySum {
+  _sum: {
+    time: number | null;
+  };
+}
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -19,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   }
 };
 
-const TimeBarChart = ({ sevenDaysDistribution }: { sevenDaysDistribution: { _sum: { time: number | null } }[] }) => {
+const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum[] }) => {
   const setPageDate = useTimeEntryState((state) => state.setPageDate);
   const [data, setData] = React.useState<any>(null);
 
@@ -38,7 +44,7 @@ const TimeBarChart = ({ sevenDaysDistribution }: { sevenDaysDistribution: { _sum
     const last7Days = getLast7Days();
     const transformedData: any = {};
 
-    sevenDaysDistribution.forEach((entry: any) => {
+    oneWeekTimeEntries.forEach((entry: any) => {
       const date = format(new Date(entry.date), "yyyy-MM-dd");
       transformedData[date] = entry._sum.time / 60 || 0;
     });
@@ -57,7 +63,7 @@ const TimeBarChart = ({ sevenDaysDistribution }: { sevenDaysDistribution: { _sum
     }));
 
     setData(finalData);
-  }, [sevenDaysDistribution]);
+  }, [oneWeekTimeEntries]);
 
   const formatXAxis = (tickItem: Date) => format(tickItem, "EEE");
 

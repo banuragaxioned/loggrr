@@ -27,9 +27,9 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response._sum.time ?? 0;
 };
 
-export const getSevenDaysDistribution = async (slug: string, userId: number) => {
+export const getWeekWiseEntries = async (slug: string, userId: number, weekCount: number = 1) => {
   const today = new Date();
-  const sevenDaysAgo = subDays(today, 7);
+  const totalDaysinSelectedWeek = subDays(today, weekCount * 7);
 
   const response = await db.timeEntry.groupBy({
     by: ["date"],
@@ -42,7 +42,7 @@ export const getSevenDaysDistribution = async (slug: string, userId: number) => 
         slug,
       },
       date: {
-        gte: sevenDaysAgo,
+        gte: totalDaysinSelectedWeek,
       },
     },
     _sum: {

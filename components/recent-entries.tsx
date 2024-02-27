@@ -1,10 +1,11 @@
 import React from "react";
-import { Briefcase, Folder, Info } from "lucide-react";
+import { Info } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Separator } from "./ui/separator";
-import { Project } from "@/types";
 import { RecentEntryProps } from "./time-entry";
+import { getRandomColor } from "@/lib/random-colors";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const RecentEntries = ({
   recentTimeEntries,
@@ -19,23 +20,37 @@ const RecentEntries = ({
         <p className="text-sm font-medium text-muted-foreground">Recently used</p>
       </CardHeader>
       <Separator />
-      <CardContent className="max-h-none overflow-y-auto p-0 sm:max-h-[calc(100vh-154px)]">
+      <CardContent className="p-0">
         {recentTimeEntries.length > 0 ? (
           <ul className="select-none divide-y">
-            {recentTimeEntries.map((timeEntry: any) => {
+            {recentTimeEntries.map((timeEntry) => {
               return (
                 <li
                   key={timeEntry.id}
-                  className="flex cursor-pointer flex-col gap-2 p-4 hover:bg-muted"
+                  className="flex cursor-pointer flex-col gap-2 px-4 py-2 hover:bg-muted"
                   onClick={() => handleRecentClick(timeEntry)}
                 >
                   <div className="flex items-center gap-2">
-                    <Folder size={16} />
-                    <span className="text-sm">{timeEntry.project.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Briefcase size={16} />
-                    <span className="text-sm">{timeEntry.project.client.name}</span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span
+                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
+                            style={
+                              timeEntry.project?.id ? { backgroundColor: getRandomColor(timeEntry.project?.id) } : {}
+                            }
+                          >
+                            {timeEntry.project?.client?.name.charAt(0)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{timeEntry.project?.client?.name}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <span className="line-clamp-1 text-sm" title={timeEntry.project?.name}>
+                      {timeEntry.project?.name}
+                    </span>
                   </div>
                 </li>
               );
