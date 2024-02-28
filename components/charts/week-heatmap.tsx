@@ -69,7 +69,20 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
         radius: 8,
         enableShades: true,
         shadeIntensity: 0.5,
+        colorScale: {
+          ranges: [
+            {
+              from: 0,
+              to: 0,
+              name: "empty",
+              color: "#F3F4F6",
+            },
+          ],
+        },
       },
+    },
+    legend: {
+      show: false,
     },
     dataLabels: {
       enabled: false,
@@ -136,7 +149,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
         const { date } = w.config.series[seriesIndex].data[dataPointIndex];
         return `
-          <div class="p-2 text-xs flex flex-col bg-primary-foreground border-border">
+          <div class="p-2 text-xs flex flex-col bg-primary-foreground">
             ${date && "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>"}
             <span>
               Hours logged: ${series[seriesIndex][dataPointIndex]}
@@ -149,7 +162,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
 
   return (
     <Card className="flex w-full flex-col shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between p-4 text-xs font-bold text-muted-foreground">
+      <CardHeader className="flex flex-row items-end justify-between p-4 text-xs font-bold text-muted-foreground">
         <p>Heatmap</p>
         <p className="flex items-center gap-1.5 font-medium">
           <Info size={16} />
