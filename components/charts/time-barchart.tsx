@@ -3,12 +3,14 @@
 import React from "react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { format, startOfDay, startOfToday, subDays } from "date-fns";
+import { Info } from "lucide-react";
 
-import { Card } from "../ui/card";
+import { Card, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 export interface TimeEntrySum {
+  date: Date;
   _sum: {
     time: number | null;
   };
@@ -68,9 +70,15 @@ const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum
   const formatXAxis = (tickItem: Date) => format(tickItem, "EEE");
 
   return (
-    <Card className="select-none p-4 pb-0 shadow-none">
-      <p className="mb-1.5 text-xs font-bold text-muted-foreground">Last 7 day distribution</p>
-      <div className="flex h-[158px] items-end justify-end">
+    <Card className="select-none p-0 shadow-none">
+      <CardHeader className="flex flex-row items-end justify-between px-4 py-2 text-xs font-bold text-muted-foreground">
+        <p>Distribution</p>
+        <p className="flex items-center gap-1.5 font-medium">
+          <Info size={16} />
+          last 7 days
+        </p>
+      </CardHeader>
+      <div className="flex h-[158px] items-end justify-end px-4 py-2">
         {data ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart

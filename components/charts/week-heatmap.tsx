@@ -17,6 +17,26 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
   const { theme } = useTheme();
 
   React.useEffect(() => {
+    const getLast7Weeks = () => {
+      const startFrom = endOfWeek(startOfToday());
+      const last49Days = [];
+      for (let i = 0; i < 7 * 7; i++) {
+        last49Days.push(format(addDays(startFrom, -i), "yyyy-MM-dd"));
+      }
+      return last49Days;
+    };
+
+    const fillMissingDates = (rawData: TimeEntrySum[]) => {
+      const allDates = getLast7Weeks();
+      const newData = allDates.map((date) => {
+        const existingData = rawData.find((item) => format(item.date, "yyyy-MM-dd") === date);
+        return existingData ? existingData : { _sum: { time: 0 }, date };
+      });
+      return newData;
+    };
+
+    const filledData = fillMissingDates(sevenWeekTimeEntries);
+
     const transformedData: { name: string; data: { x: string; y: number; date: string }[] }[] = [];
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].reverse();
 
@@ -29,10 +49,10 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       transformedData.push({ name: day, data: weekData });
     });
 
-    const today = endOfWeek(startOfToday());
-    sevenWeekTimeEntries.forEach((entry: any) => {
+    const weekEnd = endOfWeek(startOfToday());
+    filledData.forEach((entry: any) => {
       const dayOfWeekFromToday = dayNames.findIndex((item) => item === format(entry.date, "EEE")); // Index based on today's date
-      const diffInDays = differenceInDays(addDays(today, 1), entry.date);
+      const diffInDays = differenceInDays(addDays(weekEnd, 1), entry.date);
       const weekIndex = Math.floor(diffInDays / 7);
 
       if (weekIndex >= 0 && weekIndex < 7 && dayOfWeekFromToday >= 0 && dayOfWeekFromToday < 7) {
@@ -68,14 +88,14 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       heatmap: {
         radius: 8,
         enableShades: true,
-        shadeIntensity: 0.5,
+        shadeIntensity: 1,
         colorScale: {
           ranges: [
             {
               from: 0,
               to: 0,
               name: "empty",
-              color: "#F3F4F6",
+              color: theme === "dark" ? "#212124" : "#F3F4F6",
             },
           ],
         },
@@ -113,7 +133,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
     stroke: {
       show: true,
       width: 4,
-      colors: [theme === "dark" ? "black" : "white"],
+      colors: [theme === "dark" ? "#09090B" : "#ffffff"],
     },
     colors: ["#027B55"],
     xaxis: {
@@ -132,7 +152,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
     },
     yaxis: {
       labels: {
-        show: false,
+        show: true,
       },
       axisTicks: {
         show: false,
@@ -148,11 +168,12 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       enabled: true,
       custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
         const { date } = w.config.series[seriesIndex].data[dataPointIndex];
+        const time = series[seriesIndex][dataPointIndex];
         return `
           <div class="p-2 text-xs flex flex-col bg-primary-foreground">
             ${date && "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>"}
             <span>
-              Hours logged: ${series[seriesIndex][dataPointIndex]}
+              Hours logged: ${time > 0 ? time.toFixed(2) : time}
             </span>
           </div>
         `;
@@ -162,14 +183,14 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
 
   return (
     <Card className="flex w-full flex-col shadow-none">
-      <CardHeader className="flex flex-row items-end justify-between p-4 text-xs font-bold text-muted-foreground">
+      <CardHeader className="flex flex-row items-end justify-between px-4 py-2 text-xs font-bold text-muted-foreground">
         <p>Heatmap</p>
         <p className="flex items-center gap-1.5 font-medium">
           <Info size={16} />
           last 7 weeks
         </p>
       </CardHeader>
-      <div className="-mt-9 h-[200px]">
+      <div className="-mt-6 h-[200px]">
         {data ? (
           <Chart options={options} series={data} type="heatmap" height="100%" width="100%" />
         ) : (
