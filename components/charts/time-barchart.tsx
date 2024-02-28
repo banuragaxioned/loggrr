@@ -95,7 +95,7 @@ const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum
                 interval="preserveStartEnd"
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="time" fill="red" barSize={16} onClick={(e) => setPageDate(startOfDay(e.date))}>
+              <Bar dataKey="time" fill="red" barSize={16}>
                 {data.map((entry: any, index: any) => (
                   <Cell
                     key={`cell-${index}`}

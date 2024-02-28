@@ -327,7 +327,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                 <Input
                   tabIndex={-1}
                   type="text"
-                  placeholder="7.30"
+                  placeholder="7:50"
                   className={cn(
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"

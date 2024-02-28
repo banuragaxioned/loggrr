@@ -2,7 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { addDays, differenceInDays, endOfWeek, format, startOfToday } from "date-fns";
+import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
 import { Info } from "lucide-react";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -11,8 +11,11 @@ import { Card, CardHeader } from "../ui/card";
 import { TimeEntrySum } from "./time-barchart";
 import { Skeleton } from "../ui/skeleton";
 import { useTheme } from "next-themes";
+import { useTimeEntryState } from "@/store/useTimeEntryStore";
+import { startOfDay } from "date-fns";
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
+  const setPageDate = useTimeEntryState((state) => state.setPageDate);
   const [data, setData] = React.useState<any>(null);
   const { theme } = useTheme();
 
@@ -52,7 +55,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
     const weekEnd = endOfWeek(startOfToday());
     filledData.forEach((entry: any) => {
       const dayOfWeekFromToday = dayNames.findIndex((item) => item === format(entry.date, "EEE")); // Index based on today's date
-      const diffInDays = differenceInDays(addDays(weekEnd, 1), entry.date);
+      const diffInDays = differenceInDays(weekEnd, entry.date);
       const weekIndex = Math.floor(diffInDays / 7);
 
       if (weekIndex >= 0 && weekIndex < 7 && dayOfWeekFromToday >= 0 && dayOfWeekFromToday < 7) {
@@ -62,12 +65,10 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
     });
 
     // Final Data to be shown in heatmap
-    const finalData = transformedData.map((item) => {
-      return {
-        name: item.name,
-        data: item.data.reverse(),
-      };
-    });
+    const finalData = transformedData.map((item) => ({
+      name: item.name,
+      data: item.data.reverse(),
+    }));
 
     setData(finalData);
   }, [sevenWeekTimeEntries]);
@@ -82,6 +83,16 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       animations: {
         enabled: true,
         speed: 100,
+      },
+      events: {
+        click: (event: any, chartContext: any, config: any) => {
+          console.log({ event, chartContext, config });
+          const { date } = config.config.series[config.seriesIndex]?.data[config.dataPointIndex] || {};
+          const isClickable = date && !isAfter(date, addDays(startOfToday(), 1));
+          if (date && isClickable) {
+            setPageDate(startOfDay(date));
+          }
+        },
       },
     },
     plotOptions: {
@@ -169,12 +180,15 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
         const { date } = w.config.series[seriesIndex].data[dataPointIndex];
         const time = series[seriesIndex][dataPointIndex];
+        const isNotClickable = isAfter(date, addDays(startOfToday(), 1));
+
         return `
           <div class="p-2 text-xs flex flex-col bg-primary-foreground">
-            ${date && "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>"}
+            ${date ? "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>" : ""}
             <span>
               Hours logged: ${time > 0 ? time.toFixed(2) : time}
             </span>
+            ${isNotClickable ? "<span>Future date not selectable</span>" : ""}
           </div>
         `;
       },
