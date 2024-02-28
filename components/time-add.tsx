@@ -213,7 +213,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log("Error submitting form!", error);
+      console.error("Error submitting form!", error);
     }
   };
 

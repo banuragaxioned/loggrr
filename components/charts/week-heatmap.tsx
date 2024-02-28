@@ -1,311 +1,172 @@
 "use client";
 
 import React from "react";
-import Chart from "react-apexcharts";
-import { Card } from "../ui/card";
+import dynamic from "next/dynamic";
+import { addDays, differenceInDays, endOfWeek, format, startOfToday } from "date-fns";
+import { Info } from "lucide-react";
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+import { Card, CardHeader } from "../ui/card";
 import { TimeEntrySum } from "./time-barchart";
-import { addDays, format, getDay, startOfToday, subDays, subWeeks } from "date-fns";
+import { Skeleton } from "../ui/skeleton";
+import { useTheme } from "next-themes";
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
-  console.log(sevenWeekTimeEntries);
-  const [data, setData] = React.useState<any>([]);
-  const series = [
-    {
-      name: "Sun",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Mon",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Tue",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Wed",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Thur",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Fri",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-    {
-      name: "Sat",
-      data: [
-        {
-          x: "W1",
-          y: 10,
-        },
-        {
-          x: "W2",
-          y: 20,
-        },
-        {
-          x: "W3",
-          y: 30,
-        },
-        {
-          x: "W4",
-          y: 40,
-        },
-        {
-          x: "W5",
-          y: 50,
-        },
-        {
-          x: "W6",
-          y: 60,
-        },
-        {
-          x: "W7",
-          y: 70,
-        },
-      ],
-    },
-  ];
+  const [data, setData] = React.useState<any>(null);
+  const { theme } = useTheme();
 
   React.useEffect(() => {
-    const getLast7Weeks = () => {
-      const today = startOfToday();
-      const lastFortyNineDays = [];
-      for (let i = 7 * 7 - 1; i >= 0; i--) {
-        const currentDate = subDays(today, i);
-        lastFortyNineDays.push(format(currentDate, "yyyy-MM-dd"));
-      }
-
-      return lastFortyNineDays;
-    };
-
-    const last7Weeks = getLast7Weeks();
-    const transformedData: { name: string; data: { x: string; y: number }[] }[] = [];
-
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+    const transformedData: { name: string; data: { x: string; y: number; date: string }[] }[] = [];
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].reverse();
 
     // Initialize the transformed data structure
     dayNames.forEach((day) => {
-      const weekData: { x: string; y: number }[] = [];
-      for (let i = 7; i >= 1; i--) {
-        weekData.push({ x: `W${i}`, y: 0 });
+      const weekData: { x: string; y: number; date: string }[] = [];
+      for (let i = 1; i <= 7; i++) {
+        weekData.push({ x: `Week ${i}`, y: 0, date: "" });
       }
       transformedData.push({ name: day, data: weekData });
     });
 
-    // Populate the data with fetched values
+    const today = endOfWeek(startOfToday());
     sevenWeekTimeEntries.forEach((entry: any) => {
-      const date = format(entry.date, "yyyy-MM-dd");
-      const dayOfWeek = getDay(entry.date); // 0 (Sun) - 6 (Sat)
+      const dayOfWeekFromToday = dayNames.findIndex((item) => item === format(entry.date, "EEE")); // Index based on today's date
+      const diffInDays = differenceInDays(addDays(today, 1), entry.date);
+      const weekIndex = Math.floor(diffInDays / 7);
 
-      // Calculate the week index
-      const weekIndex = Math.floor(
-        (new Date(date).getTime() - new Date(last7Weeks[0]).getTime()) / (7 * 24 * 60 * 60 * 1000),
-      );
-
-      if (weekIndex >= 0 && weekIndex < 7) {
-        // Ensure the week index is within valid range
-        transformedData[dayOfWeek].data[weekIndex].y = entry._sum.time / 60 || 0;
+      if (weekIndex >= 0 && weekIndex < 7 && dayOfWeekFromToday >= 0 && dayOfWeekFromToday < 7) {
+        transformedData[dayOfWeekFromToday].data[weekIndex].y = entry._sum.time / 60 || 0;
+        transformedData[dayOfWeekFromToday].data[weekIndex].date = format(entry.date, "yyyy-MM-dd");
       }
     });
 
-    setData(transformedData);
+    // Final Data to be shown in heatmap
+    const finalData = transformedData.map((item) => {
+      return {
+        name: item.name,
+        data: item.data.reverse(),
+      };
+    });
+
+    setData(finalData);
   }, [sevenWeekTimeEntries]);
 
   const options = {
+    chart: {
+      toolbar: {
+        show: false,
+      },
+      width: "100%",
+      height: "100%",
+      animations: {
+        enabled: true,
+        speed: 100,
+      },
+    },
+    plotOptions: {
+      heatmap: {
+        radius: 8,
+        enableShades: true,
+        shadeIntensity: 0.5,
+      },
+    },
     dataLabels: {
       enabled: false,
     },
+    grid: {
+      show: false,
+      padding: {
+        right: 20,
+        top: 0,
+        bottom: 0,
+      },
+    },
+    states: {
+      hover: {
+        colors: undefined,
+        filter: {
+          type: "none",
+          value: 0,
+        },
+      },
+      active: {
+        filter: {
+          type: "none",
+          value: 0,
+        },
+      },
+    },
     stroke: {
-      width: 1,
+      show: true,
+      width: 4,
+      colors: [theme === "dark" ? "black" : "white"],
     },
-    title: {
-      text: "HeatMap Chart with Color Range",
+    colors: ["#027B55"],
+    xaxis: {
+      labels: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
     },
-    colors: ["#013220"],
+    yaxis: {
+      labels: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
+        const { date } = w.config.series[seriesIndex].data[dataPointIndex];
+        return `
+          <div class="p-2 text-xs flex flex-col bg-primary-foreground border-border">
+            ${date && "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>"}
+            <span>
+              Hours logged: ${series[seriesIndex][dataPointIndex]}
+            </span>
+          </div>
+        `;
+      },
+    },
   };
 
-  console.log(data, series);
-
   return (
-    <Card className="p-2 shadow-none">
-      <Chart options={options} series={data} type="heatmap" height={200} />
+    <Card className="flex w-full flex-col shadow-none">
+      <CardHeader className="flex flex-row items-center justify-between p-4 text-xs font-bold text-muted-foreground">
+        <p>Heatmap</p>
+        <p className="flex items-center gap-1.5 font-medium">
+          <Info size={16} />
+          last 7 weeks
+        </p>
+      </CardHeader>
+      <div className="-mt-9 h-[200px]">
+        {data ? (
+          <Chart options={options} series={data} type="heatmap" height="100%" width="100%" />
+        ) : (
+          <div className="flex h-[100%] w-[100%] items-end justify-evenly">
+            {Array.from({ length: 7 }, (_, index) => (
+              <Skeleton key={index} className="mb-4 h-[150px] w-7" />
+            ))}
+          </div>
+        )}
+      </div>
     </Card>
   );
 };
