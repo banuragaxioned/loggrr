@@ -145,28 +145,22 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
             </div>
           </div>
           <div>
-            <Popover>
-              <PopoverTrigger>
-                <Button onClick={handleCalendarOpen} className="mt-[10px] w-full">
-                  {range
-                    ? `${range.from.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} - ${range.to.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
-                    : "Select Date Range"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                {calendarOpen && (
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={range?.from}
-                    today={range?.to}
-                    selected={range}
-                    onSelect={handleDateSelect}
-                    numberOfMonths={1}
-                  />
-                )}
-              </PopoverContent>
-            </Popover>
+            <Button type="button" onClick={handleCalendarOpen} className="mt-[10px] w-full">
+              {range
+                ? `${range.from.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} - ${range.to.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+                : "Select Date Range"}
+            </Button>
+            {calendarOpen && (
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={range?.from}
+                today={range?.to}
+                selected={range}
+                onSelect={handleDateSelect}
+                numberOfMonths={1}
+              />
+            )}
             <span className={dateError ? "visible text-xs text-red-500" : "invisible"}>Please select date</span>
           </div>
           <Button type="submit" className="mx-auto w-auto">
