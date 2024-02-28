@@ -113,7 +113,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
           onKeyUp={keypressHandler}
         />
       </PopoverTrigger>
-      <PopoverContent className="w-64 text-slate-500">
+      <PopoverContent className="w-80 text-slate-500">
         <form method="POST" onSubmit={submitHandler} action="#FIXME" className="flex flex-col justify-center">
           <div className="mb-2 flex justify-center gap-x-[2%]">
             <div className="basis-[48%]">
