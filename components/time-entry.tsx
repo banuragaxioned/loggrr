@@ -15,6 +15,9 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
+import AINotepad from "./notepad-entries";
+import TimeCard from "./ai-time-card";
+import { Button } from "./ui/button";
 
 export interface RecentEntryProps {
   id: number;
@@ -42,6 +45,20 @@ export type EntryData = {
   status: string;
 };
 
+export type timecard = {
+  projectId: string;
+  projectName: string;
+  taskId?: string;
+  taskName?: string;
+  milestoneId: string;
+  milestoneName: string;
+  time: number; // in minutes
+  date: string; // DD-MM-YYYY, this is today's date
+  comment: string;
+  billable: boolean;
+}
+type responseArrType = timecard[]
+
 /*
  * getDateString: returns date in format Wed, Jan 31
  */
@@ -59,6 +76,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
+  const [isInput, setIsInput] = useState(false)
+  const [responseArr, setResponseArr] = useState<responseArrType>([]) // TODO: set to empty array
+  const [loading, setLoading] = useState(false);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -179,6 +199,48 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
   };
 
+  const handleInput = async (input: string) => {
+    setIsInput(!!input)
+    console.log(input)
+    // setResponseArr(dummResponse)
+    // return
+    setLoading(true)
+    const response = await fetch('https://ai.webtiara.in/loggrai', {
+        method: 'POST',
+        body: JSON.stringify({ input }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    const data = await response.json();
+    console.log(data)
+    setResponseArr(data.result)
+    setLoading(false)
+  }
+
+  const handleaddLog = (timecard: timecard) => {
+    // remove from responseArr
+    console.log(timecard);
+    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId)
+    setResponseArr(newResponseArr)
+    toast.success("Task logged successfully!");
+  }
+
+  const handleClose = (timecard: timecard) => {
+    // remove from responseArr
+    console.log(timecard);
+    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId)
+    setResponseArr(newResponseArr)
+    toast.warning("Task discarded!");
+  }
+
+  const handleAddAll = () => {
+    // add all to timecard
+    setResponseArr([])
+    toast.success("All tasks logged successfully!");
+  }
+
+
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <Card className="col-span-12 shadow-none sm:col-span-8">
@@ -201,6 +263,15 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         />
       </Card>
       <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+      <AINotepad getInput={handleInput} loading={loading} />
+      <div className="w-[500px] flex flex-col gap-5 ml-auto items-start absolute right-2">
+        {responseArr?.map((timecard, index) => {
+          return (
+            <TimeCard key={index} data={timecard} handleClose={handleClose} handleaddLog={handleaddLog} />
+          )
+        })}
+        {responseArr.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
+      </div>
     </div>
   );
 };
