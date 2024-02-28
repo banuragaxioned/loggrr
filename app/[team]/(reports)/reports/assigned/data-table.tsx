@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Dispatch } from "react";
-import { DataTableStructure } from "@/components/data-table/structure";
+import { format, addDays } from "date-fns";
 import {
   ColumnDef,
   SortingState,
@@ -12,11 +12,12 @@ import {
   getSortedRowModel,
   Row,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./toolbar";
-import dayjs from "dayjs";
+
+import { DataTableStructure } from "@/components/data-table/structure";
+import { TableSkeleton } from "@/components/data-table/skeleton";
 import { useSubmit } from "@/hooks/use-submit";
 import { AllocationDetails, Assignment } from "@/types";
-import { TableSkeleton } from "@/components/data-table/skeleton";
+import { DataTableToolbar } from "./toolbar";
 
 interface AssignmentTableProps<TData, TValue> {
   columns: (
@@ -76,16 +77,13 @@ export function DataTable<Assignment, TValue>({ columns }: AssignmentTableProps<
 
   //api call to get allocation data
   const getAllocation = async () => {
-    const endDate = dayjs(startDate).add(14, "day").toDate();
+    const endDate = addDays(startDate, 14);
     return await fetch("/api/team/allocation/get", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         team: "axioned",
-        startDate,
-        endDate,
+        startDate: format(startDate, "yyyy-MM-dd"),
+        endDate: format(endDate, "yyyy-MM-dd"),
         page: 1,
         pageSize: 20,
       }),
