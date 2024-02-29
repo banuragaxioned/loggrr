@@ -97,6 +97,10 @@
   @apply fill-muted-foreground
 }
 
+.apexcharts-yaxis-texts-g text {
+  @apply fill-muted-foreground;
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -4,15 +4,15 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
 import { Info } from "lucide-react";
+import { startOfDay } from "date-fns";
+import { useTheme } from "next-themes";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-import { Card, CardHeader } from "../ui/card";
 import { TimeEntrySum } from "./time-barchart";
 import { Skeleton } from "../ui/skeleton";
-import { useTheme } from "next-themes";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
-import { startOfDay } from "date-fns";
+import { Card, Flex, Text } from "@tremor/react";
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
   const setPageDate = useTimeEntryState((state) => state.setPageDate);
@@ -83,10 +83,15 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       animations: {
         enabled: true,
         speed: 100,
+        animateGradually: {
+          enabled: false,
+        },
+        dynamicAnimation: {
+          enabled: false,
+        },
       },
       events: {
         click: (event: any, chartContext: any, config: any) => {
-          console.log({ event, chartContext, config });
           const { date } = config.config.series[config.seriesIndex]?.data[config.dataPointIndex] || {};
           const isClickable = date && !isAfter(date, addDays(startOfToday(), 1));
           if (date && isClickable) {
@@ -108,7 +113,15 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
               name: "empty",
               color: theme === "dark" ? "#212124" : "#F3F4F6",
             },
+            {
+              from: 0.01,
+              to: 7.5,
+              name: "hours",
+              color: "#027B55",
+            },
           ],
+          min: 0,
+          max: 7.5,
         },
       },
     },
@@ -188,7 +201,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
             <span>
               Hours logged: ${time > 0 ? time.toFixed(2) : time}
             </span>
-            ${isNotClickable ? "<span>Future date not selectable</span>" : ""}
+            ${isNotClickable ? "<span class='text-[10px]'>(Not-selectable)</span>" : ""}
           </div>
         `;
       },
@@ -196,17 +209,19 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
   };
 
   return (
-    <Card className="flex w-full flex-col shadow-none">
-      <CardHeader className="flex flex-row items-end justify-between px-4 py-2 text-xs font-bold text-muted-foreground">
-        <p>Heatmap</p>
-        <p className="flex items-center gap-1.5 font-medium">
-          <Info size={16} />
+    <Card className="flex w-full flex-col pb-1 shadow-none">
+      <Flex className="items-center font-semibold">
+        <Text>Heatmap</Text>
+        <Text className="flex items-center text-xs">
+          <Info className="mx-1" size={16} />
           last 7 weeks
-        </p>
-      </CardHeader>
-      <div className="-mt-6 h-[200px]">
+        </Text>
+      </Flex>
+      <div className="-mt-2 h-[200px]">
         {data ? (
-          <Chart options={options} series={data} type="heatmap" height="100%" width="100%" />
+          <div className="-ml-3 h-full w-full">
+            <Chart options={options} series={data} type="heatmap" height="100%" width="110%" />
+          </div>
         ) : (
           <div className="flex h-[100%] w-[100%] items-end justify-evenly">
             {Array.from({ length: 7 }, (_, index) => (
