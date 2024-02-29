@@ -253,7 +253,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
               <Input
                 tabIndex={isProjectAndMilestoneSelected ? 6 : -1}
                 type="text"
-                placeholder="7:50"
+                placeholder="2:30"
                 className={cn(
                   errors?.time
                     ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
