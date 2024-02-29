@@ -56,8 +56,8 @@ export type timecard = {
   date: string; // DD-MM-YYYY, this is today's date
   comment: string;
   billable: boolean;
-}
-type responseArrType = timecard[]
+};
+type responseArrType = timecard[];
 
 /*
  * getDateString: returns date in format Wed, Jan 31
@@ -76,8 +76,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
-  const [isInput, setIsInput] = useState(false)
-  const [responseArr, setResponseArr] = useState<responseArrType>([]) // TODO: set to empty array
+  const [isInput, setIsInput] = useState(false);
+  const [responseArr, setResponseArr] = useState<responseArrType>([]); // TODO: set to empty array
   const [loading, setLoading] = useState(false);
 
   // This sets the date to the store which we can utilize for quick action time
@@ -199,47 +199,50 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
   };
 
+  const API_KEY = process.env.OPENAI_API_KEY;
+  console.log(API_KEY, "api");
+
   const handleInput = async (input: string) => {
-    setIsInput(!!input)
-    console.log(input)
+    setIsInput(!!input);
+    console.log(input);
     // setResponseArr(dummResponse)
     // return
-    setLoading(true)
-    const response = await fetch('https://ai.webtiara.in/loggrai', {
-        method: 'POST',
-        body: JSON.stringify({ input }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
+    setLoading(true);
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      body: JSON.stringify({ input }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    });
     const data = await response.json();
-    console.log(data)
-    setResponseArr(data.result)
-    setLoading(false)
-  }
+    console.log(data);
+    setResponseArr(data.result);
+    setLoading(false);
+  };
 
   const handleaddLog = (timecard: timecard) => {
     // remove from responseArr
     console.log(timecard);
-    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId)
-    setResponseArr(newResponseArr)
+    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId);
+    setResponseArr(newResponseArr);
     toast.success("Task logged successfully!");
-  }
+  };
 
   const handleClose = (timecard: timecard) => {
     // remove from responseArr
     console.log(timecard);
-    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId)
-    setResponseArr(newResponseArr)
+    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId);
+    setResponseArr(newResponseArr);
     toast.warning("Task discarded!");
-  }
+  };
 
   const handleAddAll = () => {
     // add all to timecard
-    setResponseArr([])
+    setResponseArr([]);
     toast.success("All tasks logged successfully!");
-  }
-
+  };
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
@@ -264,14 +267,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       </Card>
       <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
       <AINotepad getInput={handleInput} loading={loading} />
-      <div className="w-[500px] flex flex-col gap-5 ml-auto items-start absolute right-2">
+      {/* <div className="w-[500px] flex flex-col gap-5 ml-auto items-start absolute right-2">
         {responseArr?.map((timecard, index) => {
           return (
             <TimeCard key={index} data={timecard} handleClose={handleClose} handleaddLog={handleaddLog} />
           )
         })}
-        {responseArr.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
-      </div>
+        {responseArr?.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
+      </div> */}
     </div>
   );
 };

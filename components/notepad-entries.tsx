@@ -13,6 +13,8 @@ type AINotepadProps = {
 
 export default function AINotepad({ getInput, loading }: AINotepadProps) {
   const [textInput, setTextInput] = useState<string>("");
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
 
   const handleChange = (e: { target: { value: string } }) => {
     setTextInput(e.target.value);
@@ -23,11 +25,19 @@ export default function AINotepad({ getInput, loading }: AINotepadProps) {
     getInput(textInput);
   };
 
+  const sendMessage = async () => {
+    if (input.trim() === "") return;
+    setMessages([...messages, { text: input, isUser: true }]);
+    const response = await getInput(input);
+    setMessages([...messages, { text: response, isUser: false }]);
+    setInput("");
+  };
+
   return (
     <Card className="col-span-12 overflow-hidden shadow-none sm:col-span-4">
       <CardHeader className="flex flex-row items-center justify-between">
         <p className="w-auto text-sm font-medium text-muted-foreground">Notebook</p>
-        <div className="flex justify-between items-center flex-row gap-3">
+        <div className="flex flex-row items-center justify-between gap-3">
           <Loader className={`h-5 w-5 text-blue-500 ${loading ? "animate-spin" : ""}`} />
           <ChevronDown className="h-5 w-5 text-blue-500" />
         </div>
@@ -48,6 +58,24 @@ export default function AINotepad({ getInput, loading }: AINotepadProps) {
             {/* <Sparkles className={` ms-3 h-8 w-8 animate-pulse text-blue-500 ${loading ? "block" : "hidden"}`} /> */}
           </div>
         </form>
+        <div>
+          <div>
+            {messages.map((msg, index) => (
+              <div key={index} className={msg?.isUser ? "user-message" : "ai-message"}>
+                {msg?.text}
+              </div>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") sendMessage();
+            }}
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
       </CardContent>
     </Card>
   );

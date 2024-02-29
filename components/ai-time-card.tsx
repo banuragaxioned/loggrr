@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
@@ -13,57 +13,66 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { format, minutesToHours } from "date-fns";
 import { Checkbox } from "./ui/checkbox";
-import { sampleProjects } from '@/loggr-ai/projects-data';
+import { sampleProjects } from "@/app/api/team/loggr-ai/projects-data";
 import { timecard } from "@/components/time-entry";
 
 export default function TimeCard({ data, handleClose, handleaddLog }: any) {
-  const [selectedProject, setSelectedProject] = useState<any>(data.projectName)
-  const [taskOption, setTaskOption] = useState<any>([])
-  const [milestoneOption, setMilestoneOption] = useState<any>([])
+  const [selectedProject, setSelectedProject] = useState<any>(data.projectName);
+  const [taskOption, setTaskOption] = useState<any>([]);
+  const [milestoneOption, setMilestoneOption] = useState<any>([]);
 
-  const [date, month, year] = data.date.split("-")
+  const [date, month, year] = data.date.split("-");
 
   const FormSchema = z.object({
-    date: z.date({
-      required_error: "A date of birth is required.",
-    }).default(new Date(year, month - 1, date)),
+    date: z
+      .date({
+        required_error: "A date of birth is required.",
+      })
+      .default(new Date(year, month - 1, date)),
     comment: z.string().nonempty(),
     selectedProject: z.number().int("Please Select a Project").default(data.projectId),
     selectedMilestone: z.number().optional(),
     selectedTask: z.number().optional(),
     isBillable: z.string(),
-    loggedHrs: z.number().int("Please enter hours")
-  })
+    loggedHrs: z.number().int("Please enter hours"),
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-  })
+  });
 
   const handleSubmit = (data: timecard, e: any) => {
-    e.preventDefault()
-    handleaddLog(data)
-    console.log('Saved to db');
-  }
+    e.preventDefault();
+    handleaddLog(data);
+    console.log("Saved to db");
+  };
 
   const handleprojectChange = (e: string) => {
-    setSelectedProject(e)
-  }
+    setSelectedProject(e);
+  };
 
   useEffect(() => {
-    const selectedProjectObj = sampleProjects.filter(projects => projects.name === selectedProject)[0]
-    selectedProjectObj.task ? setTaskOption(selectedProjectObj?.task) : setTaskOption([])
-    selectedProjectObj.milestone ? setMilestoneOption(selectedProjectObj?.milestone) : setMilestoneOption([])
-  }, [selectedProject])
+    const selectedProjectObj = sampleProjects.filter((projects) => projects.name === selectedProject)[0];
+    selectedProjectObj.task ? setTaskOption(selectedProjectObj?.task) : setTaskOption([]);
+    selectedProjectObj.milestone ? setMilestoneOption(selectedProjectObj?.milestone) : setMilestoneOption([]);
+  }, [selectedProject]);
 
   // console.log()
 
   return (
-    <div className="mt-5 relative border-2 rounded-2xl">
-      <Button onClick={() => handleClose(data)} size="icon" className="bg-transparent text-secondary-foreground absolute top-[-20px] right-5 hover:bg-transparent p-0">
-        <XCircle className="bg-secondary rounded-full text-gray-400" />
+    <div className="relative mt-5 rounded-2xl border-2">
+      <Button
+        onClick={() => handleClose(data)}
+        size="icon"
+        className="absolute right-5 top-[-20px] bg-transparent p-0 text-secondary-foreground hover:bg-transparent"
+      >
+        <XCircle className="rounded-full bg-secondary text-gray-400" />
       </Button>
       <Form {...form}>
-        <form className="flex flex-wrap justify-between items-center gap-[10px]  px-7 py-5" onSubmit={(e) => handleSubmit(data, e)}>
+        <form
+          className="flex flex-wrap items-center justify-between gap-[10px]  px-7 py-5"
+          onSubmit={(e) => handleSubmit(data, e)}
+        >
           <FormField
             control={form.control}
             name="date"
@@ -72,8 +81,12 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
                 <Popover>
                   <PopoverTrigger asChild>
                     <div>
-                      <span className="rounded-t-md bg-primary text-primary-foreground text-sm px-2 py-1">{format(new Date(year, +month - 1, date), "MMM")}</span>
-                      <span className="block w-full border-2 rounded border-t-0 text-center text-md">{format(new Date(year, +month - 1, date), "dd")}</span>
+                      <span className="rounded-t-md bg-primary px-2 py-1 text-sm text-primary-foreground">
+                        {format(new Date(year, +month - 1, date), "MMM")}
+                      </span>
+                      <span className="text-md block w-full rounded border-2 border-t-0 text-center">
+                        {format(new Date(year, +month - 1, date), "dd")}
+                      </span>
                     </div>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -107,10 +120,14 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
             name="selectedProject"
             render={({ field }) => (
               <FormItem className="col-span-2 basis-full">
-                <Select value={selectedProject} defaultValue={data.projectName} onValueChange={(e) => {
-                  field.onChange();
-                  handleprojectChange(e)
-                }}>
+                <Select
+                  value={selectedProject}
+                  defaultValue={data.projectName}
+                  onValueChange={(e) => {
+                    field.onChange();
+                    handleprojectChange(e);
+                  }}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select project" />
@@ -121,8 +138,10 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
                       <SelectLabel>Projects</SelectLabel>
                       {sampleProjects.map((projects, index) => {
                         return (
-                          <SelectItem value={projects.name} key={projects.id}>{projects.name}</SelectItem>
-                        )
+                          <SelectItem value={projects.name} key={projects.id}>
+                            {projects.name}
+                          </SelectItem>
+                        );
                       })}
                     </SelectGroup>
                   </SelectContent>
@@ -131,7 +150,7 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
               </FormItem>
             )}
           />
-          {milestoneOption?.length ?
+          {milestoneOption?.length ? (
             <FormField
               control={form.control}
               name="selectedMilestone"
@@ -147,9 +166,7 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
                       <SelectGroup>
                         <SelectLabel>Milestones</SelectLabel>
                         {milestoneOption?.map((milestone: any) => {
-                          return (
-                            <SelectItem value={milestone.name}>{milestone.name}</SelectItem>
-                          )
+                          return <SelectItem value={milestone.name}>{milestone.name}</SelectItem>;
                         })}
                       </SelectGroup>
                     </SelectContent>
@@ -157,9 +174,11 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
                   <FormMessage />
                 </FormItem>
               )}
-            /> : ''
-          }
-          {taskOption?.length ?
+            />
+          ) : (
+            ""
+          )}
+          {taskOption?.length ? (
             <FormField
               control={form.control}
               name="selectedTask"
@@ -181,17 +200,26 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
                   <FormMessage />
                 </FormItem>
               )}
-            /> : ''
-          }
+            />
+          ) : (
+            ""
+          )}
           <FormField
             control={form.control}
             name="loggedHrs"
             render={({ field }) => (
-              <FormItem className="col-span-2 basis-[25%] gap-2 flex align-center items-center">
+              <FormItem className="align-center col-span-2 flex basis-[25%] items-center gap-2">
                 <FormControl className="my-2">
-                  <Input placeholder="7.5" defaultValue={minutesToHours(data.time)} {...field} className="text-center" />
+                  <Input
+                    placeholder="7.5"
+                    defaultValue={minutesToHours(data.time)}
+                    {...field}
+                    className="text-center"
+                  />
                 </FormControl>
-                <label className="text-sm text-gray-500 mt-0" style={{ marginTop: 0, marginRight: 10 }}>Hrs</label>
+                <label className="mt-0 text-sm text-gray-500" style={{ marginTop: 0, marginRight: 10 }}>
+                  Hrs
+                </label>
                 <FormMessage />
               </FormItem>
             )}
@@ -200,17 +228,21 @@ export default function TimeCard({ data, handleClose, handleaddLog }: any) {
             control={form.control}
             name="isBillable"
             render={({ field }) => (
-              <FormItem className="mr-auto flex align-center items-center">
+              <FormItem className="align-center mr-auto flex items-center">
                 <FormControl>
                   <Checkbox onChange={field.onChange} value={field.value} checked={data.billable} />
                 </FormControl>
-                <label className="mt-0 text-sm" style={{ marginLeft: 8, marginTop: 0 }}>Billable</label>
+                <label className="mt-0 text-sm" style={{ marginLeft: 8, marginTop: 0 }}>
+                  Billable
+                </label>
               </FormItem>
             )}
           />
-          <Button type="submit" variant={"outline"}>Add Hrs</Button>
+          <Button type="submit" variant={"outline"}>
+            Add Hrs
+          </Button>
         </form>
       </Form>
     </div>
-  )
+  );
 }
