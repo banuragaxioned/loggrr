@@ -75,6 +75,7 @@ export const getRecentEntries = async (slug: string, userId: number) => {
         select: {
           id: true,
           name: true,
+          billable: true,
           client: {
             select: {
               id: true,

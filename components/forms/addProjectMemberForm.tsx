@@ -43,7 +43,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
         SheetCloseButton.current?.click();
         router.refresh();
       } catch (error) {
-        console.error(error);
+        console.error("Error adding new member", error);
       }
     }
   };
