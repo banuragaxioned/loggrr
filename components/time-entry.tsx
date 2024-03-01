@@ -81,8 +81,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<any>([]); // TODO: set to empty array
 
-  console.log(aiResponses, "aiResponses");
-
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
     setQuickActionDate(date);
@@ -211,25 +209,12 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
 
     try {
       setAiLoading(true);
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch("/api/team/ai", {
         method: "POST",
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant.",
-            },
-            {
-              role: "user",
-              content: userInput,
-            },
-          ],
+          projects: projects,
+          input: userInput,
         }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_KEY}`,
-        },
       });
       const data = await response.json();
       setAiResponses([
@@ -237,7 +222,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         {
           id: new Date(),
           user: userInput,
-          ai: data.choices[0].message.content,
+          response: JSON.stringify(data.result.data, null, 2),
         },
       ]);
       setAiInput("");
@@ -281,7 +266,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           return (
             <div key={response.id}>
               <p>{response.user}</p>
-              <p>{response.ai}</p>
+              <pre>{response.response}</pre>
             </div>
           );
         })}
