@@ -89,6 +89,18 @@
   @apply fill-muted !important;
 }
 
+.apexcharts-svg rect {
+  @apply cursor-pointer;
+}
+
+.apexcharts-svg rect:hover {
+  @apply fill-muted-foreground
+}
+
+.apexcharts-yaxis-texts-g text {
+  @apply fill-muted-foreground;
+}
+
 @layer base {
   * {
     @apply border-border;

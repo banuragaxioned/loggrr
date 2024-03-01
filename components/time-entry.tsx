@@ -131,7 +131,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
    */
   const deleteTimeEntry = async (id: number) => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
+      const response = await fetch(`/api/team/time-entry?team=${team}&id=${id}`, {
         method: "DELETE",
       });
 
@@ -181,7 +181,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log("Error submitting form!", error);
+      console.error("Error submitting form!", error);
     }
   };
 
