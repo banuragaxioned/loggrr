@@ -57,7 +57,8 @@ export type timecard = {
   comment: string;
   billable: boolean;
 };
-type responseArrType = timecard[];
+
+// type responseArrType = timecard[];
 
 /*
  * getDateString: returns date in format Wed, Jan 31
@@ -76,9 +77,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
-  const [isInput, setIsInput] = useState(false);
-  const [responseArr, setResponseArr] = useState<responseArrType>([]); // TODO: set to empty array
-  const [loading, setLoading] = useState(false);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponses, setAiResponses] = useState<any>([]); // TODO: set to empty array
+
+  console.log(aiResponses, "aiResponses");
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -199,49 +202,50 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
   };
 
-  const API_KEY = process.env.OPENAI_API_KEY;
-  console.log(API_KEY, "api");
+  /*
+   * notebookSubmitHandler: The following will send input to API
+   */
+  const notebookSubmitHandler = async (input: string) => {
+    const userInput = input.trim();
+    if (!userInput) return;
 
-  const handleInput = async (input: string) => {
-    setIsInput(!!input);
-    console.log(input);
-    // setResponseArr(dummResponse)
-    // return
-    setLoading(true);
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      body: JSON.stringify({ input }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-      },
-    });
-    const data = await response.json();
-    console.log(data);
-    setResponseArr(data.result);
-    setLoading(false);
-  };
-
-  const handleaddLog = (timecard: timecard) => {
-    // remove from responseArr
-    console.log(timecard);
-    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId);
-    setResponseArr(newResponseArr);
-    toast.success("Task logged successfully!");
-  };
-
-  const handleClose = (timecard: timecard) => {
-    // remove from responseArr
-    console.log(timecard);
-    const newResponseArr = responseArr.filter((res) => res.projectId !== timecard.projectId);
-    setResponseArr(newResponseArr);
-    toast.warning("Task discarded!");
-  };
-
-  const handleAddAll = () => {
-    // add all to timecard
-    setResponseArr([]);
-    toast.success("All tasks logged successfully!");
+    try {
+      setAiLoading(true);
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful assistant.",
+            },
+            {
+              role: "user",
+              content: userInput,
+            },
+          ],
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_KEY}`,
+        },
+      });
+      const data = await response.json();
+      setAiResponses([
+        ...aiResponses,
+        {
+          id: new Date(),
+          user: userInput,
+          ai: data.choices[0].message.content,
+        },
+      ]);
+      setAiInput("");
+      setAiLoading(false);
+    } catch (error) {
+      console.log("Error fetching AI response", error);
+      setAiLoading(false);
+    }
   };
 
   return (
@@ -265,8 +269,23 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           edit={edit}
         />
       </Card>
-      <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
-      <AINotepad getInput={handleInput} loading={loading} />
+      <div className="col-span-12 flex flex-col gap-4 sm:col-span-4">
+        <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+        <AINotepad
+          notebookSubmitHandler={notebookSubmitHandler}
+          aiInput={aiInput}
+          setAiInput={setAiInput}
+          aiLoading={aiLoading}
+        />
+        {aiResponses?.map((response: any) => {
+          return (
+            <div key={response.id}>
+              <p>{response.user}</p>
+              <p>{response.ai}</p>
+            </div>
+          );
+        })}
+      </div>
       {/* <div className="w-[500px] flex flex-col gap-5 ml-auto items-start absolute right-2">
         {responseArr?.map((timecard, index) => {
           return (

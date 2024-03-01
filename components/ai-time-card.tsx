@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { format, minutesToHours } from "date-fns";
 import { Checkbox } from "./ui/checkbox";
-import { sampleProjects } from "@/app/api/team/loggr-ai/projects-data";
+import { sampleProjects } from "@/app/api/team/ai/projects-data";
 import { timecard } from "@/components/time-entry";
 
 export default function TimeCard({ data, handleClose, handleaddLog }: any) {
