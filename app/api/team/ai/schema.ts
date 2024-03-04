@@ -11,7 +11,7 @@ export type TimeLog = {
       name: string;
     };
     billable?: boolean; // default to false
-    time: number; // in hours
+    time: string; // numeric value without any unit
     comments: string;
     date: string; // yyyy-MM-dd, this is today's date
   }[];

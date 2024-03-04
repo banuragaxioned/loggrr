@@ -18,7 +18,7 @@ type TimeLog = {
       name: string;
     };
     billable?: boolean;
-    time?: number;
+    time?: string;
     comments?: string | "";
     date: string;
   }[];
