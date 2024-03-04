@@ -18,7 +18,6 @@ export async function processRequests(
     const lines = fs.readFileSync(inputFileName).toString().split(/\r?\n/);
     for (const line of lines) {
       if (line.length) {
-        console.log(interactivePrompt + line);
         await processRequest(line);
       }
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CircleDollarSign, Folder, Check, Ban } from "lucide-react";
+import { CircleDollarSign, Folder, Check, Ban, Rocket, List } from "lucide-react";
 
 import { ComboBox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -32,10 +32,13 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
 
   const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
 
+  const formValidator = () => {
+    const { project, comment, time, milestone } = selectedData || {};
+    return project && milestone && comment?.trim().length && time && !errors?.time;
+  };
+
   const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
     const foundData = arr.find((obj) => obj.id === +selected);
-    console.log(arr, "arr");
-
     callback(foundData);
   };
 
@@ -48,8 +51,7 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
   const projectCallback = (selected: Project) => {
     setSelectedData({
       ...selectedData,
-      client: selected?.client,
-      project: { id: selected.id, name: selected?.name, billable: selected?.billable },
+      project: { id: selected.id, name: selected?.name },
     });
     setProjectMilestones(() => {
       const milestone = selected?.milestone;
@@ -71,10 +73,17 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
     }
   };
 
+  const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
+
+  const taskCallback = (selected: Milestone) => {
+    const data: SelectedData = { ...selectedData, task: selected };
+    setSelectedData(data);
+  };
+
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
   useEffect(() => {
-    const foundProject = projects.find((project) => project.id === selectedData.project?.id);
+    const foundProject = projects.find((project) => project.id === data.project?.id);
     setSelectedData(data);
     setProjectMilestones(() => {
       const milestone = foundProject?.milestone;
@@ -84,15 +93,12 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
       const task = foundProject?.task;
       return task ? task : [];
     });
-  }, [data, projects, selectedData.project?.id]);
-
-  console.log(selectedData, "data");
+  }, [data, projects]);
 
   return (
     <Card className="col-span-4 overflow-hidden p-0 shadow-none">
       <CardContent className="flex flex-col gap-2 p-4">
         <ComboBox
-          tabIndex={1}
           searchable
           icon={<Folder size={16} />}
           options={projects}
@@ -101,67 +107,65 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
           handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
         />
         <ComboBox
-          tabIndex={1}
           searchable
-          icon={<Folder size={16} />}
+          icon={<Rocket size={16} />}
           options={projectMilestones}
           label="Milestones"
           selectedItem={selectedData?.milestone}
-          handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+          handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+          disabled={!selectedData?.project?.id}
         />
         <ComboBox
-          tabIndex={1}
           searchable
-          icon={<Folder size={16} />}
+          icon={<List size={16} />}
           options={projectTasks}
           label="Task"
           selectedItem={selectedData?.task}
-          handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+          handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+          disabled={!isProjectAndMilestoneSelected}
         />
         <div className="flex flex-row gap-2">
-          <Button
-            tabIndex={isProjectAndMilestoneSelected ? 5 : -1}
-            variant="outline"
-            size="icon"
-            type="button"
-            onClick={() =>
-              selectedData?.project?.billable &&
-              setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
-            }
-            className={cn(
-              selectedData.billable && "text-success hover:text-success",
-              !selectedData.billable && "text-slate-400 hover:text-slate-400",
-            )}
-          >
-            <CircleDollarSign size={20} />
-          </Button>
+          {selectedData.project?.billable && (
+            <Button
+              variant="outline"
+              size="icon"
+              type="button"
+              onClick={() =>
+                selectedData?.project?.billable &&
+                setSelectedData((prev) => ({ ...prev, billable: !selectedData?.billable }))
+              }
+              className={cn(
+                selectedData.billable && "text-success hover:text-success",
+                !selectedData.billable && "text-slate-400 hover:text-slate-400",
+              )}
+            >
+              <CircleDollarSign size={20} />
+            </Button>
+          )}
           <Input
-            tabIndex={isProjectAndMilestoneSelected ? 6 : -1}
             type="text"
             placeholder="2:30"
             className={cn(
               errors?.time
                 ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                 : "border-border focus:border-primary focus:ring-primary",
-              "placeholder:text-disabled-light focus:outline-none` h-9 w-[66px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out",
+              "placeholder:text-disabled-light ml-auto h-9 w-[120px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none",
             )}
-            value={data.time}
+            value={selectedData.time}
             onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
             disabled={!isProjectAndMilestoneSelected}
           />
         </div>
-        <input
-          tabIndex={isProjectAndMilestoneSelected ? 4 : -1}
-          className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 py-1.5 text-sm focus:outline-0 focus:ring-0"
+        <Input
           placeholder="Comments"
-          value={data.comment ?? ""}
+          value={selectedData.comment ?? ""}
           onChange={(e) => setCommentText(e.target.value)}
         />
         <div className="flex flex-row justify-between">
           <Button type="button" variant="outline" size="icon" title="Cancel">
             <Ban size={16} />
           </Button>
-          <Button type="button" variant="outline" size="icon" title="Add">
+          <Button type="button" variant="outline" size="icon" title="Add" disabled={!formValidator()}>
             <Check size={16} />
           </Button>
         </div>

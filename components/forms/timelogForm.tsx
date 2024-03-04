@@ -46,8 +46,6 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
 
-  console.log(selectedData, "selectedData");
-
   const handleClearForm = () => {
     setSelectedData(initialDataState);
     setErrors({});

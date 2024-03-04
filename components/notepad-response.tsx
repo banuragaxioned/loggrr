@@ -23,37 +23,49 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
 
   console.log(aiResponses, "aiResponses");
 
-  const CarouselCards = () => {
-    return (
-      <Carousel
-        opts={{
-          align: "start",
-        }}
-        className="flex w-full max-w-3xl gap-3"
-      >
-        <CarouselContent>
-          {Array.isArray(aiResponses) &&
-            aiResponses?.map((response: any, index: number) => {
-              const updatedResponse = {
-                ...response,
-                project: { id: response.id, name: response.name },
-                comment: response.comments,
-              };
+  // const CarouselCards = () => {
+  //   return (
+  //     <Carousel
+  //       opts={{
+  //         align: "start",
+  //       }}
+  //       className="flex w-full max-w-3xl gap-3"
+  //     >
+  //       <CarouselContent>
+  //         {Array.isArray(aiResponses) &&
+  //           aiResponses?.map((response: any, index: number) => {
+  //             const updatedResponse = {
+  //               ...response,
+  //               project: { id: response.id, name: response.name },
+  //               comment: response.comments,
+  //             };
 
-              return (
-                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1">
-                    <NotepadCards projects={projects} data={updatedResponse} />
-                  </div>
-                </CarouselItem>
-              );
-            })}
-        </CarouselContent>
-        <CarouselPrevious disabled={aiResponses?.length < 3} />
-        <CarouselNext disabled={aiResponses?.length < 3} />
-      </Carousel>
-    );
-  };
+  //             return (
+  //               <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+  //                 <div className="p-1">
+  //                   <NotepadCards projects={projects} data={updatedResponse} />
+  //                 </div>
+  //               </CarouselItem>
+  //             );
+  //           })}
+  //       </CarouselContent>
+  //       <CarouselPrevious disabled={aiResponses?.length < 3} />
+  //       <CarouselNext disabled={aiResponses?.length < 3} />
+  //     </Carousel>
+  //   );
+  // };
+
+  const renderTimeCards = aiResponses?.map((response: any, index: number) => {
+    const updatedResponse = {
+      ...response,
+      project: projects
+        .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
+        .find((project: any) => project.id === response.id),
+      comment: response.comments,
+    };
+
+    return <NotepadCards projects={projects} data={updatedResponse} key={index} />;
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -64,14 +76,12 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
               Add time entries
               <span className="text-xs">(AI generated)</span>
             </div>
-            <Button size="sm" variant="outline" className="mr-4">
+            <Button size="sm" variant="outline" className="mr-5">
               Log all
             </Button>
           </DialogTitle>
         </DialogHeader>
-        <div className="flex justify-center gap-3">
-          <CarouselCards />
-        </div>
+        <div className="grid grid-cols-12 justify-center gap-3">{renderTimeCards}</div>
       </DialogContent>
     </Dialog>
   );

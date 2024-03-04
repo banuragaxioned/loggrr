@@ -16,8 +16,6 @@ import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
 import AINotepad from "./notepad";
-import TimeCard from "./ai-time-card";
-import { Button } from "./ui/button";
 import NotepadResponse from "./notepad-response";
 
 export interface RecentEntryProps {
@@ -222,12 +220,10 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       setAiInput("");
       setAiLoading(false);
     } catch (error) {
-      console.log("Error fetching AI response", error);
+      console.error("Error fetching AI response", error);
       setAiLoading(false);
     }
   };
-
-  console.log(aiResponses, "aiResponses");
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
