@@ -1,9 +1,9 @@
 import path from "path";
 import { promises as fsPromises } from "fs";
 
-import * as typechat from "./TypeChat/typechat";
-import { createTypeScriptJsonValidator } from "./TypeChat/ts/validate";
-import { createOpenAILanguageModel } from "./TypeChat/model";
+import * as typechat from "./typechat/typechat";
+import { createTypeScriptJsonValidator } from "./typechat/ts/validate";
+import { createOpenAILanguageModel } from "./typechat/model";
 
 type TimeLog = {
   data: {
@@ -36,8 +36,9 @@ const validator = createTypeScriptJsonValidator<TimeLog>(schema ?? "", "TimeLog"
 const translator = typechat.createJsonTranslator(model, validator);
 const response = translator.translate("2hour cfm - dev and standup");
 
-export async function loggr(input: string, projects: any) {
-  console.log(input, projects, "hit");
+export async function loggr(input: string) {
+  if (!input) return { message: "No input provided", status: 400 };
+
   try {
     const response = await translator.translate(input);
     if (!response.success) {

@@ -1,6 +1,5 @@
 import { Result, success, error } from "./result";
 import { TypeChatLanguageModel, PromptSection } from "./model";
-import { rawProjects, sampleProjects } from "../projects-data";
 
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
@@ -115,19 +114,22 @@ export function createJsonTranslator<T extends object>(
   return typeChat;
 
   function createRequestPrompt(request: string) {
+    const { projects, input } = JSON.parse(request);
+
     return (
       `You've the following JSON data from database:\n` +
-      `\n\n${JSON.stringify(sampleProjects)}\n\n` +
+      `\n\n${JSON.stringify(projects)}\n\n` +
       `Find the correct JSON document from the given projects data` +
       `As a service, your task is to translate the found document into JSON objects of type "${validator.getTypeName()}" following these TypeScript definitions:\n` +
       `\`\`\`\n${validator.getSchemaText()}\`\`\`\n` +
       `User Request:\n` +
-      `"""\n${request}\n"""\n` +
+      `"""\n${input}\n"""\n` +
       `Translate the user request into a JSON object with 2 spaces of indentation and no properties with the value "undefined":\n` +
       `Ensure that you only return JSON data of Type: ${validator.getTypeName()} where the response is single object with a single key named "data" having value array of objects mentioned as in Type: ${validator.getTypeName()} without any additional formatting.\n` +
       `System date: ${new Date().toLocaleString()}\n\n, day: ${new Date().getDay()}\n\n`
     );
   }
+
   function getSystemPrompt(jsonData: any) {
     return `You've the following json data from database:` + `\n${JSON.stringify(jsonData)}\n\n`;
   }
