@@ -5,6 +5,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
+import { Input } from "./input";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +43,19 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   handleSelect,
 }) => {
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>(options);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    setFilteredOptions(options.filter((option) => option.name.toLowerCase().includes(value.toLowerCase())));
+  };
+
+  const handleOptionSelect = (option: ComboboxOptions) => {
+    handleSelect?.(option?.id.toString());
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -73,32 +87,32 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             <>
               {searchable && (
                 <div className="space-between flex w-full items-center rounded-t-[5px]">
-                  <CommandInput
+                  <Input
                     tabIndex={tabIndex}
-                    className={`text-popover-foregroun box-border border-0 border-none border-border bg-popover px-0 text-[14px] placeholder:font-[14px] placeholder:opacity-75 focus:outline-0 focus:ring-0`}
+                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover px-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
                     autoFocus
                     placeholder={placeholder ?? "Search here..."}
+                    value={inputValue}
+                    onChange={handleInputChange}
                   />
                 </div>
               )}
               <CommandList className="max-h-[200px] w-full px-[5px] py-[8px]">
-                <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
-                {options?.map((item) => {
-                  return (
+                {filteredOptions.length > 0 ? (
+                  filteredOptions.map((option) => (
                     <CommandItem
-                      key={item.id}
-                      value={`${item.id}`}
-                      onSelect={(val: string) => {
-                        handleSelect && handleSelect(val);
-                        setOpen(false);
-                      }}
+                      key={option.id}
+                      value={`${option.id}`}
+                      onSelect={() => handleOptionSelect(option)}
                       className="w-full cursor-pointer justify-between"
                     >
-                      {item.name}
-                      {selectedItem?.id === item.id && <Check size={16} className="shrink-0" />}
+                      {option.name}
+                      {selectedItem?.id === option.id && <Check size={16} className="shrink-0" />}
                     </CommandItem>
-                  );
-                })}
+                  ))
+                ) : (
+                  <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
+                )}
               </CommandList>
             </>
           ) : (
