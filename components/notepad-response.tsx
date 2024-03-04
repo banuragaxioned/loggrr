@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 
 const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
   const [open, setOpen] = useState(false);
@@ -20,15 +21,39 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
     }
   }, [open, setAiResponses]);
 
-  const renderTimeCards = aiResponses?.map((response: any, index: number) => {
-    const updatedResponse = {
-      ...response,
-      project: { id: response.id, name: response.name },
-      comment: response.comments,
-    };
+  console.log(aiResponses, "aiResponses");
 
-    return <NotepadCards projects={projects} data={updatedResponse} />;
-  });
+  const CarouselCards = () => {
+    return (
+      <Carousel
+        opts={{
+          align: "start",
+        }}
+        className="flex w-full max-w-3xl gap-3"
+      >
+        <CarouselContent>
+          {Array.isArray(aiResponses) &&
+            aiResponses?.map((response: any, index: number) => {
+              const updatedResponse = {
+                ...response,
+                project: { id: response.id, name: response.name },
+                comment: response.comments,
+              };
+
+              return (
+                <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1">
+                    <NotepadCards projects={projects} data={updatedResponse} />
+                  </div>
+                </CarouselItem>
+              );
+            })}
+        </CarouselContent>
+        <CarouselPrevious disabled={aiResponses?.length < 3} />
+        <CarouselNext disabled={aiResponses?.length < 3} />
+      </Carousel>
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -44,7 +69,9 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
             </Button>
           </DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-12 justify-center gap-4">{renderTimeCards}</div>
+        <div className="flex justify-center gap-3">
+          <CarouselCards />
+        </div>
       </DialogContent>
     </Dialog>
   );
