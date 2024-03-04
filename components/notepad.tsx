@@ -53,7 +53,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
               }
             }}
             rows={8}
-            placeholder="Today xyz 4.5hr Billable need to work on home page prototype xyz 3.5hr work on ticket-123"
+            placeholder="2.5hours Project, Milestone, Task, Comment, Billable."
             className="resize-none"
           />
           <div className="relative flex items-center justify-between">
