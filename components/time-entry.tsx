@@ -258,14 +258,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           setAiInput={setAiInput}
           aiLoading={aiLoading}
         />
-        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} />
+        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} projects={projects} />
       </div>
-      {/* <div className="absolute right-2 ml-auto flex w-[500px] flex-col items-start gap-5">
-        {aiResponses?.map((timecard: any, index: number) => {
-          return <TimeCard key={index} data={timecard} />;
-        })}
-        {aiResponses?.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
-      </div> */}
     </div>
   );
 };
