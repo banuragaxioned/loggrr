@@ -7,16 +7,20 @@ import { createOpenAILanguageModel } from "./typechat/model";
 
 type TimeLog = {
   data: {
-    projectId: string;
-    projectName: string;
-    taskId?: string;
-    taskName?: string;
-    milestoneId: string;
-    milestoneName: string;
-    time: number; // in minutes
-    date: string; // DD-MM-YYYY, this is today's date
-    comment: string;
-    billable: boolean; // default is true
+    id: number;
+    name: string;
+    milestone?: {
+      id: number;
+      name: string;
+    };
+    task?: {
+      id: number;
+      name: string;
+    };
+    billable?: boolean;
+    time?: number;
+    comments?: string | "";
+    date: string;
   }[];
 };
 
@@ -34,7 +38,6 @@ const schema = await readSchema();
 const model = createOpenAILanguageModel(process.env.OPENAI_API_KEY ?? "", "gpt-3.5-turbo");
 const validator = createTypeScriptJsonValidator<TimeLog>(schema ?? "", "TimeLog");
 const translator = typechat.createJsonTranslator(model, validator);
-const response = translator.translate("2hour cfm - dev and standup");
 
 export async function loggr(input: string) {
   if (!input) return { message: "No input provided", status: 400 };
