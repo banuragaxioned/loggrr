@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
+// import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 
 const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
   const [open, setOpen] = useState(false);
@@ -13,15 +13,16 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
     if (aiResponses.length > 0) {
       setOpen(true);
     }
-  }, [aiResponses.length]);
+    if (open && aiResponses.length === 0) {
+      setOpen(false);
+    }
+  }, [aiResponses.length, open]);
 
   useEffect(() => {
     if (!open) {
       setAiResponses([]);
     }
   }, [open, setAiResponses]);
-
-  console.log(aiResponses, "aiResponses");
 
   // const CarouselCards = () => {
   //   return (
@@ -55,6 +56,10 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
   //   );
   // };
 
+  const handleRemove = (id: number) => {
+    setAiResponses(aiResponses.filter((response: any) => response.id !== id));
+  };
+
   const renderTimeCards = aiResponses?.map((response: any, index: number) => {
     const updatedResponse = {
       ...response,
@@ -64,7 +69,7 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
       comment: response.comments,
     };
 
-    return <NotepadCards projects={projects} data={updatedResponse} key={index} />;
+    return <NotepadCards projects={projects} data={updatedResponse} handleRemove={handleRemove} key={index} />;
   });
 
   return (
@@ -76,9 +81,9 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
               Add time entries
               <span className="text-xs">(AI generated)</span>
             </div>
-            <Button size="sm" variant="outline" className="mr-5">
+            {/* <Button size="sm" variant="outline" className="mr-5">
               Log all
-            </Button>
+            </Button> */}
           </DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-12 justify-center gap-3">{renderTimeCards}</div>

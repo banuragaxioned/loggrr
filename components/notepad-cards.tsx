@@ -24,7 +24,15 @@ type ErrorsObj = {
   time?: boolean;
 };
 
-const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) => {
+const NotepadCards = ({
+  projects,
+  data,
+  handleRemove,
+}: {
+  projects: Project[];
+  data: any;
+  handleRemove: (id: number) => void;
+}) => {
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
@@ -97,7 +105,7 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
 
   return (
     <Card className="col-span-4 overflow-hidden p-0 shadow-none">
-      <CardContent className="flex flex-col gap-2 p-4">
+      <CardContent className="flex flex-col gap-3 p-4">
         <ComboBox
           searchable
           icon={<Folder size={16} />}
@@ -162,10 +170,16 @@ const NotepadCards = ({ projects, data }: { projects: Project[]; data: any }) =>
           onChange={(e) => setCommentText(e.target.value)}
         />
         <div className="flex flex-row justify-between">
-          <Button type="button" variant="outline" size="icon" title="Cancel">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            title="Remove entry"
+            onClick={() => selectedData.project && handleRemove(selectedData.project?.id)}
+          >
             <Ban size={16} />
           </Button>
-          <Button type="button" variant="outline" size="icon" title="Add" disabled={!formValidator()}>
+          <Button type="button" variant="outline" size="icon" title="Submit entry" disabled={!formValidator()}>
             <Check size={16} />
           </Button>
         </div>
