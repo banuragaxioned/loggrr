@@ -15,9 +15,10 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
-import AINotepad from "./notepad-entries";
+import AINotepad from "./notepad";
 import TimeCard from "./ai-time-card";
 import { Button } from "./ui/button";
+import NotepadResponse from "./notepad-response";
 
 export interface RecentEntryProps {
   id: number;
@@ -79,7 +80,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [recent, setRecent] = useState(null);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiResponses, setAiResponses] = useState<any>([]); // TODO: set to empty array
+  const [aiResponses, setAiResponses] = useState<any>([]);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -217,14 +218,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         }),
       });
       const data = await response.json();
-      setAiResponses([
-        ...aiResponses,
-        {
-          id: new Date(),
-          user: userInput,
-          response: JSON.stringify(data.result.data, null, 2),
-        },
-      ]);
+      setAiResponses(data.result.data);
       setAiInput("");
       setAiLoading(false);
     } catch (error) {
@@ -232,6 +226,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       setAiLoading(false);
     }
   };
+
+  console.log(aiResponses, "aiResponses");
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
@@ -262,22 +258,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           setAiInput={setAiInput}
           aiLoading={aiLoading}
         />
-        {aiResponses?.map((response: any) => {
-          return (
-            <div key={response.id}>
-              <p>{response.user}</p>
-              <pre>{response.response}</pre>
-            </div>
-          );
-        })}
+        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} />
       </div>
-      {/* <div className="w-[500px] flex flex-col gap-5 ml-auto items-start absolute right-2">
-        {responseArr?.map((timecard, index) => {
-          return (
-            <TimeCard key={index} data={timecard} handleClose={handleClose} handleaddLog={handleaddLog} />
-          )
+      {/* <div className="absolute right-2 ml-auto flex w-[500px] flex-col items-start gap-5">
+        {aiResponses?.map((timecard: any, index: number) => {
+          return <TimeCard key={index} data={timecard} />;
         })}
-        {responseArr?.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
+        {aiResponses?.length > 0 && <Button onClick={handleAddAll}>Log All</Button>}
       </div> */}
     </div>
   );
