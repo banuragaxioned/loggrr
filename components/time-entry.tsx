@@ -61,11 +61,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
-  const [aiInput, setAiInput] = useState(
-    typeof window !== "undefined" ? localStorage?.getItem("notebook-input") || "" : "",
-  );
+  const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<any>([]);
+
+  // This sets the AI input from the local storage
+  useEffect(() => {
+    setAiInput(localStorage?.getItem("notebook-input") || "");
+  }, []);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {

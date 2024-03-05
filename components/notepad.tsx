@@ -89,7 +89,11 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                     title="Submit - (Ctrl/Cmd + Enter)"
                   >
                     Submit
-                    {aiLoading ? <Loader2 size={16} className="animate-spin" /> : " ✨"}
+                    {aiLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <span className="dark:grayscale dark:invert">✨</span>
+                    )}
                   </Button>
                 </div>
               </form>
