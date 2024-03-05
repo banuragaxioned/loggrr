@@ -43,8 +43,6 @@ const NotepadCards = ({
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
 
-  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
-
   const formValidator = () => {
     const { project, comment, time, milestone } = selectedData || {};
     return project && milestone && comment?.trim().length && time && !errors?.time;
@@ -110,10 +108,9 @@ const NotepadCards = ({
 
   return (
     <motion.div
-      className="col-span-4"
+      className={cn("col-span-4", data.hidden && "hidden")}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
       transition={{ delay: id * 0.1 }}
     >
       <Card className="relative p-0 shadow-none">
@@ -132,7 +129,7 @@ const NotepadCards = ({
             searchable
             icon={<Folder size={16} />}
             options={projects}
-            label="Project"
+            label="Select a Project"
             selectedItem={selectedData?.project}
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
           />
@@ -140,7 +137,7 @@ const NotepadCards = ({
             searchable
             icon={<Rocket size={16} />}
             options={projectMilestones}
-            label="Milestones"
+            label="Select a Milestone"
             selectedItem={selectedData?.milestone}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
           />
@@ -148,12 +145,12 @@ const NotepadCards = ({
             searchable
             icon={<List size={16} />}
             options={projectTasks}
-            label="Task"
+            label="Select a Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
           />
           <Input
-            placeholder="Comments"
+            placeholder="Add a comment..."
             value={selectedData.comment ?? ""}
             onChange={(e) => setCommentText(e.target.value)}
           />

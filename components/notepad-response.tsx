@@ -15,7 +15,7 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
     if (open && aiResponses.length === 0) {
       setOpen(false);
     }
-  }, [aiResponses.length, open]);
+  }, [aiResponses, open]);
 
   useEffect(() => {
     if (!open) {
@@ -28,21 +28,13 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
   };
 
   const renderTimeCards = aiResponses?.map((response: any, index: number) => {
-    const updatedResponse = {
-      ...response,
-      project: projects
-        .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
-        .find((project: any) => project.id === response.id),
-      comment: response.comments,
-    };
-
     return (
       <NotepadCards
         projects={projects}
-        data={updatedResponse}
+        data={response}
         handleRemove={handleRemove}
         handleSubmit={handleSubmit}
-        key={index}
+        key={response.project.id}
         id={index + 1}
       />
     );

@@ -44,21 +44,6 @@ export type EntryData = {
   status: string;
 };
 
-export type timecard = {
-  projectId: string;
-  projectName: string;
-  taskId?: string;
-  taskName?: string;
-  milestoneId: string;
-  milestoneName: string;
-  time: number; // in minutes
-  date: string; // DD-MM-YYYY, this is today's date
-  comment: string;
-  billable: boolean;
-};
-
-// type responseArrType = timecard[];
-
 /*
  * getDateString: returns date in format Wed, Jan 31
  */
@@ -176,7 +161,10 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         if (recent) setRecent(null);
         getTimeEntries();
-        clearForm();
+        clearForm && clearForm();
+        if (aiResponses.length > 0) {
+          setAiResponses(aiResponses.filter((response: any) => response.id !== project?.id));
+        }
         router.refresh();
       }
     } catch (error) {
@@ -216,7 +204,19 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         }),
       });
       const data = await response.json();
-      setAiResponses(data.result.data);
+      const updatedAiResponse = data.result.data?.map((response: any, index: number) => {
+        const updatedResponse = {
+          ...response,
+          project: projects
+            .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
+            .find((project: any) => project.id === response.id),
+          comment: response.comments,
+        };
+
+        return updatedResponse;
+      });
+
+      setAiResponses(updatedAiResponse);
       setAiInput("");
       setAiLoading(false);
     } catch (error) {
@@ -254,7 +254,12 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           setAiInput={setAiInput}
           aiLoading={aiLoading}
         />
-        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} projects={projects} />
+        <NotepadResponse
+          aiResponses={aiResponses}
+          setAiResponses={setAiResponses}
+          projects={projects}
+          handleSubmit={submitTimeEntry}
+        />
       </div>
     </div>
   );

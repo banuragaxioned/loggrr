@@ -260,7 +260,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   searchable
                   icon={<Folder size={16} />}
                   options={projects ?? []}
-                  label="Project"
+                  label="Select a Project"
                   selectedItem={selectedData?.project}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
                 />
@@ -270,7 +270,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   searchable
                   icon={<Rocket size={16} />}
                   options={projectMilestones}
-                  label="Milestone"
+                  label="Select a Milestone"
                   selectedItem={selectedData?.milestone}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
                   disabled={!selectedData?.project?.id}
@@ -281,7 +281,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   searchable
                   icon={<List size={16} />}
                   options={projectTasks}
-                  label="Task"
+                  label="Select a Task"
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
                   disabled={!isProjectAndMilestoneSelected}

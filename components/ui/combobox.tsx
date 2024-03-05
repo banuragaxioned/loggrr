@@ -56,7 +56,12 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           className="flex w-full justify-between"
         >
           {icon}
-          <span className="mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+          <span
+            className={cn(
+              "mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap",
+              !selectedItem?.id && "opacity-50",
+            )}
+          >
             {selectedItem?.name || label}
           </span>
           <ChevronDown className="ml-auto h-4 w-4" />

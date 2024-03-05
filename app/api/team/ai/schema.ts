@@ -10,8 +10,8 @@ export type TimeLog = {
       id: number;
       name: string;
     };
-    billable?: boolean; // default to false
-    time: string; // numeric value without any unit
+    billable?: boolean; // default to true
+    time: string | "2.5"; // numeric value without any unit
     comments: string;
     date: string; // yyyy-MM-dd, this is today's date
   }[];
