@@ -53,7 +53,6 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
       <DialogContent
         className="overflow-y-auto sm:max-h-[640px] sm:max-w-4xl"
         onEscapeKeyDown={(e) => e.preventDefault()}
-        onPointerDown={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
