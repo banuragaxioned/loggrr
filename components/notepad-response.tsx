@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
+import { ScrollArea } from "./ui/scroll-area";
 
 const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }: any) => {
   const [open, setOpen] = useState(false);
@@ -43,23 +44,25 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="overflow-y-auto sm:max-h-[640px] sm:max-w-4xl"
+        className="max-w-[calc(100%-44px)] overflow-y-auto p-0 lg:max-w-4xl"
         onEscapeKeyDown={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
       >
-        <DialogHeader>
+        <DialogHeader className="p-6 pb-0">
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-start gap-2">Add time entries</div>
-            <Button size="sm" className="mr-5" disabled>
+            <Button size="sm" className={`mr-5 ${aiResponses.length > 1 ? "visible" : "invisible"}`} disabled>
               Submit all
             </Button>
           </DialogTitle>
-          <DialogDescription className="mt-0 w-[85%]">
+          <DialogDescription className="mt-0 w-[85%] text-left">
             This is an AI-generated response and might be inaccurate. You can click on the inputs below to update the
             response.
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-2 grid grid-cols-12 justify-center gap-3">{renderTimeCards}</div>
+        <ScrollArea className="h-[302px]">
+          <div className="grid grid-cols-12 justify-center gap-3 px-6 pb-6 pt-3">{renderTimeCards}</div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

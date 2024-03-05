@@ -165,7 +165,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         if (aiResponses.length > 0) {
           setAiResponses(aiResponses.filter((response: any) => response.id !== project?.id));
         }
-        router.refresh();
+        if (aiResponses.length < 1) {
+          router.refresh();
+        }
       }
     } catch (error) {
       toast.error("Something went wrong!");

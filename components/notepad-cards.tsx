@@ -108,7 +108,7 @@ const NotepadCards = ({
 
   return (
     <motion.div
-      className={cn("col-span-4", data.hidden && "hidden")}
+      className={cn("col-span-12 sm:col-span-6 lg:col-span-4", data.hidden && "hidden")}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: id * 0.1 }}
@@ -121,6 +121,7 @@ const NotepadCards = ({
           title="Remove entry"
           onClick={() => selectedData.project && handleRemove(selectedData.project?.id)}
           className="absolute -right-3 -top-3 h-6 w-6 rounded-full hover:text-destructive"
+          tabIndex={-1}
         >
           <X size={16} />
         </Button>
