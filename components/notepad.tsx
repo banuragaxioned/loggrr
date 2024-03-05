@@ -83,6 +83,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                     type="submit"
                     className="flex items-center gap-2"
                     disabled={aiLoading || !aiInput.trim()}
+                    title="Submit - (Ctrl/Cmd + Enter)"
                   >
                     Submit
                     {aiLoading ? <Loader2 size={16} className="animate-spin" /> : " ✨"}

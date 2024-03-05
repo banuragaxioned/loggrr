@@ -25,6 +25,7 @@ export const env = createEnv({
     EMAIL_USER: z.string().min(1),
     EMAIL_PASSWORD: z.string().min(1),
     EMAIL_PORT: z.string().min(1),
+    OPENAI_API_KEY: z.string().min(1),
   },
   /*
    * Environment variables available on the client (and server).
@@ -51,6 +52,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
     EMAIL_FROM: process.env.EMAIL_FROM,
     EMAIL_HOST: process.env.EMAIL_HOST,
