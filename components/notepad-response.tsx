@@ -50,7 +50,12 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="overflow-y-auto sm:max-h-[640px] sm:max-w-4xl">
+      <DialogContent
+        className="overflow-y-auto sm:max-h-[640px] sm:max-w-4xl"
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDown={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-start gap-2">Add time entries</div>
