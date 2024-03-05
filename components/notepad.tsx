@@ -38,7 +38,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
             </CardHeader>
           </AccordionTrigger>
           <AccordionContent>
-            <CardContent className="p-4 pt-1">
+            <CardContent className="px-4 py-1">
               <form
                 onSubmit={(e) => {
                   if (aiLoading || !aiInput.trim()) return;

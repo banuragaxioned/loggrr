@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
 
-const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
+const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }: any) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,16 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
       comment: response.comments,
     };
 
-    return <NotepadCards projects={projects} data={updatedResponse} handleRemove={handleRemove} key={index} />;
+    return (
+      <NotepadCards
+        projects={projects}
+        data={updatedResponse}
+        handleRemove={handleRemove}
+        handleSubmit={handleSubmit}
+        key={index}
+        id={index + 1}
+      />
+    );
   });
 
   return (
@@ -44,16 +53,17 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects }: any) => {
       <DialogContent className="overflow-y-auto sm:max-h-[640px] sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <div className="flex items-start gap-2">
-              Add time entries
-              <span className="text-xs">(AI generated)</span>
-            </div>
+            <div className="flex items-start gap-2">Add time entries</div>
             <Button size="sm" className="mr-5" disabled>
-              Log all
+              Submit all
             </Button>
           </DialogTitle>
+          <DialogDescription className="mt-0 w-[85%]">
+            This is an AI-generated response and might be inaccurate. You can click on the inputs below to update the
+            response.
+          </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-12 justify-center gap-3">{renderTimeCards}</div>
+        <div className="mt-2 grid grid-cols-12 justify-center gap-3">{renderTimeCards}</div>
       </DialogContent>
     </Dialog>
   );
