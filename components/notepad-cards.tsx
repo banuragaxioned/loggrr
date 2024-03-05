@@ -121,7 +121,6 @@ const NotepadCards = ({
           label="Milestones"
           selectedItem={selectedData?.milestone}
           handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-          disabled={!selectedData?.project?.id}
         />
         <ComboBox
           searchable
@@ -130,7 +129,6 @@ const NotepadCards = ({
           label="Task"
           selectedItem={selectedData?.task}
           handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-          disabled={!isProjectAndMilestoneSelected}
         />
         <div className="flex flex-row gap-2">
           {selectedData.project?.billable && (
@@ -161,7 +159,6 @@ const NotepadCards = ({
             )}
             value={selectedData.time}
             onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-            disabled={!isProjectAndMilestoneSelected}
           />
         </div>
         <Input
