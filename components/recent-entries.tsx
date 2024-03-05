@@ -15,7 +15,7 @@ const RecentEntries = ({
   handleRecentClick: (timeEntry: {}) => void;
 }) => {
   return (
-    <Card className="col-span-12 overflow-hidden shadow-none sm:col-span-4">
+    <Card className="overflow-hidden shadow-none">
       <CardHeader className="p-4">
         <p className="text-sm font-medium text-muted-foreground">Recently used</p>
       </CardHeader>

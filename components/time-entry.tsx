@@ -15,6 +15,8 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
+import AINotepad from "./notepad";
+import NotepadResponse from "./notepad-response";
 
 export interface RecentEntryProps {
   id: number;
@@ -42,6 +44,21 @@ export type EntryData = {
   status: string;
 };
 
+export type timecard = {
+  projectId: string;
+  projectName: string;
+  taskId?: string;
+  taskName?: string;
+  milestoneId: string;
+  milestoneName: string;
+  time: number; // in minutes
+  date: string; // DD-MM-YYYY, this is today's date
+  comment: string;
+  billable: boolean;
+};
+
+// type responseArrType = timecard[];
+
 /*
  * getDateString: returns date in format Wed, Jan 31
  */
@@ -59,6 +76,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponses, setAiResponses] = useState<any>([]);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -179,6 +199,32 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
   };
 
+  /*
+   * notebookSubmitHandler: The following will send input to API
+   */
+  const notebookSubmitHandler = async (input: string) => {
+    const userInput = input.trim();
+    if (!userInput) return;
+
+    try {
+      setAiLoading(true);
+      const response = await fetch("/api/team/ai", {
+        method: "POST",
+        body: JSON.stringify({
+          projects: projects,
+          input: userInput,
+        }),
+      });
+      const data = await response.json();
+      setAiResponses(data.result.data);
+      setAiInput("");
+      setAiLoading(false);
+    } catch (error) {
+      console.error("Error fetching AI response", error);
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <Card className="col-span-12 shadow-none sm:col-span-8">
@@ -200,7 +246,16 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           edit={edit}
         />
       </Card>
-      <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+      <div className="col-span-12 flex flex-col gap-4 sm:col-span-4">
+        <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+        <AINotepad
+          notebookSubmitHandler={notebookSubmitHandler}
+          aiInput={aiInput}
+          setAiInput={setAiInput}
+          aiLoading={aiLoading}
+        />
+        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} projects={projects} />
+      </div>
     </div>
   );
 };
