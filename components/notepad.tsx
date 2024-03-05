@@ -44,6 +44,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   if (aiLoading || !aiInput.trim()) return;
                   e.preventDefault();
                   notebookSubmitHandler(aiInput);
+                  localStorage.removeItem("notebook-input");
                 }}
                 className="flex flex-col gap-4"
               >
@@ -51,11 +52,13 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   value={aiInput}
                   onChange={(e) => {
                     setAiInput(e.target.value);
+                    localStorage.setItem("notebook-input", e.target.value);
                   }}
                   onKeyDown={(e) => {
                     const ctrlKey = e.ctrlKey || e.metaKey;
                     if (ctrlKey && e.key === "Enter" && aiInput.trim()) {
                       notebookSubmitHandler(aiInput);
+                      localStorage.removeItem("notebook-input");
                     }
                   }}
                   rows={8}
