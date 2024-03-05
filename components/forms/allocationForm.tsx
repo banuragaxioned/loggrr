@@ -1,12 +1,16 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Folder, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -17,14 +21,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AllocationFrequency } from "@prisma/client";
 import { CalendarDateRangePicker } from "@/components/date-picker";
-import { InlineCombobox } from "../ui/combobox";
+import { ComboBox } from "../ui/combobox";
 import { AllProjectsWithMembers, AllUsersWithAllocation } from "../../types";
-import { Folder, User } from "lucide-react";
 
 export function NewAllocationForm({
   team,
@@ -35,8 +35,10 @@ export function NewAllocationForm({
   projects: AllProjectsWithMembers[];
   users: AllUsersWithAllocation[];
 }) {
-  const [isOngoing, setOngoing] = useState(false);
   const router = useRouter();
+  const [isOngoing, setOngoing] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
 
@@ -60,9 +62,6 @@ export function NewAllocationForm({
   const createAllocation = async (values: z.infer<typeof formSchema>) => {
     const response = await fetch("/api/team/allocation", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
@@ -120,10 +119,24 @@ export function NewAllocationForm({
     else form.setValue("frequency", "DAY");
   }, [isOngoing]);
 
+  const handleProjects = (selected: string) => {
+    const projectValue = projects.find((obj) => obj.id === +selected);
+    setSelectedProject(projectValue);
+    form.setValue("projectId", projectValue?.id ?? 0);
+  };
+
+  const handleUsers = (selected: string) => {
+    const user = users.find((obj) => obj.id === +selected);
+    setSelectedUser(user);
+    form.setValue("userId", user?.id ?? 0);
+  };
+
   const handleOpenChange = (evt: boolean) => {
     if (evt) {
       setOngoing(false);
       form.reset();
+      setSelectedProject(null);
+      setSelectedUser(null);
     }
   };
 
@@ -146,12 +159,14 @@ export function NewAllocationForm({
                 <FormItem className="col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="projects"
+                    <ComboBox
+                      searchable
+                      icon={<Folder size={16} />}
                       options={projects}
-                      setVal={form.setValue}
-                      fieldName="projectId"
-                      icon={<Folder className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Projects"
+                      selectedItem={selectedProject}
+                      handleSelect={(selected) => handleProjects(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -165,12 +180,14 @@ export function NewAllocationForm({
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="users"
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
                       options={users}
-                      setVal={form.setValue}
-                      fieldName="userId"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Users"
+                      selectedItem={selectedUser}
+                      handleSelect={(selected) => handleUsers(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

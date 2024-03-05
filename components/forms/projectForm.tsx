@@ -1,12 +1,16 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Activity, User } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -17,11 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { InlineCombobox } from "../ui/combobox";
-import { Activity, User } from "lucide-react";
+import { ComboBox } from "../ui/combobox";
 import { CalendarDateRangePicker } from "@/components/date-picker";
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
@@ -48,6 +48,9 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [isOngoing, setOngoing] = useState(false);
+  const [selectedInterval, setSelectedInterval] = useState<any>(null);
+  const [selectedOwner, setSelectedOwner] = useState<any>(null);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -82,8 +85,33 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     toast.success("A new Project was created");
     router.refresh();
   }
+  
+  const handleClients = (selected: string) => {
+    const clientValue = clients.find((client) => client.id === +selected);
+    setSelectedClient(clientValue);
+    form.setValue("client", clientValue?.id ?? 0);
+  };
+  
+  const handleOwners = (selected: string) => {
+    const ownerValue = users.find((user) => user.id === +selected);
+    setSelectedOwner(ownerValue);
+    form.setValue("owner", ownerValue?.id ?? 0);
+  };
+  
+  const handleInterval = (selected: string) => {
+    const intervalValue = intervalList.find((obj) => obj.id === +selected);
+    setSelectedInterval(intervalValue);
+    form.setValue("interval", intervalValue?.id ?? 0);
+  };
 
-  const handleOpenChange = (e: boolean) => e && form.reset();
+  const handleOpenChange = (evt: boolean) => {
+    if (evt) {
+      setSelectedClient(null);
+      setSelectedOwner(null);
+      setSelectedInterval(null);
+      form.reset();
+    }
+  };
 
   return (
     <Sheet onOpenChange={handleOpenChange}>
@@ -117,12 +145,14 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Client</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Client"
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
                       options={clients}
-                      setVal={form.setValue}
-                      fieldName="client"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Client"
+                      selectedItem={selectedClient}
+                      handleSelect={(selected) => handleClients(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -136,12 +166,14 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Owner</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Owner"
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
                       options={users}
-                      setVal={form.setValue}
-                      fieldName="owner"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Owner"
+                      selectedItem={selectedOwner}
+                      handleSelect={(selected) => handleOwners(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -175,12 +207,14 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Interval</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Interval"
+                    <ComboBox
+                      searchable
+                      icon={<Activity size={16} />}
                       options={intervalList}
-                      setVal={form.setValue}
-                      fieldName="interval"
-                      icon={<Activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Interval"
+                      selectedItem={selectedInterval}
+                      handleSelect={(selected) => handleInterval(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -218,7 +252,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
             <SheetFooter className="gap-x-4">
               <Button type="submit">Submit</Button>
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>

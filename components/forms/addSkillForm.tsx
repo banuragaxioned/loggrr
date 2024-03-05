@@ -1,11 +1,15 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Laptop, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -16,11 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
-import { InlineCombobox } from "../ui/combobox";
-import { Laptop, User } from "lucide-react";
+import { ComboBox } from "../ui/combobox";
 import { AllUsersWithAllocation } from "@/types";
 import { SingleSelectDropdown } from "../ui/single-select-dropdown";
 import { levels } from "@/config/skills";
@@ -52,6 +52,8 @@ export function AddSKill({
   userSkills: Scores;
 }) {
   const router = useRouter();
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedSkill, setSelectedSkill] = useState<any>(null);
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,9 +68,6 @@ export function AddSKill({
     if (!isSkillExist) {
       const response = await fetch("/api/team/skill/assign", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           team: team,
           userId: values.userId,
@@ -87,8 +86,28 @@ export function AddSKill({
     }
   }
 
+  const handelUsers = (selected: string) => {
+    const user = users.find((obj) => obj.id === +selected);
+    setSelectedUser(user);
+    form.setValue("userId", user?.id ?? 0);
+  };
+
+  const handleSkills = (selected: string) => {
+    const skills = skillsList.find((obj) => obj.id === +selected);
+    setSelectedSkill(skills);
+    form.setValue("skillId", skills?.id ?? 0);
+  };
+
+  const handleOpenChange = (evt: boolean) => {
+    if (evt) {
+      setSelectedUser(null);
+      setSelectedSkill(null);
+      form.reset();
+    }
+  };
+
   return (
-    <Sheet onOpenChange={(evt: boolean) => evt && form.reset()}>
+    <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button>Add</Button>
       </SheetTrigger>
@@ -106,13 +125,14 @@ export function AddSKill({
                 <FormItem className="col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="my-2">
-                    <InlineCombobox
-                      label="users"
-                      options={users}
-                      setVal={form.setValue}
-                      fieldName="userId"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
-                      defaultValue={currentUser}
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
+                      options={[users.find(user => user.id === currentUser)]}
+                      label="User"
+                      selectedItem={selectedUser}
+                      handleSelect={(selected) => handelUsers(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -123,15 +143,17 @@ export function AddSKill({
               control={form.control}
               name="skillId"
               render={({ field }) => (
-                <FormItem className="col-span-2 pt-1">
+                <FormItem className="col-span-2 pt-3">
                   <FormLabel>Skill</FormLabel>
                   <FormControl className="my-2">
-                    <InlineCombobox
-                      label="skill"
+                    <ComboBox
+                      searchable
+                      icon={<Laptop size={16} />}
                       options={skillsList}
-                      setVal={form.setValue}
-                      fieldName="skillId"
-                      icon={<Laptop className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Skills"
+                      selectedItem={selectedSkill}
+                      handleSelect={(selected) => handleSkills(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -142,7 +164,7 @@ export function AddSKill({
               control={form.control}
               name="skillScore"
               render={({ field }) => (
-                <FormItem className="col-span-2 pt-1">
+                <FormItem className="col-span-2 pt-3">
                   <FormLabel>Skill Score</FormLabel>
                   <FormControl className="my-2">
                     <SingleSelectDropdown
