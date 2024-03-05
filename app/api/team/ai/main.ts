@@ -1,9 +1,9 @@
 import path from "path";
 import { promises as fsPromises } from "fs";
 
-import * as typechat from "./typechat/typechat";
-import { createTypeScriptJsonValidator } from "./typechat/ts/validate";
-import { createOpenAILanguageModel } from "./typechat/model";
+import * as typechat from "./Typechat/typechat";
+import { createTypeScriptJsonValidator } from "./Typechat/ts/validate";
+import { createOpenAILanguageModel } from "./Typechat/model";
 
 type TimeLog = {
   data: {
