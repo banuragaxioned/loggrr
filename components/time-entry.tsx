@@ -152,7 +152,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       milestone: milestone?.id,
       time: Number(hoursToDecimal(time ?? "0")) * 60,
       comments: comment?.trim(),
-      billable: billable ? true : false,
+      billable: billable && project?.billable ? true : false,
       task: task?.id,
       date: dateToStoreInDB,
     };
@@ -225,6 +225,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         return updatedResponse;
       });
 
+      console.log(updatedAiResponse, "updatedAiResponse");
       setAiResponses(updatedAiResponse);
       setAiInput("");
       setAiLoading(false);
