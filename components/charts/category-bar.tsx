@@ -16,7 +16,7 @@ export default function CategoryDataBar(input: CategoryBarProps) {
   const percent = markerValue <= maxValue ? (markerValue / maxValue) * 100 : 100;
 
   return (
-    <Card className="flex flex-col gap-3 bg-white shadow-none dark:bg-black">
+    <Card className="flex flex-col gap-3 shadow-none">
       <Flex className="items-center font-semibold">
         <Text>{title}</Text>
         <Text className="flex items-center text-xs">

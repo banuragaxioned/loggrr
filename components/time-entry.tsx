@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -15,6 +16,8 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
+import AINotepad from "./notepad";
+import NotepadResponse from "./notepad-response";
 
 export interface RecentEntryProps {
   id: number;
@@ -59,6 +62,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponses, setAiResponses] = useState<any>([]);
+
+  // This sets the AI input from the local storage
+  useEffect(() => {
+    setAiInput(localStorage?.getItem("notebook-input") || "");
+  }, []);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -111,7 +122,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
    */
   const deleteTimeEntry = async (id: number) => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&id=${JSON.stringify(id)}`, {
+      const response = await fetch(`/api/team/time-entry?team=${team}&id=${id}`, {
         method: "DELETE",
       });
 
@@ -132,7 +143,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const submitTimeEntry = async (e: FormEvent, clearForm: Function, selectedData: SelectedData = {}) => {
     e.preventDefault();
     if (!selectedData) return;
-    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const { project, milestone, time, comment, billable, task, uuid } = selectedData || {};
     const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
@@ -156,12 +167,17 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         if (recent) setRecent(null);
         getTimeEntries();
-        clearForm();
-        router.refresh();
+        clearForm && clearForm();
+        if (aiResponses.length <= 1) {
+          router.refresh();
+        }
+        if (aiResponses.length > 0) {
+          setAiResponses(aiResponses.filter((response: any) => response.uuid !== uuid));
+        }
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log("Error submitting form!", error);
+      console.error("Error submitting form!", error);
     }
   };
 
@@ -177,6 +193,45 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const handleRecentClick = (selected: any) => {
     setEdit({ obj: {}, isEditing: false, id: null });
     setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
+  };
+
+  /*
+   * notebookSubmitHandler: The following will send input to API
+   */
+  const notebookSubmitHandler = async (input: string) => {
+    const userInput = input.trim();
+    if (!userInput) return;
+
+    try {
+      setAiLoading(true);
+      const response = await fetch("/api/team/ai", {
+        method: "POST",
+        body: JSON.stringify({
+          projects: projects,
+          input: userInput,
+        }),
+      });
+      const data = await response.json();
+      const updatedAiResponse = data.result.data?.map((response: any, index: number) => {
+        const updatedResponse = {
+          ...response,
+          uuid: uuidv4(),
+          project: projects
+            .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
+            .find((project: any) => project.id === response.id),
+          comment: response.comments,
+        };
+
+        return updatedResponse;
+      });
+
+      setAiResponses(updatedAiResponse);
+      setAiInput("");
+      setAiLoading(false);
+    } catch (error) {
+      console.error("Error fetching AI response", error);
+      setAiLoading(false);
+    }
   };
 
   return (
@@ -200,7 +255,21 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           edit={edit}
         />
       </Card>
-      <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+      <div className="col-span-12 flex flex-col gap-4 sm:col-span-4">
+        <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
+        <AINotepad
+          notebookSubmitHandler={notebookSubmitHandler}
+          aiInput={aiInput}
+          setAiInput={setAiInput}
+          aiLoading={aiLoading}
+        />
+        <NotepadResponse
+          aiResponses={aiResponses}
+          setAiResponses={setAiResponses}
+          projects={projects}
+          handleSubmit={submitTimeEntry}
+        />
+      </div>
     </div>
   );
 };
