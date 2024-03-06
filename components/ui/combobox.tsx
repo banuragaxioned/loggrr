@@ -29,6 +29,7 @@ type ComboBoxProps = {
   selectedItem: any;
   handleSelect?: (item: string) => void;
   placeholder?: string;
+  className?: string;
 };
 
 const ComboBox: React.FC<ComboBoxProps> = ({
