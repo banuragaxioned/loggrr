@@ -84,6 +84,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
               label="Members"
               selectedItem={selectedUser}
               handleSelect={(selected) => dropdownSelectHandler(selected)}
+              className="sm:w-[21rem] sm:max-w-full"
             />
           </div>
           <div className="mt-2 flex justify-between space-x-3">

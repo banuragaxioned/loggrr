@@ -133,6 +133,7 @@ export function AddSKill({
                       selectedItem={selectedUser}
                       handleSelect={(selected) => handelUsers(selected)}
                       {...field}
+                      className="sm:w-[21rem] sm:max-w-full -mt-1"
                     />
                   </FormControl>
                   <FormMessage />
@@ -154,6 +155,7 @@ export function AddSKill({
                       selectedItem={selectedSkill}
                       handleSelect={(selected) => handleSkills(selected)}
                       {...field}
+                      className="sm:w-[21rem] sm:max-w-full -mt-1"
                     />
                   </FormControl>
                   <FormMessage />

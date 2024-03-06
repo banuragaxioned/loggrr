@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { UseFormSetValue } from "react-hook-form";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Search } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
@@ -41,10 +41,17 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   disabled,
   selectedItem,
   handleSelect,
+  className,
 }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>(options);
+  const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>([]);
+
+  useEffect(()=> {
+    if(options.length > 0) {
+      setFilteredOptions(options);
+    }
+  }, [options])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -84,7 +91,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       <PopoverContent
         side="bottom"
         align="start"
-        className="max-w-[230px] sm:max-w-full sm:w-[21rem] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
+        className={cn("max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in", className)}
         onPointerDown={(e) => e.stopPropagation()}
       >
         <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
@@ -92,9 +99,10 @@ const ComboBox: React.FC<ComboBoxProps> = ({
             <>
               {searchable && (
                 <div className="space-between flex w-full items-center rounded-t-[5px]">
-                  <Input
+                  <Search size={16} className="ml-[10px] text-gray-400" />
+                  <input
                     tabIndex={tabIndex}
-                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover px-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
+                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pr-[10px] pl-[5px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
                     autoFocus
                     placeholder={placeholder ?? "Search here..."}
                     value={inputValue}

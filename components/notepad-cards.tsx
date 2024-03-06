@@ -133,6 +133,7 @@ const NotepadCards = ({
             label="Select a Project"
             selectedItem={selectedData?.project}
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+            className="sm:max-w-[238px]"
           />
           <ComboBox
             searchable
@@ -141,6 +142,7 @@ const NotepadCards = ({
             label="Select a Milestone"
             selectedItem={selectedData?.milestone}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+            className="sm:max-w-[238px]"
           />
           <ComboBox
             searchable
@@ -149,6 +151,7 @@ const NotepadCards = ({
             label="Select a Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+            className="sm:max-w-[238px]"
           />
           <Input
             placeholder="Add a comment..."
