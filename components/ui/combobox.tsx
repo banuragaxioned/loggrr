@@ -79,7 +79,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       <PopoverContent
         side="bottom"
         align="start"
-        className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
+        className="max-w-[230px] sm:max-w-full sm:w-[21rem] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
         onPointerDown={(e) => e.stopPropagation()}
       >
         <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
