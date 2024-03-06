@@ -32,7 +32,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
     <Card className="overflow-hidden p-0 shadow-none">
       <Accordion type="single" className="w-full" collapsible defaultValue="item-1">
         <AccordionItem value="item-1" className="border-b-0">
-          <AccordionTrigger className="p-4 hover:no-underline">
+          <AccordionTrigger className="p-4 hover:no-underline" tabIndex={-1}>
             <CardHeader className="flex flex-row items-center justify-between p-0">
               <p className="text-sm font-medium text-muted-foreground">Notebook</p>
             </CardHeader>
@@ -44,6 +44,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   if (aiLoading || !aiInput.trim()) return;
                   e.preventDefault();
                   notebookSubmitHandler(aiInput);
+                  localStorage.removeItem("notebook-input");
                 }}
                 className="flex flex-col gap-4"
               >
@@ -51,11 +52,13 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   value={aiInput}
                   onChange={(e) => {
                     setAiInput(e.target.value);
+                    localStorage.setItem("notebook-input", e.target.value);
                   }}
                   onKeyDown={(e) => {
                     const ctrlKey = e.ctrlKey || e.metaKey;
                     if (ctrlKey && e.key === "Enter" && aiInput.trim()) {
                       notebookSubmitHandler(aiInput);
+                      localStorage.removeItem("notebook-input");
                     }
                   }}
                   rows={8}
@@ -83,9 +86,14 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                     type="submit"
                     className="flex items-center gap-2"
                     disabled={aiLoading || !aiInput.trim()}
+                    title="Submit - (Ctrl/Cmd + Enter)"
                   >
                     Submit
-                    {aiLoading ? <Loader2 size={16} className="animate-spin" /> : " ✨"}
+                    {aiLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <span className="dark:grayscale dark:invert">✨</span>
+                    )}
                   </Button>
                 </div>
               </form>

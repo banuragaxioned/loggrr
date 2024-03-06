@@ -16,6 +16,7 @@ export type SelectedData = {
   comment?: string | null;
   time?: string;
   billable?: boolean;
+  uuid?: string;
 };
 
 interface TimelogProps {

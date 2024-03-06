@@ -115,7 +115,6 @@ export function createJsonTranslator<T extends object>(
 
   function createRequestPrompt(request: string) {
     const { projects, input } = JSON.parse(request);
-
     return (
       `You've the following JSON data from database:\n` +
       `\n\n${JSON.stringify(projects)}\n\n` +
@@ -126,6 +125,7 @@ export function createJsonTranslator<T extends object>(
       `"""\n${input}\n"""\n` +
       `Translate the user request into a JSON object with 2 spaces of indentation and no properties with the value "undefined":\n` +
       `Ensure that you only return JSON data of Type: ${validator.getTypeName()} where the response is single object with a single key named "data" having value array of objects mentioned as in Type: ${validator.getTypeName()} without any additional formatting.\n` +
+      `If project with the name does not exist just return an empty array in data` +
       `System date: ${new Date().toLocaleString()}\n\n, day: ${new Date().getDay()}\n\n`
     );
   }
@@ -168,25 +168,9 @@ export function createJsonTranslator<T extends object>(
       let jsonObject = jsonText;
 
       if (typeChat.stripNulls) {
-        // stripNulls(jsonObject);
         jsonObject.data.forEach(stripNulls);
       }
 
-      // const dataArray = jsonObject;
-      // for (let i = 0; i < dataArray.length; i++) {
-      //     const schemaValidation = validator.validate(dataArray[i]);
-      //     const validation = schemaValidation.success ? typeChat.validateInstance(schemaValidation.data) : schemaValidation;
-      //     if (validation.success) {
-      //         dataArray.push(validation.data);
-      //     }
-      //     if (!attemptRepair) {
-      //         return error(`JSON validation failed: ${validation.message}\n${jsonText}`);
-      //     }
-      //     prompt.push({ role: "assistant", content: responseText });
-      //     prompt.push({ role: "user", content: typeChat.createRepairPrompt(validation.message) });
-      //     attemptRepair = false;
-      // }
-      // return { success: true, data: dataArray };
       const schemaValidation = validator.validate(jsonObject);
       const validation = schemaValidation.success ? typeChat.validateInstance(schemaValidation.data) : schemaValidation;
       if (validation.success) {

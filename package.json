@@ -54,6 +54,7 @@
     "@tanstack/react-query": "^5.24.8",
     "@tanstack/react-table": "^8.13.2",
     "@tremor/react": "^3.14.1",
+    "@types/uuid": "^9.0.8",
     "@vercel/speed-insights": "^1.0.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -79,6 +80,7 @@
     "tailwind-merge": "^2.2.1",
     "timezone-soft": "^1.5.2",
     "ts-node": "^10.9.2",
+    "uuid": "^9.0.1",
     "vaul": "^0.9.0",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"

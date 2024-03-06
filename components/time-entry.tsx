@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -44,21 +45,6 @@ export type EntryData = {
   status: string;
 };
 
-export type timecard = {
-  projectId: string;
-  projectName: string;
-  taskId?: string;
-  taskName?: string;
-  milestoneId: string;
-  milestoneName: string;
-  time: number; // in minutes
-  date: string; // DD-MM-YYYY, this is today's date
-  comment: string;
-  billable: boolean;
-};
-
-// type responseArrType = timecard[];
-
 /*
  * getDateString: returns date in format Wed, Jan 31
  */
@@ -79,6 +65,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<any>([]);
+
+  // This sets the AI input from the local storage
+  useEffect(() => {
+    setAiInput(localStorage?.getItem("notebook-input") || "");
+  }, []);
 
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
@@ -152,7 +143,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const submitTimeEntry = async (e: FormEvent, clearForm: Function, selectedData: SelectedData = {}) => {
     e.preventDefault();
     if (!selectedData) return;
-    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const { project, milestone, time, comment, billable, task, uuid } = selectedData || {};
     const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
@@ -176,8 +167,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         if (recent) setRecent(null);
         getTimeEntries();
-        clearForm();
-        router.refresh();
+        clearForm && clearForm();
+        if (aiResponses.length <= 1) {
+          router.refresh();
+        }
+        if (aiResponses.length > 0) {
+          setAiResponses(aiResponses.filter((response: any) => response.uuid !== uuid));
+        }
       }
     } catch (error) {
       toast.error("Something went wrong!");
@@ -216,7 +212,20 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         }),
       });
       const data = await response.json();
-      setAiResponses(data.result.data);
+      const updatedAiResponse = data.result.data?.map((response: any, index: number) => {
+        const updatedResponse = {
+          ...response,
+          uuid: uuidv4(),
+          project: projects
+            .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
+            .find((project: any) => project.id === response.id),
+          comment: response.comments,
+        };
+
+        return updatedResponse;
+      });
+
+      setAiResponses(updatedAiResponse);
       setAiInput("");
       setAiLoading(false);
     } catch (error) {
@@ -254,7 +263,12 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           setAiInput={setAiInput}
           aiLoading={aiLoading}
         />
-        <NotepadResponse aiResponses={aiResponses} setAiResponses={setAiResponses} projects={projects} />
+        <NotepadResponse
+          aiResponses={aiResponses}
+          setAiResponses={setAiResponses}
+          projects={projects}
+          handleSubmit={submitTimeEntry}
+        />
       </div>
     </div>
   );

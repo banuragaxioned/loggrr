@@ -197,6 +197,7 @@ export interface Project {
   task?: Milestone[];
   client?: Milestone;
   workspace?: string;
+  uuid?: string;
 }
 
 export interface TimeEntryProperties {
