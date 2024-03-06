@@ -225,7 +225,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         return updatedResponse;
       });
 
-      console.log(updatedAiResponse, "updatedAiResponse");
       setAiResponses(updatedAiResponse);
       setAiInput("");
       setAiLoading(false);
