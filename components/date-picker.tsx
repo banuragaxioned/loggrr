@@ -92,7 +92,7 @@ export function CalendarDateRangePicker({
   useEffect(() => {
     if (date?.from) {
       setVal("startDate", date?.from);
-      setVal("endDate", date?.from);
+      setVal("endDate", date?.to);
     }
     if (date?.to) setVal("endDate", date?.to);
   }, [date]);

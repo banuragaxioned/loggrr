@@ -1,13 +1,14 @@
 "use client";
 
+import { Dispatch } from "react";
 import { ColumnDef, Column, Row, RowData } from "@tanstack/react-table";
+import { format, addDays, getDay, isWeekend } from "date-fns";
+import { ChevronDown, ChevronRight } from "lucide-react";
+
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { TableInput } from "@/components/table-input";
-import { Dispatch } from "react";
 import { AllocationDetails, Assignment } from "@/types";
-import dayjs from "dayjs";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -22,19 +23,19 @@ const getDatesInRange = (startDate: Date, days: number, includeWeekend: boolean)
     count = 0;
   while (count < days) {
     const currentDate = new Date(start);
-    if (includeWeekend ? true : currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-      const dateKey = currentDate.toISOString().split("T")[0];
+    if (includeWeekend ? true : !isWeekend(currentDate)) {
+      const dateKey = format(currentDate, "yyyy-MM-dd");
       dates.push({
         date: currentDate.getDate(),
-        month: currentDate.toLocaleString("en-us", { month: "short" }),
-        day: currentDate.toLocaleString("en-us", { weekday: "short" }),
+        month: format(currentDate, "MMM"),
+        day: format(currentDate, "EEE"),
         year: currentDate.getFullYear(),
         dateKey,
-        isWeekend: currentDate.getDay() === 0 || currentDate.getDay() === 6 ? "week" : "weekdays",
+        isWeekend: isWeekend(currentDate) ? "week" : "weekdays",
       });
       count++;
     }
-    start = dayjs(start).add(1, "day").toDate();
+    start = addDays(start, 1);
   }
   return dates;
 };
@@ -49,11 +50,8 @@ const createDynamicColumns = (
   const days = 7;
   const createdColumns = getDatesInRange(startDate, days, weekend).map((dateObj, i) => {
     const date: any = dateObj.dateKey;
-    const col1 = startDate.toISOString().split("T")[0];
-    const col2 = dayjs(startDate)
-      .add(startDate.getDay() > 4 ? 3 : 1, "day")
-      .toISOString()
-      .split("T")[0];
+    const col1 = format(startDate, "yyyy-MM-dd");
+    const col2 = format(addDays(startDate, startDate.getDay() > 4 ? 3 : 1), "yyyy-MM-dd");
 
     return {
       accessorKey: `timeAssigned.${dateObj.dateKey}.${billable}`,
@@ -84,7 +82,8 @@ const createDynamicColumns = (
                   projectId: subRow?.id,
                   userId: subRow?.userId,
                   isBillable: subRow?.billable,
-                  date: new Date(`${dateObj.date}-${dateObj.month}-${dateObj.year}`),
+                  startDate: new Date(),
+                  endDate: new Date(),
                   team: subRow?.team,
                 }}
                 type={billable}

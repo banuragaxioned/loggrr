@@ -43,9 +43,9 @@ export function NewAllocationForm({
   const formSchema = z.object({
     projectId: z.coerce.number().min(1),
     userId: z.coerce.number().min(1),
-    date: z.coerce.date(),
+    startDate: z.coerce.date(),
     frequency: z.nativeEnum(AllocationFrequency),
-    enddate: z.coerce.date().optional(),
+    endDate: z.coerce.date().optional(),
     billableTime: z.coerce.number(),
     nonBillableTime: z.coerce.number(),
   });
@@ -66,9 +66,9 @@ export function NewAllocationForm({
       body: JSON.stringify({
         projectId: values.projectId,
         userId: values.userId,
-        date: values.date,
+        startDate: values.startDate,
         frequency: values.frequency,
-        enddate: values?.enddate,
+        endDate: values?.endDate,
         billableTime: values.billableTime,
         nonBillableTime: values.nonBillableTime,
         team: team,
@@ -179,12 +179,19 @@ export function NewAllocationForm({
             />
             <FormField
               control={form.control}
-              name="date"
+              name="startDate"
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
+                    <CalendarDateRangePicker
+                      setVal={form.setValue}
+                      setOngoing={setOngoing}
+                      isOngoing={isOngoing}
+                      startDate={field.value}
+                      endDate={form.getValues().endDate}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
