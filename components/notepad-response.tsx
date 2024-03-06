@@ -24,8 +24,10 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
     }
   }, [open, setAiResponses]);
 
-  const handleRemove = (id: number) => {
-    setAiResponses(aiResponses.filter((response: any) => response.id !== id));
+  const handleRemove = (id: string) => {
+    if (id) {
+      setAiResponses(aiResponses.filter((response: any) => response.uuid !== id));
+    }
   };
 
   const renderTimeCards = aiResponses?.map((response: any, index: number) => {
@@ -35,7 +37,7 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
         data={response}
         handleRemove={handleRemove}
         handleSubmit={handleSubmit}
-        key={response.project.id}
+        key={response.uuid}
         id={index + 1}
       />
     );

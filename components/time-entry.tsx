@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -142,7 +143,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const submitTimeEntry = async (e: FormEvent, clearForm: Function, selectedData: SelectedData = {}) => {
     e.preventDefault();
     if (!selectedData) return;
-    const { project, milestone, time, comment, billable, task } = selectedData || {};
+    const { project, milestone, time, comment, billable, task, uuid } = selectedData || {};
     const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
@@ -167,11 +168,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         if (recent) setRecent(null);
         getTimeEntries();
         clearForm && clearForm();
-        if (aiResponses.length > 0) {
-          setAiResponses(aiResponses.filter((response: any) => response.id !== project?.id));
-        }
-        if (aiResponses.length < 1) {
+        if (aiResponses.length <= 1) {
           router.refresh();
+        }
+        if (aiResponses.length > 0) {
+          setAiResponses(aiResponses.filter((response: any) => response.uuid !== uuid));
         }
       }
     } catch (error) {
@@ -214,6 +215,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       const updatedAiResponse = data.result.data?.map((response: any, index: number) => {
         const updatedResponse = {
           ...response,
+          uuid: uuidv4(),
           project: projects
             .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
             .find((project: any) => project.id === response.id),

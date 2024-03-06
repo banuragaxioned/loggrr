@@ -34,7 +34,7 @@ const NotepadCards = ({
 }: {
   projects: Project[];
   data: any;
-  handleRemove: (id: number) => void;
+  handleRemove: (id: string) => void;
   handleSubmit: (e: any, clearForm: any, data: SelectedData) => void;
   id: number;
 }) => {
@@ -119,7 +119,7 @@ const NotepadCards = ({
           variant="outline"
           size="icon"
           title="Remove entry"
-          onClick={() => selectedData.project && handleRemove(selectedData.project?.id)}
+          onClick={() => selectedData.project && handleRemove(selectedData.uuid ?? "")}
           className="absolute -right-3 -top-3 h-6 w-6 rounded-full hover:text-destructive"
           tabIndex={-1}
         >

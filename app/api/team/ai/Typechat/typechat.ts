@@ -119,7 +119,6 @@ export function createJsonTranslator<T extends object>(
       `You've the following JSON data from database:\n` +
       `\n\n${JSON.stringify(projects)}\n\n` +
       `Find the correct JSON document from the given projects data` +
-      `Also make sure the project you return contains unique projects without any duplicates` +
       `As a service, your task is to translate the found document into JSON objects of type "${validator.getTypeName()}" following these TypeScript definitions:\n` +
       `\`\`\`\n${validator.getSchemaText()}\`\`\`\n` +
       `User Request:\n` +

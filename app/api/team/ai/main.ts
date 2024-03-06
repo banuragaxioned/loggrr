@@ -1,6 +1,8 @@
 import path from "path";
 import { promises as fsPromises } from "fs";
 
+import { env } from "@/env.mjs";
+
 import * as typechat from "./Typechat/typechat";
 import { createTypeScriptJsonValidator } from "./Typechat/ts/validate";
 import { createOpenAILanguageModel } from "./Typechat/model";
@@ -35,7 +37,7 @@ async function readSchema() {
 
 const schema = await readSchema();
 
-const model = createOpenAILanguageModel(process.env.OPENAI_API_KEY ?? "", "gpt-3.5-turbo");
+const model = createOpenAILanguageModel(env.OPENAI_API_KEY, "gpt-3.5-turbo");
 const validator = createTypeScriptJsonValidator<TimeLog>(schema ?? "", "TimeLog");
 const translator = typechat.createJsonTranslator(model, validator);
 
