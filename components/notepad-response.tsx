@@ -43,8 +43,6 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
     );
   });
 
-  console.log(aiResponses, "aiResponses");
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
