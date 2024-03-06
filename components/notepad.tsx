@@ -32,7 +32,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
     <Card className="overflow-hidden p-0 shadow-none">
       <Accordion type="single" className="w-full" collapsible defaultValue="item-1">
         <AccordionItem value="item-1" className="border-b-0">
-          <AccordionTrigger className="p-4 hover:no-underline">
+          <AccordionTrigger className="p-4 hover:no-underline" tabIndex={-1}>
             <CardHeader className="flex flex-row items-center justify-between p-0">
               <p className="text-sm font-medium text-muted-foreground">Notebook</p>
             </CardHeader>
