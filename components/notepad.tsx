@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Clipboard, Loader2, Slack } from "lucide-react";
+import { Check, Clipboard, ListRestart, Loader2, Slack } from "lucide-react";
 import { toast } from "sonner";
 
 import { Textarea } from "@/components/ui/textarea";
@@ -44,7 +44,6 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   if (aiLoading || !aiInput.trim()) return;
                   e.preventDefault();
                   notebookSubmitHandler(aiInput);
-                  localStorage.removeItem("notebook-input");
                 }}
                 className="flex flex-col gap-4"
               >
@@ -58,7 +57,6 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                     const ctrlKey = e.ctrlKey || e.metaKey;
                     if (ctrlKey && e.key === "Enter" && aiInput.trim()) {
                       notebookSubmitHandler(aiInput);
-                      localStorage.removeItem("notebook-input");
                     }
                   }}
                   rows={8}
@@ -79,6 +77,19 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                       onClick={copyToClipboard}
                     >
                       {isCopied ? <Check size={16} /> : <Clipboard size={16} />}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      disabled={!aiInput.trim()}
+                      title="Clear"
+                      onClick={() => {
+                        setAiInput("");
+                        localStorage.removeItem("notebook-input");
+                      }}
+                    >
+                      <ListRestart size={16} />
                     </Button>
                   </div>
                   <Button
