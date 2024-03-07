@@ -1,14 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
 import { ScrollArea } from "./ui/scroll-area";
+import { Project } from "@/types";
+import { SelectedData } from "./forms/timelogForm";
 
-const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit, handleSubmitAll }: any) => {
+const NotepadResponse = ({
+  aiResponses,
+  setAiResponses,
+  projects,
+  handleSubmit,
+  handleSubmitAll,
+}: {
+  aiResponses: Project[];
+  setAiResponses: (args0: any) => any;
+  projects: Project[];
+  handleSubmit: (e: FormEvent, clearForm: Function | null, selectedData?: SelectedData, isMultiple?: boolean) => void;
+  handleSubmitAll: (e: FormEvent, args0: any) => void;
+}) => {
   const [open, setOpen] = useState(false);
-  const [allData, setAllData] = useState([]);
+  const [allData, setAllData] = useState<Project[]>([]);
 
   useEffect(() => {
     if (aiResponses.length > 0) {
@@ -28,11 +42,11 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit, 
 
   const handleRemove = (id: string) => {
     if (id) {
-      setAiResponses(aiResponses.filter((response: any) => response.uuid !== id));
+      setAiResponses(aiResponses.filter((response) => response.uuid !== id));
     }
   };
 
-  const renderTimeCards = aiResponses?.map((response: any, index: number) => {
+  const renderTimeCards = aiResponses?.map((response, index: number) => {
     return (
       <NotepadCards
         key={response.uuid}

@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { Dispatch, FormEvent, useEffect, useState } from "react";
 import { CircleDollarSign, Folder, Check, Rocket, List, X } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -37,7 +37,7 @@ const NotepadCards = ({
   projects: Project[];
   data: any;
   handleRemove: (id: string) => void;
-  handleSubmit: (e: any, clearForm: any, data: SelectedData) => void;
+  handleSubmit: (e: FormEvent, clearForm: Function | null, selectedData: SelectedData, isMultiple?: boolean) => void;
   id: number;
   allData: Project[];
   setAllData: Dispatch<React.SetStateAction<any>>;
@@ -77,7 +77,7 @@ const NotepadCards = ({
       return task ? task : [];
     });
     if (selected.id !== selectedData.project?.id) {
-      setSelectedData((prevData: any) => {
+      setSelectedData((prevData) => {
         return {
           ...prevData,
           milestone: undefined,
@@ -124,7 +124,7 @@ const NotepadCards = ({
 
   return (
     <motion.div
-      className={cn("col-span-12 sm:col-span-6 lg:col-span-4", data.hidden && "hidden")}
+      className="col-span-12 sm:col-span-6 lg:col-span-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: id * 0.1 }}
