@@ -71,6 +71,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     setAiInput(localStorage?.getItem("notebook-input") || "");
   }, []);
 
+  // This sets the AI input from the local storage
+  useEffect(() => {
+    setAiInput(localStorage?.getItem("notebook-input") || "");
+  }, []);
+
   // This sets the date to the store which we can utilize for quick action time
   useEffect(() => {
     setQuickActionDate(date);
