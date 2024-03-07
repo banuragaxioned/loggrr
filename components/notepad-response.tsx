@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import NotepadCards from "./notepad-cards";
 import { ScrollArea } from "./ui/scroll-area";
 
-const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }: any) => {
+const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit, handleSubmitAll }: any) => {
   const [open, setOpen] = useState(false);
+  const [allData, setAllData] = useState([]);
 
   useEffect(() => {
     if (aiResponses.length > 0) {
+      setAllData(aiResponses);
       setOpen(true);
     }
     if (open && aiResponses.length === 0) {
@@ -33,12 +35,14 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
   const renderTimeCards = aiResponses?.map((response: any, index: number) => {
     return (
       <NotepadCards
+        key={response.uuid}
+        id={index + 1}
         projects={projects}
         data={response}
         handleRemove={handleRemove}
         handleSubmit={handleSubmit}
-        key={response.uuid}
-        id={index + 1}
+        allData={allData}
+        setAllData={setAllData}
       />
     );
   });
@@ -60,7 +64,8 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit }
                 variant="outline"
                 size="sm"
                 className={`mr-2 ${aiResponses.length > 1 ? "visible" : "invisible"}`}
-                disabled
+                onClick={(e) => handleSubmitAll(e, allData)}
+                title="Click here to submit all valid time entries"
               >
                 Submit all
               </Button>

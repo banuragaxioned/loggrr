@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { CircleDollarSign, Folder, Check, Rocket, List, X } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -31,12 +31,16 @@ const NotepadCards = ({
   handleRemove,
   handleSubmit,
   id,
+  allData,
+  setAllData,
 }: {
   projects: Project[];
   data: any;
   handleRemove: (id: string) => void;
   handleSubmit: (e: any, clearForm: any, data: SelectedData) => void;
   id: number;
+  allData: Project[];
+  setAllData: Dispatch<React.SetStateAction<any>>;
 }) => {
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
@@ -105,6 +109,18 @@ const NotepadCards = ({
       return task ? task : [];
     });
   }, [data, projects]);
+
+  useEffect(() => {
+    const dataToUpdate = allData.map((item) => {
+      if (item.uuid === selectedData.uuid) {
+        return selectedData;
+      }
+
+      return item;
+    });
+    setAllData(dataToUpdate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedData]);
 
   return (
     <motion.div
