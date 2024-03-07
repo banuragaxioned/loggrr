@@ -2,7 +2,6 @@ import "./globals.css";
 import { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
-import NextTopLoader from "nextjs-toploader";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -65,8 +64,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       >
         <ContextProvider>
-          {/* TODO: Add theme color from theme config */}
-          <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false} />
           <SiteHeader projects={projects} />
           {children}
         </ContextProvider>
