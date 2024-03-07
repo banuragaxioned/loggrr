@@ -61,7 +61,6 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit, 
             <div className="flex items-start gap-2">Add time entries</div>
             <div>
               <Button
-                variant="outline"
                 size="sm"
                 className={`mr-2 ${aiResponses.length > 1 ? "visible" : "invisible"}`}
                 onClick={(e) => handleSubmitAll(e, allData)}
@@ -70,7 +69,7 @@ const NotepadResponse = ({ aiResponses, setAiResponses, projects, handleSubmit, 
                 Submit all
               </Button>
               <DialogClose asChild>
-                <Button size="sm" className="hover:text-destructive">
+                <Button variant="outline" size="sm">
                   Dismiss
                 </Button>
               </DialogClose>
