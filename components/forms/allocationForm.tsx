@@ -167,7 +167,7 @@ export function NewAllocationForm({
                       selectedItem={selectedProject}
                       handleSelect={(selected) => handleProjects(selected)}
                       {...field}
-                      className="sm:w-[21rem] sm:max-w-full -mt-1"
+                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
                     />
                   </FormControl>
                   <FormMessage />
@@ -189,7 +189,7 @@ export function NewAllocationForm({
                       selectedItem={selectedUser}
                       handleSelect={(selected) => handleUsers(selected)}
                       {...field}
-                      className="sm:w-[21rem] sm:max-w-full -mt-1"
+                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
                     />
                   </FormControl>
                   <FormMessage />
