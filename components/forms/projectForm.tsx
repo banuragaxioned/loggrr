@@ -153,7 +153,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       selectedItem={selectedClient}
                       handleSelect={(selected) => handleClients(selected)}
                       {...field}
-                      className="sm:w-[21rem] sm:max-w-full -mt-1"
+                      className="xs:w-[15rem] xsm:w-[18rem] sm:w-[21rem] xs:max-w-full -mt-1"
                     />
                   </FormControl>
                   <FormMessage />
