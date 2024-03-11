@@ -132,7 +132,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Project name</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Project Name" {...field} />
+                    <Input placeholder="Project Name" {...field} autoComplete="off" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -153,7 +153,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       selectedItem={selectedClient}
                       handleSelect={(selected) => handleClients(selected)}
                       {...field}
-                      className="-mt-2 w-full max-w-full"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -164,7 +164,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="owner"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>Owner</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox
@@ -175,7 +175,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       selectedItem={selectedOwner}
                       handleSelect={(selected) => handleOwners(selected)}
                       {...field}
-                      className="xs:w-[15rem] xs:max-w-full -mt-1 sm:w-[21rem]"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />

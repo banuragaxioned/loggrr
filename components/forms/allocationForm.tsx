@@ -156,7 +156,7 @@ export function NewAllocationForm({
               control={form.control}
               name="projectId"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 w-full-combo">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox
@@ -167,7 +167,7 @@ export function NewAllocationForm({
                       selectedItem={selectedProject}
                       handleSelect={(selected) => handleProjects(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -178,7 +178,7 @@ export function NewAllocationForm({
               control={form.control}
               name="userId"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 w-full-combo">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox
@@ -189,7 +189,7 @@ export function NewAllocationForm({
                       selectedItem={selectedUser}
                       handleSelect={(selected) => handleUsers(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />

@@ -75,7 +75,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
           <SheetHeader>
             <SheetTitle>Add a new User</SheetTitle>
           </SheetHeader>
-          <div className="col-span-2 my-2">
+          <div className="col-span-2 my-2 w-full-combo">
             <label className="mb-1 block">User</label>
             <ComboBox
               searchable
@@ -84,7 +84,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
               label="Members"
               selectedItem={selectedUser}
               handleSelect={(selected) => dropdownSelectHandler(selected)}
-              className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full"
+              className="w-full max-w-full"
             />
           </div>
           <div className="mt-2 flex justify-between space-x-3">

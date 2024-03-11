@@ -122,7 +122,7 @@ export function AddSKill({
               control={form.control}
               name="userId"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 w-full-combo">
                   <FormLabel>User</FormLabel>
                   <FormControl className="my-2">
                     <ComboBox
@@ -133,7 +133,7 @@ export function AddSKill({
                       selectedItem={selectedUser}
                       handleSelect={(selected) => handelUsers(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -144,7 +144,7 @@ export function AddSKill({
               control={form.control}
               name="skillId"
               render={({ field }) => (
-                <FormItem className="col-span-2 pt-3">
+                <FormItem className="col-span-2 pt-3 w-full-combo">
                   <FormLabel>Skill</FormLabel>
                   <FormControl className="my-2">
                     <ComboBox
@@ -155,7 +155,7 @@ export function AddSKill({
                       selectedItem={selectedSkill}
                       handleSelect={(selected) => handleSkills(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />

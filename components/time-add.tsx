@@ -255,7 +255,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
               <div className="w-full">
                 <ClassicDatePicker date={date} setDate={setDate} />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<Folder size={16} />}
@@ -263,10 +263,10 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   label="Select a Project"
                   selectedItem={selectedData?.project}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
-                  className="w-[22rem] sm:max-w-full min-[375px]:max-w-[340px]"
+                  className="w-full max-w-full"
                 />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<Rocket size={16} />}
@@ -275,10 +275,10 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   selectedItem={selectedData?.milestone}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
                   disabled={!selectedData?.project?.id}
-                  className="w-[22rem] sm:max-w-full min-[375px]:max-w-[340px]"
+                  className="w-full max-w-full"
                 />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<List size={16} />}
@@ -287,7 +287,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
                   disabled={!isProjectAndMilestoneSelected}
-                  className="w-[22rem] sm:max-w-full min-[375px]:max-w-[340px]"
+                  className="w-full max-w-full"
                 />
               </div>
               <div className="w-full">

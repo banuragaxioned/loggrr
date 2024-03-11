@@ -102,7 +102,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           {options.length > 0 ? (
             <>
               {searchable && (
-                <div className="space-between flex w-full items-center rounded-t-[5px]">
+                <div className="space-between flex w-full items-center rounded-t-[5px] border-b-[1px] border-border ">
                   <Search size={16} className="ml-[10px] text-gray-400" />
                   <input
                     tabIndex={tabIndex}
