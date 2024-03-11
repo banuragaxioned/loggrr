@@ -48,11 +48,11 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>([]);
 
-  useEffect(()=> {
-    if(options.length > 0) {
+  useEffect(() => {
+    if (options.length > 0) {
       setFilteredOptions(options);
     }
-  }, [options])
+  }, [options]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -92,7 +92,10 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       <PopoverContent
         side="bottom"
         align="start"
-        className={cn("max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in", className)}
+        className={cn(
+          "max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in",
+          className,
+        )}
         onPointerDown={(e) => e.stopPropagation()}
       >
         <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
@@ -103,7 +106,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   <Search size={16} className="ml-[10px] text-gray-400" />
                   <input
                     tabIndex={tabIndex}
-                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pr-[10px] pl-[5px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
+                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pl-[5px] pr-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
                     autoFocus
                     placeholder={placeholder ?? "Search here..."}
                     value={inputValue}
