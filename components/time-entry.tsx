@@ -64,7 +64,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [recent, setRecent] = useState(null);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiResponses, setAiResponses] = useState<any>([]);
+  const [aiResponses, setAiResponses] = useState<Project[]>([]);
 
   // This sets the AI input from the local storage
   useEffect(() => {
@@ -140,7 +140,12 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   /*
    * submitTimeEntry: The following function will return the time entry of the specified id
    */
-  const submitTimeEntry = async (e: FormEvent, clearForm: Function, selectedData: SelectedData = {}) => {
+  const submitTimeEntry = async (
+    e: FormEvent,
+    clearForm: Function | null,
+    selectedData?: SelectedData,
+    isMultiple?: boolean,
+  ) => {
     e.preventDefault();
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task, uuid } = selectedData || {};
@@ -152,7 +157,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       milestone: milestone?.id,
       time: Number(hoursToDecimal(time ?? "0")) * 60,
       comments: comment?.trim(),
-      billable: billable ? true : false,
+      billable: billable && project?.billable ? true : false,
       task: task?.id,
       date: dateToStoreInDB,
     };
@@ -162,7 +167,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         method: `${edit.isEditing ? "PUT" : "POST"}`,
         body: JSON.stringify(edit.isEditing ? { ...dataToSend, id: edit.id } : dataToSend),
       });
-      if (response.ok) {
+
+      if (response.ok && !isMultiple) {
         toast.success(`${edit.isEditing ? "Updated" : "Added"} time entry in ${project?.name}`);
         edit.isEditing ? setEdit({ obj: {}, isEditing: false, id: null }) : null;
         if (recent) setRecent(null);
@@ -172,12 +178,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           router.refresh();
         }
         if (aiResponses.length > 0) {
-          setAiResponses(aiResponses.filter((response: any) => response.uuid !== uuid));
+          setAiResponses(aiResponses.filter((response) => response.uuid !== uuid));
         }
       }
     } catch (error) {
-      toast.error("Something went wrong!");
-      console.error("Error submitting form!", error);
+      if (!isMultiple) {
+        toast.error("Something went wrong!");
+        console.error("Error submitting form!", error);
+      }
     }
   };
 
@@ -212,13 +220,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         }),
       });
       const data = await response.json();
-      const updatedAiResponse = data.result.data?.map((response: any, index: number) => {
+      const updatedAiResponse = data.result.data?.map((response: any) => {
         const updatedResponse = {
           ...response,
           uuid: uuidv4(),
           project: projects
-            .map((project: any) => ({ id: project.id, name: project.name, billable: project.billable }))
-            .find((project: any) => project.id === response.id),
+            .map((project) => ({ id: project.id, name: project.name, billable: project.billable }))
+            .find((project) => project.id === response.id),
           comment: response.comments,
         };
 
@@ -226,11 +234,32 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       });
 
       setAiResponses(updatedAiResponse);
-      setAiInput("");
       setAiLoading(false);
     } catch (error) {
       console.error("Error fetching AI response", error);
       setAiLoading(false);
+    }
+  };
+
+  const submitAllTimeEntries = async (e: FormEvent, allAiEntries: SelectedData[]) => {
+    try {
+      for (const entry of allAiEntries) {
+        const isDataValidated = () => {
+          const { project, comment, time, milestone } = entry || {};
+          return project && milestone && comment?.trim().length && +(time ?? "0");
+        };
+
+        if (isDataValidated()) {
+          setAiResponses((prev) => prev.filter((response) => response.uuid !== entry.uuid));
+          await submitTimeEntry(e, null, entry, true);
+        }
+      }
+      toast.success("All valid time entries added!");
+      getTimeEntries();
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error("Error submitting all time entries", error);
     }
   };
 
@@ -268,6 +297,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           setAiResponses={setAiResponses}
           projects={projects}
           handleSubmit={submitTimeEntry}
+          handleSubmitAll={submitAllTimeEntries}
         />
       </div>
     </div>
