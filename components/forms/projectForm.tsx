@@ -85,19 +85,19 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     toast.success("A new Project was created");
     router.refresh();
   }
-  
+
   const handleClients = (selected: string) => {
     const clientValue = clients.find((client) => client.id === +selected);
     setSelectedClient(clientValue);
     form.setValue("client", clientValue?.id ?? 0);
   };
-  
+
   const handleOwners = (selected: string) => {
     const ownerValue = users.find((user) => user.id === +selected);
     setSelectedOwner(ownerValue);
     form.setValue("owner", ownerValue?.id ?? 0);
   };
-  
+
   const handleInterval = (selected: string) => {
     const intervalValue = intervalList.find((obj) => obj.id === +selected);
     setSelectedInterval(intervalValue);
@@ -142,7 +142,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="client"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>Client</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox
@@ -153,7 +153,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       selectedItem={selectedClient}
                       handleSelect={(selected) => handleClients(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="-mt-2 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -175,7 +175,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       selectedItem={selectedOwner}
                       handleSelect={(selected) => handleOwners(selected)}
                       {...field}
-                      className="xs:w-[15rem] sm:w-[21rem] xs:max-w-full -mt-1"
+                      className="xs:w-[15rem] xs:max-w-full -mt-1 sm:w-[21rem]"
                     />
                   </FormControl>
                   <FormMessage />
