@@ -6,16 +6,16 @@ import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } f
 import { Info } from "lucide-react";
 import { startOfDay } from "date-fns";
 import { useTheme } from "next-themes";
+import { Card, Flex, Text } from "@tremor/react";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 import { TimeEntrySum } from "./time-barchart";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
-import { Card, Flex, Text } from "@tremor/react";
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
-  const setPageDate = useTimeEntryState((state) => state.setPageDate);
+  const setDate = useTimeEntryState((state) => state.setDate);
   const [data, setData] = React.useState<any>(null);
   const { theme } = useTheme();
 
@@ -95,7 +95,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
           const { date } = config.config.series[config.seriesIndex]?.data[config.dataPointIndex] || {};
           const isClickable = date && !isAfter(date, addDays(startOfToday(), 1));
           if (date && isClickable) {
-            setPageDate(startOfDay(date));
+            setDate(startOfDay(date));
           }
         },
       },
