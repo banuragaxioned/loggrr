@@ -43,7 +43,7 @@ export function SkillList({
   }
 
   return (
-    <Card>
+    <Card className="shadow-none">
       <CardHeader>
         <CardTitle>Update skills</CardTitle>
         <CardDescription>Select the new value from the dropdown</CardDescription>
