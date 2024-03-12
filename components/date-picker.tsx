@@ -1,12 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { UseFormSetValue } from "react-hook-form";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
 import { DateRange } from "react-day-picker";
+
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { UseFormSetValue } from "react-hook-form";
 import { AssignFormValues } from "@/types";
 import { Checkbox } from "./ui/checkbox";
 import { GetSetDateProps } from "@/types";
@@ -21,7 +22,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="outline"
           className={cn("w-[280px] justify-start text-left font-normal", !date && "text-muted-foreground")}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -55,7 +56,6 @@ export const ClassicDatePicker = ({ date, setDate, children, align = "center" }:
       <PopoverContent align={align} className="w-auto p-0">
         <Calendar
           mode="single"
-          initialFocus
           selected={date}
           defaultMonth={date}
           toDate={todaysDate}
@@ -76,27 +76,25 @@ export function CalendarDateRangePicker({
   isOngoing,
   setOngoing,
   startDate,
+  endDate,
 }: {
   setVal: UseFormSetValue<AssignFormValues> | any;
   isOngoing?: boolean;
   startDate?: any;
+  endDate?: any;
   setOngoing: Dispatch<SetStateAction<boolean>>;
 }) {
   const [date, setDate] = useState<DateRange | any>({
     from: startDate ? startDate : new Date(),
-    to: startDate ? startDate : new Date(),
+    to: endDate ? endDate : new Date(),
   });
 
   useEffect(() => {
-    if (startDate) {
-      setVal(date);
-    } else {
-      if (date?.from) {
-        setVal("date", date?.from);
-        setVal("enddate", date?.from);
-      }
-      if (date?.to) setVal("enddate", date?.to);
+    if (date?.from) {
+      setVal("startDate", date?.from);
+      setVal("endDate", date?.to);
     }
+    if (date?.to) setVal("endDate", date?.to);
   }, [date]);
 
   const handleChecked = (evt: boolean) => {

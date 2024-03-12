@@ -1,12 +1,16 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Activity, User } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -17,11 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { InlineCombobox } from "../ui/combobox";
-import { Activity, User } from "lucide-react";
+import { ComboBox } from "../ui/combobox";
 import { CalendarDateRangePicker } from "@/components/date-picker";
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
@@ -31,8 +31,8 @@ const formSchema = z.object({
   project: z.string().min(3).max(25, "Project name should be between 3 and 25 characters"),
   owner: z.number().int().min(1, "Please set a project owner"),
   budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
-  date: z.coerce.date(),
-  enddate: z.coerce.date().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
   billable: z.any(),
   interval: z.number().int("Please select a interval"),
 });
@@ -48,6 +48,9 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const [isOngoing, setOngoing] = useState(false);
+  const [selectedInterval, setSelectedInterval] = useState<any>(null);
+  const [selectedOwner, setSelectedOwner] = useState<any>(null);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -66,8 +69,8 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
         name: values.project,
         clientId: values.client,
         ownerId: values.owner,
-        startDate: new Date(values.date),
-        endDate: values.enddate ? new Date(values.enddate) : null,
+        startDate: new Date(values.startDate),
+        endDate: values.endDate ? new Date(values.endDate) : null,
         interval: intervalList[values.interval].name,
         billable: values.billable,
       }),
@@ -83,7 +86,32 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     router.refresh();
   }
 
-  const handleOpenChange = (e: boolean) => e && form.reset();
+  const handleClients = (selected: string) => {
+    const clientValue = clients.find((client) => client.id === +selected);
+    setSelectedClient(clientValue);
+    form.setValue("client", clientValue?.id ?? 0);
+  };
+
+  const handleOwners = (selected: string) => {
+    const ownerValue = users.find((user) => user.id === +selected);
+    setSelectedOwner(ownerValue);
+    form.setValue("owner", ownerValue?.id ?? 0);
+  };
+
+  const handleInterval = (selected: string) => {
+    const intervalValue = intervalList.find((obj) => obj.id === +selected);
+    setSelectedInterval(intervalValue);
+    form.setValue("interval", intervalValue?.id ?? 0);
+  };
+
+  const handleOpenChange = (evt: boolean) => {
+    if (evt) {
+      setSelectedClient(null);
+      setSelectedOwner(null);
+      setSelectedInterval(null);
+      form.reset();
+    }
+  };
 
   return (
     <Sheet onOpenChange={handleOpenChange}>
@@ -104,7 +132,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Project name</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Project Name" {...field} />
+                    <Input placeholder="Project Name" {...field} autoComplete="off" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,15 +142,18 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="client"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>Client</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Client"
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
                       options={clients}
-                      setVal={form.setValue}
-                      fieldName="client"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Client"
+                      selectedItem={selectedClient}
+                      handleSelect={(selected) => handleClients(selected)}
+                      {...field}
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -133,15 +164,18 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="owner"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>Owner</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Owner"
+                    <ComboBox
+                      searchable
+                      icon={<User size={16} />}
                       options={users}
-                      setVal={form.setValue}
-                      fieldName="owner"
-                      icon={<User className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Owner"
+                      selectedItem={selectedOwner}
+                      handleSelect={(selected) => handleOwners(selected)}
+                      {...field}
+                      className="-mt-1 w-full max-w-full"
                     />
                   </FormControl>
                   <FormMessage />
@@ -150,12 +184,19 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
             />
             <FormField
               control={form.control}
-              name="date"
+              name="startDate"
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Duration</FormLabel>
                   <FormControl className="mt-2">
-                    <CalendarDateRangePicker setVal={form.setValue} setOngoing={setOngoing} isOngoing={isOngoing} />
+                    <CalendarDateRangePicker
+                      setVal={form.setValue}
+                      setOngoing={setOngoing}
+                      isOngoing={isOngoing}
+                      startDate={field.value}
+                      endDate={form.getValues().endDate}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,12 +209,14 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Interval</FormLabel>
                   <FormControl className="mt-2">
-                    <InlineCombobox
-                      label="Interval"
+                    <ComboBox
+                      searchable
+                      icon={<Activity size={16} />}
                       options={intervalList}
-                      setVal={form.setValue}
-                      fieldName="interval"
-                      icon={<Activity className="mr-2 h-4 w-4 shrink-0 opacity-50" />}
+                      label="Interval"
+                      selectedItem={selectedInterval}
+                      handleSelect={(selected) => handleInterval(selected)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -208,10 +251,10 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 </FormItem>
               )}
             />
-            <SheetFooter className="gap-x-4">
+            <SheetFooter className="gap-4">
               <Button type="submit">Submit</Button>
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>

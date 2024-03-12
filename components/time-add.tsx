@@ -73,21 +73,16 @@ const TIME_CHIPS = [
 ];
 
 export function TimeAdd({ projects }: { projects?: Project[] }) {
-  const dateToSend = useTimeEntryState((state) => state.date);
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = useState<Date>(startOfToday());
+  const date = useTimeEntryState((state) => state.date);
+  const setDate = useTimeEntryState((state) => state.setDate);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
   const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
-
-  // This sets the date to the quick action from home
-  useEffect(() => {
-    setDate(dateToSend ?? startOfToday());
-  }, [dateToSend]);
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
@@ -159,8 +154,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
     setSelectedData({ ...selectedData, time: time });
   };
 
-  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
-
   /*
    * handleTimeUpdate: function to increase or decrease time based on provided value
    * action: increase | decrease
@@ -213,7 +206,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log("Error submitting form!", error);
+      console.error("Error submitting form!", error);
     }
   };
 
@@ -236,7 +229,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="relative z-10 mx-auto w-full max-w-sm">
           <DrawerHeader>
             <DrawerTitle>Add Time</DrawerTitle>
             <DrawerDescription>Add your time for the day</DrawerDescription>
@@ -255,48 +248,54 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
               <div className="w-full">
                 <ClassicDatePicker date={date} setDate={setDate} />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<Folder size={16} />}
                   options={projects ?? []}
-                  label="Project"
+                  label="Select a Project"
                   selectedItem={selectedData?.project}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
+                  className="w-full max-w-full"
                 />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<Rocket size={16} />}
                   options={projectMilestones}
-                  label="Milestone"
+                  label="Select a Milestone"
                   selectedItem={selectedData?.milestone}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
                   disabled={!selectedData?.project?.id}
+                  className="w-full max-w-full"
                 />
               </div>
-              <div className="w-full">
+              <div className="w-full-combo">
                 <ComboBox
                   searchable
                   icon={<List size={16} />}
                   options={projectTasks}
-                  label="Task"
+                  label="Select a Task"
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-                  disabled={!isProjectAndMilestoneSelected}
+                  disabled={!selectedData?.project?.id}
+                  className="w-full max-w-full"
                 />
               </div>
               <div className="w-full">
                 <Input
-                  disabled={!isProjectAndMilestoneSelected}
                   type="text"
                   placeholder="Add a comment..."
                   value={selectedData?.comment ?? ""}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-              <div className="flex w-full items-center gap-2">
+              <Label
+                className="flex w-full cursor-pointer items-center gap-2 text-muted-foreground"
+                htmlFor="billable-hours"
+                title={!selectedData?.project?.billable ? "Non-billable project" : "Toggle Billable"}
+              >
                 <Switch
                   checked={selectedData.billable}
                   onCheckedChange={() =>
@@ -305,12 +304,10 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   }
                   disabled={!selectedData?.project?.billable}
                   id="billable-hours"
-                  className="rotate-180 data-[state=checked]:bg-success"
+                  className="data-[state=checked]:bg-success"
                 />
-                <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
-                  Billable
-                </Label>
-              </div>
+                Billable
+              </Label>
               <div className="relative flex w-full items-center">
                 <Button
                   variant="outline"
@@ -327,7 +324,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                 <Input
                   tabIndex={-1}
                   type="text"
-                  placeholder="7.30"
+                  placeholder="2:30"
                   className={cn(
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
@@ -364,7 +361,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   variant="outline"
                   onClick={() => {
                     handleClearForm();
-                    setDate(dateToSend ?? startOfToday());
                   }}
                 >
                   Cancel

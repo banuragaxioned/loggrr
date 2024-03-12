@@ -2,7 +2,6 @@ import "./globals.css";
 import { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
-import NextTopLoader from "nextjs-toploader";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -54,7 +53,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+      </head>
       <body
         className={cn(
           "min-h-screen items-center overscroll-y-none bg-background font-sans text-base antialiased",
@@ -63,8 +64,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       >
         <ContextProvider>
-          {/* TODO: Add theme color from theme config */}
-          <NextTopLoader showSpinner={false} color="#000000" height={3} shadow={false} />
           <SiteHeader projects={projects} />
           {children}
         </ContextProvider>

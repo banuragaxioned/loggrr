@@ -8,7 +8,6 @@ import { Clock, Loader } from "lucide-react";
 
 import { excludedNavRoutes, siteConfig } from "@/config/site";
 
-import { ThemeToggle } from "./theme-toggle";
 import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
 
@@ -37,7 +36,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
       <div className="container flex h-14 items-center space-x-4">
         {/* Site Logo/Title */}
         <Link href={slug ? `/${slug}` : "/"} className="flex items-center space-x-2">
-          <Clock className="h-6 w-6" />
+          <Clock />
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
         {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
@@ -46,12 +45,8 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
-              {isNavVisible && filteredProjects && <TimeAdd projects={filteredProjects} />}
-              <ThemeToggle />
-              {status === "loading" && (
-                <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
-              )}
               {teamData && <TeamSwitcher teams={teamData} />}
+              {status === "loading" && <Loader className="mr-1" />}
               {status === "authenticated" && (
                 <UserAccountNav
                   user={{

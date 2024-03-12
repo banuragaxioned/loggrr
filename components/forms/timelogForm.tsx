@@ -16,12 +16,14 @@ export type SelectedData = {
   comment?: string | null;
   time?: string;
   billable?: boolean;
+  uuid?: string;
 };
 
 interface TimelogProps {
   projects: Project[];
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
+  recent: any;
 }
 
 type ErrorsObj = {
@@ -38,7 +40,7 @@ const initialDataState = {
   billable: false,
 };
 
-export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => {
+export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogProps) => {
   const [onCommentFocus, setOnCommentFocus] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
@@ -128,10 +130,21 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
         const task = foundProject?.task;
         return task ? task : [];
       });
+    } else if (recent) {
+      const foundProject = projects.find((project) => project.id === recent.project?.id);
+      setSelectedData(recent);
+      setProjectMilestones(() => {
+        const milestone = foundProject?.milestone;
+        return milestone ? milestone : [];
+      });
+      setprojectTasks(() => {
+        const task = foundProject?.task;
+        return task ? task : [];
+      });
     } else {
       handleClearForm();
     }
-  }, [edit, projects]);
+  }, [edit, projects, recent]);
 
   const renderFormText = () => {
     if (!selectedData.project?.id) return "Select a project first...";
@@ -173,7 +186,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
             label="Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            disabled={!isProjectAndMilestoneSelected}
+            disabled={!selectedData?.project?.id}
           />
         </div>
         {(selectedData?.milestone || selectedData?.project || selectedData?.task) && (
@@ -241,7 +254,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler }: TimelogProps) => 
               <Input
                 tabIndex={isProjectAndMilestoneSelected ? 6 : -1}
                 type="text"
-                placeholder="7:30"
+                placeholder="2:30"
                 className={cn(
                   errors?.time
                     ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"

@@ -1,10 +1,11 @@
 import { getServerSession } from "next-auth/next";
+import { format, addDays } from "date-fns";
 import * as z from "zod";
+
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { AllocationFrequency } from "@prisma/client";
 import { AllocationDates } from "@/types";
-import dayjs from "dayjs";
 
 const allocationCreateSchema = z.object({
   team: z.string().min(1),
@@ -60,14 +61,14 @@ const fillEmptyAllocations = (temp: any, startDate: Date, endDate: Date) => {
   const finalData = { ...temp };
   let date: any = startDate;
   while (date < endDate) {
-    const key = date.toISOString().split("T")[0];
+    const key = format(date, "yyyy-MM-dd");
     if (!finalData[key])
       finalData[key] = {
         billableTime: 0,
         nonBillableTime: 0,
         totalTime: 0,
       };
-    date = dayjs(date).add(1, "day").toDate();
+    date = addDays(date, 1);
   }
   return finalData;
 };
@@ -127,7 +128,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
     // allocationEndDate is not exist
     if (!allocationEndDate && allocation.frequency !== "ONGOING") {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split("T")[0];
+      const date = format(allocationStartDate, "yyyy-MM-dd");
       const isAllocationDateExist = accumulator[date];
       // stop further execution, if allocation date is exist or
       // exist allocation updateAt date is latest date as compare to new allocation date
@@ -155,7 +156,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
       (allocation.frequency === "ONGOING" && !allocation.enddate && allocationStartDate <= endDate)
     ) {
       // change date string format to YYYY-MM-DD
-      const date = allocationStartDate.toISOString().split("T")[0];
+      const date = format(allocationStartDate, "yyyy-MM-dd");
       accumulator[date] = {
         id: allocation.id,
         billableTime: billableTime,
@@ -166,7 +167,7 @@ const createAllocationDates = (allocationData: AllocationDate[], endDate: Date |
       };
 
       // increase one day
-      allocationStartDate = dayjs(allocationStartDate).add(1, "day").toDate();
+      allocationStartDate = addDays(allocationStartDate, 1);
     }
 
     return accumulator;

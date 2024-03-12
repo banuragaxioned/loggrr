@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import {
@@ -11,8 +13,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { useParams } from "next/navigation";
-import Link from "next/link";
 
 export function NavMenu() {
   const params = useParams();
@@ -24,7 +24,7 @@ export function NavMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[350px] lg:grid-cols-1">
+            <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
               <Link href={`/${slug}/projects`} legacyBehavior passHref>
                 <ListItem title="Projects">Manage and view your projects.</ListItem>
               </Link>
@@ -37,7 +37,7 @@ export function NavMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Members</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[350px] lg:grid-cols-1">
+            <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
               <Link href={`/${slug}/members`} legacyBehavior passHref>
                 <ListItem title="Manage Members">Manage members and their permissions.</ListItem>
               </Link>
@@ -50,7 +50,7 @@ export function NavMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Skills</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[500px] lg:grid-cols-[.75fr_1fr]">
+            <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
@@ -74,7 +74,7 @@ export function NavMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Reports</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[600px] lg:grid-cols-3">
+            <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
