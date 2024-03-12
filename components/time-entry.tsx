@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format, startOfToday } from "date-fns";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
@@ -55,10 +55,9 @@ export const getDateString = (date: Date) => {
 export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps) => {
   const router = useRouter();
   const updateTime = useTimeEntryState((state) => state.updateTime);
-  const pageDate = useTimeEntryState((state) => state.date);
-  const setQuickActionDate = useTimeEntryState((state) => state.setQuickActionDate);
+  const date = useTimeEntryState((state) => state.date);
+  const setDate = useTimeEntryState((state) => state.setDate);
   const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
-  const [date, setDate] = useState<Date>(startOfToday());
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
@@ -69,23 +68,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   // This sets the AI input from the local storage
   useEffect(() => {
     setAiInput(localStorage?.getItem("notebook-input") || "");
-  }, []);
-
-  // This sets the date to the store which we can utilize for quick action time
-  useEffect(() => {
-    setQuickActionDate(date);
 
     return () => {
       resetTimeEntryStates();
     };
-  }, [date, setQuickActionDate, resetTimeEntryStates]);
-
-  // This sets the date from the distribution widgets
-  useEffect(() => {
-    if (pageDate) {
-      setDate(pageDate);
-    }
-  }, [pageDate, setDate]);
+  }, [resetTimeEntryStates]);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     setRecent(null);
@@ -256,7 +243,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       }
       toast.success("All valid time entries added!");
       getTimeEntries();
-      router.refresh();
     } catch (error) {
       toast.error("Something went wrong!");
       console.error("Error submitting all time entries", error);

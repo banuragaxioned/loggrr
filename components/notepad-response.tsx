@@ -1,4 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ const NotepadResponse = ({
   handleSubmit: (e: FormEvent, clearForm: Function | null, selectedData?: SelectedData, isMultiple?: boolean) => void;
   handleSubmitAll: (e: FormEvent, args0: any) => void;
 }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [allData, setAllData] = useState<Project[]>([]);
 
@@ -31,8 +33,9 @@ const NotepadResponse = ({
     }
     if (open && aiResponses.length === 0) {
       setOpen(false);
+      router.refresh();
     }
-  }, [aiResponses, open]);
+  }, [aiResponses, open, router]);
 
   useEffect(() => {
     if (!open) {

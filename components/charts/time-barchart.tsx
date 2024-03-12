@@ -28,7 +28,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum[] }) => {
-  const setPageDate = useTimeEntryState((state) => state.setPageDate);
+  const setDate = useTimeEntryState((state) => state.setDate);
   const [data, setData] = React.useState<any>(null);
 
   React.useEffect(() => {
@@ -83,7 +83,7 @@ const TimeBarChart = ({ oneWeekTimeEntries }: { oneWeekTimeEntries: TimeEntrySum
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
-              onClick={(e) => e.activeLabel && setPageDate(startOfDay(e.activePayload?.[0].payload.date))}
+              onClick={(e) => e.activeLabel && setDate(startOfDay(e.activePayload?.[0].payload.date))}
             >
               <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={formatXAxis} />
               <YAxis

@@ -73,21 +73,16 @@ const TIME_CHIPS = [
 ];
 
 export function TimeAdd({ projects }: { projects?: Project[] }) {
-  const dateToSend = useTimeEntryState((state) => state.date);
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = useState<Date>(startOfToday());
+  const date = useTimeEntryState((state) => state.date);
+  const setDate = useTimeEntryState((state) => state.setDate);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
   const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
-
-  // This sets the date to the quick action from home
-  useEffect(() => {
-    setDate(dateToSend ?? startOfToday());
-  }, [dateToSend]);
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
@@ -367,7 +362,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   variant="outline"
                   onClick={() => {
                     handleClearForm();
-                    setDate(dateToSend ?? startOfToday());
                   }}
                 >
                   Cancel
