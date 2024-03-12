@@ -141,7 +141,7 @@ const NotepadCards = ({
         >
           <X size={16} />
         </Button>
-        <CardContent className="flex flex-col gap-3 p-4">
+        <CardContent className="flex flex-col gap-3 p-4 w-full-combo">
           <ComboBox
             searchable
             icon={<Folder size={16} />}
@@ -149,6 +149,7 @@ const NotepadCards = ({
             label="Select a Project"
             selectedItem={selectedData?.project}
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
+            className="w-[90%] max-w-full"
           />
           <ComboBox
             searchable
@@ -157,6 +158,7 @@ const NotepadCards = ({
             label="Select a Milestone"
             selectedItem={selectedData?.milestone}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+            className="w-[90%] max-w-full"
           />
           <ComboBox
             searchable
@@ -165,6 +167,7 @@ const NotepadCards = ({
             label="Select a Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+            className="w-[90%] max-w-full"
           />
           <Input
             placeholder="Add a comment..."
