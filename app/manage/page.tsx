@@ -1,15 +1,25 @@
+import React from "react";
+import { notFound } from "next/navigation";
+
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import React from "react";
+import { getCurrentUser } from "@/server/session";
+import { pageProps } from "@/types";
 import { ProfileForm } from "./profile";
 
-const Manage = () => {
+export default async function Manage({ params }: pageProps) {
+  const user = await getCurrentUser();
+  const { team } = params;
+
+  if (!user) {
+    return notFound();
+  }
+
   return (
     <DashboardShell>
       <DashboardHeader heading="Manage"></DashboardHeader>
-      <ProfileForm />
+      <ProfileForm user={user} team={team} />
     </DashboardShell>
   );
 };
 
-export default Manage;

@@ -35,10 +35,10 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       title: "Appearance",
       href: "/manage/appearance",
     },
-    // {
-    //   title: "Notifications",
-    //   href: "/manage/notifications",
-    // },
+    {
+      title: "Notifications",
+      href: "/manage/notifications",
+    },
     // {
     //   title: "Display",
     //   href: "/manage/display",
