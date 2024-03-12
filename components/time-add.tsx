@@ -154,8 +154,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
     setSelectedData({ ...selectedData, time: time });
   };
 
-  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
-
   /*
    * handleTimeUpdate: function to increase or decrease time based on provided value
    * action: increase | decrease
@@ -281,20 +279,23 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   label="Select a Task"
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-                  disabled={!isProjectAndMilestoneSelected}
+                  disabled={!selectedData?.project?.id}
                   className="w-full max-w-full"
                 />
               </div>
               <div className="w-full">
                 <Input
-                  disabled={!isProjectAndMilestoneSelected}
                   type="text"
                   placeholder="Add a comment..."
                   value={selectedData?.comment ?? ""}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
               </div>
-              <div className="flex w-full items-center gap-2">
+              <Label
+                className="flex w-full cursor-pointer items-center gap-2 text-muted-foreground"
+                htmlFor="billable-hours"
+                title={!selectedData?.project?.billable ? "Non-billable project" : "Toggle Billable"}
+              >
                 <Switch
                   checked={selectedData.billable}
                   onCheckedChange={() =>
@@ -303,12 +304,10 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   }
                   disabled={!selectedData?.project?.billable}
                   id="billable-hours"
-                  className="rotate-180 data-[state=checked]:bg-success"
+                  className="data-[state=checked]:bg-success"
                 />
-                <Label className="cursor-pointer text-muted-foreground" htmlFor="billable-hours">
-                  Billable
-                </Label>
-              </div>
+                Billable
+              </Label>
               <div className="relative flex w-full items-center">
                 <Button
                   variant="outline"

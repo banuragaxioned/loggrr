@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
 import posthog from "posthog-js";
 import { Clock, Loader } from "lucide-react";
-import NextTopLoader from "nextjs-toploader";
 
 import { excludedNavRoutes, siteConfig } from "@/config/site";
 
-import { ThemeToggle } from "./theme-toggle";
 import { NavMenu } from "./nav-menu";
 import TeamSwitcher from "./team-switcher";
 
@@ -26,8 +22,6 @@ import { Project } from "@/types";
 export function SiteHeader({ projects }: { projects?: Project[] }) {
   const params = useParams();
   const pathname = usePathname();
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const slug = params.team && decodeURIComponent(params.team as string);
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
@@ -35,21 +29,14 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
 
   posthog.identify(String(userId), { email, name });
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const isNavVisible = !excludedNavRoutes.includes(pathname);
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {mounted && (
-        <NextTopLoader showSpinner={false} color={theme === "light" ? "#000" : "#fff"} height={3} shadow={false} />
-      )}
       <div className="container flex h-14 items-center space-x-4">
         {/* Site Logo/Title */}
         <Link href={slug ? `/${slug}` : "/"} className="flex items-center space-x-2">
-          <Clock className="h-6 w-6" />
+          <Clock />
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
         {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
@@ -58,12 +45,8 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
               {isNavVisible && <NavMenu />}
-              {isNavVisible && filteredProjects && <TimeAdd projects={filteredProjects} />}
-              <ThemeToggle />
-              {status === "loading" && (
-                <Loader className="rotate-0 scale-100 transition-all hover:text-zinc-950 dark:rotate-0 dark:scale-100 dark:text-zinc-400 dark:hover:text-zinc-100" />
-              )}
               {teamData && <TeamSwitcher teams={teamData} />}
+              {status === "loading" && <Loader className="mr-1" />}
               {status === "authenticated" && (
                 <UserAccountNav
                   user={{

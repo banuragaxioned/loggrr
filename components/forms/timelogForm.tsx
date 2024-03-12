@@ -186,7 +186,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
             label="Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            disabled={!isProjectAndMilestoneSelected}
+            disabled={!selectedData?.project?.id}
           />
         </div>
         {(selectedData?.milestone || selectedData?.project || selectedData?.task) && (
