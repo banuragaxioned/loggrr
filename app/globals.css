@@ -85,6 +85,10 @@
   pointer-events: all !important;
 }
 
+.w-full-combo {
+  @apply relative [&>div[data-radix-popper-content-wrapper]]:!absolute [&>div[data-radix-popper-content-wrapper]]:w-full [&>div[data-radix-popper-content-wrapper]]:max-w-full
+}
+
 .recharts-tooltip-cursor {
   @apply fill-muted !important;
 }

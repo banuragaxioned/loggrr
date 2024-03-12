@@ -1,12 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import {
   Sheet,
   SheetClose,
@@ -17,9 +20,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().nonempty("Please enter a name"),
@@ -74,7 +74,7 @@ export function NewClientForm({ team }: { team: string }) {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="col-span-2">
+                <FormItem className="col-span-2 mb-3">
                   <FormLabel>Client name</FormLabel>
                   <FormControl className="my-2">
                     <Input placeholder="Acme Inc." {...field} />
