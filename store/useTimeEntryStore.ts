@@ -4,7 +4,7 @@ import { create } from "zustand";
 // Define the interface of the Global state
 interface TimeEntryState {
   updateTime: number;
-  date: Date; //
+  date: Date; // The date of the time entry
 }
 
 // Define the interface of the actions that can be performed
