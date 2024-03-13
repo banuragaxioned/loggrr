@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 import { getCurrentUser } from "@/server/session";
-import { Metadata } from "next";
-import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "./side-nav";
 
@@ -11,11 +10,11 @@ export const metadata: Metadata = {
   description: "Manage your account and settings.",
 };
 
-interface DashboardLayoutProps {
+interface ManageLayoutProps {
   children?: React.ReactNode;
 }
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function ManageLayout({ children }: ManageLayoutProps) {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -27,10 +26,6 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       title: "Profile",
       href: "/manage",
     },
-    // {
-    //   title: "Account",
-    //   href: "/manage/account",
-    // },
     {
       title: "Appearance",
       href: "/manage/appearance",
@@ -39,29 +34,23 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       title: "Notifications",
       href: "/manage/notifications",
     },
-    // {
-    //   title: "Display",
-    //   href: "/manage/display",
-    // },
   ];
 
   return (
     <div className="container grid gap-12 md:grid-cols-1">
-      <div className="md:hidden">
-        <Image src="/examples/forms-light.png" width={1280} height={791} alt="Forms" className="block dark:hidden" />
-        <Image src="/examples/forms-dark.png" width={1280} height={791} alt="Forms" className="hidden dark:block" />
-      </div>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
-          <p className="text-muted-foreground">Manage your account settings and set e-mail preferences.</p>
+      <div className="mb-8">
+        <div className="space-y-1 p-2">
+          <h1>Settings</h1>
+          <p>Manage your account settings and profiles</p>
         </div>
-        <Separator className="my-6" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/5">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 lg:max-w-2xl">{children}</div>
+        <div className="px-2">
+          <Separator className="my-2" />
+          <div className="mt-4 flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+            <aside className="lg:w-1/5">
+              <SidebarNav items={sidebarNavItems} />
+            </aside>
+            <div className="flex-1 lg:max-w-2xl">{children}</div>
+          </div>
         </div>
       </div>
     </div>

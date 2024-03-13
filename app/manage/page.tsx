@@ -11,15 +11,10 @@ export default async function Manage({ params }: pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
 
-  if (!user) {
-    return notFound();
-  }
-
   return (
     <DashboardShell>
-      <DashboardHeader heading="Manage"></DashboardHeader>
+      <h2>Your profile</h2>
       <ProfileForm user={user} team={team} />
     </DashboardShell>
   );
-};
-
+}
