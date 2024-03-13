@@ -42,5 +42,24 @@ export const db = prisma.$extends({
       },
     },
   },
+  // query: {
+  //   $allModels: {
+  //     async findMany({ model, operation, args, query }) {
+  //       const excluded = ["Workspace", "Session", "VerificationToken", "Account", "User"];
+  //       if (excluded.includes(model)) {
+  //         return query(args);
+  //       }
+
+  //       args.where = {
+  //         ...args.where,
+  //         workspace: {
+  //           slug: "axioned",
+  //         },
+  //       };
+
+  //       return query(args);
+  //     },
+  //   },
+  // },
   // ... your methods
 });
