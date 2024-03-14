@@ -27,10 +27,6 @@ export default async function ManageLayout({ children }: ManageLayoutProps) {
       href: "/manage",
     },
     {
-      title: "Appearance",
-      href: "/manage/appearance",
-    },
-    {
       title: "Notifications",
       href: "/manage/notifications",
     },

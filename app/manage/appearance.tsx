@@ -7,7 +7,7 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function AppearanceForm() {
+export function Appearance() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -15,7 +15,7 @@ export function AppearanceForm() {
 
   return (
     mounted && (
-      <div className="space-y-6">
+      <div className="mt-1 space-y-6">
         <div className="flex gap-2">
           <Button
             size="sm"

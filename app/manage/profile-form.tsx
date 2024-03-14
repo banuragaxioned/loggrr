@@ -48,7 +48,6 @@ export function ProfileForm({ user }: { user: any }) {
       }
 
       toast.success("Profile updated successfully!");
-      // window.location.reload();
     } catch (error) {
       console.error("Error updating profile", error);
     }
@@ -56,7 +55,7 @@ export function ProfileForm({ user }: { user: any }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" autoComplete="off">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mb-2 space-y-8" autoComplete="off">
         <FormField
           control={form.control}
           name="name"
