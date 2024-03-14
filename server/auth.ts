@@ -112,11 +112,9 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ token, session }) {
-      const user = await db.user.findUnique({ where: { id: Number(token.id) } });
-
       if (token) {
         session.user.id = Number(token.id);
-        session.user.name = user?.name ?? token.name;
+        session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
 

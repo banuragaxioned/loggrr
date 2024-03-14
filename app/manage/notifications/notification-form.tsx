@@ -46,7 +46,7 @@ export function NotificationsForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* <FormField
+        <FormField
           control={form.control}
           name="type"
           render={({ field }) => (
@@ -62,17 +62,13 @@ export function NotificationsForm() {
                     <FormControl>
                       <RadioGroupItem value="all" />
                     </FormControl>
-                    <FormLabel className="font-normal">
-                      All new messages
-                    </FormLabel>
+                    <FormLabel className="font-normal">All new messages</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="mentions" />
                     </FormControl>
-                    <FormLabel className="font-normal">
-                      Direct messages and mentions
-                    </FormLabel>
+                    <FormLabel className="font-normal">Direct messages and mentions</FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
@@ -85,7 +81,7 @@ export function NotificationsForm() {
               <FormMessage />
             </FormItem>
           )}
-        /> */}
+        />
         <div>
           <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
           <div className="space-y-4">
@@ -104,7 +100,7 @@ export function NotificationsForm() {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="marketing_emails"
               render={({ field }) => (
@@ -148,10 +144,10 @@ export function NotificationsForm() {
                   </FormControl>
                 </FormItem>
               )}
-            /> */}
+            />
           </div>
         </div>
-        {/* <FormField
+        <FormField
           control={form.control}
           name="mobile"
           render={({ field }) => (
@@ -168,7 +164,7 @@ export function NotificationsForm() {
               </div>
             </FormItem>
           )}
-        /> */}
+        />
         <Button type="submit">Update notifications</Button>
       </form>
     </Form>
