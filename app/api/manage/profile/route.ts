@@ -8,6 +8,7 @@ import { db } from "@/server/db";
 const userProfileSchema = {
   id: z.number().min(1),
   name: z.string().min(2).max(30),
+  timezone: z.string(),
 };
 
 const updateUserProfileSchema = z.object({ ...userProfileSchema, id: z.number().min(1) });
@@ -35,6 +36,7 @@ export async function PUT(req: NextRequest) {
       },
       data: {
         name: body.name,
+        timezone: body.timezone,
       },
     });
 
