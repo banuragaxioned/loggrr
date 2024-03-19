@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTimezoneSelect, allTimezones as timezones } from "react-timezone-select";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-import timezones from "./timezones.json";
-
 export function ProfileForm({ user }: { user: any }) {
+  const { options } = useTimezoneSelect({ labelStyle: "original", timezones });
   const [name, setName] = useState(user.name);
-  const [timezone, setTimezone] = useState(user.timezone);
+  const [timezone, setTimezone] = useState(user.timezone === "Etc/UTC" ? "Etc/GMT" : user.timezone);
 
   async function onSubmit() {
     try {
@@ -56,13 +56,13 @@ export function ProfileForm({ user }: { user: any }) {
       </div>
       <div className="space-y-2">
         <Label>Time Zone</Label>
-        <Select onValueChange={(value) => setTimezone(value)} defaultValue={user.timezone}>
+        <Select onValueChange={(value) => setTimezone(value)} value={timezone ?? "Etc/UTC"}>
           <SelectTrigger>
             <SelectValue placeholder="Select a time zone" />
           </SelectTrigger>
           <SelectContent>
-            {timezones?.map((tz, index) => (
-              <SelectItem key={index} value={tz.tzCode}>
+            {options?.map((tz, index) => (
+              <SelectItem key={index} value={tz.value}>
                 {tz.label}
               </SelectItem>
             ))}
