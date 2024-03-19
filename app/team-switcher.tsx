@@ -8,7 +8,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Role } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -48,17 +48,13 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
 
   if (teamData.teams.length === 1 && !params.team) {
     return (
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => {
-          router.push(`/${teamData.teams[0].slug}`);
-        }}
-        className="flex gap-2"
+      <Link
+        className={cn(buttonVariants({ variant: "outline", size: "sm" }), "flex gap-2")}
+        href={`/${teamData.teams[0].slug}`}
       >
         Dashboard
         <ChevronRight size={16} />
-      </Button>
+      </Link>
     );
   }
 

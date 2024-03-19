@@ -66,4 +66,4 @@ export const reportConfig: ReportingConfig[] = [
 ];
 
 // routes that don't need nav menu
-export const excludedNavRoutes = ["/", "/thanks", "/manage"];
+export const excludedNavRoutes = ["/", "/thanks", "/manage", "/manage/appearance", "/manage/notifications"];
