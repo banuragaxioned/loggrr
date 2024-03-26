@@ -362,7 +362,6 @@ model Attendance {
   name              String
   email             String      
   startTime         DateTime?   @default(now())
-  endTime           DateTime?
   location          String
   status            Boolean
 }

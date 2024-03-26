@@ -47,7 +47,7 @@ export default async function Page({ params }: pageProps) {
   });
 
   // flatten the result
-  const timeLogSummaryFlat = timeLogSummary.map((item) => {
+  const timeLogSummaryFlat = timeLogSummary.map((item: any) => {
     return {
       id: item.milestoneId,
       time: item._sum.time,

@@ -8,7 +8,6 @@ export const getAttendance = async (team: string) => {
       email: true,
       location: true,
       startTime: true,
-      endTime: true,
       status: true,
     },
   });
@@ -20,7 +19,6 @@ export const getAttendance = async (team: string) => {
       email: att.email,
       location: att.location,
       startTime: att.startTime,
-      endTime: att.endTime,
     };
   });
 

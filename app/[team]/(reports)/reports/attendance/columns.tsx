@@ -54,14 +54,4 @@ export const columns: ColumnDef<Attendance>[] = [
     },
     filterFn: "arrIncludesSome",
   },
-  {
-    accessorKey: "endTime",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Sign Out" />,
-    cell: ({ row }) => {
-      return (
-        <span className="block w-full text-left first-letter:capitalize">{row?.original?.endTime && new Date(row.original.endTime).toLocaleTimeString()}</span>
-      )
-    },
-    filterFn: "arrIncludesSome",
-  },
 ];
