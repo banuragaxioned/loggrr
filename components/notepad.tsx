@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
-import { set } from "date-fns";
 
 type AINotepadProps = {
   notebookSubmitHandler: (input: string) => void;
@@ -17,6 +16,12 @@ type AINotepadProps = {
   setAiInput: (input: string) => void;
 };
 
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, aiLoading }: AINotepadProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isRecording, setisRecording] = useState(false);
@@ -45,17 +50,21 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
           microphone.stop();
           setisRecording(false);
         };
+        microphone.onerror = (event: any) => {
+          console.error("Error occurred in recognition: " + event.error);
+          if (event.error === "not-allowed") toast.error("Microphone not allowed");
+        };
       }
 
       microphone.onresult = (event: any) => {
         const recordingResult = Array.from(event.results)
           .map((result: any) => result[0])
           .map((result) => result.transcript)
-          .join("") as string;
-        setAiInput(aiInput + recordingResult + " ");
-        microphone.onerror = (event: any) => {
-          console.error("Error occurred in recognition: " + event.error);
-        };
+          .join("");
+
+        const voiceText = aiInput + recordingResult + " ";
+        setAiInput(voiceText);
+        localStorage.setItem("notebook-input", voiceText);
       };
     };
 
@@ -102,16 +111,6 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                   <div className="flex items-center gap-2">
                     <Button
                       type="button"
-                      variant="outline"
-                      size="icon"
-                      title="Copy to clipboard"
-                      disabled={!aiInput.trim()}
-                      onClick={copyToClipboard}
-                    >
-                      {isCopied ? <Check size={16} /> : <Clipboard size={16} />}
-                    </Button>
-                    <Button
-                      type="button"
                       onClick={() => setisRecording((prevState) => !prevState)}
                       size="icon"
                       variant="outline"
@@ -125,6 +124,16 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                         </>
                       )}
                       {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      title="Copy to clipboard"
+                      disabled={!aiInput.trim()}
+                      onClick={copyToClipboard}
+                    >
+                      {isCopied ? <Check size={16} /> : <Clipboard size={16} />}
                     </Button>
                     <Button
                       type="button"
