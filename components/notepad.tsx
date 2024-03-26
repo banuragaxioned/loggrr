@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Check, Clipboard, ListRestart, Loader2, Slack } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Clipboard, ListRestart, Loader2, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { set } from "date-fns";
 
 type AINotepadProps = {
   notebookSubmitHandler: (input: string) => void;
@@ -18,6 +19,7 @@ type AINotepadProps = {
 
 export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, aiLoading }: AINotepadProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const [isRecording, setisRecording] = useState(false);
 
   const copyToClipboard = () => {
     if (!aiInput.trim()) return;
@@ -27,6 +29,39 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
     toast("Text copied to clipboard!");
     setTimeout(() => setIsCopied(false), 3000);
   };
+
+  useEffect(() => {
+    if (typeof window === undefined) return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const microphone = new SpeechRecognition();
+    microphone.interimResults = true;
+    microphone.lang = "en-US";
+
+    const startRecordController = () => {
+      if (isRecording) {
+        microphone.start();
+        microphone.onend = () => {
+          microphone.stop();
+          setisRecording(false);
+        };
+      }
+
+      microphone.onresult = (event: any) => {
+        const recordingResult = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result) => result.transcript)
+          .join("") as string;
+        setAiInput(aiInput + recordingResult + " ");
+        microphone.onerror = (event: any) => {
+          console.error("Error occurred in recognition: " + event.error);
+        };
+      };
+    };
+
+    startRecordController();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRecording]);
 
   return (
     <Card className="overflow-hidden p-0 shadow-none">
@@ -65,9 +100,6 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                 />
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Button type="button" variant="outline" size="icon" disabled>
-                      <Slack size={16} />
-                    </Button>
                     <Button
                       type="button"
                       variant="outline"
@@ -77,6 +109,22 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                       onClick={copyToClipboard}
                     >
                       {isCopied ? <Check size={16} /> : <Clipboard size={16} />}
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={() => setisRecording((prevState) => !prevState)}
+                      size="icon"
+                      variant="outline"
+                      className="relative"
+                      title="Start voice typing"
+                    >
+                      {isRecording && (
+                        <>
+                          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 animate-ping rounded-full bg-muted-foreground" />
+                          <span className="absolute  -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-muted-foreground" />
+                        </>
+                      )}
+                      {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
                     </Button>
                     <Button
                       type="button"
