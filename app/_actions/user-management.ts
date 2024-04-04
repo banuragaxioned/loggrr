@@ -54,6 +54,7 @@ export async function findUserById(id: number) {
       name: true,
       email: true,
       image: true,
+      timezone: true,
       workspaces: {
         select: {
           role: true,

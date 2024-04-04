@@ -61,7 +61,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
-  const [aiInput, setAiInput] = useState("");
+  const [aiInput, setAiInput] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<Project[]>([]);
 
