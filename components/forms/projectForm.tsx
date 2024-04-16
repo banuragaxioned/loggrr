@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Activity, Plus, User } from "lucide-react";
@@ -46,19 +46,27 @@ interface NewProjectFormProps {
 export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const router = useRouter();
 
-  const SheetCloseButton = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
   const [isOngoing, setOngoing] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState<any>(null);
   const [selectedOwner, setSelectedOwner] = useState<any>(null);
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      client: 0,
+      project: "",
+      owner: 0,
+      budget: "",
+      startDate: new Date(),
+      billable: false,
+      interval: 0,
+    },
   });
 
   const intervalList = Object.values(ProjectInterval).map((value, i) => ({ id: i, name: value }));
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values, "values");
     const response = await fetch("/api/team/project/add", {
       method: "POST",
       body: JSON.stringify({
@@ -75,12 +83,12 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     });
 
     if (!response?.ok) {
-      return toast.error("Something went wrong");
+      return toast.error("Unable to create project. Please try again later.");
     }
 
+    toast.success(`${values.project} created successfully!`);
     form.reset();
-    SheetCloseButton.current?.click();
-    toast.success("A new Project was created");
+    setOpen(false);
     router.refresh();
   }
 
@@ -102,30 +110,21 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     form.setValue("interval", intervalValue?.id ?? 0);
   };
 
-  const handleOpenChange = (evt: boolean) => {
-    if (evt) {
-      setSelectedClient(null);
-      setSelectedOwner(null);
-      setSelectedInterval(null);
-      form.reset();
-    }
-  };
-
   return (
-    <Sheet onOpenChange={handleOpenChange}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="sm" className="flex gap-2">
-          Create a project
+        <Button className="flex gap-2">
+          Add new project
           <Plus size={16} />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Create a new Project</SheetTitle>
+            <SheetTitle>Add a new Project</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1" autoComplete="off">
             <FormField
               control={form.control}
               name="project"
@@ -231,7 +230,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 <FormItem className="col-span-2">
                   <FormLabel>Budget</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Budget" {...field} type="number" />
+                    <Input placeholder="Budget" {...field} type="text" inputMode="numeric" pattern="[0-9]*" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -241,7 +240,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="billable"
               render={({ field }) => (
-                <FormItem className="col-span-2 mb-4 mt-2 flex items-center gap-x-2">
+                <FormItem className="col-span-2 mb-4 flex items-center gap-x-2">
                   <FormControl>
                     <Input
                       placeholder="billable"
@@ -258,13 +257,13 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                 </FormItem>
               )}
             />
-            <SheetFooter className="gap-4">
-              <Button type="submit">Submit</Button>
+            <SheetFooter>
               <SheetClose asChild>
-                <Button type="button" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

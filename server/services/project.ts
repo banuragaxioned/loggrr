@@ -70,9 +70,10 @@ export async function getProjects(slug: string) {
         },
       },
       status: true,
+      budget: true,
     },
     orderBy: {
-      name: "asc",
+      createdAt: "desc",
     },
   });
 
@@ -86,7 +87,7 @@ export async function getProjects(slug: string) {
     ownerImage: project.owner.image,
     members: project.usersOnProject,
     status: project.status,
-    budget: project.milestone.map((obj) => obj.budget).reduce((prev, current) => prev + current, 0),
+    budget: project.budget,
     logged: project.timeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
   }));
 

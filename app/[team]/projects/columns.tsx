@@ -11,7 +11,7 @@ export type Projects = {
   name: string | null | undefined;
   status: Status;
   clientName: string;
-  budget: number;
+  budget: number | null;
   logged: number;
   owner: string | null;
   ownerImage: string | null;
@@ -46,14 +46,20 @@ export const columns: ColumnDef<Projects>[] = [
   },
   {
     accessorKey: "budget",
+    meta: {
+      className: "w-[10%]",
+    },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
     cell: ({ row }) => (
-      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.budget)}</span>
+      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.budget ?? 0)}</span>
     ),
     filterFn: "arrIncludesSome",
   },
   {
     accessorKey: "logged",
+    meta: {
+      className: "w-[10%]",
+    },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged" />,
     cell: ({ row }) => (
       <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.logged)}</span>
@@ -62,6 +68,9 @@ export const columns: ColumnDef<Projects>[] = [
   },
   {
     accessorKey: "status",
+    meta: {
+      className: "w-[10%]",
+    },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
   },

@@ -19,7 +19,7 @@ export default async function Projects({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Projects" text="This is all your projects">
+      <DashboardHeader heading="Projects" text="You can find the list of projects here">
         <NewProjectForm clients={clients} users={users} team={team} />
       </DashboardHeader>
       <Table columns={columns} data={projectList} />

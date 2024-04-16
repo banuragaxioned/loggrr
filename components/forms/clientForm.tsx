@@ -64,7 +64,7 @@ export function NewClientForm({ team }: { team: string }) {
           <Plus size={16} />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
             <SheetTitle>Add a new client</SheetTitle>
