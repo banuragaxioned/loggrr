@@ -44,26 +44,32 @@ export function clientName(
     },
     {
       accessorKey: "Project",
+      meta: {
+        className: "w-[25%]",
+      },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Active Projects" />,
       cell: ({ row }) => <span className="block w-full pl-[15%] tabular-nums">{row.original.project}</span>,
     },
     {
       accessorKey: "status",
+      meta: {
+        className: "w-[25%]",
+      },
       header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
       filterFn: "arrIncludesSome",
     },
     {
       id: "edit",
+      meta: {
+        className: "w-[100px]",
+      },
       cell: ({ row }) => {
         return (
-          <div
-            className={cn("invisible flex items-center gap-x-3 group-hover:visible")}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="invisible flex items-center gap-x-3 group-hover:visible" onClick={(e) => e.stopPropagation()}>
             {isEditing === row.original.id ? (
               <Button
                 title="Save"
-                className={cn("h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground")}
+                className="h-7 w-7 border-none bg-transparent p-0 text-primary hover:text-primary-foreground"
                 onClick={() => {
                   setIsEditing(row.original.id);
                   if (row.original.name !== refButton?.current?.value) {
@@ -72,23 +78,22 @@ export function clientName(
                     setIsEditing(0);
                   }
                 }}
+                size="icon"
               >
-                <Save height={16} width={16} />
+                <Save size={14} />
               </Button>
             ) : (
               <Button
                 title="Edit"
-                className={cn("h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground")}
+                className="h-7 w-7 border-none bg-transparent p-0 text-primary hover:text-primary-foreground"
                 onClick={() => setIsEditing(row.original.id)}
+                size="icon"
               >
-                <Edit height={16} width={16} />
+                <Edit size={14} />
               </Button>
             )}
           </div>
         );
-      },
-      meta: {
-        className: "w-[10%]",
       },
     },
   ];
