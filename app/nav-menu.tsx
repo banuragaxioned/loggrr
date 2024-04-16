@@ -65,9 +65,9 @@ export function NavMenu() {
               <Link href={`/${slug}/skills/explore`} legacyBehavior passHref>
                 <ListItem title="Explore">View all skills.</ListItem>
               </Link>
-              <Link href={`/${slug}/skills/report`} legacyBehavior passHref>
+              {/* <Link href={`/${slug}/skills/report`} legacyBehavior passHref>
                 <ListItem title="Report">Explore roadmap and skills.</ListItem>
-              </Link>
+              </Link> */}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -85,15 +85,15 @@ export function NavMenu() {
                   </div>
                 </NavigationMenuLink>
               </li>
-              <Link href={`/${slug}/reports/assigned`} legacyBehavior passHref>
+              {/* <Link href={`/${slug}/reports/assigned`} legacyBehavior passHref>
                 <ListItem title="Assigned">View who is assigned to what project.</ListItem>
-              </Link>
+              </Link> */}
               <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
                 <ListItem title="Logged">View how many hours have been logged.</ListItem>
               </Link>
-              <Link href={`/${slug}/reports/available`} legacyBehavior passHref>
+              {/* <Link href={`/${slug}/reports/available`} legacyBehavior passHref>
                 <ListItem title="Available">View who is available for work.</ListItem>
-              </Link>
+              </Link> */}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

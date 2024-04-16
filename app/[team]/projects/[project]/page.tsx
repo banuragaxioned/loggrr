@@ -70,7 +70,7 @@ export default async function Page({ params }: pageProps) {
   return (
     <DashboardShell>
       <DashboardHeader heading={projectDetails.name} text="This is your project details page.">
-        <Button variant="outline">Edit</Button>
+        {/* <Button variant="outline">Edit</Button> */}
       </DashboardHeader>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
