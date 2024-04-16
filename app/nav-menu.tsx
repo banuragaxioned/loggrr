@@ -18,11 +18,16 @@ export function NavMenu() {
   const params = useParams();
   const slug = params?.team;
 
+  const stopCollapse = (e: React.MouseEvent) => {
+    if (e.detail === 0) return;
+    e.preventDefault();
+  };
+
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={stopCollapse}>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
               <Link href={`/${slug}/clients`} legacyBehavior passHref>
@@ -35,7 +40,7 @@ export function NavMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Members</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={stopCollapse}>Members</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
               <Link href={`/${slug}/members`} legacyBehavior passHref>
@@ -48,7 +53,7 @@ export function NavMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Skills</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={stopCollapse}>Skills</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
@@ -72,7 +77,7 @@ export function NavMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Reports</NavigationMenuTrigger>
+          <NavigationMenuTrigger onClick={stopCollapse}>Reports</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
