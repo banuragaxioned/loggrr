@@ -78,7 +78,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-52 p-0" align="start">
+      <PopoverContent className="-ml-2 w-52 p-0 md:-ml-3" align="start">
         <Command>
           <CommandList>
             {teamData.teams.map((item) => (

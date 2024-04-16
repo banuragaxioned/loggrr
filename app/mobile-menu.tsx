@@ -32,15 +32,15 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
       subLinks: [
         {
           id: 1,
-          title: "Projects",
-          description: "Manage and view your projects.",
-          href: `/${slug}/projects`,
-        },
-        {
-          id: 2,
           title: "Clients",
           description: "View clients associated with your projects.",
           href: `/${slug}/clients`,
+        },
+        {
+          id: 2,
+          title: "Projects",
+          description: "Manage and view your projects.",
+          href: `/${slug}/projects`,
         },
       ],
     },

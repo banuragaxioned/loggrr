@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Activity, User } from "lucide-react";
+import { Activity, Plus, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -58,11 +58,9 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const intervalList = Object.values(ProjectInterval).map((value, i) => ({ id: i, name: value }));
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values, "values");
     const response = await fetch("/api/team/project/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         budget: Number(values.budget),
         team: team,
@@ -116,12 +114,15 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button size="sm" className="flex gap-2">
+          Create a project
+          <Plus size={16} />
+        </Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new Project</SheetTitle>
+            <SheetTitle>Create a new Project</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
@@ -240,13 +241,19 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
               control={form.control}
               name="billable"
               render={({ field }) => (
-                <FormItem className="col-span-2 mb-4 flex items-center gap-x-2">
-                  <FormLabel htmlFor="billable" className="cursor-pointer">
+                <FormItem className="col-span-2 mb-4 mt-2 flex items-center gap-x-2">
+                  <FormControl>
+                    <Input
+                      placeholder="billable"
+                      {...field}
+                      type="checkbox"
+                      id="billable"
+                      className="mt-2 h-4 w-4 p-0"
+                    />
+                  </FormControl>
+                  <FormLabel htmlFor="billable" className="mt-0 cursor-pointer">
                     Billable
                   </FormLabel>
-                  <FormControl className="my-2">
-                    <Input placeholder="billable" {...field} type="checkbox" id="billable" className="h-4 w-4 p-0" />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

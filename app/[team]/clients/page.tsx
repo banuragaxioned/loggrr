@@ -14,9 +14,10 @@ export const metadata: Metadata = {
 export default async function Clients({ params }: pageProps) {
   const { team } = params;
   const clientList = await getClients(team);
+
   return (
     <DashboardShell>
-      <DashboardHeader heading="Clients" text="This is a list of all clients">
+      <DashboardHeader heading="Clients" text="You can find the list of clients here">
         <NewClientForm team={team} />
       </DashboardHeader>
       {clientList && <Table clientName={clientName} data={clientList} team={team} />}

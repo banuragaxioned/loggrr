@@ -25,11 +25,11 @@ export function NavMenu() {
           <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
-              <Link href={`/${slug}/projects`} legacyBehavior passHref>
-                <ListItem title="Projects">Manage and view your projects.</ListItem>
-              </Link>
               <Link href={`/${slug}/clients`} legacyBehavior passHref>
                 <ListItem title="Clients">View clients associated with your projects.</ListItem>
+              </Link>
+              <Link href={`/${slug}/projects`} legacyBehavior passHref>
+                <ListItem title="Projects">Manage and view your projects.</ListItem>
               </Link>
             </ul>
           </NavigationMenuContent>

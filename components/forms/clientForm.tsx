@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -22,13 +23,13 @@ import {
 } from "@/components/ui/sheet";
 
 const formSchema = z.object({
-  name: z.string().nonempty("Please enter a name"),
+  name: z.string().min(2),
 });
 
 export function NewClientForm({ team }: { team: string }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
-  const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,9 +40,6 @@ export function NewClientForm({ team }: { team: string }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch("/api/team/client", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         name: values.name,
         team: team,
@@ -49,19 +47,22 @@ export function NewClientForm({ team }: { team: string }) {
     });
 
     if (!response?.ok) {
-      return toast.error("Something went wrong");
+      return toast.error("Unable to create client. Please try again later.");
     }
 
+    toast.success(`${values.name} created successfully!`);
     form.reset();
-    SheetCloseButton.current?.click();
-    toast.success("A new Client was created");
+    setOpen(false);
     router.refresh();
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button className="flex gap-2">
+          Add new client
+          <Plus size={16} />
+        </Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
@@ -69,7 +70,7 @@ export function NewClientForm({ team }: { team: string }) {
             <SheetTitle>Add a new client</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="my-4" autoComplete="off">
             <FormField
               control={form.control}
               name="name"
@@ -84,12 +85,12 @@ export function NewClientForm({ team }: { team: string }) {
               )}
             />
             <SheetFooter>
-              <Button type="submit">Submit</Button>
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

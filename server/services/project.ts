@@ -177,6 +177,8 @@ export async function projectAccess(projectId: number) {
 }
 
 export const getAllProjects = async (userId?: number, team?: string) => {
+  if (!userId) return [];
+
   const projects = await db.project.findMany({
     where: {
       usersOnProject: {
@@ -213,7 +215,7 @@ export const getAllProjects = async (userId?: number, team?: string) => {
   }));
 };
 
-export const getMilestones = async (projectId: number, team: string ) => {
+export const getMilestones = async (projectId: number, team: string) => {
   const milestoneList = await db.milestone.findMany({
     where: {
       workspace: {
@@ -232,7 +234,7 @@ export const getMilestones = async (projectId: number, team: string ) => {
     startDate: milestone.startDate,
     endDate: milestone.endDate,
   }));
-}
+};
 
 export const teamMemberStats = async (team: string, project: number) => {
   const teamMembers = await db.$transaction([
@@ -275,8 +277,8 @@ export const teamMemberStats = async (team: string, project: number) => {
     }),
   ]);
 
-  return teamMembers
-}
+  return teamMembers;
+};
 
 export const getTasks = async (projectId: number, team: string) => {
   const tasks = await db.task.findMany({
@@ -300,4 +302,4 @@ export const getTasks = async (projectId: number, team: string) => {
     name: task.name,
     budget: task.budget,
   }));
-}
+};
