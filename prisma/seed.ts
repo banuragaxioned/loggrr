@@ -20,30 +20,6 @@ async function main() {
       workspaceId: workspace.id,
     },
   });
-  const project = await prisma.project.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      name: "Loggr",
-      clientId: client.id,
-      workspaceId: workspace.id,
-      ownerId: 1,
-      interval: "MONTHLY",
-      startdate: new Date(),
-      budget: 100,
-    },
-  });
-
-  const milestone = await prisma.milestone.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      name: "MVP",
-      projectId: project.id,
-      workspaceId: workspace.id,
-      budget: 100,
-    },
-  });
 }
 main()
   .then(async () => {

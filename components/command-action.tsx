@@ -36,13 +36,6 @@ const MenuLinks = [
   { title: "Reports - Assigned", href: "/reports/assigned", icon: BarChart3 },
 ];
 
-// TODO: Hardcoded/dummy content for presentation
-const Assignments = [
-  { title: "LearnHub Connect - Define and Prepare", icon: Folder, time: "5h" },
-  { title: "Loggr - MVP", icon: Folder, time: "2h" },
-  { title: "Axioned - Townhall", icon: Folder, time: "30m" },
-];
-
 export function CommandMenu(CommandProps: CommandPropType) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -78,15 +71,6 @@ export function CommandMenu(CommandProps: CommandPropType) {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandSeparator />
-          <CommandGroup heading="Your assignments for today">
-            {Assignments.map((allocation) => (
-              <CommandItem key={allocation.title}>
-                <allocation.icon className="mr-2 h-4 w-4" />
-                <span>{allocation.title}</span>
-                <CommandShortcut>{allocation.time}</CommandShortcut>
-              </CommandItem>
-            ))}
-          </CommandGroup>
           <CommandGroup heading="Navigation">
             {MenuLinks.map((link) => (
               <CommandItem

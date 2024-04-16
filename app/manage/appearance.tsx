@@ -20,7 +20,7 @@ export function Appearance() {
           <Button
             size="sm"
             variant="outline"
-            className={cn("flex w-32 items-center gap-2", theme === "light" && "border-success")}
+            className={cn("flex w-32 items-center gap-2", theme === "light" && "border-primary")}
             onClick={() => setTheme("light")}
           >
             <Sun size={18} />
@@ -29,7 +29,7 @@ export function Appearance() {
           <Button
             size="sm"
             variant="outline"
-            className={cn("flex w-32 items-center gap-2", theme === "dark" && "border-success")}
+            className={cn("flex w-32 items-center gap-2", theme === "dark" && "border-primary")}
             onClick={() => setTheme("dark")}
           >
             <Moon size={18} />
