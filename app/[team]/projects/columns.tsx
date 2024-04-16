@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
+import { getTimeInHours } from "@/lib/helper";
 
 export type Projects = {
   id: number;
@@ -46,13 +47,17 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "budget",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.budget}</span>,
+    cell: ({ row }) => (
+      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.budget)}</span>
+    ),
     filterFn: "arrIncludesSome",
   },
   {
     accessorKey: "logged",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged" />,
-    cell: ({ row }) => <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.logged}</span>,
+    cell: ({ row }) => (
+      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.logged)}</span>
+    ),
     filterFn: "arrIncludesSome",
   },
   {
