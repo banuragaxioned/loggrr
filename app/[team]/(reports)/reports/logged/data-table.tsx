@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -35,6 +35,7 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
 };
 
 export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }: DataTableProps<TData, TValue>) {
+  const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -58,9 +59,38 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
     },
   });
 
+  const handleExportClick = () => {
+    setIsPrintMode(true);
+  };
+
+  useEffect(() => {
+    const handleAfterPrint = () => {
+      setIsPrintMode(false);
+    };
+    window.addEventListener("afterprint", handleAfterPrint);
+
+    return () => {
+      window.removeEventListener("afterprint", handleAfterPrint);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isPrintMode) {
+      table.toggleAllRowsExpanded(true);
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
+  }, [isPrintMode, table]);
+
   return (
     <div>
-      <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} />
+      <DataTableToolbar
+        table={table}
+        allClients={allClients}
+        allUsers={allUsers}
+        handleExportClick={handleExportClick}
+      />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

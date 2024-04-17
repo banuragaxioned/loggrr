@@ -207,10 +207,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         }),
       });
       const data = await response.json();
-      if (data?.message) {
-        toast.error(data.message);
-        return;
-      }
       const updatedAiResponse = data.result.data?.map((response: any) => {
         const updatedResponse = {
           ...response,

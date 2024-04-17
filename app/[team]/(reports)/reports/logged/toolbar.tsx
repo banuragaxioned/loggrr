@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Briefcase, Calendar, CircleDollarSign, FolderCog, ListRestart, Upload, Users } from "lucide-react";
+import { Briefcase, Calendar, CircleDollarSign, FolderCog, ListRestart, Printer, Upload, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -15,6 +15,7 @@ import { ClientAndUserInterface } from "./data-table";
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
+  handleExportClick: () => void;
 }
 
 const monthFilter = {
@@ -41,7 +42,12 @@ const projectFilter = {
   ],
 };
 
-export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTableToolbarExtendedProps<Assignment>) {
+export function DataTableToolbar<TData>({
+  table,
+  allClients,
+  allUsers,
+  handleExportClick,
+}: DataTableToolbarExtendedProps<Assignment>) {
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
   const selectedBilling = searchParams.get("billable");
@@ -117,7 +123,7 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
-        <li>
+        <li className="no-print">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
               <Link href={`?`}>
@@ -129,10 +135,9 @@ export function DataTableToolbar<TData>({ table, allClients, allUsers }: DataTab
         </li>
       </ul>
       {/* Right Area */}
-      <div>
-        <Button variant="outline" size="sm" className="flex gap-2 disabled:opacity-50" disabled>
-          <Upload size={16} />
-          Export
+      <div className="no-print">
+        <Button variant="outline" size="icon" className="flex gap-2" onClick={handleExportClick} title="Print">
+          <Printer size={16} />
         </Button>
       </div>
     </div>
