@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Briefcase, Calendar, CircleDollarSign, FolderCog, ListRestart, Printer, Upload, Users } from "lucide-react";
+import { Briefcase, Calendar, CircleDollarSign, Download, FolderCog, ListRestart, Printer, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -15,6 +15,7 @@ import { ClientAndUserInterface } from "./data-table";
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
+  handlePrintClick: () => void;
   handleExportClick: () => void;
 }
 
@@ -46,6 +47,7 @@ export function DataTableToolbar<TData>({
   table,
   allClients,
   allUsers,
+  handlePrintClick,
   handleExportClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const searchParams = useSearchParams();
@@ -135,9 +137,13 @@ export function DataTableToolbar<TData>({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="no-print">
-        <Button variant="outline" size="icon" className="flex gap-2" onClick={handleExportClick} title="Print">
+      <div className="no-print flex flex-wrap items-center gap-2">
+        <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
           <Printer size={16} />
+        </Button>
+        <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
+          <Download size={16} />
+          Export CSV
         </Button>
       </div>
     </div>
