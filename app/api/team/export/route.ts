@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
+import { stringToBoolean } from "@/lib/helper";
+import { getMonthStartAndEndDates } from "@/lib/months";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,8 +15,10 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
-    const { slug } = data;
-    console.log(slug, "slug");
+    const { slug, selectedMonth, selectedBilling } = data;
+    const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
+    const isBillable = stringToBoolean(selectedBilling);
+    console.log(startDate, endDate, isBillable);
 
     if (!user.workspaces.find((workspace) => workspace.slug === slug)) {
       return new Response("Unauthorized!", { status: 403 });
@@ -24,9 +29,21 @@ export async function POST(req: NextRequest) {
         workspace: {
           slug,
         },
+        date: {
+          gte: startDate ? startDate : new Date(0),
+          lte: endDate ? endDate : new Date(),
+        },
+        billable: {
+          ...(isBillable !== null && { equals: isBillable }),
+        },
+        time: {
+          gt: 0, // Include only entries where time is greater than 0
+        },
       },
       select: {
         project: true,
+        date: true,
+        time: true,
       },
     });
 

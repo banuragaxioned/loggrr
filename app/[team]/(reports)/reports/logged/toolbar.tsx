@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Briefcase, Calendar, CircleDollarSign, Download, FolderCog, ListRestart, Printer, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -16,7 +16,6 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
   handlePrintClick: () => void;
-  handleExportClick: () => void;
 }
 
 const monthFilter = {
@@ -48,8 +47,8 @@ export function DataTableToolbar<TData>({
   allClients,
   allUsers,
   handlePrintClick,
-  handleExportClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
+  const { team: slug } = useParams();
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
   const selectedBilling = searchParams.get("billable");
@@ -78,6 +77,31 @@ export function DataTableToolbar<TData>({
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
     if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
     if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
+  };
+
+  const handleExportClick = async () => {
+    try {
+      const response = await fetch("/api/team/export", {
+        method: "POST",
+        body: JSON.stringify({
+          slug,
+          selectedMonth,
+          selectedBilling,
+          selectedProject,
+          selectedClients,
+          selectedMembers,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("There was a problem with your fetch operation:", error);
+    }
   };
 
   // Billing status toggle button
@@ -141,10 +165,10 @@ export function DataTableToolbar<TData>({
         <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
           <Printer size={16} />
         </Button>
-        {/* <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
+        <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
           <Download size={16} />
           Export CSV
-        </Button> */}
+        </Button>
       </div>
     </div>
   );
