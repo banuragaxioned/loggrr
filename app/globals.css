@@ -156,3 +156,13 @@
 .side-bar [role="tooltip"] {
   @apply rounded-md border bg-background text-foreground;
 }
+
+@media print {
+  .no-print {
+    display: none;
+  }
+  @page {
+    size: auto;
+    margin: 0 -10px;
+  }
+}

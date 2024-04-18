@@ -102,11 +102,11 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   }
 
   const handleOpenChange = (event: boolean) => {
-    if(edit.isEditing){
+    if (edit.isEditing) {
       setEdit({ obj: {}, isEditing: event, id: null });
     }
     if (!event) {
-      form.reset({name: '', startDate: new Date(), endDate: new Date(), budget: ''});
+      form.reset({ name: "", startDate: new Date(), endDate: new Date(), budget: "" });
     }
     setIsFormOpen(event);
   };
@@ -114,12 +114,12 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button className="w-14 absolute right-0">Add</Button>
+        <Button className="absolute right-0">Create</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Milestone</SheetTitle>
+            <SheetTitle>{edit.isEditing ? "Edit" : "Create a new"} Milestone</SheetTitle>
             <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
@@ -173,8 +173,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                 );
               }}
             />
-            <SheetFooter className="mt-2 gap-x-4">
-              <Button type="submit">Submit</Button>
+            <SheetFooter className="mt-2">
               <SheetClose asChild>
                 <Button
                   type="button"
@@ -188,6 +187,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

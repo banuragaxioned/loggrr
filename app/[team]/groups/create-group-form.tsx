@@ -1,5 +1,8 @@
 "use client";
 
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -7,12 +10,9 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { SheetWrapper } from "@/components/ui/sheet-wrapper";
 import { createGroup } from "@/app/_actions/create-group-action";
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { SheetClose } from "@/components/ui/sheet";
 
 const FormSchema = z.object({
   groupName: z.string().min(2, {
@@ -49,7 +49,7 @@ export function CreateGroupForm({ team }: { team: string }) {
   return (
     <SheetWrapper button="Create" title="Create a new group" description="Create a new group to add members to.">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" autoComplete="off">
           <FormField
             control={form.control}
             name="groupName"
@@ -63,14 +63,14 @@ export function CreateGroupForm({ team }: { team: string }) {
               </FormItem>
             )}
           />
-          <div className="flex gap-2">
-            <Button type="submit">Submit</Button>
+          <SheetFooter className="mt-2 justify-start space-x-3">
             <SheetClose>
-              <Button type="button" variant={"outline"} ref={SheetCloseButton}>
+              <Button type="button" variant="outline" ref={SheetCloseButton}>
                 Cancel
               </Button>
             </SheetClose>
-          </div>
+            <Button type="submit">Submit</Button>
+          </SheetFooter>
         </form>
       </Form>
     </SheetWrapper>

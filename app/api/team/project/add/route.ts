@@ -57,6 +57,7 @@ export async function POST(req: Request) {
         enddate: body.endDate,
         interval: body.interval,
         budget: body.budget,
+        billable: body.billable ?? false,
       },
     });
 

@@ -221,9 +221,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       });
 
       setAiResponses(updatedAiResponse);
-      setAiLoading(false);
     } catch (error) {
       console.error("Error fetching AI response", error);
+    } finally {
       setAiLoading(false);
     }
   };

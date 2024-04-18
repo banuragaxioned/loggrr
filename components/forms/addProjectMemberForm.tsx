@@ -7,7 +7,15 @@ import { User } from "lucide-react";
 
 import { ComboBox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export interface Users {
   id: number;
@@ -64,19 +72,20 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
       <SheetTrigger asChild>
         <Button>Add</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             submitHandler();
           }}
-          className="my-2 grid grid-cols-2 gap-2"
+          className="my-2 flex flex-col gap-2"
         >
           <SheetHeader>
-            <SheetTitle>Add a new User</SheetTitle>
+            <SheetTitle>Add a member</SheetTitle>
+            <SheetDescription>Add member to this project</SheetDescription>
           </SheetHeader>
-          <div className="col-span-2 my-2 w-full-combo">
-            <label className="mb-1 block">User</label>
+          <div className="w-full-combo col-span-2 my-2">
+            <label className="mb-1 block">Member</label>
             <ComboBox
               searchable
               icon={<User size={16} />}
@@ -87,15 +96,15 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
               className="w-full max-w-full"
             />
           </div>
-          <div className="mt-2 flex justify-between space-x-3">
-            <Button type="submit" disabled={!selectedUser}>
-              Submit
-            </Button>
+          <div className="mt-2 flex justify-end gap-2">
             <SheetClose asChild>
               <Button type="button" variant="outline" ref={SheetCloseButton}>
                 Cancel
               </Button>
             </SheetClose>
+            <Button type="submit" disabled={!selectedUser}>
+              Submit
+            </Button>
           </div>
         </form>
       </SheetContent>

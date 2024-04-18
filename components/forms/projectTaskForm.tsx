@@ -90,11 +90,11 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   }
 
   const handleOpenChange = (event: boolean) => {
-    if(edit.isEditing){
+    if (edit.isEditing) {
       setEdit({ obj: {}, isEditing: event, id: null });
     }
     if (!event) {
-      form.reset({name: '', budget: ''});
+      form.reset({ name: "", budget: "" });
     }
     setIsFormOpen(event);
   };
@@ -102,12 +102,12 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button className="w-14 absolute right-0">Add</Button>
+        <Button className="absolute right-0">Create</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>{edit.isEditing ? "Edit" : "Add a new"} Task</SheetTitle>
+            <SheetTitle>{edit.isEditing ? "Edit" : "Create a new"} Task</SheetTitle>
             <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
@@ -139,8 +139,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
                 );
               }}
             />
-            <SheetFooter className="mt-2 gap-x-4">
-              <Button type="submit">Submit</Button>
+            <SheetFooter className="mt-2">
               <SheetClose asChild>
                 <Button
                   type="button"
@@ -154,6 +153,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>
