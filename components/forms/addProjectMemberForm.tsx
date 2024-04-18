@@ -64,7 +64,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
       <SheetTrigger asChild>
         <Button>Add</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -75,7 +75,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
           <SheetHeader>
             <SheetTitle>Add a new User</SheetTitle>
           </SheetHeader>
-          <div className="col-span-2 my-2 w-full-combo">
+          <div className="w-full-combo col-span-2 my-2">
             <label className="mb-1 block">User</label>
             <ComboBox
               searchable

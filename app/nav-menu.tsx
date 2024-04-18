@@ -12,6 +12,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
 export function NavMenu() {
@@ -30,11 +31,11 @@ export function NavMenu() {
           <NavigationMenuTrigger onClick={stopCollapse}>Projects</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
-              <Link href={`/${slug}/clients`} legacyBehavior passHref>
-                <ListItem title="Clients">View clients associated with your projects.</ListItem>
-              </Link>
               <Link href={`/${slug}/projects`} legacyBehavior passHref>
                 <ListItem title="Projects">Manage and view your projects.</ListItem>
+              </Link>
+              <Link href={`/${slug}/clients`} legacyBehavior passHref>
+                <ListItem title="Clients">View clients associated with your projects.</ListItem>
               </Link>
             </ul>
           </NavigationMenuContent>
@@ -70,37 +71,13 @@ export function NavMenu() {
               <Link href={`/${slug}/skills/explore`} legacyBehavior passHref>
                 <ListItem title="Explore">View all skills.</ListItem>
               </Link>
-              {/* <Link href={`/${slug}/skills/report`} legacyBehavior passHref>
-                <ListItem title="Report">Explore roadmap and skills.</ListItem>
-              </Link> */}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={stopCollapse}>Reports</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild>
-                  <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                    <div className="mb-2 mt-4 text-lg font-medium">Reporting</div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      View and download reports for your projects and teams.
-                    </p>
-                  </div>
-                </NavigationMenuLink>
-              </li>
-              {/* <Link href={`/${slug}/reports/assigned`} legacyBehavior passHref>
-                <ListItem title="Assigned">View who is assigned to what project.</ListItem>
-              </Link> */}
-              <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
-                <ListItem title="Logged">View how many hours have been logged.</ListItem>
-              </Link>
-              {/* <Link href={`/${slug}/reports/available`} legacyBehavior passHref>
-                <ListItem title="Available">View who is available for work.</ListItem>
-              </Link> */}
-            </ul>
-          </NavigationMenuContent>
+          <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Reports</NavigationMenuLink>
+          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

@@ -141,10 +141,10 @@ export function DataTableToolbar<TData>({
         <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
           <Printer size={16} />
         </Button>
-        <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
+        {/* <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
           <Download size={16} />
           Export CSV
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

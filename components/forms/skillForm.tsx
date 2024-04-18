@@ -63,10 +63,10 @@ export function NewSkillForm({ team }: { team: string }) {
       <SheetTrigger asChild>
         <Button>Create</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new skill</SheetTitle>
+            <SheetTitle>Create a new skill</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2">
@@ -83,15 +83,13 @@ export function NewSkillForm({ team }: { team: string }) {
                 </FormItem>
               )}
             />
-            <SheetFooter>
-              <Button type="submit" className="mr-3 mt-2">
-                Submit
-              </Button>
+            <SheetFooter className="mt-3">
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton} className="mt-2">
+                <Button type="button" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

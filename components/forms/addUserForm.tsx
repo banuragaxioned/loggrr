@@ -71,14 +71,14 @@ export function AddUserInTeam({ team }: { team: string }) {
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button>Create</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new User</SheetTitle>
+            <SheetTitle>Create a new User</SheetTitle>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 grid grid-cols-2 gap-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-3" autoComplete="off">
             <FormField
               control={form.control}
               name="emailAddress"
@@ -93,12 +93,12 @@ export function AddUserInTeam({ team }: { team: string }) {
               )}
             />
             <SheetFooter className="mt-2 justify-start space-x-3">
-              <Button type="submit">Submit</Button>
               <SheetClose asChild>
                 <Button type="submit" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

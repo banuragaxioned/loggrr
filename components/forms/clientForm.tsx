@@ -59,15 +59,12 @@ export function NewClientForm({ team }: { team: string }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="flex gap-2">
-          Add new client
-          <Plus size={16} />
-        </Button>
+        <Button className="flex gap-2">Create</Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new client</SheetTitle>
+            <SheetTitle>Create a new client</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-4" autoComplete="off">

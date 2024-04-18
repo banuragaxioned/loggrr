@@ -109,12 +109,12 @@ export function AddSKill({
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button>Create</Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new skill</SheetTitle>
+            <SheetTitle>Create a new skill</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2">
@@ -122,13 +122,13 @@ export function AddSKill({
               control={form.control}
               name="userId"
               render={({ field }) => (
-                <FormItem className="col-span-2 w-full-combo">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="my-2">
                     <ComboBox
                       searchable
                       icon={<User size={16} />}
-                      options={[users.find(user => user.id === currentUser)]}
+                      options={[users.find((user) => user.id === currentUser)]}
                       label="User"
                       selectedItem={selectedUser}
                       handleSelect={(selected) => handelUsers(selected)}
@@ -144,7 +144,7 @@ export function AddSKill({
               control={form.control}
               name="skillId"
               render={({ field }) => (
-                <FormItem className="col-span-2 pt-3 w-full-combo">
+                <FormItem className="w-full-combo col-span-2 pt-3">
                   <FormLabel>Skill</FormLabel>
                   <FormControl className="my-2">
                     <ComboBox
@@ -180,15 +180,13 @@ export function AddSKill({
                 </FormItem>
               )}
             />
-            <SheetFooter className="mt-5 flex gap-2">
-              <Button type="submit" variant="default">
-                Submit
-              </Button>
+            <SheetFooter className="mt-5 flex">
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>
+              <Button type="submit">Submit</Button>
             </SheetFooter>
           </form>
         </Form>

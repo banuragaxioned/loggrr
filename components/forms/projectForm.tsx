@@ -113,15 +113,12 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="flex gap-2">
-          Add new project
-          <Plus size={16} />
-        </Button>
+        <Button className="flex gap-2">Create</Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Add a new Project</SheetTitle>
+            <SheetTitle>Create a new Project</SheetTitle>
             <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1" autoComplete="off">

@@ -32,15 +32,15 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
       subLinks: [
         {
           id: 1,
-          title: "Clients",
-          description: "View clients associated with your projects.",
-          href: `/${slug}/clients`,
-        },
-        {
-          id: 2,
           title: "Projects",
           description: "Manage and view your projects.",
           href: `/${slug}/projects`,
+        },
+        {
+          id: 2,
+          title: "Clients",
+          description: "View clients associated with your projects.",
+          href: `/${slug}/clients`,
         },
       ],
     },
@@ -80,12 +80,6 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
           description: "View all skills.",
           href: `/${slug}/skills/explore`,
         },
-        // {
-        //   id: 3,
-        //   title: "Report",
-        //   description: "Explore roadmap and skills.",
-        //   href: `/${slug}/skills/report`,
-        // },
       ],
     },
     {
@@ -94,24 +88,12 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
       subLinkTitle: "Reporting",
       subLinkDescription: "View and download reports for your projects and teams.",
       subLinks: [
-        // {
-        //   id: 1,
-        //   title: "Assigned",
-        //   description: "View who is assigned to what project.",
-        //   href: `/${slug}/reports/assigned`,
-        // },
         {
-          id: 2,
+          id: 1,
           title: "Logged",
           description: "View how many hours have been logged.",
           href: `/${slug}/reports/logged`,
         },
-        // {
-        //   id: 3,
-        //   title: "Available",
-        //   description: "View who is available for work.",
-        //   href: `/${slug}/reports/available`,
-        // },
       ],
     },
   ];
