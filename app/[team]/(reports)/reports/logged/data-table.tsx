@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
   }, [isPrintMode, table]);
 
   const handleExportClick = async () => {
-    console.log("hit export");
+    // console.log("hit export");
     try {
       const response = await fetch("/api/team/export", {
         method: "POST",
@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
       }
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     }
