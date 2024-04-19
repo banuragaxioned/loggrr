@@ -51,7 +51,7 @@ export const columns: ColumnDef<Projects>[] = [
     },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
     cell: ({ row }) => (
-      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.budget ?? 0)}</span>
+      <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.budget ?? 0}</span>
     ),
     filterFn: "arrIncludesSome",
   },
