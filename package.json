@@ -10,7 +10,7 @@
     "turbo": "next dev --turbo",
     "build": "next build",
     "push": "npx prisma db push",
-    "seed": "npx prisma db seed",
+    "seed": "NODE_ENV=development prisma db seed",
     "reset": "npx prisma db push --force-reset",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
     "fresh": "pnpm run clean && pnpm install && pnpm run dev",
@@ -93,7 +93,6 @@
     "@tailwindcss/forms": "^0.5.7",
     "@types/node": "^20.12.7",
     "@types/nodemailer": "^6.4.14",
-    "@types/prettier": "^2.7.3",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
@@ -110,6 +109,7 @@
     "prisma": "^5.12.1",
     "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.7.2",
     "typescript": "^5.4.5"
   },
   "ct3aMetadata": {
@@ -119,6 +119,6 @@
     "defaults"
   ],
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   }
 }
