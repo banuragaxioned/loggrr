@@ -3,7 +3,7 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "ESNext",
+    "target": "es2022",
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
@@ -16,8 +16,8 @@
     /* Bundled projects */
     "lib": ["dom", "dom.iterable", "esnext"],
     "noEmit": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "incremental": true,
 
