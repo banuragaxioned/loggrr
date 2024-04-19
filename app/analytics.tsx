@@ -2,12 +2,12 @@
 
 import { env } from "@/env.mjs";
 
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights as VercelSpeedInsights } from "@vercel/speed-insights/next";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 
 export function Analytics() {
-  return <SpeedInsights />;
+  return <VercelSpeedInsights />;
 }
 
 if (typeof window !== "undefined" && env.NODE_ENV === "production") {
