@@ -78,7 +78,7 @@
     "react-hook-form": "^7.51.3",
     "react-resizable-panels": "^2.0.18",
     "react-timezone-select": "^3.2.3",
-    "recharts": "^2.12.5",
+    "recharts": "^2.12.6",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "timezone-soft": "^1.5.2",

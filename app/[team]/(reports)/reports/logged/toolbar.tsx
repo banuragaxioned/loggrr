@@ -125,7 +125,7 @@ export function DataTableToolbar<TData>({
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
-        <li className="no-print">
+        <li className="print:hidden">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
               <Link href={`?`}>
@@ -137,7 +137,7 @@ export function DataTableToolbar<TData>({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="no-print flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 print:hidden">
         <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
           <Printer size={16} />
         </Button>

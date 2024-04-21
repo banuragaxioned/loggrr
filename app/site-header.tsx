@@ -32,7 +32,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   const isNavVisible = !excludedNavRoutes.includes(pathname);
 
   return (
-    <header className="no-print sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
       <div className="container flex h-14 items-center space-x-4">
         {/* Site Logo/Title */}
         <Link href={slug ? `/${slug}` : "/"} className="flex items-center space-x-2">
