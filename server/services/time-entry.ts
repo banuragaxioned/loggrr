@@ -155,7 +155,7 @@ export const getLogged = async (
       }),
       ...(members && {
         project: {
-          every: {
+          some: {
             usersOnProject: {
               some: {
                 userId: {
