@@ -92,16 +92,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // sanitizing comma so as to concat the
+    const sanitize = (str: string) => {
+      return str.replaceAll(",", "‚");
+    };
+
     const updatedResponse = response.map((entry) => ({
-      client: entry.project.client.name,
-      project: entry.project.name,
-      user: entry.user.name,
-      milestone: entry.milestone?.name ?? " ",
-      task: entry.task?.name ?? " ",
-      date: format(new Date(entry.date), "EEE MMM d yyyy"),
-      comments: entry.comments,
-      timeLogged: `${getTimeInHours(entry.time)} h`,
-      billingType: entry.billable ? "Billable" : "Non-billable",
+      client: sanitize(entry.project.client.name),
+      project: sanitize(entry.project.name),
+      user: sanitize(entry.user.name ?? " "),
+      milestone: sanitize(entry.milestone?.name ?? " "),
+      task: sanitize(entry.task?.name ?? " "),
+      date: format(new Date(entry.date), "dd/MM/yyyy"),
+      comments: sanitize(entry.comments ?? " "),
+      timeLogged: getTimeInHours(entry.time),
+      billingType: entry.billable ? "Billable" : "Non billable",
     }));
 
     return NextResponse.json(updatedResponse);

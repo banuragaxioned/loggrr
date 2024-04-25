@@ -113,54 +113,37 @@ export function DataTableToolbar<TData>({
 
       const data = await response.json();
 
-      // Generate filename with current time and format as dd-mm-yyyy hh:mm:ss PM
-      const currentTime = format(new Date(), "dd-MM-yyyy (hh:mm:ss a)");
+      const currentTime = format(new Date(), "dd/MM/yyyy");
       const filename = `Report ${currentTime}.csv`;
 
-      console.log(filename, "data", data);
-
-      // Convert data to CSV format
-      // let csvContent = "data:text/csv;charset=utf-8,";
-
       // Add headings as the first row
-      // const headings = [
-      //   "Client",
-      //   "Project",
-      //   "User",
-      //   "Milestone",
-      //   "Task",
-      //   "Date",
-      //   "Comment",
-      //   "Time logged",
-      //   "Billing type",
-      // ];
-      // csvContent += headings.join(",") + "\n";
+      const headings = [
+        "Client",
+        "Project",
+        "User",
+        "Milestone",
+        "Task",
+        "Date",
+        "Comment",
+        "Time logged (h)",
+        "Billing type",
+      ];
 
-      // Format each row
-      // data.forEach((row: any) => {
-      //   const formattedRow = Object.values(row)
-      //     .map((value) => {
-      //       // Escape commas in values
-      //       if (typeof value === "string" && value.includes(",")) {
-      //         return `"${value}"`;
-      //       }
-      //       return value;
-      //     })
-      //     .join(",");
-      //   csvContent += formattedRow + "\n";
-      // });
+      const csvContent =
+        "data:text/csv;charset=utf-8," +
+        [headings.join(",")].concat(data.map((row: any) => Object.values(row).join(","))).join("\n");
 
       // Create a temporary link element to trigger download
-      // const link = document.createElement("a");
-      // link.setAttribute("href", encodeURI(csvContent));
-      // link.setAttribute("download", filename);
-      // document.body.appendChild(link);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
 
       // Trigger download
-      // link.click();
+      link.click();
 
       // Clean up
-      // document.body.removeChild(link);
+      document.body.removeChild(link);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
