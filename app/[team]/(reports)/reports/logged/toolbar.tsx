@@ -115,7 +115,7 @@ export function DataTableToolbar<TData>({
 
       // Generate filename with current time and format as dd-mm-yyyy hh:mm:ss PM
       const currentTime = format(new Date(), "dd-MM-yyyy (hh:mm:ss a)");
-      const filename = `Export ${currentTime}.csv`;
+      const filename = `Report ${currentTime}.csv`;
 
       console.log(filename, "data", data);
 
