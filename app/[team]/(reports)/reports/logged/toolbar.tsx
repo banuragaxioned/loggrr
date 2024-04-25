@@ -1,8 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Briefcase, Calendar, CircleDollarSign, Download, FolderCog, ListRestart, Printer, Users } from "lucide-react";
+import { format } from "date-fns";
+import {
+  Briefcase,
+  Calendar,
+  CircleDollarSign,
+  Download,
+  FolderCog,
+  ListRestart,
+  Loader2,
+  Printer,
+  Users,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -11,7 +23,6 @@ import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
-import { format } from "date-fns";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
@@ -49,6 +60,7 @@ export function DataTableToolbar<TData>({
   allUsers,
   handlePrintClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
+  const [isExportLoading, setIsExportLoading] = useState(false);
   const { team: slug } = useParams();
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
@@ -82,6 +94,7 @@ export function DataTableToolbar<TData>({
 
   const handleExportClick = async () => {
     try {
+      setIsExportLoading(true);
       const response = await fetch("/api/team/export", {
         method: "POST",
         body: JSON.stringify({
@@ -150,6 +163,8 @@ export function DataTableToolbar<TData>({
       // document.body.removeChild(link);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
+    } finally {
+      setIsExportLoading(false);
     }
   };
 
@@ -214,9 +229,16 @@ export function DataTableToolbar<TData>({
         <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
           <Printer size={16} />
         </Button>
-        <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
-          <Download size={16} />
-          Export CSV
+        <Button
+          disabled={isExportLoading}
+          variant="outline"
+          size="sm"
+          className="flex gap-2"
+          onClick={handleExportClick}
+          title="Export"
+        >
+          {isExportLoading ? "Exporting ..." : "Export CSV"}
+          {isExportLoading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
         </Button>
       </div>
     </div>
