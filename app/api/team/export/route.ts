@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
     const { slug, selectedMonth, selectedBilling, selectedClients, selectedMembers } = data;
     const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
     const isBillable = stringToBoolean(selectedBilling);
-    console.log(selectedClients, selectedMembers);
 
     if (!user.workspaces.find((workspace) => workspace.slug === slug)) {
       return new Response("Unauthorized!", { status: 403 });
@@ -46,11 +45,21 @@ export async function POST(req: NextRequest) {
             },
           }),
         },
+        ...(selectedMembers && {
+          userId: {
+            in: selectedMembers.split(",").map((id: number) => +id),
+          },
+        }),
       },
       select: {
-        project: true,
-        date: true,
+        // project: true,
+        // date: true,
         time: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 

@@ -125,6 +125,9 @@ export const getLogged = async (
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   const allUsers = await db.user.findMany({
@@ -140,6 +143,9 @@ export const getLogged = async (
     select: {
       id: true,
       name: true,
+    },
+    orderBy: {
+      name: "asc",
     },
   });
 
