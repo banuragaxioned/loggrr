@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
+import { format } from "date-fns";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
@@ -98,7 +99,55 @@ export function DataTableToolbar<TData>({
       }
 
       const data = await response.json();
-      console.log(data);
+
+      // Generate filename with current time and format as dd-mm-yyyy hh:mm:ss PM
+      const currentTime = format(new Date(), "dd-MM-yyyy (hh:mm:ss a)");
+      const filename = `Export ${currentTime}.csv`;
+
+      console.log(filename, "data", data);
+
+      // Convert data to CSV format
+      // let csvContent = "data:text/csv;charset=utf-8,";
+
+      // Add headings as the first row
+      // const headings = [
+      //   "Client",
+      //   "Project",
+      //   "User",
+      //   "Milestone",
+      //   "Task",
+      //   "Date",
+      //   "Comment",
+      //   "Time logged",
+      //   "Billing type",
+      // ];
+      // csvContent += headings.join(",") + "\n";
+
+      // Format each row
+      // data.forEach((row: any) => {
+      //   const formattedRow = Object.values(row)
+      //     .map((value) => {
+      //       // Escape commas in values
+      //       if (typeof value === "string" && value.includes(",")) {
+      //         return `"${value}"`;
+      //       }
+      //       return value;
+      //     })
+      //     .join(",");
+      //   csvContent += formattedRow + "\n";
+      // });
+
+      // Create a temporary link element to trigger download
+      // const link = document.createElement("a");
+      // link.setAttribute("href", encodeURI(csvContent));
+      // link.setAttribute("download", filename);
+      // document.body.appendChild(link);
+
+      // Trigger download
+      // link.click();
+
+      // Clean up
+      // document.body.removeChild(link);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     }
