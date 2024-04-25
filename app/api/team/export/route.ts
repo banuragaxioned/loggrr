@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { stringToBoolean } from "@/lib/helper";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { getMonthStartAndEndDates } from "@/lib/months";
+import { format } from "date-fns";
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,18 +53,58 @@ export async function POST(req: NextRequest) {
         }),
       },
       select: {
-        // project: true,
-        // date: true,
-        time: true,
+        project: {
+          select: {
+            name: true,
+            client: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
         user: {
           select: {
             name: true,
           },
         },
+        milestone: {
+          select: {
+            name: true,
+          },
+        },
+        task: {
+          select: {
+            name: true,
+          },
+        },
+        date: true,
+        comments: true,
+        time: true,
+        billable: true,
+      },
+      orderBy: {
+        project: {
+          client: {
+            name: "asc",
+          },
+        },
       },
     });
 
-    return NextResponse.json({ data: response });
+    const updatedResponse = response.map((entry) => ({
+      client: entry.project.client.name,
+      project: entry.project.name,
+      user: entry.user.name,
+      milestone: entry.milestone?.name,
+      task: entry.task?.name,
+      date: format(new Date(entry.date), "EEE, MMM d, yyyy"),
+      comments: entry.comments,
+      timeLogged: `${getTimeInHours(entry.time)} h`,
+      billingType: entry.billable ? "Billable" : "Non-billable",
+    }));
+
+    return NextResponse.json(updatedResponse);
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
