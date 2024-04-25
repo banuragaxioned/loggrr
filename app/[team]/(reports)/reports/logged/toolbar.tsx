@@ -113,8 +113,8 @@ export function DataTableToolbar<TData>({
 
       const data = await response.json();
 
-      const currentTime = format(new Date(), "dd/MM/yyyy");
-      const filename = `Report ${currentTime}.csv`;
+      const currentTime = format(new Date(), "dd-MM-yyyy (HH﹕mm a)");
+      const filename = `Logged Report ${currentTime}.csv`;
 
       // Add headings as the first row
       const headings = [
@@ -125,7 +125,7 @@ export function DataTableToolbar<TData>({
         "Task",
         "Date",
         "Comment",
-        "Time logged (h)",
+        "Time logged",
         "Billing type",
       ];
 
@@ -218,10 +218,10 @@ export function DataTableToolbar<TData>({
           size="sm"
           className="flex gap-2"
           onClick={handleExportClick}
-          title="Export"
+          title="Export CSV"
         >
-          {isExportLoading ? "Exporting ..." : "Export CSV"}
           {isExportLoading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
+          {isExportLoading ? "Exporting...." : "Export CSV"}
         </Button>
       </div>
     </div>

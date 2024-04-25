@@ -84,10 +84,8 @@ export async function POST(req: NextRequest) {
         billable: true,
       },
       orderBy: {
-        project: {
-          client: {
-            name: "asc",
-          },
+        user: {
+          name: "asc",
         },
       },
     });
@@ -97,17 +95,22 @@ export async function POST(req: NextRequest) {
       return str.replaceAll(",", "‚");
     };
 
-    const updatedResponse = response.map((entry) => ({
-      client: sanitize(entry.project.client.name),
-      project: sanitize(entry.project.name),
-      user: sanitize(entry.user.name ?? " "),
-      milestone: sanitize(entry.milestone?.name ?? " "),
-      task: sanitize(entry.task?.name ?? " "),
-      date: format(new Date(entry.date), "dd/MM/yyyy"),
-      comments: sanitize(entry.comments ?? " "),
-      timeLogged: getTimeInHours(entry.time),
-      billingType: entry.billable ? "Billable" : "Non billable",
-    }));
+    const updatedResponse = response
+      // Sort by project name
+      .sort((a, b) => a.project.name.localeCompare(b.project.name))
+      // Sort by client name
+      .sort((a, b) => a.project.client.name.localeCompare(b.project.client.name))
+      .map((entry) => ({
+        client: sanitize(entry.project.client.name),
+        project: sanitize(entry.project.name),
+        user: sanitize(entry.user.name ?? " "),
+        milestone: sanitize(entry.milestone?.name ?? " "),
+        task: sanitize(entry.task?.name ?? " "),
+        date: format(new Date(entry.date), "dd/MM/yyyy"),
+        comments: sanitize(entry.comments ?? " "),
+        timeLogged: getTimeInHours(entry.time),
+        billingType: entry.billable ? "Billable" : "Non billable",
+      }));
 
     return NextResponse.json(updatedResponse);
   } catch (error) {
