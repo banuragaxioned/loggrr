@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
+import { CustomTooltip } from "@/components/custom/tooltip";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
@@ -209,20 +210,28 @@ export function DataTableToolbar<TData>({
       </ul>
       {/* Right Area */}
       <div className="no-print flex flex-wrap items-center gap-2">
-        <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
-          <Printer size={16} />
-        </Button>
-        <Button
-          disabled={isExportLoading}
-          variant="outline"
-          size="sm"
-          className="flex gap-2"
-          onClick={handleExportClick}
-          title="Export CSV"
-        >
-          {isExportLoading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
-          {isExportLoading ? "Exporting...." : "Export CSV"}
-        </Button>
+        <CustomTooltip
+          trigger={
+            <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick}>
+              <Printer size={16} />
+            </Button>
+          }
+          content="Print"
+        />
+        <CustomTooltip
+          trigger={
+            <Button
+              disabled={isExportLoading}
+              variant="outline"
+              size="icon"
+              className="flex gap-2"
+              onClick={handleExportClick}
+            >
+              {isExportLoading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
+            </Button>
+          }
+          content="Export CSV"
+        />
       </div>
     </div>
   );
