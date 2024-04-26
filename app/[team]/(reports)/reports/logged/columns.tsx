@@ -67,7 +67,11 @@ export const columns: ColumnDef<Logged>[] = [
               <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
             )}
             <span className={`${depth === 3 ? "w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
-            {depth === 3 && <span className="ml-2 line-clamp-1 opacity-50">{original?.description ?? ""}</span>}
+            {depth === 3 && (
+              <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
+                {original?.description ?? ""}
+              </span>
+            )}
           </div>
         </div>
       );
