@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import {
   ColumnDef,
   flexRender,
@@ -36,7 +35,6 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
 };
 
 export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }: DataTableProps<TData, TValue>) {
-  const params = useParams();
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -85,34 +83,9 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
     }
   }, [isPrintMode, table]);
 
-  const handleExportClick = async () => {
-    // console.log("hit export");
-    try {
-      const response = await fetch("/api/team/export", {
-        method: "POST",
-        body: JSON.stringify({ slug: params.team }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      // console.log(data);
-    } catch (error) {
-      console.error("There was a problem with your fetch operation:", error);
-    }
-  };
-
   return (
     <div>
-      <DataTableToolbar
-        table={table}
-        allClients={allClients}
-        allUsers={allUsers}
-        handlePrintClick={handlePrintClick}
-        handleExportClick={handleExportClick}
-      />
+      <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} handlePrintClick={handlePrintClick} />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

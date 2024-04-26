@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { getMonthStartAndEndDates } from "@/lib/months";
+import { format } from "date-fns";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,8 +16,9 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
-    const { slug } = data;
-    console.log(slug, "slug");
+    const { slug, selectedMonth, selectedBilling, selectedClients, selectedMembers } = data;
+    const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
+    const isBillable = stringToBoolean(selectedBilling);
 
     if (!user.workspaces.find((workspace) => workspace.slug === slug)) {
       return new Response("Unauthorized!", { status: 403 });
@@ -24,13 +29,90 @@ export async function POST(req: NextRequest) {
         workspace: {
           slug,
         },
+        date: {
+          gte: startDate ? startDate : new Date(0),
+          lte: endDate ? endDate : new Date(),
+        },
+        billable: {
+          ...(isBillable !== null && { equals: isBillable }),
+        },
+        time: {
+          gt: 0, // Include only entries where time is greater than 0
+        },
+        project: {
+          ...(selectedClients && {
+            clientId: {
+              in: selectedClients.split(",").map((id: number) => +id),
+            },
+          }),
+        },
+        ...(selectedMembers && {
+          userId: {
+            in: selectedMembers.split(",").map((id: number) => +id),
+          },
+        }),
       },
       select: {
-        project: true,
+        project: {
+          select: {
+            name: true,
+            client: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        milestone: {
+          select: {
+            name: true,
+          },
+        },
+        task: {
+          select: {
+            name: true,
+          },
+        },
+        date: true,
+        comments: true,
+        time: true,
+        billable: true,
+      },
+      orderBy: {
+        user: {
+          name: "asc",
+        },
       },
     });
 
-    return NextResponse.json({ data: response });
+    // sanitizing comma so as to concat the
+    const sanitize = (str: string) => {
+      return str.replaceAll(",", "‚");
+    };
+
+    const updatedResponse = response
+      // Sort by project name
+      .sort((a, b) => a.project.name.localeCompare(b.project.name))
+      // Sort by client name
+      .sort((a, b) => a.project.client.name.localeCompare(b.project.client.name))
+      .map((entry) => ({
+        client: sanitize(entry.project.client.name),
+        project: sanitize(entry.project.name),
+        user: sanitize(entry.user.name ?? " "),
+        milestone: sanitize(entry.milestone?.name ?? " "),
+        task: sanitize(entry.task?.name ?? " "),
+        date: format(new Date(entry.date), "dd/MM/yyyy"),
+        comments: sanitize(entry.comments ?? " "),
+        timeLogged: getTimeInHours(entry.time),
+        billingType: entry.billable ? "Billable" : "Non billable",
+      }));
+
+    return NextResponse.json(updatedResponse);
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }

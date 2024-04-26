@@ -125,6 +125,9 @@ export const getLogged = async (
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   const allUsers = await db.user.findMany({
@@ -141,6 +144,9 @@ export const getLogged = async (
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   const query = await db.client.findMany({
@@ -155,7 +161,7 @@ export const getLogged = async (
       }),
       ...(members && {
         project: {
-          every: {
+          some: {
             usersOnProject: {
               some: {
                 userId: {

@@ -39,14 +39,14 @@ export const columns: ColumnDef<Logged>[] = [
                 onClick: row.getToggleExpandedHandler(),
               }}
               variant="outline"
-              className="z-10 h-6 w-6 p-0"
+              className="z-10 h-6 w-6 shrink-0 p-0"
             >
               {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
             </Button>
           )}
           {depth === 1 && !canExpand && (
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
               style={{ backgroundColor: getRandomColor(row.original.id) }}
             >
               {value.charAt(0)}
@@ -57,7 +57,7 @@ export const columns: ColumnDef<Logged>[] = [
           >
             {depth === 0 && (
               <span
-                className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
                 style={{ backgroundColor: getRandomColor(row.original.id) }}
               >
                 {value.charAt(0)}
@@ -66,8 +66,12 @@ export const columns: ColumnDef<Logged>[] = [
             {userImage && (
               <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
             )}
-            <span className="w-[200px]">{value}</span>
-            {depth === 3 && <span className="ml-2 line-clamp-1 opacity-50">{original?.description ?? ""}</span>}
+            <span className={`${depth === 3 ? "w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            {depth === 3 && (
+              <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
+                {original?.description ?? ""}
+              </span>
+            )}
           </div>
         </div>
       );

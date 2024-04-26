@@ -159,6 +159,19 @@
 }
 
 @media print {
+  *, *::before, *::after {
+    border-color: #E4E4E7 !important;
+  }
+  body {
+    color: #000 !important;
+    color-scheme: light #000 !important;
+  }
+  svg {
+    stroke: #000 !important;
+  }
+  .no-print {
+    display: none;
+  }
   @page {
     size: auto;
     margin: 0 -10px;

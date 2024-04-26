@@ -1,8 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Briefcase, Calendar, CircleDollarSign, Download, FolderCog, ListRestart, Printer, Users } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
+import { format } from "date-fns";
+import {
+  Briefcase,
+  Calendar,
+  CircleDollarSign,
+  Download,
+  FolderCog,
+  ListRestart,
+  Loader2,
+  Printer,
+  Users,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -11,12 +23,12 @@ import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
+import { CustomTooltip } from "@/components/custom/tooltip";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
   handlePrintClick: () => void;
-  handleExportClick: () => void;
 }
 
 const monthFilter = {
@@ -48,8 +60,9 @@ export function DataTableToolbar<TData>({
   allClients,
   allUsers,
   handlePrintClick,
-  handleExportClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
+  const [isExportLoading, setIsExportLoading] = useState(false);
+  const { team: slug } = useParams();
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
   const selectedBilling = searchParams.get("billable");
@@ -78,6 +91,65 @@ export function DataTableToolbar<TData>({
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
     if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
     if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
+  };
+
+  const handleExportClick = async () => {
+    try {
+      setIsExportLoading(true);
+      const response = await fetch("/api/team/export", {
+        method: "POST",
+        body: JSON.stringify({
+          slug,
+          selectedMonth,
+          selectedBilling,
+          selectedProject,
+          selectedClients,
+          selectedMembers,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      const currentTime = format(new Date(), "dd-MM-yyyy (HH﹕mm a)");
+      const filename = `Logged Report ${currentTime}.csv`;
+
+      // Add headings as the first row
+      const headings = [
+        "Client",
+        "Project",
+        "User",
+        "Milestone",
+        "Task",
+        "Date",
+        "Comment",
+        "Time logged",
+        "Billing type",
+      ];
+
+      const csvContent =
+        "data:text/csv;charset=utf-8," +
+        [headings.join(",")].concat(data.map((row: any) => Object.values(row).join(","))).join("\n");
+
+      // Create a temporary link element to trigger download
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+
+      // Trigger download
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("There was a problem with your fetch operation:", error);
+    } finally {
+      setIsExportLoading(false);
+    }
   };
 
   // Billing status toggle button
@@ -137,14 +209,29 @@ export function DataTableToolbar<TData>({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="flex flex-wrap items-center gap-2 print:hidden">
-        <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick} title="Print">
-          <Printer size={16} />
-        </Button>
-        {/* <Button variant="outline" size="sm" className="flex gap-2" onClick={handleExportClick} title="Export">
-          <Download size={16} />
-          Export CSV
-        </Button> */}
+      <div className="no-print flex flex-wrap items-center gap-2">
+        <CustomTooltip
+          trigger={
+            <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick}>
+              <Printer size={16} />
+            </Button>
+          }
+          content="Print"
+        />
+        <CustomTooltip
+          trigger={
+            <Button
+              disabled={isExportLoading}
+              variant="outline"
+              size="icon"
+              className="flex gap-2"
+              onClick={handleExportClick}
+            >
+              {isExportLoading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
+            </Button>
+          }
+          content="Export CSV"
+        />
       </div>
     </div>
   );
