@@ -4,13 +4,13 @@ import { BookOpen, Inbox, LucideGanttChartSquare, Scaling, Timer } from "lucide-
 
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 
-import timeTrack from '@/assets/images/svgs/time-tracking.svg';
-import smartSuggestions from '@/assets/images/svgs/smart-suggestions.svg';
-import automatedReminders from '@/assets/images/svgs/automated-reminders.svg';
-import transparentTeams from '@/assets/images/svgs/transparent-teams.svg';
-import workAllocation from '@/assets/images/svgs/work-allocation.svg';
-import generateReports from '@/assets/images/svgs/generate-reports.svg';
-import flexibility from '@/assets/images/svgs/flexibility.svg';
+import timeTrack from "@/assets/images/svgs/time-tracking.svg";
+import smartSuggestions from "@/assets/images/svgs/smart-suggestions.svg";
+import automatedReminders from "@/assets/images/svgs/automated-reminders.svg";
+import transparentTeams from "@/assets/images/svgs/transparent-teams.svg";
+import workAllocation from "@/assets/images/svgs/work-allocation.svg";
+import generateReports from "@/assets/images/svgs/generate-reports.svg";
+import flexibility from "@/assets/images/svgs/flexibility.svg";
 
 export function FeaturesSection() {
   return (

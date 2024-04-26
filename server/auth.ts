@@ -8,7 +8,8 @@ import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
 
-import Email from "@/email/welcome";
+import WorkspaceJoinedEmail from "@/email/workspace-joined";
+import RegisterEmail from "@/email/register";
 import { siteConfig } from "@/config/site";
 import { sendEmail } from "@/lib/email";
 
@@ -89,9 +90,25 @@ export const authOptions: NextAuthOptions = {
 
           if (!user) return;
 
+          const registerEmailHtml = render(
+            RegisterEmail({
+              siteUrl: `${siteConfig.url}`,
+              siteName: siteConfig.name,
+              name: user.name ?? "",
+            }),
+          );
+
+          const registerEmailOptions = {
+            to: user.email,
+            subject: "Welcome to Loggr",
+            html: registerEmailHtml,
+          };
+
+          await sendEmail(registerEmailOptions);
+
           // TODO: Replace hardcode values with workspace data
-          const emailHtml = render(
-            Email({
+          const workspaceEmailHtml = render(
+            WorkspaceJoinedEmail({
               username: user.name ?? "Folk",
               inviteLink: `${siteConfig.url}/axioned`,
               teamName: "Axioned",
@@ -99,13 +116,13 @@ export const authOptions: NextAuthOptions = {
             }),
           );
 
-          const options = {
+          const workspaceEmailOptions = {
             to: user.email,
             subject: "You've joined Axioned workspace",
-            html: emailHtml,
+            html: workspaceEmailHtml,
           };
 
-          await sendEmail(options);
+          await sendEmail(workspaceEmailOptions);
         }
       }
     },

@@ -197,7 +197,7 @@ export function DataTableToolbar<TData>({
         </li>
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
-        <li className="no-print">
+        <li className="print:hidden">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
               <Link href={`?`}>

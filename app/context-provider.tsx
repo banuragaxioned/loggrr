@@ -28,7 +28,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
   return (
     <>
       <PHProvider>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <TopLoader />
           <SessionProvider>{children}</SessionProvider>
           <Toaster richColors />

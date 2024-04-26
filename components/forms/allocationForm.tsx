@@ -156,7 +156,7 @@ export function NewAllocationForm({
               control={form.control}
               name="projectId"
               render={({ field }) => (
-                <FormItem className="col-span-2 w-full-combo">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>Project</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox
@@ -178,7 +178,7 @@ export function NewAllocationForm({
               control={form.control}
               name="userId"
               render={({ field }) => (
-                <FormItem className="col-span-2 w-full-combo">
+                <FormItem className="w-full-combo col-span-2">
                   <FormLabel>User</FormLabel>
                   <FormControl className="mt-2">
                     <ComboBox

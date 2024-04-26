@@ -65,16 +65,15 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session) {
       return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
     }
-    
+
     const { user } = session;
-    
+
     const { id, projectId, team } = await req.json();
 
     // check if the user has permission to the current team/workspace id if not return 403

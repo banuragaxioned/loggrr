@@ -141,7 +141,7 @@ const NotepadCards = ({
         >
           <X size={16} />
         </Button>
-        <CardContent className="flex flex-col gap-3 p-4 w-full-combo">
+        <CardContent className="w-full-combo flex flex-col gap-3 p-4">
           <ComboBox
             searchable
             icon={<Folder size={16} />}
