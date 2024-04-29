@@ -61,8 +61,6 @@ model Project {
   owner          User             @relation("UserOwnedProjects", fields: [ownerId], references: [id])
   clientId       Int
   client         Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  startdate      DateTime
-  enddate        DateTime?
   budget         Int?
   billable       Boolean          @default(false)
   interval       ProjectInterval
@@ -121,8 +119,6 @@ model Milestone {
   status      Status      @default(PUBLISHED)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  startDate   DateTime?
-  endDate     DateTime?
   timeEntry   TimeEntry[]
 
   @@index([workspaceId])
