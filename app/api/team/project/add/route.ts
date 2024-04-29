@@ -10,8 +10,6 @@ const projectCreateSchema = z.object({
   name: z.string().min(3).max(50),
   clientId: z.number().min(1),
   ownerId: z.number().min(1),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
   interval: z.nativeEnum(ProjectInterval),
   billable: z.boolean().optional(),
 });
@@ -53,8 +51,6 @@ export async function POST(req: Request) {
             id: body.ownerId,
           },
         },
-        startdate: body.startDate,
-        enddate: body.endDate,
         interval: body.interval,
         budget: body.budget,
         billable: body.billable ?? false,

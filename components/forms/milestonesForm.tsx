@@ -26,8 +26,6 @@ import { format } from "date-fns";
 const formSchema = z.object({
   name: z.string().min(3).max(50, "Milestone name should be between 3 and 50 characters"),
   budget: z.union([z.string(), z.number()]).optional(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
 });
 
 interface NewProjectFormProps {
@@ -53,8 +51,6 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       form.reset({
         ...edit.obj,
         budget: edit.obj.budget,
-        startDate: new Date(edit.obj.startDate),
-        endDate: new Date(edit.obj.endDate),
       });
     }
   }, [edit, form]);
@@ -64,15 +60,10 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       return;
     }
 
-    const startDateToStoreInDB = format(values.startDate, "yyyy-MM-dd"); // Extracts only the date
-    const endDateToStoreInDB = format(values.endDate || new Date(), "yyyy-MM-dd");
-
     const data = {
       budget: values.budget ? +values.budget : 0,
       team: team,
       name: values.name,
-      startDate: startDateToStoreInDB,
-      endDate: endDateToStoreInDB,
       projectId: +project,
     };
 
@@ -106,7 +97,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
       setEdit({ obj: {}, isEditing: event, id: null });
     }
     if (!event) {
-      form.reset({ name: "", startDate: new Date(), endDate: new Date(), budget: "" });
+      form.reset({ name: "", budget: "" });
     }
     setIsFormOpen(event);
   };
@@ -135,28 +126,6 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => {
-                return (
-                  <FormItem className="col-span-2 mt-2">
-                    <FormLabel>Date Duration</FormLabel>
-                    <FormControl className="mt-2">
-                      <CalendarDateRangePicker
-                        setVal={form.setValue}
-                        setOngoing={setOngoing}
-                        isOngoing={isOngoing}
-                        {...field}
-                        startDate={field.value}
-                        endDate={form.getValues().endDate}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
             />
             <FormField
               control={form.control}
