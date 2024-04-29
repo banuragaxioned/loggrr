@@ -7,7 +7,7 @@ import { ProjectInterval } from "@prisma/client";
 const projectCreateSchema = z.object({
   budget: z.number().min(1),
   team: z.string().min(1),
-  name: z.string().min(3).max(25),
+  name: z.string().min(3).max(50),
   clientId: z.number().min(1),
   ownerId: z.number().min(1),
   startDate: z.coerce.date(),

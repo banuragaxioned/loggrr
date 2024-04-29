@@ -28,7 +28,7 @@ import { Client, AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({
   client: z.number().int().min(1, "Please select a client"),
-  project: z.string().min(3).max(25, "Project name should be between 3 and 25 characters"),
+  project: z.string().min(3).max(50, "Project name should be between 3 and 50 characters"),
   owner: z.number().int().min(1, "Please set a project owner"),
   budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
   startDate: z.coerce.date(),

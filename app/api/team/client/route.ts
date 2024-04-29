@@ -4,7 +4,7 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 
 const clientCreateSchema = z.object({
-  name: z.string().min(1).max(25),
+  name: z.string().min(1).max(50),
   team: z.string().min(1),
 });
 

@@ -8,7 +8,7 @@ const milestoneSchema = {
   budget: z.number().min(1),
   team: z.string().min(1),
   projectId: z.number().min(1),
-  name: z.string().min(3).max(25),
+  name: z.string().min(3).max(50),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
 };

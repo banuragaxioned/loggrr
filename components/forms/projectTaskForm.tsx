@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sheet";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(25, "Task name should be between 3 and 25 characters"),
+  name: z.string().min(3).max(50, "Task name should be between 3 and 50 characters"),
   budget: z.union([z.string().min(1, "Please provide a budget"), z.number()]),
 });
 
