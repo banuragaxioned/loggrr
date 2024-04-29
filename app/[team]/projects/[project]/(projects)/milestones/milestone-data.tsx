@@ -26,9 +26,7 @@ export interface MilestoneDataProps {
   milestoneList: {
     id: number;
     name: string;
-    budget: number;
-    startDate?: Date | null;
-    endDate?: Date | null;
+    budget: number | null;
   }[];
   team: string;
   project: number;
@@ -93,21 +91,15 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
               ...item,
               name: item.name,
               budget: item.budget,
-              startDate: item.startDate,
-              endDate: item.endDate,
             };
 
             return (
               <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
-                    {item.budget >= 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
+                    {item.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item.budget}</Badge>}
                     <h4 className="text-base">{item.name}</h4>
                   </div>
-                  <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
-                    {item.startDate && format(item.startDate, "MMM dd, yyyy")}
-                    {item.endDate && <span> - {format(item.endDate, "MMM dd, yyyy")}</span>}
-                  </p>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">
                   <button

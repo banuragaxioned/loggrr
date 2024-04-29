@@ -22,7 +22,7 @@ import NotepadResponse from "./notepad-response";
 export interface RecentEntryProps {
   id: number;
   project?: Project;
-  milestone?: Milestone;
+  milestone?: Milestone | null;
   billable?: boolean;
   time?: number;
   comments?: string | null;

@@ -5,13 +5,11 @@ import { db } from "@/server/db";
 import { ProjectInterval } from "@prisma/client";
 
 const projectCreateSchema = z.object({
-  budget: z.number().min(1),
+  budget: z.number().optional(),
   team: z.string().min(1),
   name: z.string().min(3).max(50),
   clientId: z.number().min(1),
   ownerId: z.number().min(1),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
   interval: z.nativeEnum(ProjectInterval),
   billable: z.boolean().optional(),
 });
@@ -53,8 +51,6 @@ export async function POST(req: Request) {
             id: body.ownerId,
           },
         },
-        startdate: body.startDate,
-        enddate: body.endDate,
         interval: body.interval,
         budget: body.budget,
         billable: body.billable ?? false,

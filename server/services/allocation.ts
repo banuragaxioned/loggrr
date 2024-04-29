@@ -42,7 +42,6 @@ export const getAllUsers = async (slug: string) => {
     select: {
       id: true,
       name: true,
-      allocation: { select: { id: true, projectId: true } },
     },
   });
   return users;

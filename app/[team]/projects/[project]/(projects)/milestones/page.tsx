@@ -8,6 +8,7 @@ export default async function Page({ params }: pageProps) {
   const { team, project } = params;
 
   const milestoneList = await getMilestones(project || 0, team);
+  console.log(milestoneList);
 
   if (!project) {
     return null;

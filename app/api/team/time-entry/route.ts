@@ -10,12 +10,12 @@ import { TimeEntryData } from "@/types";
 const commonValidationObj = {
   team: z.string().min(1),
   project: z.number(),
-  milestone: z.number(),
+  milestone: z.number().optional(),
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
-  task: z.number().min(1).optional(),
+  task: z.number().optional(),
 };
 
 const TimeEntrySchema = z.object(commonValidationObj);

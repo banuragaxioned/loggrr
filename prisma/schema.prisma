@@ -30,7 +30,6 @@ model Workspace {
   task           Task[]
   timeEntry      TimeEntry[]
   group          Group[]
-  allocation     Allocation[]
   skill          Skill[]
   skillScore     SkillScore[]
   users          UserWorkspace[]
@@ -61,8 +60,6 @@ model Project {
   owner          User             @relation("UserOwnedProjects", fields: [ownerId], references: [id])
   clientId       Int
   client         Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  startdate      DateTime
-  enddate        DateTime?
   budget         Int?
   billable       Boolean          @default(false)
   interval       ProjectInterval
@@ -71,7 +68,6 @@ model Project {
   milestone      Milestone[]
   task           Task[]
   timeEntry      TimeEntry[]
-  allocation     Allocation[]
   usersOnProject UsersOnProject[]
 
   @@index([workspaceId])
@@ -117,12 +113,10 @@ model Milestone {
   projectId   Int
   project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name        String
-  budget      Int         @default(0) // Storing budget in hours
+  budget      Int?
   status      Status      @default(PUBLISHED)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  startDate   DateTime?
-  endDate     DateTime?
   timeEntry   TimeEntry[]
 
   @@index([workspaceId])
@@ -149,27 +143,27 @@ model Task {
 }
 
 model TimeEntry {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   date        DateTime
   workspaceId Int
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projectId   Int
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   userId      Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  milestoneId Int
-  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestoneId Int?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   taskId      Int?
-  task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  billable    Boolean   @default(false)
+  task        Task?      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  billable    Boolean    @default(false)
   time        Int // Storing time in minutes
   comments    String?
-  status      Status    @default(PUBLISHED)
-  approved    Boolean   @default(false)
+  status      Status     @default(PUBLISHED)
+  approved    Boolean    @default(false)
   approvedBy  String?
   approvedAt  DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([workspaceId, projectId, userId, milestoneId, taskId])
   @@index([workspaceId, projectId])
@@ -186,37 +180,6 @@ enum Status {
   PUBLISHED
   ARCHIVED
   DEACTIVATED
-}
-
-// Allocation-related
-model Allocation {
-  id              Int                 @id @default(autoincrement())
-  workspaceId     Int
-  workspace       Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  projectId       Int
-  project         Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  userId          Int
-  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date            DateTime
-  enddate         DateTime?
-  billableTime    Int
-  nonBillableTime Int
-  status          Status              @default(PUBLISHED)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  // If frequency is ONGOING and no enddate then it's indefinite
-  // If the frequency is ONGOING and enddate is present then it's a fixed duration
-  frequency       AllocationFrequency @default(DAY)
-
-  @@index([workspaceId])
-  @@index([projectId])
-  @@index([userId])
-  @@index([workspaceId, projectId, userId])
-}
-
-enum AllocationFrequency {
-  DAY
-  ONGOING
 }
 
 model SkillScore {
@@ -310,7 +273,6 @@ model User {
   status         Status           @default(PUBLISHED)
   accounts       Account[]
   sessions       Session[]
-  allocation     Allocation[]
   skillScore     SkillScore[]
   timeEntry      TimeEntry[]
   ownedProjects  Project[]        @relation("UserOwnedProjects")

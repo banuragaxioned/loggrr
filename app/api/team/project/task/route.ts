@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const taskSchema = {
   name: z.string().min(3).max(50),
-  budget: z.number().min(1),
+  budget: z.number().optional(),
   team: z.string().min(1),
   projectId: z.number().min(1),
 };

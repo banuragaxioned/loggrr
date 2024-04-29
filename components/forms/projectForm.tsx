@@ -30,9 +30,7 @@ const formSchema = z.object({
   client: z.number().int().min(1, "Please select a client"),
   project: z.string().min(3).max(50, "Project name should be between 3 and 50 characters"),
   owner: z.number().int().min(1, "Please set a project owner"),
-  budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
+  budget: z.union([z.string(), z.number()]).optional(),
   billable: z.any(),
   interval: z.number().int("Please select a interval"),
 });
@@ -58,7 +56,6 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
       project: "",
       owner: 0,
       budget: "",
-      startDate: new Date(),
       billable: false,
       interval: 0,
     },
@@ -75,8 +72,6 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
         name: values.project,
         clientId: values.client,
         ownerId: values.owner,
-        startDate: new Date(values.startDate),
-        endDate: values.endDate ? new Date(values.endDate) : null,
         interval: intervalList[values.interval].name,
         billable: values.billable,
       }),
@@ -173,26 +168,6 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       handleSelect={(selected) => handleOwners(selected)}
                       {...field}
                       className="-mt-1 w-full max-w-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl className="mt-2">
-                    <CalendarDateRangePicker
-                      setVal={form.setValue}
-                      setOngoing={setOngoing}
-                      isOngoing={isOngoing}
-                      startDate={field.value}
-                      endDate={form.getValues().endDate}
-                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

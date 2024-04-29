@@ -53,8 +53,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
   };
 
   const formValidator = () => {
-    const { project, comment, time, milestone } = selectedData || {};
-    return project && milestone && comment?.trim().length && time && !errors?.time;
+    const { project, comment, time } = selectedData || {};
+    return project && comment?.trim().length && time && !errors?.time;
   };
 
   const handleLoggedTimeInput = (time: string) => {
@@ -148,11 +148,10 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
 
   const renderFormText = () => {
     if (!selectedData.project?.id) return "Select a project first...";
-    if (!selectedData.milestone?.id) return "Select a milestone...";
     return "Add a comment...";
   };
 
-  const isProjectAndMilestoneSelected = selectedData?.project?.id && selectedData?.milestone?.id;
+  const isProjectSelected = selectedData?.project?.id;
 
   return (
     <div className="p-2">
@@ -189,14 +188,13 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
             disabled={!selectedData?.project?.id}
           />
         </div>
-        {(selectedData?.milestone || selectedData?.project || selectedData?.task) && (
+        {(selectedData?.project || selectedData?.task || selectedData?.milestone) && (
           <Button
             tabIndex={8}
             variant="outline"
             onClick={handleClearForm}
             size="icon"
             type="button"
-            disabled={!(selectedData?.milestone || selectedData?.project || selectedData?.task)}
             className="ml-2 shrink-0"
           >
             <ListRestart size={16} />
@@ -213,17 +211,17 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
             className={cn(
               onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border",
               "flex items-center justify-between rounded-b-xl px-3 py-2",
-              !isProjectAndMilestoneSelected && "pointer-events-none",
+              !isProjectSelected && "pointer-events-none",
             )}
           >
             <div className="ml-2 flex basis-[70%] items-center">
-              {!isProjectAndMilestoneSelected ? (
+              {!isProjectSelected ? (
                 <Info className="shrink-0 text-gray-500" size={18} />
               ) : (
                 <MessageSquare onClick={() => setOnCommentFocus(true)} className="shrink-0" size={18} />
               )}
               <input
-                tabIndex={isProjectAndMilestoneSelected ? 4 : -1}
+                tabIndex={isProjectSelected ? 4 : -1}
                 className="placeholder:text-info-light peer-focus:bg-background-dark w-full select-none border-0 bg-transparent px-2 py-1.5 text-sm focus:outline-0 focus:ring-0"
                 placeholder={renderFormText()}
                 value={selectedData?.comment ?? ""}
@@ -235,7 +233,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
             <span className="flex items-center gap-4">
               {selectedData.project?.billable && (
                 <Button
-                  tabIndex={isProjectAndMilestoneSelected ? 5 : -1}
+                  tabIndex={isProjectSelected ? 5 : -1}
                   variant="outline"
                   size="icon"
                   type="button"
@@ -252,7 +250,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
                 </Button>
               )}
               <Input
-                tabIndex={isProjectAndMilestoneSelected ? 6 : -1}
+                tabIndex={isProjectSelected ? 6 : -1}
                 type="text"
                 placeholder="2:30"
                 className={cn(
@@ -263,17 +261,13 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
                 )}
                 value={selectedData?.time}
                 onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
-                disabled={!isProjectAndMilestoneSelected}
+                disabled={!isProjectSelected}
               />
               <Button
                 size="sm"
                 type="submit"
                 disabled={!formValidator()}
-                tabIndex={
-                  selectedData?.project && selectedData.milestone && selectedData?.comment && selectedData?.time
-                    ? 7
-                    : -1
-                }
+                tabIndex={selectedData?.project && selectedData?.comment && selectedData?.time ? 7 : -1}
                 className="disabled:disabled border disabled:hover:bg-primary"
               >
                 {edit.isEditing ? "Update" : "Submit"}

@@ -301,8 +301,8 @@ export const getLogged = async (
                   time: getTimeInHours(timeEntry.time),
                   billable: timeEntry.billable,
                   comments: timeEntry.comments,
-                  milestoneId: timeEntry.milestone.id,
-                  milestone: timeEntry.milestone.name,
+                  milestoneId: timeEntry.milestone?.id,
+                  milestone: timeEntry.milestone?.name,
                   taskId: timeEntry.task?.id,
                   task: timeEntry.task?.name,
                 };

@@ -5,12 +5,10 @@ import { db } from "@/server/db";
 import { NextRequest, NextResponse } from "next/server";
 
 const milestoneSchema = {
-  budget: z.number().min(1),
+  budget: z.number().optional(),
   team: z.string().min(1),
   projectId: z.number().min(1),
   name: z.string().min(3).max(50),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
 };
 
 const addMilestoneSchema = z.object(milestoneSchema);
@@ -48,8 +46,6 @@ export async function POST(req: NextRequest) {
             id: body.projectId,
           },
         },
-        startDate: body.startDate,
-        endDate: body.endDate,
         budget: body.budget,
       },
     });
@@ -127,8 +123,6 @@ export async function PUT(req: NextRequest) {
       },
       data: {
         name: body?.name,
-        startDate: body?.startDate,
-        endDate: body?.endDate,
         budget: body?.budget,
       },
     });
