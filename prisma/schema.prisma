@@ -117,7 +117,7 @@ model Milestone {
   projectId   Int
   project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name        String
-  budget      Int         @default(0) // Storing budget in hours
+  budget      Int?
   status      Status      @default(PUBLISHED)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -149,27 +149,27 @@ model Task {
 }
 
 model TimeEntry {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   date        DateTime
   workspaceId Int
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   projectId   Int
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   userId      Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  milestoneId Int
-  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestoneId Int?
+  milestone   Milestone? @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   taskId      Int?
-  task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  billable    Boolean   @default(false)
+  task        Task?      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  billable    Boolean    @default(false)
   time        Int // Storing time in minutes
   comments    String?
-  status      Status    @default(PUBLISHED)
-  approved    Boolean   @default(false)
+  status      Status     @default(PUBLISHED)
+  approved    Boolean    @default(false)
   approvedBy  String?
   approvedAt  DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([workspaceId, projectId, userId, milestoneId, taskId])
   @@index([workspaceId, projectId])

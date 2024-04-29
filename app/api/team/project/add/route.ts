@@ -5,7 +5,7 @@ import { db } from "@/server/db";
 import { ProjectInterval } from "@prisma/client";
 
 const projectCreateSchema = z.object({
-  budget: z.number().min(1),
+  budget: z.number().optional(),
   team: z.string().min(1),
   name: z.string().min(3).max(50),
   clientId: z.number().min(1),

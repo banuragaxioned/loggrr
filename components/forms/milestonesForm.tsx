@@ -25,7 +25,7 @@ import { format } from "date-fns";
 
 const formSchema = z.object({
   name: z.string().min(3).max(50, "Milestone name should be between 3 and 50 characters"),
-  budget: z.union([z.string().min(1, "Please provide a budget"), z.number()]),
+  budget: z.union([z.string(), z.number()]).optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
 });
@@ -68,7 +68,7 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
     const endDateToStoreInDB = format(values.endDate || new Date(), "yyyy-MM-dd");
 
     const data = {
-      budget: +values.budget,
+      budget: values.budget ? +values.budget : 0,
       team: team,
       name: values.name,
       startDate: startDateToStoreInDB,

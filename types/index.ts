@@ -202,7 +202,7 @@ export interface Project {
 
 export interface TimeEntryProperties {
   id: number;
-  milestone: Milestone;
+  milestone: Milestone | null;
   task: Milestone | null;
   comments: string | null;
   billable: boolean;

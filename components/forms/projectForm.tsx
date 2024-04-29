@@ -30,7 +30,7 @@ const formSchema = z.object({
   client: z.number().int().min(1, "Please select a client"),
   project: z.string().min(3).max(50, "Project name should be between 3 and 50 characters"),
   owner: z.number().int().min(1, "Please set a project owner"),
-  budget: z.string().regex(new RegExp(/^[1-9][0-9]*$/), "Please provide a budget"),
+  budget: z.union([z.string(), z.number()]).optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
   billable: z.any(),
