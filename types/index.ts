@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { LucideIcon } from "lucide-react";
-import { Workspace, Role, AllocationFrequency, Status } from "@prisma/client";
+import { Workspace, Role, Status } from "@prisma/client";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type UserProfile = {
@@ -115,14 +115,12 @@ export type AssignFormValues = {
   nonBillableTime: number;
   projectId: number;
   userId: number;
-  frequency: AllocationFrequency;
   enddate?: Date;
 };
 
 export type AllUsersWithAllocation = {
   id: number;
   name?: string | null;
-  allocation: { id: number; projectId: number }[];
 };
 
 export interface UserGroup {

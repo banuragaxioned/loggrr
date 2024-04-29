@@ -30,7 +30,6 @@ model Workspace {
   task           Task[]
   timeEntry      TimeEntry[]
   group          Group[]
-  allocation     Allocation[]
   skill          Skill[]
   skillScore     SkillScore[]
   users          UserWorkspace[]
@@ -69,7 +68,6 @@ model Project {
   milestone      Milestone[]
   task           Task[]
   timeEntry      TimeEntry[]
-  allocation     Allocation[]
   usersOnProject UsersOnProject[]
 
   @@index([workspaceId])
@@ -184,37 +182,6 @@ enum Status {
   DEACTIVATED
 }
 
-// Allocation-related
-model Allocation {
-  id              Int                 @id @default(autoincrement())
-  workspaceId     Int
-  workspace       Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  projectId       Int
-  project         Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  userId          Int
-  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date            DateTime
-  enddate         DateTime?
-  billableTime    Int
-  nonBillableTime Int
-  status          Status              @default(PUBLISHED)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  // If frequency is ONGOING and no enddate then it's indefinite
-  // If the frequency is ONGOING and enddate is present then it's a fixed duration
-  frequency       AllocationFrequency @default(DAY)
-
-  @@index([workspaceId])
-  @@index([projectId])
-  @@index([userId])
-  @@index([workspaceId, projectId, userId])
-}
-
-enum AllocationFrequency {
-  DAY
-  ONGOING
-}
-
 model SkillScore {
   id          Int       @id @default(autoincrement())
   workspaceId Int
@@ -306,7 +273,6 @@ model User {
   status         Status           @default(PUBLISHED)
   accounts       Account[]
   sessions       Session[]
-  allocation     Allocation[]
   skillScore     SkillScore[]
   timeEntry      TimeEntry[]
   ownedProjects  Project[]        @relation("UserOwnedProjects")
