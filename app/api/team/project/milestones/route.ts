@@ -9,11 +9,6 @@ const milestoneSchema = {
   team: z.string().min(1),
   projectId: z.number().min(1),
   name: z.string().min(3).max(50),
-<<<<<<< HEAD
-=======
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
->>>>>>> main
 };
 
 const addMilestoneSchema = z.object(milestoneSchema);

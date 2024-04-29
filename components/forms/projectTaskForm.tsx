@@ -23,11 +23,7 @@ import {
 
 const formSchema = z.object({
   name: z.string().min(3).max(50, "Task name should be between 3 and 50 characters"),
-<<<<<<< HEAD
   budget: z.union([z.string(), z.number()]).optional(),
-=======
-  budget: z.union([z.string().min(1, "Please provide a budget"), z.number()]),
->>>>>>> main
 });
 
 interface TaskFormProps {
