@@ -62,26 +62,27 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         },
       ],
     },
-    {
-      id: 4,
-      title: "Skills",
-      subLinkTitle: "Skills",
-      subLinkDescription: "View and manage your skills.",
-      subLinks: [
-        {
-          id: 1,
-          title: "Summary",
-          description: "View and manage your skills.",
-          href: `/${slug}/skills/summary`,
-        },
-        {
-          id: 2,
-          title: "Explore",
-          description: "View all skills.",
-          href: `/${slug}/skills/explore`,
-        },
-      ],
-    },
+    // TODO: Commenting for future use
+    // {
+    //   id: 4,
+    //   title: "Skills",
+    //   subLinkTitle: "Skills",
+    //   subLinkDescription: "View and manage your skills.",
+    //   subLinks: [
+    //     {
+    //       id: 1,
+    //       title: "Summary",
+    //       description: "View and manage your skills.",
+    //       href: `/${slug}/skills/summary`,
+    //     },
+    //     {
+    //       id: 2,
+    //       title: "Explore",
+    //       description: "View all skills.",
+    //       href: `/${slug}/skills/explore`,
+    //     },
+    //   ],
+    // },
     {
       id: 5,
       title: "Reports",
