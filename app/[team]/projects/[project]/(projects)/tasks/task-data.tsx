@@ -96,7 +96,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
               <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
-                    {item?.budget !== null && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                    {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
                     <h4 className="text-base">{item?.name}</h4>
                   </div>
                 </div>

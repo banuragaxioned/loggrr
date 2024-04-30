@@ -232,8 +232,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     try {
       for (const entry of allAiEntries) {
         const isDataValidated = () => {
-          const { project, comment, time, milestone } = entry || {};
-          return project && milestone && comment?.trim().length && +(time ?? "0");
+          const { project, comment, time } = entry || {};
+          return project && comment?.trim().length && +(time ?? "0");
         };
 
         if (isDataValidated()) {
@@ -251,7 +251,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <Card className="col-span-12 shadow-none sm:col-span-8">
+      <Card className="col-span-12 shadow-none md:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
@@ -270,7 +270,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
           edit={edit}
         />
       </Card>
-      <div className="col-span-12 flex flex-col gap-4 sm:col-span-4">
+      <div className="col-span-12 flex flex-col gap-4 md:col-span-4">
         <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
         <AINotepad
           notebookSubmitHandler={notebookSubmitHandler}

@@ -53,7 +53,10 @@ export function NavMenu() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        {/*
+          // TODO: Commenting for future use
+         */}
+        {/* <NavigationMenuItem>
           <NavigationMenuTrigger onClick={stopCollapse}>Skills</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
@@ -73,7 +76,7 @@ export function NavMenu() {
               </Link>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         <NavigationMenuItem>
           <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>Reports</NavigationMenuLink>
