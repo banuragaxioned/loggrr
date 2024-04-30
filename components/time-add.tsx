@@ -89,8 +89,8 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
   };
 
   const formValidator = () => {
-    const { project, comment, time, milestone } = selectedData || {};
-    return project && milestone && comment?.trim().length && time && !errors?.time;
+    const { project, comment, time } = selectedData || {};
+    return project && comment?.trim().length && time && !errors?.time;
   };
 
   /*
