@@ -285,7 +285,8 @@ export const getLogged = async (
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
-              userHours: timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0),
+              userHours:
+                +`${timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0).toFixed(2)}`,
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
                 const inputDate = new Date(timeEntry.date);
                 const formattedDate = inputDate.toLocaleDateString("en-US", {
