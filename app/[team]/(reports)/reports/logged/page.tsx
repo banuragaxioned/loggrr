@@ -42,7 +42,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     return {
       id: logged.clientId,
       name: logged.clientName,
-      hours: clientHours,
+      hours: +`${clientHours.toFixed(2)}`,
       subRows: logged.projects
         .filter((project: any) => project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0) > 0) // filter out projects if logged hour is zero
         .map((project: any) => {
@@ -51,7 +51,7 @@ export default async function Page({ params, searchParams }: pageProps) {
           return {
             id: project.projectId,
             name: project.projectName,
-            hours: projectHours,
+            hours: +`${projectHours.toFixed(2)}`,
             subRows: project.users
               .filter((user: any) => user.userHours > 0) // filter users by userHours
               .map((user: any) => {
