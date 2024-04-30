@@ -68,8 +68,10 @@ export const columns: ColumnDef<Logged>[] = [
             )}
             <span className={`${depth === 3 ? "w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
             {depth === 3 && (
-              <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
-                {original?.description ?? ""}
+              <span className="hidden md:inline">
+                <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
+                  {original?.description ?? ""}
+                </span>
               </span>
             )}
           </div>
