@@ -35,47 +35,54 @@ export default async function Page({ params, searchParams }: pageProps) {
   );
 
   // Transformed data as per the table structure
-  const transformedData = loggedData.map((logged: any) => {
-    // Clients
-    const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
-    const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
-    return {
-      id: logged.clientId,
-      name: logged.clientName,
-      hours: +`${clientHours.toFixed(2)}`,
-      subRows: logged.projects
-        .filter((project: any) => project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0) > 0) // filter out projects if logged hour is zero
-        .map((project: any) => {
-          // Projects
-          const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
-          return {
-            id: project.projectId,
-            name: project.projectName,
-            hours: +`${projectHours.toFixed(2)}`,
-            subRows: project.users
-              .filter((user: any) => user.userHours > 0) // filter users by userHours
-              .map((user: any) => {
-                // Users
-                return {
-                  id: user.userId,
-                  name: user.userName,
-                  hours: user.userHours,
-                  image: user.userImage,
-                  subRows: user.userTimeEntry.map((time: any) => {
-                    // Time Entries
-                    return {
-                      id: time.comments,
-                      hours: time.time,
-                      name: time.formattedDate,
-                      description: time.comments,
-                    };
-                  }),
-                };
-              }),
-          };
-        }),
-    };
-  });
+  const transformedData = loggedData
+    // * Filter for clients with logged hours
+    .filter((logged: any) => {
+      const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
+      const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
+      return clientHours > 0;
+    })
+    .map((logged: any) => {
+      // Clients
+      const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
+      const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
+      return {
+        id: logged.clientId,
+        name: logged.clientName,
+        hours: +`${clientHours.toFixed(2)}`,
+        subRows: logged.projects
+          .filter((project: any) => project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0) > 0) // filter out projects if logged hour is zero
+          .map((project: any) => {
+            // Projects
+            const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
+            return {
+              id: project.projectId,
+              name: project.projectName,
+              hours: +`${projectHours.toFixed(2)}`,
+              subRows: project.users
+                .filter((user: any) => user.userHours > 0) // filter users by userHours
+                .map((user: any) => {
+                  // Users
+                  return {
+                    id: user.userId,
+                    name: user.userName,
+                    hours: user.userHours,
+                    image: user.userImage,
+                    subRows: user.userTimeEntry.map((time: any) => {
+                      // Time Entries
+                      return {
+                        id: time.comments,
+                        hours: time.time,
+                        name: time.formattedDate,
+                        description: time.comments,
+                      };
+                    }),
+                  };
+                }),
+            };
+          }),
+      };
+    });
 
   return (
     <DashboardShell>
