@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
+import { format, startOfToday } from "date-fns";
 import {
   Briefcase,
   Calendar,
@@ -24,6 +24,7 @@ import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
+import { DateRangePicker } from "@/components/custom/date-range-picker";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
@@ -62,6 +63,11 @@ export function DataTableToolbar<TData>({
   handlePrintClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const [isExportLoading, setIsExportLoading] = useState(false);
+  const [dateRange, setDateRange] = useState({
+    startDate: startOfToday(),
+    endDate: startOfToday(),
+  });
+
   const { team: slug } = useParams();
   const searchParams = useSearchParams();
   const selectedMonth = searchParams.get("month");
@@ -177,13 +183,22 @@ export function DataTableToolbar<TData>({
     </Button>
   );
 
+  console.log(dateRange);
+
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
       <ul className="flex flex-wrap items-center gap-2">
         {/* Months */}
         <li>
-          <DropdownFilters values={monthFilter} />
+          {/* <DropdownFilters values={monthFilter} /> */}
+          <DateRangePicker
+            onUpdate={(values) =>
+              setDateRange({ startDate: values.range.from, endDate: values.range.to ?? startOfToday() })
+            }
+            initialDateFrom={startOfToday()}
+            initialDateTo={startOfToday()}
+          />
         </li>
         {/* Projects */}
         <li>
@@ -209,7 +224,7 @@ export function DataTableToolbar<TData>({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="no-print flex flex-wrap items-center gap-2">
+      <div className="no-print flex flex-wrap items-center justify-end gap-2">
         <CustomTooltip
           trigger={
             <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick}>
