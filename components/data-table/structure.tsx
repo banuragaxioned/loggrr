@@ -11,8 +11,6 @@ interface DataTableProps<TData, TValue> {
   tableConfig: TableProps<TData, TValue>;
   DataTableToolbar?: React.ComponentType<any>;
   toolBarProps?: {};
-  rowProps?: React.HTMLAttributes<HTMLTableRowElement>;
-  rowClickHandler?: (row: Row<TData>) => void;
   className?: string;
 }
 
@@ -20,8 +18,6 @@ export function DataTableStructure<TData, TValue>({
   tableConfig,
   DataTableToolbar,
   toolBarProps,
-  rowProps,
-  rowClickHandler,
   className,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -50,13 +46,7 @@ export function DataTableStructure<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className={className}
-                {...rowProps}
-                onClick={() => (rowClickHandler ? rowClickHandler(row) : null)}
-              >
+              <TableRow key={row.id} className={className}>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell key={cell.id} className={cn(cell.column.columnDef.meta?.className)}>

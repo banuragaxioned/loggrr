@@ -16,8 +16,6 @@ export function Table<TData, TValue>({ columns, data }: TableProps<UserGroup, TV
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-  const rowClickHandler = (row: Row<UserGroup>) => location.assign(`reports/assigned?group=${row.original.name}`);
-
   const tableConfig = {
     data,
     columns,
@@ -32,11 +30,5 @@ export function Table<TData, TValue>({ columns, data }: TableProps<UserGroup, TV
     getSortedRowModel: getSortedRowModel(),
   };
 
-  return (
-    <DataTableStructure
-      tableConfig={tableConfig}
-      rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer hover:bg-accent" }}
-    />
-  );
+  return <DataTableStructure tableConfig={tableConfig} />;
 }
