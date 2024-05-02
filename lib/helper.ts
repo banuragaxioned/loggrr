@@ -25,7 +25,6 @@ export function getInitials(name: string): string {
  * getTimeInMinutes('7:30') // Output: 450
  * thigetTimeInMinutes('3') // Output: 180 TODO: this edge case doesn't work yet
  */
-
 export const getTimeInMinutes = (logTime: string): number => {
   try {
     const isHourMinFormat = logTime.includes(":") || /^\d+$/.test(logTime);
@@ -91,6 +90,8 @@ export const splitIntoChunk = (array: { id: number }[], size: number) => {
 
   return chunkedData;
 };
+
+// Convert string to boolean
 export const stringToBoolean = (inputString: string | undefined): boolean | null => {
   if (inputString === "true") {
     return true;
@@ -99,4 +100,14 @@ export const stringToBoolean = (inputString: string | undefined): boolean | null
   } else {
     return null;
   }
+};
+
+// Convert hours to decimal
+export const hoursToDecimal = (val: string) => {
+  if (val.includes(":")) {
+    const [hours, minutes] = val.split(":");
+    val = `${Number(hours) + Number(minutes) / 60}`;
+  }
+
+  return val;
 };

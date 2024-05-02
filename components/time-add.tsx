@@ -29,6 +29,7 @@ import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { hoursToDecimal } from "@/lib/helper";
 
 export type SelectedData = {
   client?: Milestone;
@@ -173,7 +174,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
       setErrors({ ...errors, time: false });
     }
   };
-  const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
 
   /*
    * submitTimeEntry: The following function will return the time entry of the specified id
@@ -186,7 +186,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
       team,
       project: project?.id,
       milestone: milestone?.id,
-      time: Number(hoursToDecimal(time ?? "0")) * 60,
+      time: +hoursToDecimal(time ?? "0") * 60,
       comments: comment?.trim(),
       billable: billable ? true : false,
       task: task?.id,
