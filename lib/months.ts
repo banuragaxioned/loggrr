@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, startOfDay, startOfToday } from "date-fns";
 
 export function getMonthStartAndEndDates(period: string): {
   startDate: Date | null;
@@ -46,8 +46,6 @@ type StartEnd = {
 export function getStartandEndDates(range: string): StartEnd {
   if (range) {
     const [start, end] = range.split(",");
-    console.log(start, format(new Date(start), "MMMM"));
-    console.log(end, format(new Date(end), "MMMM"));
 
     return {
       startDate: new Date(start),

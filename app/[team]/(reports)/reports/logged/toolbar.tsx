@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfMonth, startOfToday } from "date-fns";
+import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import {
   Briefcase,
   Calendar,
