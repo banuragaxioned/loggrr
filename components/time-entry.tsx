@@ -18,6 +18,7 @@ import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
 import AINotepad from "./notepad";
 import NotepadResponse from "./notepad-response";
+import { hoursToDecimal } from "@/lib/helper";
 
 export interface RecentEntryProps {
   id: number;
@@ -84,8 +85,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     }
   };
 
-  const hoursToDecimal = (val: string) => Number(val.replace(":", "."));
-
   /*
    * getTimeEntries: The following function will return the time entries of the specified dates
    */
@@ -142,7 +141,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       team,
       project: project?.id,
       milestone: milestone?.id,
-      time: Number(hoursToDecimal(time ?? "0")) * 60,
+      time: +hoursToDecimal(time ?? "0") * 60,
       comments: comment?.trim(),
       billable: billable && project?.billable ? true : false,
       task: task?.id,
