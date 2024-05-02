@@ -178,8 +178,6 @@ export function DataTableToolbar<TData>({
   const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
   const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
-  console.log({ startFrom, endTo });
-
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
