@@ -18,7 +18,7 @@ type AINotepadProps = {
 
 declare global {
   interface Window {
-    SpeechRecognition: any;
+    speechRecognition: any;
     webkitSpeechRecognition: any;
   }
 }
@@ -36,10 +36,17 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
   };
 
   useEffect(() => {
-    if (typeof window === undefined) return;
+    if (typeof window === "undefined") return;
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const microphone = new SpeechRecognition();
+    const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
+    const microphone = SpeechRecognition && new SpeechRecognition();
+
+    if (!microphone) {
+      if (isRecording) toast.error("Speech recognition not supported");
+      setisRecording(false);
+      return;
+    }
+
     microphone.interimResults = true;
     microphone.lang = "en-US";
 
