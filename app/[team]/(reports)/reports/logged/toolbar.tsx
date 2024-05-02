@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { format, startOfToday } from "date-fns";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { format, startOfMonth, startOfToday } from "date-fns";
 import {
   Briefcase,
   Calendar,
@@ -32,18 +32,6 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   handlePrintClick: () => void;
 }
 
-const monthFilter = {
-  title: "Month",
-  searchable: false,
-  icon: <Calendar size={16} />,
-  options: [
-    { id: 0, title: "This Month", link: "" },
-    { id: 1, title: "Last 3 Months", link: "last3" },
-    { id: 2, title: "Last 6 Months", link: "last6" },
-    { id: 3, title: "Last 1 Year", link: "last12" },
-  ],
-};
-
 const projectFilter = {
   title: "Projects",
   searchable: false,
@@ -63,14 +51,12 @@ export function DataTableToolbar<TData>({
   handlePrintClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const [isExportLoading, setIsExportLoading] = useState(false);
-  const [dateRange, setDateRange] = useState({
-    startDate: startOfToday(),
-    endDate: startOfToday(),
-  });
 
   const { team: slug } = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedMonth = searchParams.get("month");
+  const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
   const selectedClients = searchParams.get("clients");
@@ -91,7 +77,7 @@ export function DataTableToolbar<TData>({
   };
 
   const isResetButtonVisibile =
-    selectedMonth || selectedBilling || selectedProject || selectedClients || selectedMembers;
+    selectedRange || selectedBilling || selectedProject || selectedClients || selectedMembers;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -106,7 +92,6 @@ export function DataTableToolbar<TData>({
         method: "POST",
         body: JSON.stringify({
           slug,
-          selectedMonth,
           selectedBilling,
           selectedProject,
           selectedClients,
@@ -158,12 +143,27 @@ export function DataTableToolbar<TData>({
     }
   };
 
+  // Update the URL with the new selectedOptions
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const updateDateRange = (range: string) => {
+    router.push(pathname + "?" + createQueryString("range", range));
+  };
+
   // Billing status toggle button
   const billingStatusToggleButton = (
     <Button className="flex gap-1.5" variant="outline" asChild size="sm">
       <Link
         href={`?${new URLSearchParams({
-          month: selectedMonth ?? "",
+          range: selectedRange ?? "",
           project: selectedProject ?? "",
           clients: selectedClients ?? "",
           members: selectedMembers ?? "",
@@ -183,20 +183,20 @@ export function DataTableToolbar<TData>({
     </Button>
   );
 
-  console.log(dateRange);
-
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
       <ul className="flex flex-wrap items-center gap-2">
         {/* Months */}
         <li>
-          {/* <DropdownFilters values={monthFilter} /> */}
           <DateRangePicker
-            onUpdate={(values) =>
-              setDateRange({ startDate: values.range.from, endDate: values.range.to ?? startOfToday() })
-            }
-            initialDateFrom={startOfToday()}
+            onUpdate={(values) => {
+              const start = format(values.range.from, "dd-MM-yyyy");
+              const end = format(values.range.to ?? startOfToday(), "dd-MM-yyyy");
+              const range = `${start},${end}`;
+              updateDateRange(range);
+            }}
+            initialDateFrom={startOfMonth(startOfToday())}
             initialDateTo={startOfToday()}
           />
         </li>

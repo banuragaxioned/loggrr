@@ -24,7 +24,7 @@ interface LoggedInterface {
 
 const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
   const searchParams = useSearchParams();
-  const selectedMonth = searchParams.get("month") ?? "";
+  const selectedRange = searchParams.get("range") ?? "";
   const selectedProject = searchParams.get("project") ?? "";
   const selectedClients = searchParams.get("clients") ?? "";
   const selectedMembers = searchParams.get("members") ?? "";
@@ -34,12 +34,9 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
 
   const renderTitle = () => {
     const labelToDisplay = values.options?.find(
-      (value) => value.link === (isFilterOf === "month" ? selectedMonth : selectedProject),
+      (value) => value.link === (isFilterOf === "month" ? null : selectedProject),
     )?.title;
 
-    if (isFilterOf === "month" && labelToDisplay && selectedMonth) {
-      return labelToDisplay;
-    }
     if (isFilterOf === "projects" && labelToDisplay && selectedProject) {
       return labelToDisplay;
     }
@@ -51,14 +48,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className="w-min">
         <Button variant="outline" role="combobox" className="justify-between gap-1.5" size="sm">
-          {/* <span
-            className={cn(
-              ((isFilterOf === "month" && selectedMonth) || (isFilterOf === "projects" && selectedProject)) &&
-                "text-indigo-600",
-            )}
-          > */}
           {values.icon}
-          {/* </span> */}
           {renderTitle()}
         </Button>
       </PopoverTrigger>
@@ -79,7 +69,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
                 >
                   <Link
                     href={`?${new URLSearchParams({
-                      month: isFilterOf === "month" ? option.link : selectedMonth,
+                      range: selectedRange ?? "",
                       project: isFilterOf === "projects" ? option.link : selectedProject,
                       clients: selectedClients ?? "",
                       members: selectedMembers ?? "",
@@ -88,14 +78,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
                     className="flex w-full items-center justify-between px-3 py-1.5"
                   >
                     {option.title}
-                    <Check
-                      size={16}
-                      className={
-                        (isFilterOf === "month" ? selectedMonth : selectedProject) === option.link
-                          ? "opacity-100"
-                          : "opacity-0"
-                      }
-                    />
+                    <Check size={16} className={selectedProject === option.link ? "opacity-100" : "opacity-0"} />
                   </Link>
                 </CommandItem>
               ))}
