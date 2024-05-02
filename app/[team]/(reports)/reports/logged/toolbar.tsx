@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfMonth, startOfToday } from "date-fns";
+import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -174,6 +174,12 @@ export function DataTableToolbar<TData>({
     </Button>
   );
 
+  const [start, end] = selectedRange?.split(",") || [];
+  const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
+  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
+
+  console.log({ startFrom, endTo });
+
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
@@ -187,8 +193,8 @@ export function DataTableToolbar<TData>({
               const range = `${start},${end}`;
               updateDateRange(range);
             }}
-            initialDateFrom={startOfMonth(startOfToday())}
-            initialDateTo={startOfToday()}
+            initialDateFrom={startFrom}
+            initialDateTo={endTo}
           />
         </li>
         {/* Projects TODO: To work on this later */}
