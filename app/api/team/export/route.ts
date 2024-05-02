@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { endOfDay, format, startOfDay } from "date-fns";
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
-import { getMonthStartAndEndDates } from "@/lib/months";
-import { format } from "date-fns";
+import { getStartandEndDates } from "@/lib/months";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,9 +16,11 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
-    const { slug, selectedMonth, selectedBilling, selectedClients, selectedMembers } = data;
-    const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
+    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers } = data;
+    const { startDate, endDate } = getStartandEndDates(selectedRange);
     const isBillable = stringToBoolean(selectedBilling);
+    const start = startOfDay(startDate);
+    const end = endOfDay(endDate);
 
     if (!user.workspaces.find((workspace) => workspace.slug === slug)) {
       return new Response("Unauthorized!", { status: 403 });
@@ -30,8 +32,8 @@ export async function POST(req: NextRequest) {
           slug,
         },
         date: {
-          gte: startDate ? startDate : new Date(0),
-          lte: endDate ? endDate : new Date(),
+          gte: start,
+          lte: end,
         },
         billable: {
           ...(isBillable !== null && { equals: isBillable }),

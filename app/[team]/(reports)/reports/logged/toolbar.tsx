@@ -92,6 +92,7 @@ export function DataTableToolbar<TData>({
         method: "POST",
         body: JSON.stringify({
           slug,
+          selectedRange,
           selectedBilling,
           selectedProject,
           selectedClients,
