@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 export function getMonthStartAndEndDates(period: string): {
   startDate: Date | null;
   endDate: Date | null;
@@ -33,5 +35,28 @@ export function getMonthStartAndEndDates(period: string): {
   return {
     startDate: null,
     endDate: null,
+  };
+}
+
+type StartEnd = {
+  startDate: Date;
+  endDate: Date;
+};
+
+export function getStartandEndDates(range: string): StartEnd {
+  if (range) {
+    const [start, end] = range.split(",");
+    console.log(start, format(new Date(start), "MMMM"));
+    console.log(end, format(new Date(end), "MMMM"));
+
+    return {
+      startDate: new Date(start),
+      endDate: new Date(end),
+    };
+  }
+
+  return {
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    endDate: new Date(),
   };
 }

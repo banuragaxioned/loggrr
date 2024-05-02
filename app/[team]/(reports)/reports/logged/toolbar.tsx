@@ -191,8 +191,8 @@ export function DataTableToolbar<TData>({
         <li>
           <DateRangePicker
             onUpdate={(values) => {
-              const start = format(values.range.from, "dd-MM-yyyy");
-              const end = format(values.range.to ?? startOfToday(), "dd-MM-yyyy");
+              const start = format(values.range.from, "MM-dd-yyyy");
+              const end = format(values.range.to ?? startOfToday(), "MM-dd-yyyy");
               const range = `${start},${end}`;
               updateDateRange(range);
             }}
