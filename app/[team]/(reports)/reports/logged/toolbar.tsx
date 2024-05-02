@@ -149,6 +149,10 @@ export function DataTableToolbar<TData>({
     router.push(pathname + "?" + createQueryString("range", range));
   };
 
+  const [start, end] = selectedRange?.split(",") || [];
+  const startFrom = (start && startOfDay(new Date(start))) ?? startOfMonth(startOfToday());
+  const endTo = (end && startOfDay(new Date(end))) ?? startOfToday();
+
   // Billing status toggle button
   const billingStatusToggleButton = (
     <Button className="flex gap-1.5" variant="outline" asChild size="sm">
@@ -174,10 +178,6 @@ export function DataTableToolbar<TData>({
     </Button>
   );
 
-  const [start, end] = selectedRange?.split(",") || [];
-  const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
-  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
-
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       {/* Left Area */}
@@ -193,6 +193,7 @@ export function DataTableToolbar<TData>({
             }}
             initialDateFrom={startFrom}
             initialDateTo={endTo}
+            key={selectedRange}
           />
         </li>
         {/* Projects TODO: To work on this later */}
