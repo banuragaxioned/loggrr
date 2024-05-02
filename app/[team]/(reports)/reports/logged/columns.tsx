@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
-import { Minus, Plus } from "lucide-react";
+import { Circle, Minus, Plus } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ export interface Logged {
   hours?: number;
   description?: string;
   image?: string;
+  billable?: boolean;
   subRows?: {
     id: number;
     name: string;
@@ -66,7 +67,7 @@ export const columns: ColumnDef<Logged>[] = [
             {userImage && (
               <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
             )}
-            <span className={`${depth === 3 ? "w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            <span className={`${depth === 3 ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
             {depth === 3 && (
               <span className="hidden md:inline">
                 <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
@@ -83,14 +84,15 @@ export const columns: ColumnDef<Logged>[] = [
     accessorKey: "hours",
     header: () => <span className="inline-block w-20 text-right">Hours</span>,
     cell: ({ row }) => {
-      const { depth } = row;
+      const { depth, original } = row;
       const formatted = `${row.getValue("hours") ?? 0} h`;
 
       return (
-        <span
-          className={`text-bold inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}  ${depth > 1 ? "opacity-50" : ""}`}
-        >
-          {formatted}
+        <span className={`text-bold relative inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
+          <span className={`${depth > 1 ? "opacity-50" : ""} mr-1 sm:mr-0`}>{formatted}</span>
+          {original.billable && (
+            <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
+          )}
         </span>
       );
     },

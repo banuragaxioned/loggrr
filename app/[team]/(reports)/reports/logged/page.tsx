@@ -75,6 +75,7 @@ export default async function Page({ params, searchParams }: pageProps) {
                         hours: time.time,
                         name: time.formattedDate,
                         description: time.comments,
+                        billable: time.billable,
                       };
                     }),
                   };

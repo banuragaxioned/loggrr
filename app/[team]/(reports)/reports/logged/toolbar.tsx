@@ -3,18 +3,8 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
-import {
-  Briefcase,
-  Calendar,
-  CircleDollarSign,
-  Download,
-  FolderCog,
-  ListRestart,
-  Loader2,
-  Printer,
-  Users,
-} from "lucide-react";
+import { format, startOfMonth, startOfToday } from "date-fns";
+import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -201,10 +191,10 @@ export function DataTableToolbar<TData>({
             initialDateTo={startOfToday()}
           />
         </li>
-        {/* Projects */}
-        <li>
+        {/* Projects TODO: To work on this later */}
+        {/* <li>
           <DropdownFilters values={projectFilter} />
-        </li>
+        </li> */}
         <li>
           <MultiSelectFilter values={clientFilter} />
         </li>

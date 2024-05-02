@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Check } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
