@@ -1,47 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
-import {
-  Briefcase,
-  Calendar,
-  CircleDollarSign,
-  Download,
-  FolderCog,
-  ListRestart,
-  Loader2,
-  Printer,
-  Users,
-} from "lucide-react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
+import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
+import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
+import { DateRangePicker } from "@/components/custom/date-range-picker";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
   handlePrintClick: () => void;
 }
-
-const monthFilter = {
-  title: "Month",
-  searchable: false,
-  icon: <Calendar size={16} />,
-  options: [
-    { id: 0, title: "This Month", link: "" },
-    { id: 1, title: "Last 3 Months", link: "last3" },
-    { id: 2, title: "Last 6 Months", link: "last6" },
-    { id: 3, title: "Last 1 Year", link: "last12" },
-  ],
-};
 
 const projectFilter = {
   title: "Projects",
@@ -62,9 +42,14 @@ export function DataTableToolbar<TData>({
   handlePrintClick,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const [isExportLoading, setIsExportLoading] = useState(false);
+
   const { team: slug } = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedMonth = searchParams.get("month");
+  const locale = useLocale();
+
+  const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
   const selectedClients = searchParams.get("clients");
@@ -85,7 +70,7 @@ export function DataTableToolbar<TData>({
   };
 
   const isResetButtonVisibile =
-    selectedMonth || selectedBilling || selectedProject || selectedClients || selectedMembers;
+    selectedRange || selectedBilling || selectedProject || selectedClients || selectedMembers;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -100,7 +85,7 @@ export function DataTableToolbar<TData>({
         method: "POST",
         body: JSON.stringify({
           slug,
-          selectedMonth,
+          selectedRange,
           selectedBilling,
           selectedProject,
           selectedClients,
@@ -152,12 +137,31 @@ export function DataTableToolbar<TData>({
     }
   };
 
+  // Update the URL with the new selectedOptions
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const updateDateRange = (range: string) => {
+    router.push(pathname + "?" + createQueryString("range", range));
+  };
+
+  const [start, end] = selectedRange?.split(",") || [];
+  const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
+  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
+
   // Billing status toggle button
   const billingStatusToggleButton = (
     <Button className="flex gap-1.5" variant="outline" asChild size="sm">
       <Link
         href={`?${new URLSearchParams({
-          month: selectedMonth ?? "",
+          range: selectedRange ?? "",
           project: selectedProject ?? "",
           clients: selectedClients ?? "",
           members: selectedMembers ?? "",
@@ -183,12 +187,23 @@ export function DataTableToolbar<TData>({
       <ul className="flex flex-wrap items-center gap-2">
         {/* Months */}
         <li>
-          <DropdownFilters values={monthFilter} />
+          <DateRangePicker
+            onUpdate={(values) => {
+              const start = format(values.range.from, "MM-dd-yyyy");
+              const end = format(values.range.to ?? startOfToday(), "MM-dd-yyyy");
+              const range = `${start},${end}`;
+              updateDateRange(range);
+            }}
+            initialDateFrom={startFrom}
+            initialDateTo={endTo}
+            locale={locale}
+            key={selectedRange}
+          />
         </li>
-        {/* Projects */}
-        <li>
+        {/* Projects TODO: To work on this later */}
+        {/* <li>
           <DropdownFilters values={projectFilter} />
-        </li>
+        </li> */}
         <li>
           <MultiSelectFilter values={clientFilter} />
         </li>
@@ -209,7 +224,7 @@ export function DataTableToolbar<TData>({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="no-print flex flex-wrap items-center gap-2">
+      <div className="no-print flex flex-wrap items-center justify-end gap-2">
         <CustomTooltip
           trigger={
             <Button variant="outline" size="icon" className="flex gap-2" onClick={handlePrintClick}>

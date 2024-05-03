@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageProps } from "@/types";
 
 import { getLogged } from "@/server/services/time-entry";
-import { getMonthStartAndEndDates } from "@/lib/months";
+import { getStartandEndDates } from "@/lib/months";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/header";
 
@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ params, searchParams }: pageProps) {
-  const selectedMonth = searchParams.month;
+  const selectedRange = searchParams.range;
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;
   const selectedClients = searchParams.clients;
   const selectedMembers = searchParams.members;
-  const { startDate, endDate } = getMonthStartAndEndDates(selectedMonth) ?? {};
+  const { startDate, endDate } = getStartandEndDates(selectedRange);
   const {
     data: loggedData,
     allClients,
@@ -75,6 +75,7 @@ export default async function Page({ params, searchParams }: pageProps) {
                         hours: time.time,
                         name: time.formattedDate,
                         description: time.comments,
+                        billable: time.billable,
                       };
                     }),
                   };

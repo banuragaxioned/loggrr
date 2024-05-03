@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { subDays } from "date-fns";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 import { getServerSession } from "next-auth";
 
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
@@ -104,8 +104,8 @@ export const getRecentEntries = async (slug: string, userId: number) => {
 
 export const getLogged = async (
   slug: string,
-  startDate?: Date | null,
-  endDate?: Date | null,
+  startDate: Date,
+  endDate: Date,
   billing?: string,
   project?: string,
   clients?: string,
@@ -114,6 +114,8 @@ export const getLogged = async (
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
 
   const allClients = await db.client.findMany({
     where: {
@@ -222,8 +224,8 @@ export const getLogged = async (
                   timeEntry: {
                     where: {
                       date: {
-                        gte: startDate ? startDate : new Date(0),
-                        lte: endDate ? endDate : new Date(),
+                        gte: start,
+                        lte: end,
                       },
                       billable: {
                         ...(isBillable !== null && { equals: isBillable }),
