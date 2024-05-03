@@ -150,8 +150,8 @@ export function DataTableToolbar<TData>({
   };
 
   const [start, end] = selectedRange?.split(",") || [];
-  const startFrom = (start && startOfDay(new Date(start))) ?? startOfMonth(startOfToday());
-  const endTo = (end && startOfDay(new Date(end))) ?? startOfToday();
+  const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
+  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
   // Billing status toggle button
   const billingStatusToggleButton = (
