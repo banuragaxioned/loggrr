@@ -8,6 +8,7 @@ import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2,
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
+import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
 import DropdownFilters from "./dropdown-filter";
@@ -46,6 +47,8 @@ export function DataTableToolbar<TData>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+
   const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
   const selectedProject = searchParams.get("project");
@@ -193,6 +196,7 @@ export function DataTableToolbar<TData>({
             }}
             initialDateFrom={startFrom}
             initialDateTo={endTo}
+            locale={locale}
             key={selectedRange}
           />
         </li>
