@@ -87,8 +87,8 @@ importers:
         specifier: ^0.0.16
         version: 0.0.16(@types/react@18.2.79)(react@18.2.0)
       '@react-email/render':
-        specifier: ^0.0.12
-        version: 0.0.12
+        specifier: ^0.0.13
+        version: 0.0.13
       '@react-email/tailwind':
         specifier: ^0.0.15
         version: 0.0.15(react@18.2.0)
@@ -1335,6 +1335,10 @@ packages:
 
   '@react-email/render@0.0.12':
     resolution: {integrity: sha512-S8WRv/PqECEi6x0QJBj0asnAb5GFtJaHlnByxLETLkgJjc76cxMYDH4r9wdbuJ4sjkcbpwP3LPnVzwS+aIjT7g==}
+    engines: {node: '>=18.0.0'}
+
+  '@react-email/render@0.0.13':
+    resolution: {integrity: sha512-lmBizrV+rQeSa3GjiL8/kPU0gENqO/wv+4xrlWANabp9UY3lTLXzy7HMRSE8YFBES9AbxP5VX1iRKuEnsoBDew==}
     engines: {node: '>=18.0.0'}
 
   '@react-email/row@0.0.7':
@@ -4726,6 +4730,13 @@ snapshots:
       react: 18.2.0
 
   '@react-email/render@0.0.12':
+    dependencies:
+      html-to-text: 9.0.5
+      js-beautify: 1.15.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@react-email/render@0.0.13':
     dependencies:
       html-to-text: 9.0.5
       js-beautify: 1.15.1
