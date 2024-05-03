@@ -90,8 +90,8 @@ importers:
         specifier: ^0.0.12
         version: 0.0.12
       '@react-email/tailwind':
-        specifier: ^0.0.15
-        version: 0.0.15(react@18.2.0)
+        specifier: ^0.0.16
+        version: 0.0.16(react@18.2.0)
       '@t3-oss/env-nextjs':
         specifier: ^0.10.1
         version: 0.10.1(typescript@5.4.5)(zod@3.23.6)
@@ -1354,6 +1354,12 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: 18.2.0
+
+  '@react-email/tailwind@0.0.16':
+    resolution: {integrity: sha512-uMifPxCEHaHLhpS1kVCMGyTeEL+aMYzHT4bgj8CkgCiBoF9wNNfIVMUlHGzHUTv4ZTEPaMfZgC/Hi8RqzL/Ogw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^18.2.0
 
   '@react-email/text@0.0.7':
     resolution: {integrity: sha512-eHCx0mdllGcgK9X7wiLKjNZCBRfxRVNjD3NNYRmOc3Icbl8M9JHriJIfxBuGCmGg2UAORK5P3KmaLQ8b99/pbA==}
@@ -4741,6 +4747,10 @@ snapshots:
       react: 18.2.0
 
   '@react-email/tailwind@0.0.15(react@18.2.0)':
+    dependencies:
+      react: 18.2.0
+
+  '@react-email/tailwind@0.0.16(react@18.2.0)':
     dependencies:
       react: 18.2.0
 
