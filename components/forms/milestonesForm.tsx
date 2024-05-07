@@ -24,7 +24,7 @@ import { CalendarDateRangePicker } from "@/components/date-picker";
 import { format } from "date-fns";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(50, "Milestone name should be between 3 and 50 characters"),
+  name: z.string().min(3).max(50, "Category name should be between 3 and 50 characters"),
   budget: z.union([z.string(), z.number()]).optional(),
 });
 
@@ -68,13 +68,13 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
     };
 
     try {
-      const response = await fetch("/api/team/project/milestones", {
+      const response = await fetch("/api/team/project/category", {
         method: `${edit.isEditing ? "PUT" : "POST"}`,
         body: JSON.stringify(edit.isEditing ? { ...data, id: edit.id } : data),
       });
 
       if (response?.ok) {
-        toast.success(`${edit.isEditing ? "Updated" : "Added"} Milestone in the project`);
+        toast.success(`${edit.isEditing ? "Updated" : "Created"} category in the project`);
         setIsFormOpen(false);
         if (edit.isEditing) {
           setEdit({ obj: {}, isEditing: false, id: null });
@@ -84,11 +84,11 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
         SheetCloseButton.current?.click();
         router.refresh();
       } else {
-        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the milestone`);
+        toast.error(`Failed to ${edit.isEditing ? "update" : "create"} the category`);
       }
     } catch (error) {
       toast.error("Something went wrong!");
-      console.error("Error creating a new Milestone:", error);
+      console.error("Error creating a new category:", error);
     }
   }
 
@@ -105,12 +105,14 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button className="absolute right-0">Create</Button>
+        <Button className="absolute right-0" size="sm">
+          Create
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>{edit.isEditing ? "Edit" : "Create a new"} Milestone</SheetTitle>
+            <SheetTitle>{edit.isEditing ? "Edit" : "Create a new"} Category</SheetTitle>
             <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>
           </SheetHeader>
           <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1">
@@ -119,9 +121,9 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
               name="name"
               render={({ field }) => (
                 <FormItem className="col-span-2 mt-2">
-                  <FormLabel>Milestone name</FormLabel>
+                  <FormLabel>Category name</FormLabel>
                   <FormControl className="mt-2">
-                    <Input placeholder="Milestone Name" {...field} />
+                    <Input placeholder="Category Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

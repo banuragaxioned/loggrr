@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
-import { Role } from "@prisma/client";
 import { createUser } from "@/app/_actions/user-management";
 
 export function AddUserInTeam({ team }: { team: string }) {
@@ -71,7 +70,7 @@ export function AddUserInTeam({ team }: { team: string }) {
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button>Create</Button>
+        <Button size="sm">Create</Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>

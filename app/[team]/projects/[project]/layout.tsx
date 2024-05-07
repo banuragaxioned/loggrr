@@ -21,8 +21,8 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       icon: <TextSearch height={18} width={18} />,
     },
     {
-      title: "Milestones",
-      href: `/${slug}/projects/${projectId}/milestones`,
+      title: "Categories",
+      href: `/${slug}/projects/${projectId}/categories`,
       icon: <Milestone height={18} width={18} />,
     },
     {

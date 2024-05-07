@@ -45,7 +45,6 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [isOngoing, setOngoing] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState<any>(null);
   const [selectedOwner, setSelectedOwner] = useState<any>(null);
   const [selectedClient, setSelectedClient] = useState<any>(null);
@@ -108,7 +107,9 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="flex gap-2">Create</Button>
+        <Button className="flex gap-2" size="sm">
+          Create
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>

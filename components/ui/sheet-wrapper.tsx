@@ -20,7 +20,7 @@ export function SheetWrapper({ children, button, title, description }: Dashboard
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button>{button}</Button>
+        <Button size="sm">{button}</Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <SheetHeader>

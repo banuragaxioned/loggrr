@@ -139,7 +139,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
             );
           })
         ) : (
-          <p className="mt-7 text-gray-500">No Tasks Found</p>
+          <p className="mt-7 text-sm text-muted-foreground">No tasks found in this project!</p>
         )}
       </div>
     </>
