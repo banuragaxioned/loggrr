@@ -90,6 +90,12 @@ export const getRecentEntries = async (slug: string, userId: number) => {
           name: true,
         },
       },
+      task: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       billable: true,
       time: true,
       comments: true,

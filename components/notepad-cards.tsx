@@ -1,5 +1,5 @@
 import React, { Dispatch, FormEvent, useEffect, useState } from "react";
-import { CircleDollarSign, Folder, Check, Rocket, List, X } from "lucide-react";
+import { CircleDollarSign, Folder, Check, List, X, Milestone as MilestoneIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { ComboBox } from "@/components/ui/combobox";
@@ -146,16 +146,16 @@ const NotepadCards = ({
             searchable
             icon={<Folder size={16} />}
             options={projects}
-            label="Select a Project"
+            label="Project"
             selectedItem={selectedData?.project}
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
             className="w-[90%] max-w-full"
           />
           <ComboBox
             searchable
-            icon={<Rocket size={16} />}
+            icon={<MilestoneIcon size={17} />}
             options={projectMilestones}
-            label="Select a Milestone"
+            label="Category"
             selectedItem={selectedData?.milestone}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
             className="w-[90%] max-w-full"
@@ -164,7 +164,7 @@ const NotepadCards = ({
             searchable
             icon={<List size={16} />}
             options={projectTasks}
-            label="Select a Task"
+            label="Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
             className="w-[90%] max-w-full"

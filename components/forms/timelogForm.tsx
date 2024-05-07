@@ -1,5 +1,13 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { CircleDollarSign, Folder, Info, List, ListRestart, MessageSquare, Rocket } from "lucide-react";
+import {
+  CircleDollarSign,
+  Folder,
+  Info,
+  List,
+  ListRestart,
+  MessageSquare,
+  Milestone as MilestoneIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ComboBox } from "../ui/combobox";
@@ -170,12 +178,12 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
           <ComboBox
             tabIndex={2}
             searchable
-            icon={<Rocket size={16} />}
+            icon={<MilestoneIcon size={16} />}
             options={projectMilestones}
-            label="Milestone"
+            label="Category"
             selectedItem={selectedData?.milestone}
             handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-            disabled={!selectedData?.project?.id}
+            disabled={!selectedData?.project?.id || !projectMilestones.length}
           />
           <ComboBox
             tabIndex={3}
@@ -185,7 +193,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
             label="Task"
             selectedItem={selectedData?.task}
             handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            disabled={!selectedData?.project?.id}
+            disabled={!selectedData?.project?.id || !projectTasks.length}
           />
         </div>
         {(selectedData?.project || selectedData?.task || selectedData?.milestone) && (
