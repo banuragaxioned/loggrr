@@ -29,8 +29,8 @@ export const dashboardConfig: DashboardConfig = {
   ],
   sidebarProjects: [
     {
-      title: "Milestones",
-      href: "/milestones",
+      title: "Categories",
+      href: "/categories",
       // icon: FileTextIcon,
     },
     {

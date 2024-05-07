@@ -107,7 +107,7 @@ export function DataTableToolbar<TData>({
         "Client",
         "Project",
         "User",
-        "Milestone",
+        "Category",
         "Task",
         "Date",
         "Comment",

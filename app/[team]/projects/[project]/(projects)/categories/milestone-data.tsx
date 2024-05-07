@@ -64,13 +64,13 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
       });
 
       if (response.ok) {
-        toast.success("Milestone deleted successfully");
+        toast.success("Category deleted successfully");
         router.refresh();
       } else {
-        toast.error("Failed to delete milestone");
+        toast.error("Failed to delete category");
       }
     } catch (error) {
-      console.error("Error in deleting milestone", error);
+      console.error("Error in deleting category", error);
     }
   };
 

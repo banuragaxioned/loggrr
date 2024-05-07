@@ -56,7 +56,7 @@ const items = [
   {
     title: "Flexibility",
     description:
-      "Get as specific or as broad as you need to. Track strategic milestones, retainers, or tasks (if you needed to).",
+      "Get as specific or as broad as you need to. Track strategic categories, retainers, or tasks (if you needed to).",
     header: <Image src={flexibility} alt="Flexibility" className="dark:grayscale dark:invert" />,
     className: "md:col-span-2",
     icon: <Scaling className="h-4 w-4" />,
