@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
-import { DashboardNav } from "@/components/nav";
 import { SidebarNavItem, projectProps } from "@/types";
-import { ClipboardCheck, Milestone, TextSearch, Users } from "lucide-react";
+import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
 import { SecondaryNavigation } from "./secondary-nav";
 
 interface DashboardLayoutProps extends projectProps {
@@ -21,9 +20,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       icon: <TextSearch height={18} width={18} />,
     },
     {
-      title: "Milestones",
-      href: `/${slug}/projects/${projectId}/milestones`,
-      icon: <Milestone height={18} width={18} />,
+      title: "Categories",
+      href: `/${slug}/projects/${projectId}/categories`,
+      icon: <CategoryIcon height={18} width={18} />,
     },
     {
       title: "Tasks",

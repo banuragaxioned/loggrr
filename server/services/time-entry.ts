@@ -90,6 +90,12 @@ export const getRecentEntries = async (slug: string, userId: number) => {
           name: true,
         },
       },
+      task: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       billable: true,
       time: true,
       comments: true,
@@ -292,10 +298,10 @@ export const getLogged = async (
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
                 const inputDate = new Date(timeEntry.date);
                 const formattedDate = inputDate.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
+                  weekday: "short",
                   day: "2-digit",
+                  month: "short",
+                  year: "numeric",
                 });
 
                 return {

@@ -59,7 +59,9 @@ export function NewClientForm({ team }: { team: string }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="flex gap-2">Create</Button>
+        <Button className="flex gap-2" size="sm">
+          Create
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>

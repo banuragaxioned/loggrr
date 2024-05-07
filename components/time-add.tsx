@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { CalendarPlus, Folder, List, Minus, Plus, Rocket } from "lucide-react";
+import React, { useState } from "react";
+import { CalendarPlus, Folder, List, Milestone as CategoryIcon, Minus, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { format, startOfToday } from "date-fns";
+import { format } from "date-fns";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -253,7 +253,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   searchable
                   icon={<Folder size={16} />}
                   options={projects ?? []}
-                  label="Select a Project"
+                  label="Project"
                   selectedItem={selectedData?.project}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projects || [], projectCallback)}
                   className="w-full max-w-full"
@@ -262,9 +262,9 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
               <div className="w-full-combo">
                 <ComboBox
                   searchable
-                  icon={<Rocket size={16} />}
+                  icon={<CategoryIcon size={17} />}
                   options={projectMilestones}
-                  label="Select a Milestone"
+                  label="Category"
                   selectedItem={selectedData?.milestone}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
                   disabled={!selectedData?.project?.id}
@@ -276,7 +276,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   searchable
                   icon={<List size={16} />}
                   options={projectTasks}
-                  label="Select a Task"
+                  label="Task"
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
                   disabled={!selectedData?.project?.id}

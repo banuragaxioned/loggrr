@@ -54,7 +54,7 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
 
   const deleteMilestone = async (id: number) => {
     try {
-      const response = await fetch("/api/team/project/milestones", {
+      const response = await fetch("/api/team/project/category", {
         method: "DELETE",
         body: JSON.stringify({
           id,
@@ -64,13 +64,13 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
       });
 
       if (response.ok) {
-        toast.success("Milestone deleted successfully");
+        toast.success("Category deleted successfully");
         router.refresh();
       } else {
-        toast.error("Failed to delete milestone");
+        toast.error("Failed to delete category");
       }
     } catch (error) {
-      console.error("Error in deleting milestone", error);
+      console.error("Error in deleting category", error);
     }
   };
 
@@ -120,9 +120,9 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                       <DialogHeader>
-                        <DialogTitle>Are you sure to delete this milestone?</DialogTitle>
+                        <DialogTitle>Are you sure to delete this category?</DialogTitle>
                         <DialogDescription>
-                          This action cannot be undone. This will permanently delete your milestone and all assocaited
+                          This action cannot be undone. This will permanently delete your category and all associated
                           time entries.
                         </DialogDescription>
                       </DialogHeader>
@@ -141,7 +141,7 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
             );
           })
         ) : (
-          <p className="mt-7 text-gray-500">No Milestones Found</p>
+          <p className="mt-7 text-sm text-muted-foreground">No categories found in this project!</p>
         )}
       </div>
     </>

@@ -70,7 +70,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
   return (
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button>Add</Button>
+        <Button size="sm">Add a member</Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <form

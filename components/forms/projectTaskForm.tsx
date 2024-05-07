@@ -71,7 +71,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
       });
 
       if (response?.ok) {
-        toast.success(`Task ${edit.isEditing ? "updated" : "added"} successfully in the project`);
+        toast.success(`Task ${edit.isEditing ? "updated" : "created"} successfully in the project`);
         setIsFormOpen(false);
         if (edit.isEditing) {
           setEdit({ obj: {}, isEditing: false, id: null });
@@ -81,7 +81,7 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
         SheetCloseButton.current?.click();
         router.refresh();
       } else {
-        toast.error(`Failed to ${edit.isEditing ? "update" : "add"} the task.`);
+        toast.error(`Failed to ${edit.isEditing ? "update" : "create"} the task.`);
       }
     } catch (error) {
       toast.error("Something went wrong!");
@@ -102,7 +102,9 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
       <SheetTrigger asChild>
-        <Button className="absolute right-0">Create</Button>
+        <Button className="absolute right-0" size="sm">
+          Create
+        </Button>
       </SheetTrigger>
       <SheetContent side="right">
         <Form {...form}>

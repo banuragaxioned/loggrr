@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { CalendarClock, Edit, ListRestart, Trash } from "lucide-react";
+import { CalendarClock, Edit, List, ListRestart, MessageSquare, Milestone as CategoryIcon, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
@@ -77,20 +77,33 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                     i === entryData?.data.length - 1 && "rounded-b-xl",
                   )}
                 >
-                  <div className="flex flex-col justify-between gap-y-4">
+                  <div
+                    className={cn(
+                      "flex flex-col justify-between gap-y-4",
+                      !data.milestone && !data.task && "justify-end",
+                    )}
+                  >
                     <div className="flex flex-col gap-y-2">
                       {data.milestone?.name && (
-                        <p className="flex items-center gap-1.5 gap-x-1 text-sm font-medium opacity-80">
-                          Milestone - {data.milestone.name}
+                        <p
+                          className="flex items-center gap-1.5 gap-x-[12px] text-sm font-medium opacity-60"
+                          title="Category"
+                        >
+                          <CategoryIcon size={17} className="shrink-0" /> {data.milestone.name}
                         </p>
                       )}
                       {data.task?.name && (
-                        <p className="flex items-center gap-x-1 text-sm font-medium">Task - {data.task.name}</p>
+                        <p className="flex items-center gap-x-[12px] text-sm font-medium opacity-60" title="Task">
+                          <List size={16} className="shrink-0" /> {data.task.name}
+                        </p>
                       )}
-                      <p className="flex items-center gap-x-1 text-sm opacity-60">{data?.comments}</p>
+                      <p className="flex items-center gap-x-[12px] text-sm opacity-60" title="Comment">
+                        <MessageSquare size={15} className="shrink-0" />
+                        {data?.comments}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex min-w-[100px] select-none flex-col text-right">
+                  <div className="flex min-w-[100px] select-none flex-col justify-between text-right">
                     <div className="mb-1 flex items-center justify-between">
                       <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
                         <span

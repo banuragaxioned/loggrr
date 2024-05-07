@@ -45,24 +45,13 @@ export const columns: ColumnDef<Projects>[] = [
     filterFn: "arrIncludesSome",
   },
   {
-    accessorKey: "budget",
-    meta: {
-      className: "w-[10%]",
-    },
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
-    cell: ({ row }) => (
-      <span className="block w-full pr-[50%] text-center tabular-nums">{row.original.budget ?? 0}</span>
-    ),
-    filterFn: "arrIncludesSome",
-  },
-  {
     accessorKey: "logged",
     meta: {
       className: "w-[10%]",
     },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged" />,
     cell: ({ row }) => (
-      <span className="block w-full pr-[50%] text-center tabular-nums">{getTimeInHours(row.original.logged)}</span>
+      <span className="block w-full pr-[35%] text-right tabular-nums">{`${getTimeInHours(row.original.logged)} h`}</span>
     ),
     filterFn: "arrIncludesSome",
   },
