@@ -1,5 +1,5 @@
 import React, { Dispatch, FormEvent, useEffect, useState } from "react";
-import { CircleDollarSign, Folder, Check, List, X, Milestone as MilestoneIcon } from "lucide-react";
+import { CircleDollarSign, Folder, Check, List, X, Milestone as CategoryIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { ComboBox } from "@/components/ui/combobox";
@@ -153,7 +153,7 @@ const NotepadCards = ({
           />
           <ComboBox
             searchable
-            icon={<MilestoneIcon size={17} />}
+            icon={<CategoryIcon size={17} />}
             options={projectMilestones}
             label="Category"
             selectedItem={selectedData?.milestone}

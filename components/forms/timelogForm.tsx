@@ -6,7 +6,7 @@ import {
   List,
   ListRestart,
   MessageSquare,
-  Milestone as MilestoneIcon,
+  Milestone as CategoryIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -178,7 +178,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
           <ComboBox
             tabIndex={2}
             searchable
-            icon={<MilestoneIcon size={16} />}
+            icon={<CategoryIcon size={16} />}
             options={projectMilestones}
             label="Category"
             selectedItem={selectedData?.milestone}

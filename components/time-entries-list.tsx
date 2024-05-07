@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { CalendarClock, Edit, List, ListRestart, MessageSquare, Milestone, Trash } from "lucide-react";
+import { CalendarClock, Edit, List, ListRestart, MessageSquare, Milestone as CategoryIcon, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
@@ -89,7 +89,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           className="flex items-center gap-1.5 gap-x-[12px] text-sm font-medium opacity-60"
                           title="Category"
                         >
-                          <Milestone size={17} className="shrink-0" /> {data.milestone.name}
+                          <CategoryIcon size={17} className="shrink-0" /> {data.milestone.name}
                         </p>
                       )}
                       {data.task?.name && (

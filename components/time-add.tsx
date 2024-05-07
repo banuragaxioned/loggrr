@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CalendarPlus, Folder, List, Milestone as MilestoneIcon, Minus, Plus } from "lucide-react";
+import { CalendarPlus, Folder, List, Milestone as CategoryIcon, Minus, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -262,7 +262,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
               <div className="w-full-combo">
                 <ComboBox
                   searchable
-                  icon={<MilestoneIcon size={17} />}
+                  icon={<CategoryIcon size={17} />}
                   options={projectMilestones}
                   label="Category"
                   selectedItem={selectedData?.milestone}
