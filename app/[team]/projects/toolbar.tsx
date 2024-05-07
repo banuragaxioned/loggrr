@@ -22,14 +22,17 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
     label: name,
     value: name,
   }));
+
   useEffect(() => {
     client && table.getColumn("clientName")?.setFilterValue(Array(client));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter names..."
+          placeholder="Filter by project name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="w-40 lg:w-64"
