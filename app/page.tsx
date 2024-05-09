@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/marketing/site-footer";
 import { JoinWatchlist } from "@/components/marketing/join-waitlist";
 
 export const metadata = {
-  title: "Loggr - Time tracking made simple",
+  title: "Loggrr - Time tracking made simple",
 };
 
 export default async function Home() {

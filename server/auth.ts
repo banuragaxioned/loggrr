@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
 
           const registerEmailOptions = {
             to: user.email,
-            subject: "Welcome to Loggr",
+            subject: "Welcome to Loggrr",
             html: registerEmailHtml,
           };
 

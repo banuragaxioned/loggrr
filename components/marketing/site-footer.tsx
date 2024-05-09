@@ -6,7 +6,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
     <footer className={cn(className)}>
       <div className="container items-center py-10 text-center md:flex-row">
-        ©{new Date().getFullYear()} Loggr is an{" "}
+        ©{new Date().getFullYear()} Loggrr is an{" "}
         <Link href={"https://axioned.com"} target="_blank">
           Axioned
         </Link>{" "}

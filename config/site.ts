@@ -21,9 +21,9 @@ interface ReportingConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Loggr",
+  name: "Loggrr",
   description: "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  url: "https://loggr.dev",
+  url: "https://loggrr.come",
   mainNav: [
     {
       title: "Projects",

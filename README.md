@@ -1,4 +1,4 @@
-# Loggr
+# Loggrr
 
 Clean and simple time logging solution for teams that embrace transparency and want to focus on what really matters.
 

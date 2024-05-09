@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: ["Loggr", "Time-tracking", "Productivity", "Time", "Billing"],
+  keywords: ["Loggrr", "Time-tracking", "Productivity", "Time", "Billing"],
   authors: [
     {
       name: "Axioned",
