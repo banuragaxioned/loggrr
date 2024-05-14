@@ -69,9 +69,12 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
 
   return (
     <Sheet onOpenChange={handleOpenChange}>
-      <SheetTrigger asChild>
-        <Button size="sm">Add a member</Button>
-      </SheetTrigger>
+      <div className="flex justify-between">
+        <h2>Manage team</h2>
+        <SheetTrigger asChild>
+          <Button size="sm">Add a member</Button>
+        </SheetTrigger>
+      </div>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <form
           onSubmit={(e) => {

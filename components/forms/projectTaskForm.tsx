@@ -101,11 +101,12 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
 
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
-      <SheetTrigger asChild>
-        <Button className="absolute right-0" size="sm">
-          Create
-        </Button>
-      </SheetTrigger>
+      <div className="flex justify-between">
+        <h2>Tasks</h2>
+        <SheetTrigger asChild>
+          <Button size="sm">Create</Button>
+        </SheetTrigger>
+      </div>
       <SheetContent side="right">
         <Form {...form}>
           <SheetHeader>

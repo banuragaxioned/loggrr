@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
+import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
+
 import { getCurrentUser } from "@/server/session";
 import { SidebarNavItem, projectProps } from "@/types";
-import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
 import { SecondaryNavigation } from "./secondary-nav";
 import { db } from "@/server/db";
 import { PageBreadcrumb } from "./page-breadcrumb";
@@ -15,26 +16,26 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   const projectId = params?.project;
   const slug = params.team;
 
-  const sidebarProjectsList: SidebarNavItem[] = [
+  const tabList: SidebarNavItem[] = [
     {
       title: "Overview",
       href: `/${slug}/projects/${projectId}`,
-      icon: <TextSearch height={18} width={18} />,
+      icon: <TextSearch size={16} />,
     },
     {
       title: "Categories",
       href: `/${slug}/projects/${projectId}/categories`,
-      icon: <CategoryIcon height={18} width={18} />,
+      icon: <CategoryIcon size={16} />,
     },
     {
       title: "Tasks",
       href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <ClipboardCheck height={18} width={18} />,
+      icon: <ClipboardCheck size={16} />,
     },
     {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
-      icon: <Users height={18} width={18} />,
+      icon: <Users size={16} />,
     },
   ];
 
@@ -64,9 +65,11 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   }
 
   return (
-    <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
-      <PageBreadcrumb projectDetails={projectDetails} slug={slug} />
-      {/* <SecondaryNavigation items={sidebarProjectsList} /> */}
+    <main className="col-span-12 flex flex-col gap-3 lg:col-span-9">
+      <div className="flex items-end justify-between">
+        <PageBreadcrumb projectDetails={projectDetails} slug={slug} />
+        <SecondaryNavigation items={tabList} />
+      </div>
       {children}
     </main>
   );

@@ -14,9 +14,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Manage project team" text="People who are assigned to this project">
-        <AddMemberInProject team={team} project={projectId} users={membersList} />
-      </DashboardHeader>
+      <AddMemberInProject team={team} project={projectId} users={membersList} />
       <Table data={members} team={team} projectId={projectId} />
     </DashboardShell>
   );

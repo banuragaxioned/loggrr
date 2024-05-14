@@ -15,7 +15,6 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell className="relative">
-      <DashboardHeader heading="Categories" text="Manage all the categories for your project" />
       <MilestoneData milestoneList={milestoneList} team={team} project={project} />
     </DashboardShell>
   );

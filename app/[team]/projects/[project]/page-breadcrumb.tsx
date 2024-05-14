@@ -1,4 +1,5 @@
 import { Home } from "lucide-react";
+import Link from "next/link";
 
 import {
   Breadcrumb,
@@ -26,13 +27,17 @@ export function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
       <Breadcrumb className="p-2">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${slug}`}>
-              <Home size={18} />
+            <BreadcrumbLink asChild>
+              <Link href={`/${slug}`}>
+                <Home size={18} />
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${slug}/projects`}>Projects</BreadcrumbLink>
+            <BreadcrumbLink asChild>
+              <Link href={`/${slug}/projects`}>Projects</Link>
+            </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -41,7 +46,7 @@ export function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
         </BreadcrumbList>
       </Breadcrumb>
       {/* Heading */}
-      <div className="mt-2 p-2">
+      <div className="mt-2 px-2">
         <h1>{projectDetails.name}</h1>
         <p className="mt-1 text-lg text-muted-foreground">{projectDetails.client.name}</p>
       </div>

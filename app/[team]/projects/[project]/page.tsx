@@ -119,7 +119,7 @@ export default async function Page({ params }: pageProps) {
   return (
     <DashboardShell>
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-9 grid h-[400px] place-items-center border">Chart area</div>
+        <div className="col-span-9 grid h-[500px] place-items-center rounded-xl border">Chart area</div>
         <div className="col-span-3 flex flex-col gap-4">
           <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
           <TimeLoggedCard timecardProp={timecardProp} />
