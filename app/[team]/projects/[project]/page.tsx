@@ -77,13 +77,27 @@ export default async function Page({ params }: pageProps) {
       image: member.user.image,
     }));
 
+  // Get last 30 days active users
+  const userActivity = await db.timeEntry.groupBy({
+    by: ["userId"],
+    where: {
+      workspace: {
+        slug: team,
+      },
+      projectId: +project,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+    },
+  });
+
   return (
     <DashboardShell>
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-9 grid h-[400px] place-items-center border">Chart area</div>
         <div className="col-span-3 flex flex-col gap-4">
           <TimeLoggedCard timecardProp={timecardProp} />
-          <TeamsCard items={allMembers} />
+          <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
         </div>
       </div>
     </DashboardShell>

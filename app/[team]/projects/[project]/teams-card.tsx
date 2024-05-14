@@ -11,6 +11,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 const MEMBERS_COUNT = 7;
 export const TeamsCard = ({
   items,
+  activeUserCount,
 }: {
   items:
     | {
@@ -20,6 +21,7 @@ export const TeamsCard = ({
         image: string | null;
       }[]
     | undefined;
+  activeUserCount: number;
 }) => {
   const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -104,6 +106,7 @@ export const TeamsCard = ({
                 +{remainingMembers} more members
               </Link>
             )}
+            <div className="mt-3 text-sm text-muted-foreground">{activeUserCount} active over last 30 days</div>
           </>
         ) : (
           noMembers
