@@ -15,7 +15,7 @@ const TimeLoggedCard = ({ timecardProp }: TimeLoggedCardProps) => {
     <Card className="p-4 shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 text-muted-foreground">
         <p className="text-lg font-semibold">Time logged</p>
-        <Hourglass size={16} className="mt-0" />
+        <Hourglass size={16} />
       </CardHeader>
       <CardContent className="mt-2 space-y-1.5 p-0">
         <p className="text-3xl font-semibold">
