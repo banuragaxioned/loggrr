@@ -19,11 +19,12 @@ const TimeLoggedCard = ({ timecardProp }: TimeLoggedCardProps) => {
       </CardHeader>
       <CardContent className="mt-2 space-y-1.5 p-0">
         <p className="text-3xl font-semibold">
-          {getTimeInHours(timecardProp.overall)}
+          {Math.round(getTimeInHours(timecardProp.overall))}
           <span className="text-xl">h</span>
         </p>
         <p className="flex items-center gap-1">
-          {getTimeInHours(timecardProp.last30)}h <span className="text-sm text-muted-foreground">(last 30 days)</span>
+          {Math.round(getTimeInHours(timecardProp.last30))}h{" "}
+          <span className="text-sm text-muted-foreground">(last 30 days)</span>
         </p>
       </CardContent>
     </Card>
