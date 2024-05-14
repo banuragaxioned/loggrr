@@ -42,7 +42,7 @@ export const TeamsCard = ({
 
   // Get 7 members from items
   const members = items?.slice(0, MEMBERS_COUNT);
-  const remainingMembers = items && items?.length - MEMBERS_COUNT;
+  const remainingMembers = (items && items?.length - MEMBERS_COUNT) || 0;
 
   const renderMembers = members?.map((item) => (
     <div
@@ -101,9 +101,9 @@ export const TeamsCard = ({
         {items && items?.length > 0 ? (
           <>
             <div className="flex w-[80%] flex-row items-center">{renderMembers}</div>
-            {(remainingMembers ?? 0) > 0 && (
+            {remainingMembers > 0 && (
               <Link href={`${pathname}/members`} className="mt-1 font-semibold hover:underline">
-                +{remainingMembers} more members
+                +{remainingMembers} more member{remainingMembers > 1 && "s"}
               </Link>
             )}
             <div className="mt-3 text-sm text-muted-foreground">{activeUserCount} active over last 30 days</div>

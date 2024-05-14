@@ -51,7 +51,7 @@ export const columns: ColumnDef<Projects>[] = [
     },
     header: ({ column }) => <DataTableColumnHeader column={column} title="Logged" />,
     cell: ({ row }) => (
-      <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))} h`}</span>
+      <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))}h`}</span>
     ),
     filterFn: "arrIncludesSome",
   },

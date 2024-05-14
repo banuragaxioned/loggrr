@@ -23,7 +23,7 @@ const BillableCard = ({ timecardProp }: TimeLoggedCardProps) => {
       <CardContent className="mt-2 space-y-1.5 p-0">
         <p className="flex items-center gap-1.5 text-3xl font-semibold">
           {Math.round(getTimeInHours(timecardProp.billable))}{" "}
-          <span className="mt-1.5 text-base text-muted-foreground">
+          <span className="mt-1.5 text-sm font-normal text-muted-foreground">
             / {Math.round(getTimeInHours(timecardProp.overall))}h
           </span>
         </p>
