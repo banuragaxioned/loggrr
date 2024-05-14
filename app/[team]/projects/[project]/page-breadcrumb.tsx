@@ -1,4 +1,4 @@
-import { Home, Slash } from "lucide-react";
+import { Home } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -30,15 +30,11 @@ export function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
               <Home size={18} />
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <Slash className="-rotate-[22deg]" />
-          </BreadcrumbSeparator>
+          <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink href={`/${slug}/projects`}>Projects</BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator>
-            <Slash className="-rotate-[22deg]" />
-          </BreadcrumbSeparator>
+          <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>{projectDetails.name}</BreadcrumbPage>
           </BreadcrumbItem>

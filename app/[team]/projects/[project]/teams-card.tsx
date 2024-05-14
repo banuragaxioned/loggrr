@@ -1,7 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { Users } from "lucide-react";
 import { motion, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -19,6 +21,7 @@ export const TeamsCard = ({
       }[]
     | undefined;
 }) => {
+  const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const springConfig = { stiffness: 100, damping: 5 };
   const x = useMotionValue(0); // going to set this value on mouse move
@@ -38,8 +41,6 @@ export const TeamsCard = ({
   // Get 7 members from items
   const members = items?.slice(0, MEMBERS_COUNT);
   const remainingMembers = items && items?.length - MEMBERS_COUNT;
-
-  console.log(items?.length, remainingMembers);
 
   const renderMembers = members?.map((item) => (
     <div
@@ -98,8 +99,10 @@ export const TeamsCard = ({
         {items && items?.length > 0 ? (
           <>
             <div className="flex w-[80%] flex-row items-center">{renderMembers}</div>
-            {remainingMembers && remainingMembers > 0 && (
-              <div className="mt-1 font-semibold">+{remainingMembers} more members</div>
+            {(remainingMembers ?? 0) > 0 && (
+              <Link href={`${pathname}/members`} className="mt-1 font-semibold hover:underline">
+                +{remainingMembers} more members
+              </Link>
             )}
           </>
         ) : (
