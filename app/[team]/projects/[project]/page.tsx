@@ -1,7 +1,5 @@
 import { Hourglass, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
 import { db } from "@/server/db";
 import { getTimeInHours } from "@/lib/helper";
@@ -69,10 +67,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading={projectDetails.name} text="This is your project details page.">
-        {/* <Button variant="outline">Edit</Button> */}
-      </DashboardHeader>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total time spent</CardTitle>
@@ -83,7 +78,6 @@ export default async function Page({ params }: pageProps) {
             <p className="text-xs text-muted-foreground">out of {projectDetails.budget} budgeted hours</p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active contributors in 30 days</CardTitle>
@@ -96,6 +90,10 @@ export default async function Page({ params }: pageProps) {
             </p>
           </CardContent>
         </Card>
+      </div> */}
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-9 grid h-[400px] place-items-center border">Chart area</div>
+        <div className="col-span-3 border">2</div>
       </div>
     </DashboardShell>
   );

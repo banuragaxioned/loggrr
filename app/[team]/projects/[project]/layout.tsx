@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/server/session";
 import { SidebarNavItem, projectProps } from "@/types";
 import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
 import { SecondaryNavigation } from "./secondary-nav";
+import { db } from "@/server/db";
+import { PageBreadcrumb } from "./page-breadcrumb";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -40,9 +42,31 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
+  const projectDetails = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
+    select: {
+      name: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!projectDetails) {
+    return notFound();
+  }
+
   return (
     <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
-      <SecondaryNavigation items={sidebarProjectsList} />
+      <PageBreadcrumb projectDetails={projectDetails} slug={slug} />
+      {/* <SecondaryNavigation items={sidebarProjectsList} /> */}
       {children}
     </main>
   );
