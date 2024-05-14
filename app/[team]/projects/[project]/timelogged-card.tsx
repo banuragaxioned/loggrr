@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
 import { Hourglass } from "lucide-react";
 import React from "react";

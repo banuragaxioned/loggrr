@@ -1,11 +1,17 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { db } from "@/server/db";
 
 import { DashboardShell } from "@/components/ui/shell";
 import { pageProps } from "@/types";
-import TimeLoggedCard from "./time-logged";
+import TimeLoggedCard from "./timelogged-card";
 import { TeamsCard } from "./teams-card";
+import BillableCard from "./billable-card";
+
+export const metadata: Metadata = {
+  title: `Overview`,
+};
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
@@ -43,9 +49,28 @@ export default async function Page({ params }: pageProps) {
     },
   });
 
+  const billable = await db.timeEntry.groupBy({
+    by: ["projectId"],
+    where: {
+      workspace: {
+        slug: team,
+      },
+      projectId: +project,
+      billable: true,
+    },
+    _sum: {
+      time: true,
+    },
+  });
+
   const timecardProp = {
     overall: timeLogOverall[0]?._sum.time ?? 0,
     last30: timeLogLast30[0]?._sum.time ?? 0,
+  };
+
+  const billableCardProp = {
+    overall: timeLogOverall[0]?._sum.time ?? 0,
+    billable: billable[0]?._sum.time ?? 0,
   };
 
   const members = await db.project.findUnique({
@@ -98,6 +123,7 @@ export default async function Page({ params }: pageProps) {
         <div className="col-span-3 flex flex-col gap-4">
           <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
           <TimeLoggedCard timecardProp={timecardProp} />
+          <BillableCard timecardProp={billableCardProp} />
         </div>
       </div>
     </DashboardShell>
