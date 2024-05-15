@@ -37,17 +37,17 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       <li key={entryData.project.id} className="px-2">
         {/* Project related details  */}
         <Card className="overflow-hidden shadow-none">
-          <div className="flex w-full justify-between px-3 py-2">
-            <p className="flex items-center gap-x-2 text-sm font-medium">
+          <div className="flex w-full items-center justify-between px-3 py-2">
+            <p className="flex items-center gap-x-2 pr-1.5 text-sm font-medium">
               <span
-                className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
                 style={{ backgroundColor: getRandomColor(entryData.project.id) }}
               >
                 {entryData?.project?.name.charAt(0)}
               </span>
               {entryData?.project?.name} - {entryData?.project.client?.name}
             </p>
-            <span className="text-sm font-semibold normal-nums">{entryData?.total.toFixed(2)} h</span>
+            <span className="shrink-0 text-sm font-semibold normal-nums">{entryData?.total.toFixed(2)} h</span>
           </div>
           <Separator className="dark:bg-white/20" />
           {/* Milestones data */}
@@ -137,7 +137,9 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           </DialogContent>
                         </Dialog>
                       </div>
-                      <span className="text-sm font-semibold normal-nums opacity-60">{data?.time.toFixed(2)} h</span>
+                      <span className="shrink-0 text-sm font-semibold normal-nums opacity-60">
+                        {data?.time.toFixed(2)} h
+                      </span>
                     </div>
                     {/* Billing Status */}
                     {data?.billable ? (
