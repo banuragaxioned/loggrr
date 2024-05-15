@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Users } from "lucide-react";
 import { motion, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { Card, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const MEMBERS_COUNT = 7;
 export const TeamsCard = ({
@@ -100,12 +101,15 @@ export const TeamsCard = ({
       <div className="mt-4">
         {items && items?.length > 0 ? (
           <>
-            <div className="flex w-[80%] flex-row items-center">{renderMembers}</div>
-            {remainingMembers > 0 && (
-              <Link href={`${pathname}/members`} className="mt-1 font-semibold hover:underline">
-                +{remainingMembers} more member{remainingMembers > 1 && "s"}
-              </Link>
-            )}
+            <div className={cn("flex w-[80%] flex-row items-center", remainingMembers < 1 && "relative top-2.5")}>
+              {renderMembers}
+            </div>
+            <Link
+              href={`${pathname}/members`}
+              className={cn("mt-1 font-semibold hover:underline", remainingMembers < 1 && "invisible")}
+            >
+              +{remainingMembers} more member{remainingMembers > 1 && "s"}
+            </Link>
             <div className="mt-3 text-sm text-muted-foreground">{activeUserCount} active over last 30 days</div>
           </>
         ) : (

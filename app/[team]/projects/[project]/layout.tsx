@@ -20,22 +20,22 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     {
       title: "Overview",
       href: `/${slug}/projects/${projectId}`,
-      icon: <TextSearch size={16} />,
+      icon: <TextSearch size={16} className="hidden sm:block" />,
     },
     {
       title: "Categories",
       href: `/${slug}/projects/${projectId}/categories`,
-      icon: <CategoryIcon size={16} />,
+      icon: <CategoryIcon size={16} className="hidden sm:block" />,
     },
     {
       title: "Tasks",
       href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <ClipboardCheck size={16} />,
+      icon: <ClipboardCheck size={16} className="hidden sm:block" />,
     },
     {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
-      icon: <Users size={16} />,
+      icon: <Users size={16} className="hidden sm:block" />,
     },
   ];
 
@@ -66,7 +66,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
 
   return (
     <main className="col-span-12 flex flex-col gap-3 lg:col-span-9">
-      <div className="flex items-end justify-between">
+      <div className="flex flex-col items-start justify-between gap-3 lg:flex-row lg:items-end">
         <PageBreadcrumb projectDetails={projectDetails} slug={slug} />
         <SecondaryNavigation items={tabList} />
       </div>
