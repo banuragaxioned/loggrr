@@ -11,6 +11,8 @@ type TimeChartProps = {
   billableEntries: { date: Date; time: number }[];
 };
 
+const DAYS = 30;
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -29,18 +31,18 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
   const [data, setData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    const getLast30Days = () => {
+    const getAllDays = () => {
       const today = startOfToday();
-      const last30Days = [];
-      for (let i = 29; i >= 0; i--) {
+      const daysArray = [];
+      for (let i = DAYS - 1; i >= 0; i--) {
         const currentDate = subDays(today, i);
-        last30Days.push(format(currentDate, "yyyy-MM-dd"));
+        daysArray.push(format(currentDate, "yyyy-MM-dd"));
       }
 
-      return last30Days;
+      return daysArray;
     };
 
-    const last30Days = getLast30Days();
+    const populatedDays = getAllDays();
     const transformedData: any = {};
 
     timeEntries.forEach((entry: any, i) => {
@@ -54,7 +56,7 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
     });
 
     // Fill in missing dates with time: 0
-    last30Days.forEach((date) => {
+    populatedDays.forEach((date) => {
       if (!transformedData[date]?.time) {
         transformedData[date] = { ...transformedData[date], time: 0 };
       }
@@ -64,7 +66,7 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
     });
 
     // Convert transformed data back to an array and sort
-    const finalData = last30Days.map((date) => ({
+    const finalData = populatedDays.map((date) => ({
       time: transformedData[date].time,
       billable: transformedData[date].billable,
       date,
