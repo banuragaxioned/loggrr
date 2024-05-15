@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
+import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
 import { Assignment, DataTableToolbarProps } from "@/types";
@@ -98,38 +99,17 @@ export function DataTableToolbar<TData>({
       }
 
       const data = await response.json();
-
       const currentTime = format(new Date(), "dd-MM-yyyy (HH﹕mm a)");
       const filename = `Logged Report ${currentTime}.csv`;
 
-      // Add headings as the first row
-      const headings = [
-        "Client",
-        "Project",
-        "User",
-        "Category",
-        "Task",
-        "Date",
-        "Comment",
-        "Time logged",
-        "Billing type",
-      ];
+      const dataToConvert = {
+        data,
+        filename,
+        delimiter: ",",
+        headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
+      };
 
-      const csvContent =
-        "data:text/csv;charset=utf-8," +
-        [headings.join(",")].concat(data.map((row: any) => Object.values(row).join(","))).join("\n");
-
-      // Create a temporary link element to trigger download
-      const link = document.createElement("a");
-      link.setAttribute("href", encodeURI(csvContent));
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-
-      // Trigger download
-      link.click();
-
-      // Clean up
-      document.body.removeChild(link);
+      csvDownload(dataToConvert);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
