@@ -208,6 +208,9 @@ export const getAllProjects = async (userId?: number, team?: string) => {
       task: { select: { id: true, name: true } },
       workspace: { select: { slug: true } },
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   return projects?.map((project) => ({
