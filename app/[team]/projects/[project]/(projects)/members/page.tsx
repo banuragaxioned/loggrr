@@ -1,9 +1,14 @@
-import { DashboardHeader } from "@/components/ui/header";
+import { Metadata } from "next";
+
 import { DashboardShell } from "@/components/ui/shell";
 import { pageProps } from "@/types";
 import { Table } from "./table";
 import { getMembers, getProjectMembers } from "@/server/services/members";
 import { AddMemberInProject } from "@/components/forms/addProjectMemberForm";
+
+export const metadata: Metadata = {
+  title: `Members`,
+};
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
