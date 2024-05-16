@@ -1,102 +1,66 @@
-import { Hourglass, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { DashboardHeader } from "@/components/ui/header";
-import { DashboardShell } from "@/components/ui/shell";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
 import { db } from "@/server/db";
-import { getTimeInHours } from "@/lib/helper";
+
 import { pageProps } from "@/types";
-import { teamMemberStats as getTeamMemberStats } from "@/server/services/project";
+import TimeChart from "@/components/charts/time-chart";
+
+export const metadata: Metadata = {
+  title: `Overview`,
+};
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
 
   if (!project) {
-    return null;
+    return notFound();
   }
 
-  const projectDetails = await db.project.findUnique({
-    where: {
-      id: +project,
-      workspace: {
-        slug: team,
-      },
-    },
-  });
-
-  if (!projectDetails) {
-    return null;
-  }
-
-  const timeLogSummary = await db.timeEntry.groupBy({
-    by: ["milestoneId"],
+  // get all last 30 days timeentries for the project group by date
+  const timeEntries = await db.timeEntry.groupBy({
+    by: ["date"],
     where: {
       workspace: {
         slug: team,
       },
       projectId: +project,
       date: {
-        gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       },
     },
     _sum: {
       time: true,
     },
-    _count: {
+  });
+
+  // get all last 30 days timeentries for the project group by date
+  const billableTimeEntries = await db.timeEntry.groupBy({
+    by: ["date"],
+    where: {
+      workspace: {
+        slug: team,
+      },
+      projectId: +project,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+      billable: true,
+    },
+    _sum: {
       time: true,
     },
-    _avg: { time: true },
   });
 
-  // flatten the result
-  const timeLogSummaryFlat = timeLogSummary.map((item) => {
-    return {
-      id: item.milestoneId,
-      time: item._sum.time,
-      count: item._count.time,
-      avg: item._avg.time,
-    };
-  });
+  const formattedEntries = timeEntries.map((entry) => ({
+    date: entry.date,
+    time: entry._sum.time ?? 0,
+  }));
 
-  const teamMemberStats = await getTeamMemberStats(team, project);
+  const formattedBillableEntries = billableTimeEntries.map((entry) => ({
+    date: entry.date,
+    time: entry._sum.time ?? 0,
+  }));
 
-  const percentageChange = (current: number, previous: number) => {
-    // return + and - sign with percentage change as string
-    if (current === 0 || previous === 0) return "0%";
-    const percentage = ((current - previous) / previous) * 100;
-    return percentage > 0 ? `+${percentage.toFixed(2)}%` : `${percentage.toFixed(2)}%`;
-  };
-
-  return (
-    <DashboardShell>
-      <DashboardHeader heading={projectDetails.name} text="This is your project details page.">
-        {/* <Button variant="outline">Edit</Button> */}
-      </DashboardHeader>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total time spent</CardTitle>
-            <Hourglass className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{getTimeInHours(timeLogSummaryFlat[0]?.time ?? 0)}h</div>
-            <p className="text-xs text-muted-foreground">out of {projectDetails.budget} budgeted hours</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active contributors in 30 days</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{teamMemberStats[0].length}</div>
-            <p className="text-xs text-muted-foreground">
-              {percentageChange(teamMemberStats[0].length, teamMemberStats[1].length)} from last month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </DashboardShell>
-  );
+  return <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} />;
 }

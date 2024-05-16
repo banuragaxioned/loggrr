@@ -2,7 +2,7 @@
 "use client";
 
 import React, { type FC, useState, useEffect, useRef } from "react";
-import { ChevronUpIcon, ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
+import { ChevronUpIcon, ChevronDownIcon, CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -274,10 +274,11 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
       onClick={() => {
         setPreset(preset);
       }}
+      size="sm"
     >
       <>
         <span className={cn("pr-2 opacity-0", isSelected && "opacity-70")}>
-          <CheckIcon width={18} height={18} />
+          <CheckIcon size={16} />
         </span>
         {label}
       </>
@@ -326,13 +327,13 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               </div>
             )}
           </div>
-          <div className="-mr-2 scale-125 pl-1 opacity-60">
-            {isOpen ? <ChevronUpIcon width={24} /> : <ChevronDownIcon width={24} />}
+          <div className="relative -right-1.5 -ml-2 pl-1 opacity-60">
+            {isOpen ? <ChevronUpIcon size={18} /> : <ChevronDownIcon size={18} />}
           </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent align={align} className="w-auto">
-        <div className="flex py-2">
+        <div className="flex">
           <div className="flex">
             <div className="flex flex-col">
               <div className="flex flex-col items-center justify-end gap-2 px-3 pb-4 lg:flex-row lg:items-start lg:pb-0">
@@ -464,8 +465,8 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             </div>
           </div>
           {!isSmallScreen && (
-            <div className="flex flex-col items-end gap-1 pb-6 pl-6 pr-2">
-              <div className="flex w-full flex-col items-end gap-1 pb-6 pl-6 pr-2">
+            <div className="flex flex-col items-end gap-1 pr-2">
+              <div className="flex w-full flex-col items-end gap-1 pl-6 pr-2">
                 {PRESETS.map((preset) => (
                   <PresetButton
                     key={preset.name}

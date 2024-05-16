@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Edit, Trash, Hourglass } from "lucide-react";
+import { Edit, Trash, Hourglass, ClipboardCheck } from "lucide-react";
 import { Badge } from "@tremor/react";
 import { toast } from "sonner";
 
@@ -83,9 +83,9 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {Array.isArray(taskList) && taskList.length ? (
-          taskList.map((item, index) => {
+      {Array.isArray(taskList) && taskList.length > 0 ? (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {taskList.map((item, index) => {
             const tempObj = {
               ...item,
               name: item.name,
@@ -97,7 +97,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
                     {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
-                    <h4 className="text-base">{item?.name}</h4>
+                    <p className="text-sm font-medium">{item?.name}</p>
                   </div>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">
@@ -137,11 +137,15 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 </div>
               </Card>
             );
-          })
-        ) : (
-          <p className="mt-7 text-sm text-muted-foreground">No tasks found in this project!</p>
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        <Card className="flex h-[200px] flex-col items-center justify-center space-y-2 p-11 text-center shadow-none lg:h-[414px]">
+          <ClipboardCheck size={24} className="hidden sm:block" />
+          <h2>No tasks found!</h2>
+          <p>You haven&apos;t created any task for the selected project.</p>
+        </Card>
+      )}
     </>
   );
 };

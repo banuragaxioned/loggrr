@@ -256,7 +256,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
         </div>
         <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
-          <p className="mb-2 flex justify-between px-5 font-medium">
+          <p className="mb-2 flex items-center justify-between px-5 font-medium">
             Total time logged for the day
             <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
           </p>

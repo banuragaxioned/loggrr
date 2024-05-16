@@ -1,8 +1,12 @@
+import { Metadata } from "next";
+
 import { pageProps } from "@/types";
 import MilestoneData from "./milestone-data";
 import { getMilestones } from "@/server/services/project";
-import { DashboardShell } from "@/components/ui/shell";
-import { DashboardHeader } from "@/components/ui/header";
+
+export const metadata: Metadata = {
+  title: `Categories`,
+};
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
@@ -14,9 +18,8 @@ export default async function Page({ params }: pageProps) {
   }
 
   return (
-    <DashboardShell className="relative">
-      <DashboardHeader heading="Categories" text="Manage all the categories for your project" />
+    <div className="flex flex-col gap-4">
       <MilestoneData milestoneList={milestoneList} team={team} project={project} />
-    </DashboardShell>
+    </div>
   );
 }

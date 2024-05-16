@@ -104,11 +104,12 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
 
   return (
     <Sheet onOpenChange={handleOpenChange} open={isFormOpen || edit.isEditing}>
-      <SheetTrigger asChild>
-        <Button className="absolute right-0" size="sm">
-          Create
-        </Button>
-      </SheetTrigger>
+      <div className="flex justify-between">
+        <h2>Categories</h2>
+        <SheetTrigger asChild>
+          <Button size="sm">Create</Button>
+        </SheetTrigger>
+      </div>
       <SheetContent side="right" className="h-full overflow-y-auto">
         <Form {...form}>
           <SheetHeader>

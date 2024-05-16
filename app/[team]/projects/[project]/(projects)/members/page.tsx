@@ -1,9 +1,13 @@
-import { DashboardHeader } from "@/components/ui/header";
-import { DashboardShell } from "@/components/ui/shell";
+import { Metadata } from "next";
+
 import { pageProps } from "@/types";
 import { Table } from "./table";
 import { getMembers, getProjectMembers } from "@/server/services/members";
 import { AddMemberInProject } from "@/components/forms/addProjectMemberForm";
+
+export const metadata: Metadata = {
+  title: `Members`,
+};
 
 export default async function Page({ params }: pageProps) {
   const { team, project } = params;
@@ -13,11 +17,9 @@ export default async function Page({ params }: pageProps) {
   const membersList = await getMembers(team);
 
   return (
-    <DashboardShell>
-      <DashboardHeader heading="Manage project team" text="People who are assigned to this project">
-        <AddMemberInProject team={team} project={projectId} users={membersList} />
-      </DashboardHeader>
+    <div className="flex flex-col gap-4">
+      <AddMemberInProject team={team} project={projectId} users={membersList} />
       <Table data={members} team={team} projectId={projectId} />
-    </DashboardShell>
+    </div>
   );
 }

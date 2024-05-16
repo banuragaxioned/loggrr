@@ -11,6 +11,7 @@ import { columns } from "./columns";
 export const metadata: Metadata = {
   title: `Projects`,
 };
+
 export default async function Projects({ params }: pageProps) {
   const { team } = params;
   const projectList = await getProjects(team);

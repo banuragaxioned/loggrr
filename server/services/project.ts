@@ -68,6 +68,11 @@ export async function getProjects(slug: string) {
         select: {
           time: true,
         },
+        where: {
+          date: {
+            gte: subDays(new Date(), 30),
+          },
+        },
       },
       status: true,
       budget: true,
@@ -202,6 +207,9 @@ export const getAllProjects = async (userId?: number, team?: string) => {
       timeEntry: { select: { id: true, time: true, projectId: true } },
       task: { select: { id: true, name: true } },
       workspace: { select: { slug: true } },
+    },
+    orderBy: {
+      name: "asc",
     },
   });
 
