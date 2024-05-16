@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { Edit, Hourglass, Trash } from "lucide-react";
+import { Edit, Hourglass, Milestone as CategoryIcon, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@tremor/react";
 
@@ -84,9 +83,9 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
         isFormOpen={isFormOpen}
         setIsFormOpen={setIsFormOpen}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {Array.isArray(milestoneList) && milestoneList.length ? (
-          milestoneList.map((item, index) => {
+      {Array.isArray(milestoneList) && milestoneList.length ? (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {milestoneList.map((item, index) => {
             const tempObj = {
               ...item,
               name: item.name,
@@ -139,11 +138,15 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                 </div>
               </Card>
             );
-          })
-        ) : (
-          <p className="mt-7 text-sm text-muted-foreground">No categories found in this project!</p>
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        <Card className="flex h-[200px] flex-col items-center justify-center space-y-2 p-11 text-center shadow-none lg:h-[414px]">
+          <CategoryIcon size={24} className="hidden sm:block" />
+          <h2>No categories found!</h2>
+          <p>You haven&apos;t created any category for the selected project.</p>
+        </Card>
+      )}
     </>
   );
 };
