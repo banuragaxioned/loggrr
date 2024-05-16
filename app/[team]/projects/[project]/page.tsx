@@ -57,6 +57,9 @@ export default async function Page({ params }: pageProps) {
         slug: team,
       },
       projectId: +project,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
       billable: true,
     },
     _sum: {
@@ -70,7 +73,7 @@ export default async function Page({ params }: pageProps) {
   };
 
   const billableCardProp = {
-    overall: timeLogOverall[0]?._sum.time ?? 0,
+    last30: timeLogLast30[0]?._sum.time ?? 0,
     billable: billable[0]?._sum.time ?? 0,
   };
 

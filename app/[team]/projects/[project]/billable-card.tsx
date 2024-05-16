@@ -1,5 +1,5 @@
 import React from "react";
-import { CircleDollarSign } from "lucide-react";
+import { Info } from "lucide-react";
 
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -8,25 +8,28 @@ import { getTimeInHours } from "@/lib/helper";
 
 type TimeLoggedCardProps = {
   timecardProp: {
-    overall: number;
+    last30: number;
     billable: number;
   };
 };
 
 const BillableCard = ({ timecardProp }: TimeLoggedCardProps) => {
-  const billablePercentage = Math.round((timecardProp.billable / timecardProp.overall) * 100);
+  const billablePercentage = Math.round((timecardProp.billable / timecardProp.last30) * 100);
 
   return (
     <Card className="p-4 shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
         <p className="font-semibold">Billable hours</p>
-        <CircleDollarSign size={18} className="text-success" />
+        <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          <Info size={16} />
+          last 30 days
+        </p>
       </CardHeader>
       <CardContent className="mb-1 mt-2 space-y-3 p-0">
         <p className="flex items-center gap-1.5 text-3xl font-semibold">
           {Math.round(getTimeInHours(timecardProp.billable))}{" "}
           <span className="mt-1.5 text-sm font-normal text-muted-foreground">
-            / {Math.round(getTimeInHours(timecardProp.overall))}h
+            / {Math.round(getTimeInHours(timecardProp.last30))}h
           </span>
         </p>
         <CustomTooltip
