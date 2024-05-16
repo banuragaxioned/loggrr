@@ -26,7 +26,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
-  const formatXAxis = (tickItem: Date) => format(tickItem, "MMM dd");
+  const formatXAxis = (tickItem: Date) => format(tickItem, "MMMdd");
+  const formatYAxis = (tickItem: number) => `${tickItem}h`;
 
   const [data, setData] = React.useState<any>(null);
 
@@ -93,9 +94,8 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
               tickFormatter={formatXAxis}
               tickLine={false}
               axisLine={false}
-              interval={1}
             />
-            <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fontSize: 12 }} tickFormatter={formatYAxis} tickLine={false} axisLine={false} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="time" style={{ fill: "hsl(var(--primary))" }} />
           </BarChart>
