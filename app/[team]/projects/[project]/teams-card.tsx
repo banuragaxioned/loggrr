@@ -94,9 +94,9 @@ export const TeamsCard = ({
 
   return (
     <Card className="p-4 shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 text-muted-foreground">
-        <p className="text-lg font-semibold">Team</p>
-        <Users size={16} />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
+        <p className="font-semibold">Team</p>
+        <Users size={16} className="text-muted-foreground" />
       </CardHeader>
       <div className="mt-4">
         {items && items?.length > 0 ? (

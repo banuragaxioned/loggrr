@@ -78,14 +78,14 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
 
   return (
     <Card className="select-none p-0 shadow-none">
-      <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2 text-xs font-bold text-muted-foreground">
-        <p className="text-lg font-semibold">Day-wise distribution</p>
-        <p className="flex items-center gap-1.5 font-medium">
+      <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
+        <p className="font-semibold">Day-wise distribution</p>
+        <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
           <Info size={16} />
           last 30 days
         </p>
       </CardHeader>
-      <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[446px]">
+      <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart width={500} height={300} data={data}>
             <XAxis

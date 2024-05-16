@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
-import { Hourglass } from "lucide-react";
+import { Info } from "lucide-react";
 import React from "react";
 
 type TimeLoggedCardProps = {
@@ -13,19 +13,21 @@ type TimeLoggedCardProps = {
 const TimeLoggedCard = ({ timecardProp }: TimeLoggedCardProps) => {
   return (
     <Card className="p-4 shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 text-muted-foreground">
-        <p className="text-lg font-semibold">Time logged</p>
-        <Hourglass size={16} />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
+        <p className="font-semibold">Time logged</p>
+        <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          <Info size={16} />
+          last 30 days
+        </p>
       </CardHeader>
-      <CardContent className="mt-2 space-y-1.5 p-0">
+      <CardContent className="mt-2 space-y-2.5 p-0">
         <p className="text-3xl font-semibold">
-          {Math.round(getTimeInHours(timecardProp.overall))}
+          {Math.round(getTimeInHours(timecardProp.last30))}
           <span className="text-xl">h</span>
         </p>
-        <p className="flex items-center gap-1">
-          {Math.round(getTimeInHours(timecardProp.last30))}h{" "}
-          <span className="text-sm text-muted-foreground">(last 30 days)</span>
-        </p>
+        <div className="text-sm text-muted-foreground">
+          {Math.round(getTimeInHours(timecardProp.overall))}h overall time logged
+        </div>
       </CardContent>
     </Card>
   );
