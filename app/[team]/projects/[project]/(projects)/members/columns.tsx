@@ -54,7 +54,6 @@ export const getColumn = ({ removeMember }: GetColumn) => {
           </div>
         );
       },
-      filterFn: "arrIncludesSome",
     },
     {
       accessorKey: "createdAt",
