@@ -101,7 +101,6 @@ export function DataTableToolbar<TData>({
       const data = await response.json();
       const currentTime = format(new Date(), "dd-MM-yyyy (hh﹕mm a)");
       const filename = `Logged Report ${currentTime}.csv`;
-      console.log(filename);
 
       const dataToConvert = {
         data,
@@ -110,7 +109,7 @@ export function DataTableToolbar<TData>({
         headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
       };
 
-      // csvDownload(dataToConvert);
+      csvDownload(dataToConvert);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
