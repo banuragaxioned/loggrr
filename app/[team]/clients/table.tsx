@@ -3,7 +3,6 @@
 import * as React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { DataTableStructure } from "@/components/data-table/structure";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +12,8 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
+
+import { DataTableStructure } from "@/components/data-table/structure";
 import { DataTableToolbar } from "./toolbar";
 import { Client } from "@/types";
 
@@ -38,7 +39,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
   };
 
   const rowClickHandler = (row: Row<Client>) =>
-    row.original.project > 0 ? location.assign(`projects?client=${row.original.name}`) : noActiveProject(row);
+    row.original.project > 0 ? router.push(`projects?client=${row.original.name}`) : noActiveProject(row);
 
   const editClientNames = async (id: number, value: string) => {
     const response = await fetch("/api/team/client/edit", {

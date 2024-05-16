@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
-import { DataTableStructure } from "@/components/data-table/structure";
-import { TableProps } from "@/types";
+import { useRouter } from "next/navigation";
 import {
   ColumnFiltersState,
   SortingState,
@@ -10,14 +9,18 @@ import {
   getSortedRowModel,
   Row,
 } from "@tanstack/react-table";
+
+import { DataTableStructure } from "@/components/data-table/structure";
+import { TableProps } from "@/types";
 import { DataTableToolbar } from "./toolbar";
 import { Projects } from "./columns";
 
 export function Table<TData, TValue>({ columns, data }: TableProps<Projects, TValue>) {
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-  const rowClickHandler = (row: Row<Projects>) => location.assign(`projects/${row.original.id}`);
+  const rowClickHandler = (row: Row<Projects>) => router.push(`projects/${row.original.id}`);
 
   const tableConfig = {
     data,

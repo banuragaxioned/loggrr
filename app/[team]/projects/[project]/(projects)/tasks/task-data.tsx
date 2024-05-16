@@ -97,7 +97,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 <div className="flex items-center justify-start space-x-5">
                   <div className="flex gap-2">
                     {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
-                    <h4 className="text-base">{item?.name}</h4>
+                    <p className="text-sm font-medium">{item?.name}</p>
                   </div>
                 </div>
                 <div className="invisible flex gap-4 group-hover:visible">

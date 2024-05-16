@@ -49,9 +49,9 @@ export const columns: ColumnDef<Projects>[] = [
     meta: {
       className: "w-[10%]",
     },
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged (30days)" />,
     cell: ({ row }) => (
-      <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))}h`}</span>
+      <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))} h`}</span>
     ),
     filterFn: "arrIncludesSome",
   },

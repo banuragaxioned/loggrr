@@ -10,9 +10,15 @@ import { Card, Flex, Text } from "@tremor/react";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-import { TimeEntrySum } from "./time-barchart";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
+
+interface TimeEntrySum {
+  date: Date;
+  _sum: {
+    time: number | null;
+  };
+}
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
   const setDate = useTimeEntryState((state) => state.setDate);

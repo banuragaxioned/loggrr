@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 
 import { pageProps } from "@/types";
-import TimeChart from "./time-chart";
+import TimeChart from "@/components/charts/time-chart";
 
 export const metadata: Metadata = {
   title: `Overview`,
