@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 
-import { DashboardShell } from "@/components/ui/shell";
 import { pageProps } from "@/types";
 import { Table } from "./table";
 import { getMembers, getProjectMembers } from "@/server/services/members";
@@ -18,9 +17,9 @@ export default async function Page({ params }: pageProps) {
   const membersList = await getMembers(team);
 
   return (
-    <DashboardShell>
+    <div className="flex flex-col gap-4">
       <AddMemberInProject team={team} project={projectId} users={membersList} />
       <Table data={members} team={team} projectId={projectId} />
-    </DashboardShell>
+    </div>
   );
 }

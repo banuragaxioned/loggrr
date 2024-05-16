@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Users } from "lucide-react";
 import { motion, useTransform, useMotionValue, useSpring } from "framer-motion";
+
 import { Card, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +25,7 @@ export const TeamsCard = ({
     | undefined;
   activeUserCount: number;
 }) => {
-  const pathname = usePathname();
+  const params = useParams();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const springConfig = { stiffness: 100, damping: 5 };
   const x = useMotionValue(0); // going to set this value on mouse move
@@ -105,7 +106,7 @@ export const TeamsCard = ({
               {renderMembers}
             </div>
             <Link
-              href={`${pathname}/members`}
+              href={`/${params.team}/projects/${params.project}/members`}
               className={cn("mt-1 font-semibold hover:underline", remainingMembers < 1 && "invisible")}
             >
               +{remainingMembers} more member{remainingMembers > 1 && "s"}

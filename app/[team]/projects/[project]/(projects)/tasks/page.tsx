@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 
-import { DashboardShell } from "@/components/ui/shell";
 import { getTasks } from "@/server/services/project";
 import { pageProps } from "@/types";
 import TaskData from "./task-data";
@@ -19,8 +18,8 @@ export default async function Page({ params }: pageProps) {
   }
 
   return (
-    <DashboardShell className="relative">
+    <div className="flex flex-col gap-4">
       <TaskData taskList={taskList} team={team} project={project} />
-    </DashboardShell>
+    </div>
   );
 }
