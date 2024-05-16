@@ -35,7 +35,7 @@ const BillableCard = ({ timecardProp }: TimeLoggedCardProps) => {
         <CustomTooltip
           trigger={<Progress value={billablePercentage} className="h-[10px] cursor-pointer" />}
           content={`${billablePercentage}%`}
-          sideOffset={16}
+          sideOffset={18}
         />
       </CardContent>
     </Card>

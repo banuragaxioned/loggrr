@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardHeader } from "@/components/ui/card";
+import { getTimeInHours } from "@/lib/helper";
 import { format, startOfToday, subDays } from "date-fns";
 import { Info } from "lucide-react";
 import React from "react";
@@ -48,12 +49,12 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
 
     timeEntries.forEach((entry: any, i) => {
       const date = format(new Date(entry.date), "yyyy-MM-dd");
-      transformedData[date] = { ...transformedData[date], time: entry.time / 60 || 0 };
+      transformedData[date] = { ...transformedData[date], time: +getTimeInHours(entry.time) };
     });
 
     billableEntries.forEach((entry: any, i) => {
       const date = format(new Date(entry.date), "yyyy-MM-dd");
-      transformedData[date] = { ...transformedData[date], billable: entry.time / 60 || 0 };
+      transformedData[date] = { ...transformedData[date], billable: +getTimeInHours(entry.time) };
     });
 
     // Fill in missing dates with time: 0
