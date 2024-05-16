@@ -169,9 +169,9 @@ export default async function Page({ params }: pageProps) {
           <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} />
         </div>
         <div className="col-span-12 flex flex-col gap-4 lg:col-span-3">
-          <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
           <TimeLoggedCard timecardProp={timecardProp} />
           <BillableCard timecardProp={billableCardProp} />
+          <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
         </div>
       </div>
     </DashboardShell>

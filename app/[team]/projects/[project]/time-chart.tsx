@@ -4,7 +4,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { format, startOfToday, subDays } from "date-fns";
 import { Info } from "lucide-react";
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
@@ -86,30 +86,19 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
       </CardHeader>
       <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[446px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart width={500} height={300} data={data}>
+          <BarChart width={500} height={300} data={data}>
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 10 }}
               tickFormatter={formatXAxis}
-              interval="equidistantPreserveStart"
+              tickLine={false}
+              axisLine={false}
+              interval={1}
             />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} cursor={false} />
-            <Line
-              type="monotone"
-              dataKey="time"
-              style={{ stroke: "hsl(var(--muted-foreground))" }}
-              dot={{ fill: "hsl(var(--muted-foreground))", strokeWidth: 1, r: 3 }}
-              activeDot={{ fill: "hsl(var(--secondary))", stroke: "hsl(var(--muted-foreground))", r: 4 }}
-            />
-            {/* <Line
-              type="monotone"
-              dataKey="billable"
-              style={{ stroke: "hsl(var(--success))" }}
-              dot={{ fill: "hsl(var(--muted-foreground))", strokeWidth: 1, r: 3 }}
-              activeDot={{ fill: "hsl(var(--secondary))", stroke: "hsl(var(--muted-foreground))", r: 4 }}
-            /> */}
-          </LineChart>
+            <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="time" style={{ fill: "hsl(var(--primary))" }} />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </Card>
