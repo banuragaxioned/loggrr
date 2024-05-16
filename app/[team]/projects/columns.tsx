@@ -5,6 +5,8 @@ import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
 import { getTimeInHours } from "@/lib/helper";
+import { Info } from "lucide-react";
+import { CustomTooltip } from "@/components/custom/tooltip";
 
 export type Projects = {
   id: number;
@@ -49,7 +51,15 @@ export const columns: ColumnDef<Projects>[] = [
     meta: {
       className: "w-[10%]",
     },
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Logged (30days)" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Logged"
+        child={
+          <CustomTooltip trigger={<Info className="ml-1.5" size={14} />} content="Over last 30 days" sideOffset={10} />
+        }
+      />
+    ),
     cell: ({ row }) => (
       <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))} h`}</span>
     ),
