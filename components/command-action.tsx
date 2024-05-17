@@ -33,7 +33,6 @@ const MenuLinks = [
   { title: "Workspace Members", href: "/members", icon: Users },
   { title: "Groups", href: "/groups", icon: Group },
   { title: "Reports - Logged", href: "/reports/logged", icon: BarChart2 },
-  { title: "Reports - Assigned", href: "/reports/assigned", icon: BarChart3 },
 ];
 
 export function CommandMenu(CommandProps: CommandPropType) {
