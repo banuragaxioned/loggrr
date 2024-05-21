@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 
 import { pageProps } from "@/types";
-import TimeChart from "@/components/charts/time-chart";
+import TimeChart from "./time-chart";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -62,5 +62,40 @@ export default async function Page({ params }: pageProps) {
     time: entry._sum.time ?? 0,
   }));
 
-  return <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} />;
+  const userData = await db.timeEntry.findMany({
+    where: {
+      workspace: {
+        slug: team,
+      },
+      projectId: +project,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+    },
+    select: {
+      date: true,
+      time: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      comments: true,
+      task: {
+        select: {
+          name: true,
+        },
+      },
+      milestone: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  return <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} userData={userData} />;
 }
