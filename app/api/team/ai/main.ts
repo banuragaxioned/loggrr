@@ -37,7 +37,7 @@ async function readSchema() {
 
 const schema = await readSchema();
 
-const model = createOpenAILanguageModel(env.OPENAI_API_KEY, "gpt-3.5-turbo");
+const model = createOpenAILanguageModel(env.OPENAI_API_KEY, "gpt-4o");
 const validator = createTypeScriptJsonValidator<TimeLog>(schema ?? "", "TimeLog");
 const translator = typechat.createJsonTranslator(model, validator);
 
