@@ -1,11 +1,13 @@
 "use client";
 
-import { Card, CardHeader } from "@/components/ui/card";
-import { getTimeInHours } from "@/lib/helper";
 import { format, startOfToday, subDays } from "date-fns";
 import { Info } from "lucide-react";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
+
+import UserDetails from "@/app/[team]/projects/[project]/user-details";
+import { Card, CardHeader } from "@/components/ui/card";
+import { getTimeInHours } from "@/lib/helper";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
@@ -114,6 +116,9 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
             <Bar dataKey="time" style={{ fill: "hsl(var(--primary))" }} />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      <div className="mb-2 px-4 py-2">
+        <UserDetails />
       </div>
     </Card>
   );

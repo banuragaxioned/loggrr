@@ -78,7 +78,7 @@ export async function getProjects(slug: string) {
       budget: true,
     },
     orderBy: {
-      createdAt: "desc",
+      name: "asc",
     },
   });
 
