@@ -11,7 +11,8 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const MEMBERS_COUNT = 7;
-export const TeamsCard = ({
+
+const TeamsCard = ({
   items,
   activeUserCount,
 }: {
@@ -118,3 +119,5 @@ export const TeamsCard = ({
     </Card>
   );
 };
+
+export default TeamsCard;

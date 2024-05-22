@@ -1,15 +1,19 @@
 import { notFound } from "next/navigation";
 import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
 
-import { getCurrentUser } from "@/server/session";
-import { SidebarNavItem, projectProps } from "@/types";
-import { SecondaryNavigation } from "./components/secondary-nav";
 import { db } from "@/server/db";
-import { PageBreadcrumb } from "./components/page-breadcrumb";
+import { getCurrentUser } from "@/server/session";
+import { getMembersByProject } from "@/server/services/project";
+
+import { SidebarNavItem, projectProps } from "@/types";
+
+import { SecondaryNavigation } from "./components/secondary-nav";
 import { DashboardShell } from "@/components/ui/shell";
+
+import PageBreadcrumb from "./components/page-breadcrumb";
 import TimeLoggedCard from "./components/timelogged-card";
 import BillableCard from "./components/billable-card";
-import { TeamsCard } from "./components/teams-card";
+import TeamsCard from "./components/teams-card";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -17,8 +21,33 @@ interface DashboardLayoutProps extends projectProps {
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
-  const projectId = params?.project;
-  const slug = params.team;
+
+  if (!user) {
+    return notFound();
+  }
+
+  const { project: projectId, team: slug } = params;
+
+  const projectDetails = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
+    select: {
+      name: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!projectDetails) {
+    return notFound();
+  }
 
   const tabList: SidebarNavItem[] = [
     {
@@ -42,31 +71,6 @@ export default async function DashboardLayout({ children, params }: DashboardLay
       icon: <Users size={16} className="hidden sm:block" />,
     },
   ];
-
-  if (!user) {
-    return notFound();
-  }
-
-  const projectDetails = await db.project.findUnique({
-    where: {
-      id: +projectId,
-      workspace: {
-        slug,
-      },
-    },
-    select: {
-      name: true,
-      client: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
-
-  if (!projectDetails) {
-    return notFound();
-  }
 
   const timeLogOverall = await db.timeEntry.groupBy({
     by: ["projectId"],
@@ -124,34 +128,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     billable: billable[0]?._sum.time ?? 0,
   };
 
-  const members = await db.project.findUnique({
-    where: {
-      id: +projectId,
-    },
-    select: {
-      usersOnProject: {
-        select: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-              email: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const allMembers = members?.usersOnProject
-    .filter((member) => member.user.name || member.user.image)
-    .map((member) => ({
-      id: member.user.id,
-      name: member.user.name,
-      email: member.user.email,
-      image: member.user.image,
-    }));
+  const allMembers = await getMembersByProject(slug, +projectId);
 
   // Get last 30 days active users
   const userActivity = await db.timeEntry.groupBy({

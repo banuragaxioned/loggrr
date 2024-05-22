@@ -1,9 +1,14 @@
 import { db } from "@/server/db";
 import { subDays } from "date-fns";
 
-export const getMembersByProjectId = async (slug: string, projectId: number) => {
-  const data = await db.project.findUnique({
-    where: { workspace: { slug }, id: +projectId },
+export const getMembersByProject = async (slug: string, projectId: number) => {
+  const members = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
     select: {
       usersOnProject: {
         select: {
@@ -11,37 +16,30 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
             select: {
               id: true,
               name: true,
-              email: true,
               image: true,
-              status: true,
+              email: true,
             },
           },
         },
+        orderBy: {
+          user: {
+            name: "asc",
+          },
+        },
       },
-      // Owner: {
-      //   select: {
-      //     id: true,
-      //     name: true,
-      //     email: true,
-      //     image: true,
-      //     status: true,
-      //   },
-      // },
     },
   });
 
-  const members = data?.usersOnProject.map((value) => {
-    return {
-      id: value.user.id,
-      name: value.user.name,
-      email: value.user.email,
-      image: value.user.image,
-      status: value.user.status,
-      projectId: projectId,
-    };
-  });
+  const transformedData = members?.usersOnProject
+    .filter((member) => member.user.name || member.user.image)
+    .map((member) => ({
+      id: member.user.id,
+      name: member.user.name,
+      email: member.user.email,
+      image: member.user.image,
+    }));
 
-  return members;
+  return transformedData;
 };
 
 export async function getProjects(slug: string) {

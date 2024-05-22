@@ -20,7 +20,7 @@ type ProjectDetailsType = {
   slug: string;
 };
 
-export function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
+function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
   return (
     <div>
       {/* Breadcrumb */}
@@ -53,3 +53,5 @@ export function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
     </div>
   );
 }
+
+export default PageBreadcrumb;
