@@ -9,25 +9,28 @@ import UserDetails from "./user-details";
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
 
-export type UserProps = {
-  user: {
-    name: string | null;
-  };
-  date: Date;
-  time: number;
-  comments: string | null;
-  milestone: {
-    name: string;
-  } | null;
-  task: {
-    name: string;
-  } | null;
-};
+// export type UserProps = {
+//   user: {
+//     name: string | null;
+//     image: string | null;
+//   };
+//   entries: {
+//     date: Date;
+//     comments: string | null;
+//     time: number;
+//     milestone: {
+//       name: string;
+//     } | null;
+//     task: {
+//       name: string;
+//     } | null;
+//   }[];
+// };
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
   billableEntries: { date: Date; time: number }[];
-  userData: UserProps[];
+  userData: unknown[];
 };
 
 const DAYS = 30;
@@ -135,9 +138,9 @@ const TimeChart = ({ timeEntries, billableEntries, userData }: TimeChartProps) =
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="mb-2 px-4 py-2">
+      {/* <div className="mb-2 px-4 py-2">
         <UserDetails userData={userData} />
-      </div>
+      </div> */}
     </Card>
   );
 };

@@ -3,13 +3,13 @@ import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lu
 
 import { getCurrentUser } from "@/server/session";
 import { SidebarNavItem, projectProps } from "@/types";
-import { SecondaryNavigation } from "./secondary-nav";
+import { SecondaryNavigation } from "./components/secondary-nav";
 import { db } from "@/server/db";
-import { PageBreadcrumb } from "./page-breadcrumb";
+import { PageBreadcrumb } from "./components/page-breadcrumb";
 import { DashboardShell } from "@/components/ui/shell";
-import TimeLoggedCard from "./timelogged-card";
-import BillableCard from "./billable-card";
-import { TeamsCard } from "./teams-card";
+import TimeLoggedCard from "./components/timelogged-card";
+import BillableCard from "./components/billable-card";
+import { TeamsCard } from "./components/teams-card";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;

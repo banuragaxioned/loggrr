@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 
 import { pageProps } from "@/types";
-import TimeChart from "./time-chart";
+import TimeChart from "./components/time-chart";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -62,7 +62,7 @@ export default async function Page({ params }: pageProps) {
     time: entry._sum.time ?? 0,
   }));
 
-  const userData = await db.timeEntry.findMany({
+  const userEntries = await db.timeEntry.findMany({
     where: {
       workspace: {
         slug: team,
@@ -75,9 +75,11 @@ export default async function Page({ params }: pageProps) {
     select: {
       date: true,
       time: true,
+      userId: true,
       user: {
         select: {
           name: true,
+          image: true,
         },
       },
       comments: true,
@@ -97,5 +99,29 @@ export default async function Page({ params }: pageProps) {
     },
   });
 
-  return <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} userData={userData} />;
+  // Group the time entries by user
+  const groupedByUsers = userEntries.reduce((acc: any, entry: any) => {
+    const userId = `${entry.userId}`;
+    if (!acc[userId]) {
+      acc[userId] = {
+        user: entry.user,
+        entries: [],
+      };
+    }
+
+    acc[userId].entries.push({
+      date: entry.date,
+      time: entry.time,
+      comments: entry.comments,
+      task: entry.task,
+      milestone: entry.milestone,
+    });
+
+    return acc;
+  }, {});
+
+  // Convert the grouped result to an array sorted by user name
+  const result = Object.values(groupedByUsers).sort((a: any, b: any) => a.user.name.localeCompare(b.user.name));
+
+  return <TimeChart timeEntries={formattedEntries} billableEntries={formattedBillableEntries} userData={result} />;
 }

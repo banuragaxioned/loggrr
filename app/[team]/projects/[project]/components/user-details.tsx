@@ -1,8 +1,8 @@
 import React from "react";
-import { UserProps } from "./time-chart";
 import { format } from "date-fns";
+import { getTimeInHours } from "@/lib/helper";
 
-const UserDetails = ({ userData }: { userData: UserProps[] }) => {
+const UserDetails = ({ userData }: { userData: unknown[] }) => {
   return (
     <ul>
       <li className="py-1">
@@ -17,18 +17,21 @@ const UserDetails = ({ userData }: { userData: UserProps[] }) => {
         </ul>
       </li>
       {/* Data */}
-      {userData.map((user) => (
-        <li key={user.date.toString()} className="border-b py-1">
+      {/* {userData.map((user, index) => (
+        <li
+          key={user.date.toString()}
+          className={`border-b py-1 ${index === userData.length - 1 ? "border-none" : ""}`}
+        >
           <ul className="flex grow gap-2 text-sm text-primary/60">
             <li className="line-clamp-1 w-[90px] overflow-hidden">{format(user.date, "MMMdd")}</li>
             <li className="line-clamp-1 w-[170px] overflow-hidden">{user.user.name}</li>
             <li className="line-clamp-1 w-[200px] overflow-hidden">{user.comments}</li>
             <li className="line-clamp-1 w-[200px] overflow-hidden">{user.milestone?.name ?? "-"}</li>
             <li className="line-clamp-1 w-[200px] overflow-hidden">{user.task?.name ?? "-"}</li>
-            <li className="line-clamp-1 w-[40px] overflow-hidden text-right">{user.time}h</li>
+            <li className="line-clamp-1 w-[40px] overflow-hidden text-right">{getTimeInHours(user.time)}h</li>
           </ul>
         </li>
-      ))}
+      ))} */}
     </ul>
   );
 };
