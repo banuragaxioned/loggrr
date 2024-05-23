@@ -1,3 +1,4 @@
+import { getTimeInHours } from "@/lib/helper";
 import { db } from "@/server/db";
 import { subDays } from "date-fns";
 
@@ -131,15 +132,27 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
   const groupedByUsers = userEntries.reduce((acc: any, entry: any) => {
     const userId = `${entry.userId}`;
     if (!acc[userId]) {
+      const userHours = userEntries
+        .filter((userEntry) => userEntry.userId === entry.userId)
+        .reduce((prev, current) => prev + current.time, 0);
+
       acc[userId] = {
-        user: entry.user,
-        entries: [],
+        id: +userId,
+        name: entry.user.name,
+        image: entry.user.image,
+        hours: getTimeInHours(userHours),
+        subRows: [],
       };
     }
 
-    acc[userId].entries.push({
-      date: entry.date,
-      time: entry.time,
+    acc[userId].subRows.push({
+      name: entry.date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      hours: getTimeInHours(entry.time),
       comments: entry.comments,
       task: entry.task,
       milestone: entry.milestone,
@@ -148,7 +161,7 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
     return acc;
   }, {});
 
-  const result = Object.values(groupedByUsers).sort((a: any, b: any) => a.user.name.localeCompare(b.user.name));
+  const result = Object.values(groupedByUsers).sort((a: any, b: any) => a.name.localeCompare(b.name));
 
   return { memberEntries: result };
 };

@@ -5,32 +5,12 @@ import { Info } from "lucide-react";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
-import UserDetails from "./user-details";
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
-
-// export type UserProps = {
-//   user: {
-//     name: string | null;
-//     image: string | null;
-//   };
-//   entries: {
-//     date: Date;
-//     comments: string | null;
-//     time: number;
-//     milestone: {
-//       name: string;
-//     } | null;
-//     task: {
-//       name: string;
-//     } | null;
-//   }[];
-// };
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
   billableEntries: { date: Date; time: number }[];
-  userData: unknown[];
 };
 
 const DAYS = 30;
@@ -47,13 +27,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   }
 };
 
-const TimeChart = ({ timeEntries, billableEntries, userData }: TimeChartProps) => {
+const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
   const formatXAxis = (tickItem: Date) => format(tickItem, "MMMdd");
   const formatYAxis = (tickItem: number) => `${tickItem}h`;
 
   const [data, setData] = React.useState<any>(null);
-
-  console.log(userData);
 
   React.useEffect(() => {
     const getAllDays = () => {
@@ -138,9 +116,6 @@ const TimeChart = ({ timeEntries, billableEntries, userData }: TimeChartProps) =
           </BarChart>
         </ResponsiveContainer>
       </div>
-      {/* <div className="mb-2 px-4 py-2">
-        <UserDetails userData={userData} />
-      </div> */}
     </Card>
   );
 };

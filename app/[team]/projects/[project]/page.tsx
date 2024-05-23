@@ -6,6 +6,7 @@ import { getMemberEntriesGroupedByName, getMembersTimeEntries } from "@/server/s
 import { pageProps } from "@/types";
 
 import TimeChart from "./components/time-chart";
+import UserDetails from "./components/user-details";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -17,5 +18,10 @@ export default async function Page({ params }: pageProps) {
   const { timeEntries, billableEntries } = await getMembersTimeEntries(team, +project!);
   const { memberEntries } = await getMemberEntriesGroupedByName(team, +project!);
 
-  return <TimeChart timeEntries={timeEntries} billableEntries={billableEntries} userData={memberEntries} />;
+  return (
+    <>
+      <TimeChart timeEntries={timeEntries} billableEntries={billableEntries} />
+      <UserDetails userData={memberEntries} />
+    </>
+  );
 }
