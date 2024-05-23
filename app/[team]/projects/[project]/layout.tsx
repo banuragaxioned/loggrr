@@ -21,12 +21,11 @@ interface DashboardLayoutProps extends projectProps {
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
+  const { project: projectId, team: slug } = params;
 
-  if (!user) {
+  if (!user || !projectId) {
     return notFound();
   }
-
-  const { project: projectId, team: slug } = params;
 
   const projectDetails = await db.project.findUnique({
     where: {
