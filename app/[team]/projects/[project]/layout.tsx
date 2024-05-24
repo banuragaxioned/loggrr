@@ -150,9 +150,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
         <SecondaryNavigation items={tabList} />
       </div>
       <DashboardShell>
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 lg:col-span-9">{children}</div>
-          <div className="col-span-12 flex flex-col gap-4 lg:col-span-3">
+        <div className="flex w-full flex-wrap items-start gap-4 lg:flex-nowrap">
+          <div className="w-full lg:w-[75%]">{children}</div>
+          <div className="top-[70px] flex w-full flex-col gap-4 overflow-y-auto lg:sticky lg:max-h-[calc(100vh-80px)] lg:w-[25%]">
             <TimeLoggedCard timecardProp={timecardProp} />
             <BillableCard timecardProp={billableCardProp} />
             <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
