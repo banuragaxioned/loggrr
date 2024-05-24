@@ -122,6 +122,7 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
           name: true,
         },
       },
+      billable: true,
     },
     orderBy: {
       date: "desc",
@@ -156,6 +157,7 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
       comments: entry.comments,
       task: entry.task,
       milestone: entry.milestone,
+      billable: entry.billable,
     });
 
     return acc;

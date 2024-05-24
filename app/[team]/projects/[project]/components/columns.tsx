@@ -12,6 +12,7 @@ export interface Logged {
   image: string;
   hours: number;
   comments: string;
+  billable: boolean;
   milestone?: {
     name: string;
   };
@@ -29,13 +30,11 @@ export const columns: ColumnDef<Logged>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row, getValue }) => {
-      const { depth, original } = row;
+      const { depth } = row;
       const canExpand = row.getCanExpand();
       const isExpanded = row.getIsExpanded();
       const value = getValue() as string;
       const userImage = depth === 0 && row.original.image;
-
-      console.log(row.original);
 
       return (
         <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
@@ -51,12 +50,19 @@ export const columns: ColumnDef<Logged>[] = [
             </Button>
           )}
           <div
-            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 1 ? "" : "descendent opacity-50"} relative flex items-center gap-2`}
+            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 1 ? "" : "descendent opacity-75"} relative flex items-center gap-2`}
           >
             {userImage && (
               <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
             )}
-            <span className="line-clamp-1 w-full shrink-0">{value}</span>
+            <span className={`${depth === 1 ? "w-[150px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            {depth === 1 && (
+              <span className="md:inline">
+                <span className="ml-2 line-clamp-1 opacity-50" title={row.original.comments}>
+                  {row.original?.comments ?? ""}
+                </span>
+              </span>
+            )}
           </div>
         </div>
       );
@@ -70,11 +76,11 @@ export const columns: ColumnDef<Logged>[] = [
       const formatted = `${row.getValue("hours") ?? 0} h`;
 
       return (
-        <span className={`text-bold relative inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
-          <span className={`${depth > 0 ? "opacity-50" : ""} mr-1 sm:mr-0`}>{formatted}</span>
-          {/* {original.billable && (
+        <span className={`relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
+          <span className={`${depth > 0 ? "opacity-75" : ""} mr-1 `}>{formatted}</span>
+          {original.billable && (
             <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
-          )} */}
+          )}
         </span>
       );
     },
