@@ -1,6 +1,6 @@
 "use client";
 
-import PHProvider, { Analytics } from "./analytics";
+import PHProvider from "./analytics";
 import NextTopLoader from "nextjs-toploader";
 import { TailwindIndicator } from "./tailwind-indicator";
 import { ThemeProvider } from "./theme-provider";
@@ -34,7 +34,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
           <Toaster richColors />
         </ThemeProvider>
       </PHProvider>
-      <Analytics />
       <TailwindIndicator />
     </>
   );
