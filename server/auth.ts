@@ -54,6 +54,7 @@ export const authOptions: NextAuthOptions = {
           response_type: "code",
         },
       },
+      allowDangerousEmailAccountLinking: true,
     }),
     EmailProvider({
       server: {
