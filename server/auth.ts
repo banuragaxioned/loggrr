@@ -1,6 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
 import { render } from "@react-email/render";
 
 // import EmailProvider from "next-auth/providers/email";
@@ -54,18 +55,18 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
-    // EmailProvider({
-    //   server: {
-    //     host: env.EMAIL_HOST,
-    //     port: Number(env.EMAIL_PORT),
-    //     auth: {
-    //       user: env.EMAIL_USER,
-    //       pass: env.EMAIL_PASSWORD,
-    //     },
-    //   },
-    //   from: env.EMAIL_FROM,
-    //   maxAge: 24 * 60 * 60,
-    // }),
+    EmailProvider({
+      server: {
+        host: env.EMAIL_HOST,
+        port: Number(env.EMAIL_PORT),
+        auth: {
+          user: env.EMAIL_USER,
+          pass: env.EMAIL_PASSWORD,
+        },
+      },
+      from: env.EMAIL_FROM,
+      maxAge: 24 * 60 * 60,
+    }),
     /**
      * ...add more providers here
      *
@@ -78,6 +79,18 @@ export const authOptions: NextAuthOptions = {
   ],
   events: {
     async signIn({ user, isNewUser }) {
+      // If the user is new and doesn't have a name, set it to the first part of the email
+      if (isNewUser && user.email && !user.name) {
+        await db.user.update({
+          where: {
+            id: +user.id,
+          },
+          data: {
+            name: user.email.split("@")[0],
+          },
+        });
+      }
+
       if (isNewUser && user.email) {
         if (user.email.endsWith("@axioned.com")) {
           await db.userWorkspace.create({
@@ -131,7 +144,7 @@ export const authOptions: NextAuthOptions = {
     async session({ token, session }) {
       if (token) {
         session.user.id = Number(token.id);
-        session.user.name = token.name;
+        session.user.name = token.name ?? token.email?.split("@")[0];
         session.user.email = token.email;
         session.user.image = token.picture;
 
@@ -165,7 +178,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.name = user.name;
+        token.name = user.name ?? user.email?.split("@")[0];
         token.email = user.email;
         token.picture = user.image;
       }
