@@ -11,7 +11,7 @@ const projectMemberSchema = {
     id: z.number().min(1),
     name: z.string(),
     email: z.string().email(),
-    image: z.string().min(1),
+    image: z.string().optional(),
   }),
 };
 const addProjectMemberSchema = z.object(projectMemberSchema);

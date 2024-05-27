@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { Circle, Minus, Plus } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/user-avatar";
 
 export interface Logged {
   id: number;
@@ -64,8 +64,11 @@ export const columns: ColumnDef<Logged>[] = [
                 {value.charAt(0)}
               </span>
             )}
-            {userImage && (
-              <Image src={userImage} alt="User Image" width={24} height={24} className="rounded-full object-center" />
+            {depth === 2 && (
+              <UserAvatar
+                user={{ name: row.original.name ?? null, image: row.original.image ?? null }}
+                className="h-8 w-8 bg-slate-300"
+              />
             )}
             <span className={`${depth === 3 ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
             {depth === 3 && (
