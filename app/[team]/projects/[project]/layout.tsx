@@ -1,15 +1,19 @@
 import { notFound } from "next/navigation";
 import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
 
-import { getCurrentUser } from "@/server/session";
-import { SidebarNavItem, projectProps } from "@/types";
-import { SecondaryNavigation } from "./secondary-nav";
 import { db } from "@/server/db";
-import { PageBreadcrumb } from "./page-breadcrumb";
+import { getCurrentUser } from "@/server/session";
+import { getMembersByProject } from "@/server/services/project";
+
+import { SidebarNavItem, projectProps } from "@/types";
+
+import { SecondaryNavigation } from "./components/secondary-nav";
 import { DashboardShell } from "@/components/ui/shell";
-import TimeLoggedCard from "./timelogged-card";
-import BillableCard from "./billable-card";
-import { TeamsCard } from "./teams-card";
+
+import PageBreadcrumb from "./components/page-breadcrumb";
+import TimeLoggedCard from "./components/timelogged-card";
+import BillableCard from "./components/billable-card";
+import TeamsCard from "./components/teams-card";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -17,33 +21,9 @@ interface DashboardLayoutProps extends projectProps {
 
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
-  const projectId = params?.project;
-  const slug = params.team;
+  const { project: projectId, team: slug } = params;
 
-  const tabList: SidebarNavItem[] = [
-    {
-      title: "Overview",
-      href: `/${slug}/projects/${projectId}`,
-      icon: <TextSearch size={16} className="hidden sm:block" />,
-    },
-    {
-      title: "Categories",
-      href: `/${slug}/projects/${projectId}/categories`,
-      icon: <CategoryIcon size={16} className="hidden sm:block" />,
-    },
-    {
-      title: "Tasks",
-      href: `/${slug}/projects/${projectId}/tasks`,
-      icon: <ClipboardCheck size={16} className="hidden sm:block" />,
-    },
-    {
-      title: "Members",
-      href: `/${slug}/projects/${projectId}/members`,
-      icon: <Users size={16} className="hidden sm:block" />,
-    },
-  ];
-
-  if (!user) {
+  if (!user || !projectId) {
     return notFound();
   }
 
@@ -67,6 +47,29 @@ export default async function DashboardLayout({ children, params }: DashboardLay
   if (!projectDetails) {
     return notFound();
   }
+
+  const tabList: SidebarNavItem[] = [
+    {
+      title: "Overview",
+      href: `/${slug}/projects/${projectId}`,
+      icon: <TextSearch size={16} className="hidden sm:block" />,
+    },
+    {
+      title: "Categories",
+      href: `/${slug}/projects/${projectId}/categories`,
+      icon: <CategoryIcon size={16} className="hidden sm:block" />,
+    },
+    {
+      title: "Tasks",
+      href: `/${slug}/projects/${projectId}/tasks`,
+      icon: <ClipboardCheck size={16} className="hidden sm:block" />,
+    },
+    {
+      title: "Members",
+      href: `/${slug}/projects/${projectId}/members`,
+      icon: <Users size={16} className="hidden sm:block" />,
+    },
+  ];
 
   const timeLogOverall = await db.timeEntry.groupBy({
     by: ["projectId"],
@@ -124,34 +127,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     billable: billable[0]?._sum.time ?? 0,
   };
 
-  const members = await db.project.findUnique({
-    where: {
-      id: +projectId,
-    },
-    select: {
-      usersOnProject: {
-        select: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-              email: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const allMembers = members?.usersOnProject
-    .filter((member) => member.user.name || member.user.image)
-    .map((member) => ({
-      id: member.user.id,
-      name: member.user.name,
-      email: member.user.email,
-      image: member.user.image,
-    }));
+  const allMembers = await getMembersByProject(slug, +projectId);
 
   // Get last 30 days active users
   const userActivity = await db.timeEntry.groupBy({
@@ -174,9 +150,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
         <SecondaryNavigation items={tabList} />
       </div>
       <DashboardShell>
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 lg:col-span-9">{children}</div>
-          <div className="col-span-12 flex flex-col gap-4 lg:col-span-3">
+        <div className="flex w-full flex-wrap items-start gap-4 lg:flex-nowrap">
+          <div className="w-full lg:w-[75%]">{children}</div>
+          <div className="top-[70px] flex w-full flex-col gap-4 overflow-y-auto lg:sticky lg:max-h-[calc(100vh-80px)] lg:w-[25%]">
             <TimeLoggedCard timecardProp={timecardProp} />
             <BillableCard timecardProp={billableCardProp} />
             <TeamsCard items={allMembers} activeUserCount={userActivity.length} />

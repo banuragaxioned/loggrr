@@ -1,9 +1,15 @@
+import { getTimeInHours } from "@/lib/helper";
 import { db } from "@/server/db";
 import { subDays } from "date-fns";
 
-export const getMembersByProjectId = async (slug: string, projectId: number) => {
-  const data = await db.project.findUnique({
-    where: { workspace: { slug }, id: +projectId },
+export const getMembersByProject = async (slug: string, projectId: number) => {
+  const members = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
     select: {
       usersOnProject: {
         select: {
@@ -11,37 +17,155 @@ export const getMembersByProjectId = async (slug: string, projectId: number) => 
             select: {
               id: true,
               name: true,
-              email: true,
               image: true,
-              status: true,
+              email: true,
             },
           },
         },
+        orderBy: {
+          user: {
+            name: "asc",
+          },
+        },
       },
-      // Owner: {
-      //   select: {
-      //     id: true,
-      //     name: true,
-      //     email: true,
-      //     image: true,
-      //     status: true,
-      //   },
-      // },
     },
   });
 
-  const members = data?.usersOnProject.map((value) => {
-    return {
-      id: value.user.id,
-      name: value.user.name,
-      email: value.user.email,
-      image: value.user.image,
-      status: value.user.status,
-      projectId: projectId,
-    };
+  const transformedData = members?.usersOnProject
+    .filter((member) => member.user.name || member.user.image)
+    .map((member) => ({
+      id: member.user.id,
+      name: member.user.name,
+      email: member.user.email,
+      image: member.user.image,
+    }));
+
+  return transformedData;
+};
+
+export const getMembersTimeEntries = async (slug: string, projectId: number) => {
+  const timeEntries = await db.timeEntry.groupBy({
+    by: ["date"],
+    where: {
+      workspace: {
+        slug,
+      },
+      projectId,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+    },
+    _sum: {
+      time: true,
+    },
   });
 
-  return members;
+  const formattedEntries = timeEntries.map((entry) => ({
+    date: entry.date,
+    time: entry._sum.time ?? 0,
+  }));
+
+  const billableTimeEntries = await db.timeEntry.groupBy({
+    by: ["date"],
+    where: {
+      workspace: {
+        slug,
+      },
+      projectId,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+      billable: true,
+    },
+    _sum: {
+      time: true,
+    },
+  });
+
+  const formattedBillableEntries = billableTimeEntries.map((entry) => ({
+    date: entry.date,
+    time: entry._sum.time ?? 0,
+  }));
+
+  return { timeEntries: formattedEntries, billableEntries: formattedBillableEntries };
+};
+
+export const getMemberEntriesGroupedByName = async (slug: string, projectId: number) => {
+  const userEntries = await db.timeEntry.findMany({
+    where: {
+      workspace: {
+        slug,
+      },
+      projectId,
+      date: {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+    },
+    select: {
+      date: true,
+      time: true,
+      userId: true,
+      user: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      comments: true,
+      task: {
+        select: {
+          name: true,
+        },
+      },
+      milestone: {
+        select: {
+          name: true,
+        },
+      },
+      billable: true,
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  // Group the time entries by user
+  const groupedByUsers = userEntries.reduce((acc: any, entry: any) => {
+    const userId = `${entry.userId}`;
+    if (!acc[userId]) {
+      const userHours = userEntries
+        .filter((userEntry) => userEntry.userId === entry.userId)
+        .reduce((prev, current) => prev + current.time, 0);
+
+      acc[userId] = {
+        id: +userId,
+        name: entry.user.name,
+        image: entry.user.image,
+        hours: getTimeInHours(userHours),
+        subRows: [],
+      };
+    }
+
+    acc[userId].subRows.push({
+      name: entry.date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      hours: getTimeInHours(entry.time),
+      comments: entry.comments,
+      task: entry.task,
+      milestone: entry.milestone,
+      billable: entry.billable,
+    });
+
+    return acc;
+  }, {});
+
+  const result = Object.values(groupedByUsers).sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+  return { memberEntries: result };
 };
 
 export async function getProjects(slug: string) {
@@ -78,7 +202,7 @@ export async function getProjects(slug: string) {
       budget: true,
     },
     orderBy: {
-      createdAt: "desc",
+      name: "asc",
     },
   });
 
@@ -241,50 +365,6 @@ export const getMilestones = async (projectId: number, team: string) => {
     name: milestone.name,
     budget: milestone.budget,
   }));
-};
-
-export const teamMemberStats = async (team: string, project: number) => {
-  const teamMembers = await db.$transaction([
-    db.timeEntry.groupBy({
-      by: ["userId"],
-      where: {
-        workspace: {
-          slug: team,
-        },
-        projectId: +project,
-        // get current 30 days
-        date: {
-          gte: subDays(new Date(), 30),
-        },
-      },
-      orderBy: {
-        _count: {
-          userId: "asc",
-        },
-      },
-    }),
-    db.timeEntry.groupBy({
-      by: ["userId"],
-      where: {
-        workspace: {
-          slug: team,
-        },
-        projectId: +project,
-        // get last 30 days
-        date: {
-          gte: subDays(new Date(), 60),
-          lte: subDays(new Date(), 30),
-        },
-      },
-      orderBy: {
-        _count: {
-          userId: "asc",
-        },
-      },
-    }),
-  ]);
-
-  return teamMembers;
 };
 
 export const getTasks = async (projectId: number, team: string) => {
