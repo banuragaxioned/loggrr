@@ -3,13 +3,13 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { CustomTooltip } from "@/components/custom/tooltip";
+import { UserAvatar } from "@/components/user-avatar";
 
 const MEMBERS_COUNT = 7;
 
@@ -39,17 +39,15 @@ const TeamsCard = ({
 
   const renderMembers = members?.map((item) => (
     <div className="group relative -mr-4" key={item.name}>
-      {item.name && item.image && (
+      {item.name && (
         <CustomTooltip
           trigger={
-            <Image
-              // onMouseMove={handleMouseMove}
-              height={100}
-              width={100}
-              src={item.image}
-              alt={item.name}
-              className="relative !m-0 h-11 w-11 cursor-pointer rounded-full border-2 border-white object-cover object-top !p-0 transition  duration-500 group-hover:z-30 group-hover:scale-105"
-            />
+            <div>
+              <UserAvatar
+                user={{ name: item.name ?? null, image: item.image ?? null }}
+                className="relative !m-0 h-11 w-11 cursor-pointer rounded-full border-2 border-white object-cover object-top !p-0 transition  duration-500 group-hover:z-30 group-hover:scale-105"
+              />
+            </div>
           }
           content={item.name}
         />

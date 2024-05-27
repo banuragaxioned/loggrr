@@ -64,6 +64,9 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
 
   const dropdownSelectHandler = (selected: string) => {
     const selectedUser = users.find((user) => user.id === +selected);
+    if (selectedUser && !selectedUser?.image) {
+      selectedUser.image = "";
+    }
     setSelectedUser(selectedUser || null);
   };
 
