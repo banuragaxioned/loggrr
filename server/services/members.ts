@@ -25,6 +25,11 @@ export const getMembers = async (team: string) => {
         },
       },
     },
+    orderBy: {
+      user: {
+        name: "asc",
+      },
+    },
   });
 
   const flatMemberList = membersList?.map((list) => {
@@ -62,6 +67,11 @@ export const getProjectMembers = async ({ projectId, team }: { team: string; pro
             },
           },
         },
+      },
+    },
+    orderBy: {
+      user: {
+        name: "asc",
       },
     },
   });
