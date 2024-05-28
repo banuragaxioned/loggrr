@@ -38,7 +38,7 @@ const RegistrationEmail = ({ name, siteName, siteUrl }: RegistrationEmailProps) 
         <Preview>Welcome to {siteName}</Preview>
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container className="my-[40px] max-w-lg p-[20px]">
-            <Heading>Welcome to Refreshly</Heading>
+            <Heading>Welcome to {siteName}</Heading>
             <Text>Heya {name}</Text>
             <Text>
               We really apprecaite you joining us and we really believe you will be excited to see our refreshing take
