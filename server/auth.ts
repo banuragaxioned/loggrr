@@ -138,6 +138,17 @@ export const authOptions: NextAuthOptions = {
 
           await sendEmail(workspaceEmailOptions);
         }
+
+        // * Hardcode values for Transigma workspace
+        if (user.email.endsWith("@transigma.com")) {
+          await db.userWorkspace.create({
+            data: {
+              workspaceId: 3,
+              userId: +user.id,
+              role: Role.USER,
+            },
+          });
+        }
       }
     },
   },
