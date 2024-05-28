@@ -21,6 +21,11 @@ export const getMembers = async (team: string) => {
                 },
               },
             },
+            where: {
+              workspace: {
+                slug: team,
+              },
+            },
           },
         },
       },
