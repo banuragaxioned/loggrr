@@ -36,7 +36,8 @@ export const ContainerScroll = ({
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
-    <div className="relative flex h-[80rem] items-center justify-center p-20" ref={containerRef}>
+    // h-[80rem] is the height of the container
+    <div className="relative flex h-[30rem] items-center justify-center p-20" ref={containerRef}>
       <div
         className="relative w-full py-40"
         style={{
@@ -44,7 +45,7 @@ export const ContainerScroll = ({
         }}
       >
         <Header translate={translate} titleComponent={titleComponent} />
-        <Card rotate={rotate} translate={translate} scale={scale} screen={screen} />
+        {/* <Card rotate={rotate} translate={translate} scale={scale} screen={screen} /> */}
       </div>
     </div>
   );

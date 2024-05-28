@@ -220,7 +220,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       {...field}
                       type="checkbox"
                       id="billable"
-                      className="mt-2 h-4 w-4 p-0"
+                      className="mt-2 h-4 w-4 p-0 accent-current"
                     />
                   </FormControl>
                   <FormLabel htmlFor="billable" className="mt-0 cursor-pointer">

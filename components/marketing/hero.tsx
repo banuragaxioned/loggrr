@@ -10,13 +10,10 @@ export function HeroSection() {
       <ContainerScroll
         screen={<ScreenContent />}
         titleComponent={
-          <>
-            <h1 className="text-4xl font-semibold text-foreground">
-              Time tracking
-              <br />
-              <span className="mt-1 text-4xl font-bold leading-none md:text-[6rem]">Simplified</span>
-            </h1>
-          </>
+          <h1 className="text-4xl font-semibold text-foreground">
+            Time tracking
+            <span className="mt-1 block text-4xl font-bold leading-none md:text-[6rem]">Simplified</span>
+          </h1>
         }
       />
     </div>
