@@ -3,6 +3,30 @@ import { endOfDay, startOfDay, subDays } from "date-fns";
 import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 
+// Get project details by project id
+export const getProjectDetailsById = async (slug: string, projectId: number) => {
+  const projectDetails = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
+    select: {
+      name: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+      billable: true,
+    },
+  });
+
+  return projectDetails;
+};
+
+// Get all members in the project
 export const getMembersByProject = async (slug: string, projectId: number) => {
   const members = await db.project.findUnique({
     where: {
@@ -44,6 +68,7 @@ export const getMembersByProject = async (slug: string, projectId: number) => {
   return transformedData;
 };
 
+// Get all members time entries from TimeEntry table
 export const getMembersTimeEntries = async (
   slug: string,
   projectId: number,
@@ -105,6 +130,7 @@ export const getMembersTimeEntries = async (
   return { timeEntries: formattedEntries, billableEntries: formattedBillableEntries };
 };
 
+// Get all members time entries grouped by name
 export const getMemberEntriesGroupedByName = async (
   slug: string,
   projectId: number,

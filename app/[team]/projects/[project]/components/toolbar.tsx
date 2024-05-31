@@ -36,7 +36,7 @@ const projectFilter = {
   ],
 };
 
-export function DataTableToolbar() {
+export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const { team: slug } = useParams();
@@ -186,7 +186,7 @@ export function DataTableToolbar() {
           <MultiSelectFilter values={peopleFilter} />
         </li> */}
         {/* Billing Status */}
-        <li>{billingStatusToggleButton}</li>
+        {isBillable && <li>{billingStatusToggleButton}</li>}
         <li className="print:hidden">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>

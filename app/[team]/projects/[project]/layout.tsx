@@ -3,7 +3,7 @@ import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lu
 
 import { db } from "@/server/db";
 import { getCurrentUser } from "@/server/session";
-import { getMembersByProject } from "@/server/services/project";
+import { getMembersByProject, getProjectDetailsById } from "@/server/services/project";
 
 import { SidebarNavItem, projectProps } from "@/types";
 
@@ -27,24 +27,9 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
-  const projectDetails = await db.project.findUnique({
-    where: {
-      id: +projectId,
-      workspace: {
-        slug,
-      },
-    },
-    select: {
-      name: true,
-      client: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
+  const projectDetails = await getProjectDetailsById(slug, +projectId);
 
-  if (!projectDetails) {
+  if (!projectDetails?.name) {
     return notFound();
   }
 
@@ -143,6 +128,8 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     },
   });
 
+  const isBillable = projectDetails?.billable ?? false;
+
   return (
     <main className="col-span-12 flex flex-col gap-3 lg:col-span-9">
       <div className="flex flex-col items-start justify-between gap-3 lg:flex-row lg:items-end">
@@ -154,7 +141,7 @@ export default async function DashboardLayout({ children, params }: DashboardLay
           <div className="w-full lg:w-[75%]">{children}</div>
           <div className="top-[70px] flex w-full flex-col gap-4 overflow-y-auto lg:sticky lg:max-h-[calc(100vh-80px)] lg:w-[25%]">
             <TimeLoggedCard timecardProp={timecardProp} />
-            <BillableCard timecardProp={billableCardProp} />
+            {isBillable && <BillableCard timecardProp={billableCardProp} />}
             <TeamsCard items={allMembers} activeUserCount={userActivity.length} />
           </div>
         </div>

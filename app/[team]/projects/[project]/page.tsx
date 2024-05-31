@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { getMemberEntriesGroupedByName, getMembersTimeEntries } from "@/server/services/project";
+import { getMemberEntriesGroupedByName, getMembersTimeEntries, getProjectDetailsById } from "@/server/services/project";
 
 import { pageProps } from "@/types";
 
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params, searchParams }: pageProps) {
   const { team, project } = params;
+  const projectDetails = await getProjectDetailsById(team, +project!);
   const selectedRange = searchParams.range;
   const selectedBilling = searchParams.billable;
   const { startDate, endDate } = getStartandEndDates(selectedRange);
@@ -29,10 +30,11 @@ export default async function Page({ params, searchParams }: pageProps) {
   );
   const { memberEntries } = await getMemberEntriesGroupedByName(team, +project!, startDate, endDate, selectedBilling);
   const totalDays = differenceInDays(endDate, startDate) + 1;
+  const isBillable = projectDetails?.billable ?? false;
 
   return (
     <>
-      <DataTableToolbar />
+      <DataTableToolbar isBillable={isBillable} />
       <TimeChart timeEntries={timeEntries} billableEntries={billableEntries} totalDays={totalDays} />
       <UserDetails userData={memberEntries} />
     </>
