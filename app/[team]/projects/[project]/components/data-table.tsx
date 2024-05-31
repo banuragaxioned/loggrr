@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-// import { DataTableToolbar } from "./toolbar";
 import { Assignment } from "@/types";
 
 export interface ClientAndUserInterface {
@@ -85,7 +84,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      {/* <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} handlePrintClick={handlePrintClick} /> */}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -103,10 +101,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
-              // if (row.depth === 0 && !row.getIsExpanded()) {
-              //   row.toggleExpanded(true);
-              // }
-
               return (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (

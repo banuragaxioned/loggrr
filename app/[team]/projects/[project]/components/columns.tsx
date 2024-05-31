@@ -50,7 +50,7 @@ export const columns: ColumnDef<Logged>[] = [
             </Button>
           )}
           <div
-            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 1 ? "" : "descendent opacity-75"} relative flex items-center gap-2`}
+            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 1 ? "" : "descendent"} relative flex items-center gap-2`}
           >
             {depth === 0 && (
               <UserAvatar
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Logged>[] = [
 
       return (
         <span className={`relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
-          <span className={`${depth > 0 ? "opacity-75" : ""} mr-1 `}>{formatted}</span>
+          <span className={`${depth > 0 ? "opacity-50" : ""} mr-1 `}>{formatted}</span>
           {original.billable && (
             <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
           )}
