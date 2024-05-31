@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 import { getMemberEntriesGroupedByName, getMembersTimeEntries } from "@/server/services/project";
 
@@ -9,7 +8,7 @@ import TimeChart from "./components/time-chart";
 import UserDetails from "./components/user-details";
 import { DataTableToolbar } from "./components/toolbar";
 import { getStartandEndDates } from "@/lib/months";
-import { differenceInDays, eachDayOfInterval } from "date-fns";
+import { differenceInDays } from "date-fns";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -18,10 +17,17 @@ export const metadata: Metadata = {
 export default async function Page({ params, searchParams }: pageProps) {
   const { team, project } = params;
   const selectedRange = searchParams.range;
+  const selectedBilling = searchParams.billable;
   const { startDate, endDate } = getStartandEndDates(selectedRange);
 
-  const { timeEntries, billableEntries } = await getMembersTimeEntries(team, +project!, startDate, endDate);
-  const { memberEntries } = await getMemberEntriesGroupedByName(team, +project!, startDate, endDate);
+  const { timeEntries, billableEntries } = await getMembersTimeEntries(
+    team,
+    +project!,
+    startDate,
+    endDate,
+    selectedBilling,
+  );
+  const { memberEntries } = await getMemberEntriesGroupedByName(team, +project!, startDate, endDate, selectedBilling);
   const totalDays = differenceInDays(endDate, startDate) + 1;
 
   return (

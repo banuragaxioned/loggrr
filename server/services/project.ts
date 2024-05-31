@@ -1,6 +1,7 @@
-import { getTimeInHours } from "@/lib/helper";
-import { db } from "@/server/db";
 import { endOfDay, startOfDay, subDays } from "date-fns";
+
+import { db } from "@/server/db";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 
 export const getMembersByProject = async (slug: string, projectId: number) => {
   const members = await db.project.findUnique({
@@ -43,9 +44,16 @@ export const getMembersByProject = async (slug: string, projectId: number) => {
   return transformedData;
 };
 
-export const getMembersTimeEntries = async (slug: string, projectId: number, startDate: Date, endDate: Date) => {
+export const getMembersTimeEntries = async (
+  slug: string,
+  projectId: number,
+  startDate: Date,
+  endDate: Date,
+  billing?: string,
+) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
+  const isBillable = stringToBoolean(billing);
 
   const timeEntries = await db.timeEntry.groupBy({
     by: ["date"],
@@ -57,6 +65,9 @@ export const getMembersTimeEntries = async (slug: string, projectId: number, sta
       date: {
         gte: start,
         lte: end,
+      },
+      billable: {
+        ...(isBillable !== null && { equals: isBillable }),
       },
     },
     _sum: {
@@ -99,9 +110,11 @@ export const getMemberEntriesGroupedByName = async (
   projectId: number,
   startDate: Date,
   endDate: Date,
+  billing?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
+  const isBillable = stringToBoolean(billing);
 
   const userEntries = await db.timeEntry.findMany({
     where: {
@@ -112,6 +125,9 @@ export const getMemberEntriesGroupedByName = async (
       date: {
         gte: start,
         lte: end,
+      },
+      billable: {
+        ...(isBillable !== null && { equals: isBillable }),
       },
     },
     select: {

@@ -46,7 +46,7 @@ export function DataTableToolbar() {
   const locale = useLocale();
 
   const selectedRange = searchParams.get("range");
-  // const selectedBilling = searchParams.get("billable");
+  const selectedBilling = searchParams.get("billable");
   // const selectedProject = searchParams.get("project");
   // const selectedClients = searchParams.get("clients");
   // const selectedMembers = searchParams.get("members");
@@ -65,14 +65,14 @@ export function DataTableToolbar() {
   //   options: allUsers,
   // };
 
-  const isResetButtonVisibile = selectedRange;
-  // || selectedBilling || selectedProject || selectedClients || selectedMembers;
+  const isResetButtonVisibile = selectedRange || selectedBilling;
+  // || selectedProject || selectedClients || selectedMembers;
 
-  // const generateBillingQuery = () => {
-  //   if (!selectedBilling) return { text: "Hours", nextValue: "true" };
-  //   if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
-  //   if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
-  // };
+  const generateBillingQuery = () => {
+    if (!selectedBilling) return { text: "Hours", nextValue: "true" };
+    if (selectedBilling === "true") return { text: "Billable", nextValue: "false" };
+    if (selectedBilling === "false") return { text: "Non-Billable", nextValue: "" };
+  };
 
   const handleExportClick = async () => {
     try {
@@ -132,29 +132,29 @@ export function DataTableToolbar() {
   const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
   // Billing status toggle button
-  // const billingStatusToggleButton = (
-  //   <Button className="flex gap-1.5" variant="outline" asChild size="sm">
-  //     <Link
-  //       href={`?${new URLSearchParams({
-  //         range: selectedRange ?? "",
-  //         project: selectedProject ?? "",
-  //         clients: selectedClients ?? "",
-  //         members: selectedMembers ?? "",
-  //         billable: generateBillingQuery()?.nextValue ?? "",
-  //       })}`}
-  //     >
-  //       <CircleDollarSign
-  //         size={18}
-  //         className={cn(
-  //           selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
-  //           selectedBilling === "false" && "text-slate-400",
-  //           !selectedBilling && "text-black dark:text-white",
-  //         )}
-  //       />
-  //       {generateBillingQuery()?.text}
-  //     </Link>
-  //   </Button>
-  // );
+  const billingStatusToggleButton = (
+    <Button className="flex gap-1.5" variant="outline" asChild size="sm">
+      <Link
+        href={`?${new URLSearchParams({
+          range: selectedRange ?? "",
+          // project: selectedProject ?? "",
+          // clients: selectedClients ?? "",
+          // members: selectedMembers ?? "",
+          billable: generateBillingQuery()?.nextValue ?? "",
+        })}`}
+      >
+        <CircleDollarSign
+          size={18}
+          className={cn(
+            selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
+            selectedBilling === "false" && "text-slate-400",
+            !selectedBilling && "text-black dark:text-white",
+          )}
+        />
+        {generateBillingQuery()?.text}
+      </Link>
+    </Button>
+  );
 
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
@@ -186,7 +186,7 @@ export function DataTableToolbar() {
           <MultiSelectFilter values={peopleFilter} />
         </li> */}
         {/* Billing Status */}
-        {/* <li>{billingStatusToggleButton}</li> */}
+        <li>{billingStatusToggleButton}</li>
         <li className="print:hidden">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
