@@ -1,19 +1,19 @@
 "use client";
 
-import { format, startOfToday, subDays } from "date-fns";
+import { eachDayOfInterval, endOfDay, format, startOfDay, startOfToday, subDays } from "date-fns";
 import { Info } from "lucide-react";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
+import { useSearchParams } from "next/navigation";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
   billableEntries: { date: Date; time: number }[];
+  totalDays: number;
 };
-
-const DAYS = 30;
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -27,7 +27,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   }
 };
 
-const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
+const TimeChart = ({ timeEntries, billableEntries, totalDays }: TimeChartProps) => {
+  const searchParams = useSearchParams();
+  const selectedRange = searchParams.get("range");
+  const [, end] = selectedRange?.split(",") || [];
+
   const formatXAxis = (tickItem: Date) => format(tickItem, "MMMdd");
   const formatYAxis = (tickItem: number) => `${tickItem}h`;
 
@@ -35,10 +39,10 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
 
   React.useEffect(() => {
     const getAllDays = () => {
-      const today = startOfToday();
+      const endDate = startOfDay((end && new Date(end)) || new Date());
       const daysArray = [];
-      for (let i = DAYS - 1; i >= 0; i--) {
-        const currentDate = subDays(today, i);
+      for (let i = totalDays - 1; i >= 0; i--) {
+        const currentDate = subDays(endDate, i);
         daysArray.push(format(currentDate, "yyyy-MM-dd"));
       }
 
@@ -76,7 +80,7 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
     }));
 
     setData(finalData);
-  }, [timeEntries, billableEntries]);
+  }, [timeEntries, billableEntries, totalDays, end]);
 
   // Suppress warning for defaultProps in Recharts component
   if (process.env.NODE_ENV !== "production") {
@@ -95,10 +99,6 @@ const TimeChart = ({ timeEntries, billableEntries }: TimeChartProps) => {
     <Card className="select-none p-0 shadow-none">
       <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
         <p className="font-semibold">Day-wise distribution</p>
-        <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-          <Info size={16} />
-          last 30 days
-        </p>
       </CardHeader>
       <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
         <ResponsiveContainer width="100%" height="100%">

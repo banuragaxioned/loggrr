@@ -1,6 +1,6 @@
 import { getTimeInHours } from "@/lib/helper";
 import { db } from "@/server/db";
-import { subDays } from "date-fns";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 
 export const getMembersByProject = async (slug: string, projectId: number) => {
   const members = await db.project.findUnique({
@@ -43,7 +43,10 @@ export const getMembersByProject = async (slug: string, projectId: number) => {
   return transformedData;
 };
 
-export const getMembersTimeEntries = async (slug: string, projectId: number) => {
+export const getMembersTimeEntries = async (slug: string, projectId: number, startDate: Date, endDate: Date) => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+
   const timeEntries = await db.timeEntry.groupBy({
     by: ["date"],
     where: {
@@ -52,7 +55,8 @@ export const getMembersTimeEntries = async (slug: string, projectId: number) => 
       },
       projectId,
       date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        gte: start,
+        lte: end,
       },
     },
     _sum: {
@@ -90,7 +94,15 @@ export const getMembersTimeEntries = async (slug: string, projectId: number) => 
   return { timeEntries: formattedEntries, billableEntries: formattedBillableEntries };
 };
 
-export const getMemberEntriesGroupedByName = async (slug: string, projectId: number) => {
+export const getMemberEntriesGroupedByName = async (
+  slug: string,
+  projectId: number,
+  startDate: Date,
+  endDate: Date,
+) => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+
   const userEntries = await db.timeEntry.findMany({
     where: {
       workspace: {
@@ -98,7 +110,8 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
       },
       projectId,
       date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        gte: start,
+        lte: end,
       },
     },
     select: {
