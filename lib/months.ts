@@ -1,9 +1,11 @@
+import { subDays } from "date-fns";
+
 type StartEnd = {
   startDate: Date;
   endDate: Date;
 };
 
-export function getStartandEndDates(range: string): StartEnd {
+export function getStartandEndDates(range: string, defaultDay?: number): StartEnd {
   if (range) {
     const [start, end] = range.split(",");
 
@@ -14,7 +16,9 @@ export function getStartandEndDates(range: string): StartEnd {
   }
 
   return {
-    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    startDate: defaultDay
+      ? subDays(new Date(), defaultDay)
+      : new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(),
   };
 }

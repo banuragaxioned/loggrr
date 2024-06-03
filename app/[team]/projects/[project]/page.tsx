@@ -19,7 +19,7 @@ export default async function Page({ params, searchParams }: pageProps) {
   const projectDetails = await getProjectDetailsById(team, +project!);
   const selectedRange = searchParams.range;
   const selectedBilling = searchParams.billable;
-  const { startDate, endDate } = getStartandEndDates(selectedRange);
+  const { startDate, endDate } = getStartandEndDates(selectedRange, 30);
 
   const { timeEntries, billableEntries } = await getMembersTimeEntries(
     team,
