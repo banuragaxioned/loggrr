@@ -75,6 +75,7 @@ export const getMembersTimeEntries = async (
   startDate: Date,
   endDate: Date,
   billing?: string,
+  members?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -94,6 +95,11 @@ export const getMembersTimeEntries = async (
       billable: {
         ...(isBillable !== null && { equals: isBillable }),
       },
+      ...(members && {
+        userId: {
+          in: members.split(",").map((member) => +member),
+        },
+      }),
     },
     _sum: {
       time: true,
@@ -105,29 +111,7 @@ export const getMembersTimeEntries = async (
     time: entry._sum.time ?? 0,
   }));
 
-  const billableTimeEntries = await db.timeEntry.groupBy({
-    by: ["date"],
-    where: {
-      workspace: {
-        slug,
-      },
-      projectId,
-      date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      },
-      billable: true,
-    },
-    _sum: {
-      time: true,
-    },
-  });
-
-  const formattedBillableEntries = billableTimeEntries.map((entry) => ({
-    date: entry.date,
-    time: entry._sum.time ?? 0,
-  }));
-
-  return { timeEntries: formattedEntries, billableEntries: formattedBillableEntries };
+  return { timeEntries: formattedEntries };
 };
 
 // Get all members time entries grouped by name
@@ -137,6 +121,7 @@ export const getMemberEntriesGroupedByName = async (
   startDate: Date,
   endDate: Date,
   billing?: string,
+  members?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -155,6 +140,11 @@ export const getMemberEntriesGroupedByName = async (
       billable: {
         ...(isBillable !== null && { equals: isBillable }),
       },
+      ...(members && {
+        userId: {
+          in: members.split(",").map((member) => +member),
+        },
+      }),
     },
     select: {
       date: true,

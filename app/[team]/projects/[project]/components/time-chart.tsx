@@ -1,7 +1,6 @@
 "use client";
 
-import { eachDayOfInterval, endOfDay, format, startOfDay, startOfToday, subDays } from "date-fns";
-import { Info } from "lucide-react";
+import { format, startOfDay, subDays } from "date-fns";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
@@ -11,7 +10,6 @@ import { useSearchParams } from "next/navigation";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
-  billableEntries: { date: Date; time: number }[];
   totalDays: number;
 };
 
@@ -27,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   }
 };
 
-const TimeChart = ({ timeEntries, billableEntries, totalDays }: TimeChartProps) => {
+const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
   const searchParams = useSearchParams();
   const selectedRange = searchParams.get("range");
   const [, end] = selectedRange?.split(",") || [];
@@ -57,10 +55,10 @@ const TimeChart = ({ timeEntries, billableEntries, totalDays }: TimeChartProps) 
       transformedData[date] = { ...transformedData[date], time: +getTimeInHours(entry.time) };
     });
 
-    billableEntries.forEach((entry: any, i) => {
-      const date = format(new Date(entry.date), "yyyy-MM-dd");
-      transformedData[date] = { ...transformedData[date], billable: +getTimeInHours(entry.time) };
-    });
+    // billableEntries.forEach((entry: any, i) => {
+    //   const date = format(new Date(entry.date), "yyyy-MM-dd");
+    //   transformedData[date] = { ...transformedData[date], billable: +getTimeInHours(entry.time) };
+    // });
 
     // Fill in missing dates with time: 0
     populatedDays.forEach((date) => {
@@ -80,14 +78,14 @@ const TimeChart = ({ timeEntries, billableEntries, totalDays }: TimeChartProps) 
     }));
 
     setData(finalData);
-  }, [timeEntries, billableEntries, totalDays, end]);
+  }, [timeEntries, totalDays, end]);
 
   // Suppress warning for defaultProps in Recharts component
   if (process.env.NODE_ENV !== "production") {
     const originalWarn = console.error;
     console.error = (...args) => {
       if (
-        args?.[0] &&
+        args &&
         args?.[0]?.includes(
           "Support for defaultProps will be removed from function components in a future major release.",
         )
