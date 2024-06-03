@@ -87,7 +87,9 @@ const TimeChart = ({ timeEntries, billableEntries, totalDays }: TimeChartProps) 
     const originalWarn = console.error;
     console.error = (...args) => {
       if (
-        args[0].includes("Support for defaultProps will be removed from function components in a future major release.")
+        args?.[0]?.includes(
+          "Support for defaultProps will be removed from function components in a future major release.",
+        )
       ) {
         return;
       }

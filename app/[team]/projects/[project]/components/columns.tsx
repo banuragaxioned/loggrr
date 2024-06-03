@@ -34,7 +34,6 @@ export const columns: ColumnDef<Logged>[] = [
       const canExpand = row.getCanExpand();
       const isExpanded = row.getIsExpanded();
       const value = getValue() as string;
-      const userImage = depth === 0 && row.original.image;
 
       return (
         <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
