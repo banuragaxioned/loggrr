@@ -1,6 +1,11 @@
 import { Metadata } from "next";
 
-import { getMemberEntriesGroupedByName, getMembersTimeEntries, getProjectDetailsById } from "@/server/services/project";
+import {
+  getMemberEntriesGroupedByName,
+  getMembersNameInTimeEntries,
+  getMembersTimeEntries,
+  getProjectDetailsById,
+} from "@/server/services/project";
 
 import { pageProps } from "@/types";
 
@@ -29,12 +34,14 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedBilling,
   );
   const { memberEntries } = await getMemberEntriesGroupedByName(team, +project!, startDate, endDate, selectedBilling);
+  const allMembers = await getMembersNameInTimeEntries(team, +project!);
+
   const totalDays = differenceInDays(endDate, startDate) + 1;
   const isBillable = projectDetails?.billable ?? false;
 
   return (
     <>
-      <DataTableToolbar isBillable={isBillable} />
+      <DataTableToolbar isBillable={isBillable} allMembers={allMembers} />
       <TimeChart timeEntries={timeEntries} billableEntries={billableEntries} totalDays={totalDays} />
       <UserDetails userData={memberEntries} />
     </>

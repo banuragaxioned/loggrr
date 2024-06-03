@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { DateRangePicker } from "@/components/custom/date-range-picker";
+import MultiSelectFilter from "./multiselect-filters";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
@@ -36,7 +37,13 @@ const projectFilter = {
   ],
 };
 
-export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
+export function DataTableToolbar({
+  isBillable,
+  allMembers,
+}: {
+  isBillable: boolean;
+  allMembers: ClientAndUserInterface[];
+}) {
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const { team: slug } = useParams();
@@ -49,7 +56,7 @@ export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
   const selectedBilling = searchParams.get("billable");
   // const selectedProject = searchParams.get("project");
   // const selectedClients = searchParams.get("clients");
-  // const selectedMembers = searchParams.get("members");
+  const selectedMembers = searchParams.get("members");
 
   // const clientFilter = {
   //   title: "Clients",
@@ -58,15 +65,15 @@ export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
   //   options: allClients,
   // };
 
-  // const peopleFilter = {
-  //   title: "Members",
-  //   searchable: true,
-  //   icon: <Users size={16} />,
-  //   options: allUsers,
-  // };
+  const peopleFilter = {
+    title: "Members",
+    searchable: true,
+    icon: <Users size={16} />,
+    options: allMembers,
+  };
 
-  const isResetButtonVisibile = selectedRange || selectedBilling;
-  // || selectedProject || selectedClients || selectedMembers;
+  const isResetButtonVisibile = selectedRange || selectedBilling || selectedMembers;
+  // || selectedProject || selectedClients;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -82,10 +89,10 @@ export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
         body: JSON.stringify({
           slug,
           selectedRange,
-          // selectedBilling,
+          selectedBilling,
           // selectedProject,
           // selectedClients,
-          // selectedMembers,
+          selectedMembers,
         }),
       });
 
@@ -139,7 +146,7 @@ export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
           range: selectedRange ?? "",
           // project: selectedProject ?? "",
           // clients: selectedClients ?? "",
-          // members: selectedMembers ?? "",
+          members: selectedMembers ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
@@ -175,16 +182,12 @@ export function DataTableToolbar({ isBillable }: { isBillable: boolean }) {
             key={selectedRange}
           />
         </li>
-        {/* Projects TODO: To work on this later */}
-        {/* <li>
-          <DropdownFilters values={projectFilter} />
-        </li> */}
         {/* <li>
           <MultiSelectFilter values={clientFilter} />
-        </li>
+        </li> */}
         <li>
           <MultiSelectFilter values={peopleFilter} />
-        </li> */}
+        </li>
         {/* Billing Status */}
         {isBillable && <li>{billingStatusToggleButton}</li>}
         <li className="print:hidden">

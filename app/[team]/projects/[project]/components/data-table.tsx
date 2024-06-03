@@ -24,8 +24,6 @@ export interface ClientAndUserInterface {
 interface DataTableProps<TData, TValue> {
   columns: any;
   data: TData[];
-  // allClients: ClientAndUserInterface[];
-  // allUsers: ClientAndUserInterface[];
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {

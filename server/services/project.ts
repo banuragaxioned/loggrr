@@ -223,6 +223,34 @@ export const getMemberEntriesGroupedByName = async (
   return { memberEntries: result };
 };
 
+// Get all members name from time entries
+export const getMembersNameInTimeEntries = async (slug: string, projectId: number) => {
+  const result = await db.timeEntry.findMany({
+    distinct: ["userId"],
+    where: {
+      workspace: {
+        slug,
+      },
+      projectId,
+    },
+    select: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      user: {
+        name: "asc",
+      },
+    },
+  });
+
+  return result.map((item) => ({ id: item.user.id, name: item.user.name }));
+};
+
 export async function getProjects(slug: string) {
   const projects = await db.project.findMany({
     where: { workspace: { slug } },
