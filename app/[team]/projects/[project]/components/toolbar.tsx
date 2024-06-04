@@ -4,38 +4,18 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday, subDays } from "date-fns";
-import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
+import { CircleDollarSign, Download, ListRestart, Loader2, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
-import { Assignment, DataTableToolbarProps } from "@/types";
+import { DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
-// import DropdownFilters from "./dropdown-filter";
-// import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { DateRangePicker } from "@/components/custom/date-range-picker";
 import MultiSelectFilter from "./multiselect-filters";
-
-interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
-  allClients: ClientAndUserInterface[];
-  allUsers: ClientAndUserInterface[];
-  handlePrintClick: () => void;
-}
-
-const projectFilter = {
-  title: "Projects",
-  searchable: false,
-  icon: <FolderCog size={16} />,
-  options: [
-    { id: 0, title: "All Projects", link: "" },
-    { id: 1, title: "My Projects", link: "my" },
-    { id: 2, title: "Active Projects", link: "active" },
-    { id: 4, title: "Archived Projects", link: "archived" },
-  ],
-};
 
 export function DataTableToolbar({
   isBillable,
@@ -54,16 +34,7 @@ export function DataTableToolbar({
 
   const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
-  // const selectedProject = searchParams.get("project");
-  // const selectedClients = searchParams.get("clients");
   const selectedMembers = searchParams.get("members");
-
-  // const clientFilter = {
-  //   title: "Clients",
-  //   searchable: true,
-  //   icon: <Briefcase size={16} />,
-  //   options: allClients,
-  // };
 
   const peopleFilter = {
     title: "Members",
@@ -73,7 +44,6 @@ export function DataTableToolbar({
   };
 
   const isResetButtonVisibile = selectedRange || selectedBilling || selectedMembers;
-  // || selectedProject || selectedClients;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -90,8 +60,6 @@ export function DataTableToolbar({
           slug,
           selectedRange,
           selectedBilling,
-          // selectedProject,
-          // selectedClients,
           selectedMembers,
         }),
       });
@@ -144,8 +112,6 @@ export function DataTableToolbar({
       <Link
         href={`?${new URLSearchParams({
           range: selectedRange ?? "",
-          // project: selectedProject ?? "",
-          // clients: selectedClients ?? "",
           members: selectedMembers ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
@@ -182,9 +148,6 @@ export function DataTableToolbar({
             key={selectedRange}
           />
         </li>
-        {/* <li>
-          <MultiSelectFilter values={clientFilter} />
-        </li> */}
         <li>
           <MultiSelectFilter values={peopleFilter} />
         </li>
