@@ -27,6 +27,11 @@ export function DataTableStructure<TData, TValue>({
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 20, //custom default page size
+      },
+    },
     ...tableConfig,
   });
 

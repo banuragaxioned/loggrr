@@ -45,7 +45,7 @@ const TeamsCard = ({
             <div>
               <UserAvatar
                 user={{ name: item.name ?? null, image: item.image ?? null }}
-                className="relative !m-0 h-11 w-11 cursor-pointer rounded-full border-2 border-white object-cover object-top !p-0 transition  duration-500 group-hover:z-30 group-hover:scale-105"
+                className="relative !m-0 h-11 w-11 cursor-pointer rounded-full border-2 border-white object-cover object-top !p-0 transition duration-500 group-hover:z-30 group-hover:scale-105"
               />
             </div>
           }

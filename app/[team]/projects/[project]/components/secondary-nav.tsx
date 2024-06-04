@@ -13,17 +13,21 @@ export function SecondaryNavigation({ items }: SecondaryNavProps) {
   const pathname = usePathname();
 
   return (
-    <Tabs defaultValue={pathname} key={pathname} className="px-2">
-      <TabsList className="w-full">
-        {items.map((link) => (
-          <Link href={link.href!} className="w-full" key={link.href}>
-            <TabsTrigger value={link.href!} className="flex gap-1.5">
-              {link.icon}
-              {link.title}
-            </TabsTrigger>
-          </Link>
-        ))}
-      </TabsList>
-    </Tabs>
+    <div className="w-full overflow-x-auto">
+      <div className="flex justify-start lg:justify-end">
+        <Tabs defaultValue={pathname} key={pathname} className="px-2">
+          <TabsList className="w-full">
+            {items.map((link) => (
+              <Link href={link.href!} className="w-full" key={link.href}>
+                <TabsTrigger value={link.href!} className="flex gap-1.5">
+                  {link.icon}
+                  {link.title}
+                </TabsTrigger>
+              </Link>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
+    </div>
   );
 }

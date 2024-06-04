@@ -39,7 +39,7 @@ export const columns: ColumnDef<Projects>[] = [
             name: row.original.owner ? row.original.owner : "",
             image: row.original.ownerImage ? row.original.ownerImage : "",
           }}
-          className="z-10 mr-2 inline-block h-5 w-5"
+          className="z-10 mr-2 inline-block h-6 w-6"
         />
         <span className="cursor-default">{row.original.owner}</span>
       </div>

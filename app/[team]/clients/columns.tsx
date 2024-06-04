@@ -43,7 +43,7 @@ export function clientName(
       },
     },
     {
-      accessorKey: "Project",
+      accessorKey: "project",
       meta: {
         className: "w-[25%]",
       },

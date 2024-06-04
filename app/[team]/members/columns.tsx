@@ -40,7 +40,7 @@ export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColum
                 name: row.original.name ? row.original.name : "",
                 image: row.original.image ? row.original.image : "",
               }}
-              className="z-10 mr-2 inline-block h-5 w-5"
+              className="z-10 mr-2 inline-block h-6 w-6"
             />
             <span>{row.original.name}</span>
           </div>

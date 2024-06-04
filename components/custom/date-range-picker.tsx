@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 "use client";
 
 import React, { type FC, useState, useEffect, useRef } from "react";
@@ -77,9 +76,7 @@ const PRESETS: Preset[] = [
 ];
 
 /** The DateRangePicker component allows a user to select a range of dates */
-export const DateRangePicker: FC<DateRangePickerProps> & {
-  filePath: string;
-} = ({
+export const DateRangePicker: FC<DateRangePickerProps> = ({
   initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
   initialDateTo,
   initialCompareFrom,
@@ -177,10 +174,9 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
         to.setHours(23, 59, 59, 999);
         break;
       case "lastMonth":
-        from.setMonth(from.getMonth() - 1);
-        from.setDate(1);
-        from.setHours(0, 0, 0, 0);
+        from.setMonth(from.getMonth() - 1, 1);
         to.setDate(0);
+        from.setHours(0, 0, 0, 0);
         to.setHours(23, 59, 59, 999);
         break;
     }
@@ -509,4 +505,3 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
 };
 
 DateRangePicker.displayName = "DateRangePicker";
-DateRangePicker.filePath = "libs/shared/ui-kit/src/lib/date-range-picker/date-range-picker.tsx";

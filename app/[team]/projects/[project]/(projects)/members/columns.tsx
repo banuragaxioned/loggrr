@@ -48,7 +48,7 @@ export const getColumn = ({ removeMember }: GetColumn) => {
                 name: row.original.name ?? "",
                 image: row.original.image ?? "",
               }}
-              className="z-10 mr-2 inline-block h-5 w-5"
+              className="z-10 mr-2 inline-block h-6 w-6"
             />
             <span className="cursor-default">{row.original.name}</span>
           </div>

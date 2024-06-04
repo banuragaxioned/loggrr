@@ -1,7 +1,32 @@
-import { getTimeInHours } from "@/lib/helper";
-import { db } from "@/server/db";
-import { subDays } from "date-fns";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 
+import { db } from "@/server/db";
+import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+
+// Get project details by project id
+export const getProjectDetailsById = async (slug: string, projectId: number) => {
+  const projectDetails = await db.project.findUnique({
+    where: {
+      id: +projectId,
+      workspace: {
+        slug,
+      },
+    },
+    select: {
+      name: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+      billable: true,
+    },
+  });
+
+  return projectDetails;
+};
+
+// Get all members in the project
 export const getMembersByProject = async (slug: string, projectId: number) => {
   const members = await db.project.findUnique({
     where: {
@@ -43,7 +68,19 @@ export const getMembersByProject = async (slug: string, projectId: number) => {
   return transformedData;
 };
 
-export const getMembersTimeEntries = async (slug: string, projectId: number) => {
+// Get all members time entries from TimeEntry table
+export const getMembersTimeEntries = async (
+  slug: string,
+  projectId: number,
+  startDate: Date,
+  endDate: Date,
+  billing?: string,
+  members?: string,
+) => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+  const isBillable = stringToBoolean(billing);
+
   const timeEntries = await db.timeEntry.groupBy({
     by: ["date"],
     where: {
@@ -52,8 +89,17 @@ export const getMembersTimeEntries = async (slug: string, projectId: number) => 
       },
       projectId,
       date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        gte: start,
+        lte: end,
       },
+      billable: {
+        ...(isBillable !== null && { equals: isBillable }),
+      },
+      ...(members && {
+        userId: {
+          in: members.split(",").map((member) => +member),
+        },
+      }),
     },
     _sum: {
       time: true,
@@ -65,32 +111,22 @@ export const getMembersTimeEntries = async (slug: string, projectId: number) => 
     time: entry._sum.time ?? 0,
   }));
 
-  const billableTimeEntries = await db.timeEntry.groupBy({
-    by: ["date"],
-    where: {
-      workspace: {
-        slug,
-      },
-      projectId,
-      date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      },
-      billable: true,
-    },
-    _sum: {
-      time: true,
-    },
-  });
-
-  const formattedBillableEntries = billableTimeEntries.map((entry) => ({
-    date: entry.date,
-    time: entry._sum.time ?? 0,
-  }));
-
-  return { timeEntries: formattedEntries, billableEntries: formattedBillableEntries };
+  return { timeEntries: formattedEntries };
 };
 
-export const getMemberEntriesGroupedByName = async (slug: string, projectId: number) => {
+// Get all members time entries grouped by name
+export const getMemberEntriesGroupedByName = async (
+  slug: string,
+  projectId: number,
+  startDate: Date,
+  endDate: Date,
+  billing?: string,
+  members?: string,
+) => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+  const isBillable = stringToBoolean(billing);
+
   const userEntries = await db.timeEntry.findMany({
     where: {
       workspace: {
@@ -98,8 +134,17 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
       },
       projectId,
       date: {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        gte: start,
+        lte: end,
       },
+      billable: {
+        ...(isBillable !== null && { equals: isBillable }),
+      },
+      ...(members && {
+        userId: {
+          in: members.split(",").map((member) => +member),
+        },
+      }),
     },
     select: {
       date: true,
@@ -166,6 +211,34 @@ export const getMemberEntriesGroupedByName = async (slug: string, projectId: num
   const result = Object.values(groupedByUsers).sort((a: any, b: any) => a.name.localeCompare(b.name));
 
   return { memberEntries: result };
+};
+
+// Get all members name from time entries
+export const getMembersNameInTimeEntries = async (slug: string, projectId: number) => {
+  const result = await db.timeEntry.findMany({
+    distinct: ["userId"],
+    where: {
+      workspace: {
+        slug,
+      },
+      projectId,
+    },
+    select: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      user: {
+        name: "asc",
+      },
+    },
+  });
+
+  return result.map((item) => ({ id: item.user.id, name: item.user.name }));
 };
 
 export async function getProjects(slug: string) {

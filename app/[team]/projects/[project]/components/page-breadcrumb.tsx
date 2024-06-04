@@ -22,7 +22,7 @@ type ProjectDetailsType = {
 
 function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
   return (
-    <div>
+    <div className="shrink-0">
       {/* Breadcrumb */}
       <Breadcrumb className="p-2">
         <BreadcrumbList>
