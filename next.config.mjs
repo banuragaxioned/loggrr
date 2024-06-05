@@ -6,16 +6,8 @@
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./env.mjs"));
 
-import withBundleAnalyzer from "@next/bundle-analyzer";
-
-const bundleAnalyzerConfig = {
-  enabled: process.env.ANALYZE === "true",
-};
-
-const withBundleAnalyzerPlugin = withBundleAnalyzer(bundleAnalyzerConfig);
-
 /** @type {import("next").NextConfig} */
-const config = withBundleAnalyzerPlugin({
+const config = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -42,6 +34,6 @@ const config = withBundleAnalyzerPlugin({
       },
     ];
   },
-});
+};
 
 export default config;
