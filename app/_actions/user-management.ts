@@ -9,7 +9,7 @@ const emailSchema = z.string().email();
 
 export async function createUser(email: string) {
   emailSchema.parse(email);
-  await adapter.createUser({ email: email });
+  await adapter.createUser({ email: email, name: email.split("@")[0] });
 }
 
 export async function findDomain(email: string) {
