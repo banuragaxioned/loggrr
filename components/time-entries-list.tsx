@@ -34,10 +34,10 @@ interface TimeEntries {
 export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData) => (
-      <li key={entryData.project.id} className="px-2">
+      <li key={entryData.project.id} className="">
         {/* Project related details  */}
-        <Card className="overflow-hidden shadow-none">
-          <div className="flex w-full items-center justify-between px-3 py-2">
+        <Card className="overflow-hidden rounded-none border-x-0 border-b-0 border-t shadow-none">
+          <div className="flex w-full items-center justify-between px-5 py-2">
             <p className="flex items-center gap-x-2 pr-1.5 text-sm font-medium">
               <span
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
@@ -72,9 +72,9 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               <Fragment key={i}>
                 <div
                   className={cn(
-                    "group relative flex justify-between border border-transparent bg-secondary px-3 py-2 last:mb-0",
+                    "group relative flex justify-between border border-transparent bg-secondary px-5 py-2 last:mb-0",
                     isEditing && "border-muted-foreground",
-                    i === entryData?.data.length - 1 && "rounded-b-xl",
+                    // i === entryData?.data.length - 1 && "rounded-b-xl",
                   )}
                 >
                   <div
@@ -188,7 +188,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
   return (
     <ul
       className={cn(
-        "flex w-full flex-col gap-y-2 overflow-y-auto pb-2",
+        "flex w-full flex-col overflow-y-auto",
         entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
       )}
     >

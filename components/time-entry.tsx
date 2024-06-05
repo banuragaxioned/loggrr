@@ -250,7 +250,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <Card className="col-span-12 shadow-none md:col-span-8">
+      <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
