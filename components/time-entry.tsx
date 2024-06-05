@@ -2,8 +2,8 @@
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
-import { format, startOfToday } from "date-fns";
-import { usePathname, useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
@@ -147,6 +147,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       task: task?.id,
       date: dateToStoreInDB,
     };
+
+    console.log(dataToSend, "dataToSend");
 
     try {
       const response = await fetch("/api/team/time-entry", {

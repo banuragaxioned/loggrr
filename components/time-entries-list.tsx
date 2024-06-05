@@ -63,7 +63,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               comment: data.comments,
               client: entryData.project.client,
               project: projectObj,
-              time: `${data.time}`,
+              time: `${data.time.toFixed(2)}`,
             };
 
             const isEditing = edit.isEditing && edit.id === data.id;
