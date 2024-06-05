@@ -13,6 +13,9 @@ import { getCurrentUser } from "@/server/session";
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
   variable: "--font-heading",
+  preload: true,
+  display: "block",
+  weight: "600",
 });
 
 export const metadata: Metadata = {
