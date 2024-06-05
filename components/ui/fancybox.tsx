@@ -63,7 +63,7 @@ export function FancyBox({ options, selectedValues, setSelectedValues, defaultLa
           align="start"
           className="max-w-[230px] border-0 bg-popover p-0 text-popover-foreground transition-all ease-in"
         >
-          <Command loop className="border-box rounded-t-md border border-border">
+          <Command loop className="box-border rounded-t-md border border-border">
             <div className="space-between flex w-full items-center rounded-t-md">
               <SearchIcon className="h-[14px] shrink-0 basis-[15%] stroke-2" />
               <CommandInput
@@ -75,7 +75,7 @@ export function FancyBox({ options, selectedValues, setSelectedValues, defaultLa
               />
             </div>
             <CommandList
-              className={`scrollbar border-box ComboBox-scrollbar absolute left-1/2 top-full max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] border-x border-b border-border bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
+              className={`scrollbar ComboBox-scrollbar absolute left-1/2 top-full box-border max-h-[240px] w-full -translate-x-1/2 overflow-y-auto rounded-b-[5px] border-x border-b border-border bg-popover px-[5px] py-[8px] shadow-md transition-all duration-200 ease-out`}
             >
               <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
               <CommandGroup className="scrollbar ComboBox-scrollbar select-none overflow-auto px-0 text-sm">
