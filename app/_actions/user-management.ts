@@ -8,8 +8,15 @@ const adapter = PrismaAdapter(db);
 const emailSchema = z.string().email();
 
 export async function createUser(email: string) {
-  emailSchema.parse(email);
-  await adapter.createUser({ email: email, name: email.split("@")[0] });
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (user) return user;
+
+  return await adapter.createUser({ email: email, name: email.split("@")[0] });
 }
 
 export async function findDomain(email: string) {
