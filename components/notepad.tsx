@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Clipboard, ListRestart, Loader2, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import Cookie from "js-cookie";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
@@ -26,6 +27,12 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
   const [isCopied, setIsCopied] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isRecordingSupported, setIsRecordingSupported] = useState(true);
+  const [errorCount, setErrorCount] = useState(0);
+  const voiceError = Cookie.get("speech");
+
+  const setVoiceErrorCookie = () => {
+    Cookie.set("speech", "error", { expires: 30 });
+  };
 
   const copyToClipboard = () => {
     if (!aiInput.trim()) return;
@@ -38,6 +45,10 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    if (errorCount >= 2) {
+      setVoiceErrorCookie();
+    }
 
     const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
     const microphone = SpeechRecognition && new SpeechRecognition();
@@ -62,6 +73,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
         };
         microphone.onerror = (event: any) => {
           console.error("Error: " + event.error);
+          if (event.error === "network") setErrorCount((prev) => prev + 1);
           if (event.error === "not-allowed") return toast.error("Microphone not allowed");
           if (event.error) return toast.error(`Error: ${event.error}`);
         };
@@ -82,6 +94,10 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
     startRecordController();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRecording]);
+
+  useEffect(() => {
+    if (voiceError === "error") setIsRecordingSupported(false);
+  }, [voiceError]);
 
   return (
     <Card className="overflow-hidden p-0 shadow-none">
