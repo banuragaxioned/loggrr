@@ -140,15 +140,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     const dataToSend = {
       team,
       project: project?.id,
-      milestone: milestone?.id,
+      milestone: milestone?.id || null,
       time: +hoursToDecimal(time ?? "0") * 60,
       comments: comment?.trim(),
       billable: billable && project?.billable ? true : false,
-      task: task?.id,
+      task: task?.id || null,
       date: dateToStoreInDB,
     };
-
-    console.log(dataToSend, "dataToSend");
 
     try {
       const response = await fetch("/api/team/time-entry", {

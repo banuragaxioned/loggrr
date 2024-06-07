@@ -33,7 +33,7 @@ interface TimeEntries {
 
 export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
-    entries.projectsLog.map((entryData) => (
+    entries.projectsLog.map((entryData, projectIndex) => (
       <li key={entryData.project.id} className="">
         {/* Project related details  */}
         <Card className="overflow-hidden rounded-none border-x-0 border-b-0 border-t shadow-none">
@@ -72,9 +72,12 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               <Fragment key={i}>
                 <div
                   className={cn(
-                    "group relative flex justify-between border border-transparent bg-secondary px-5 py-2 last:mb-0",
+                    "group relative box-border flex justify-between border border-transparent bg-secondary px-5 py-2 last:mb-0",
                     isEditing && "border-muted-foreground",
-                    // i === entryData?.data.length - 1 && "rounded-b-xl",
+                    entries?.projectsLog &&
+                      projectIndex === entries.projectsLog.length - 1 &&
+                      i === entryData?.data.length - 1 &&
+                      "rounded-b-xl",
                   )}
                 >
                   <div
