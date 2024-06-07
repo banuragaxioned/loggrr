@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Clipboard, ListRestart, Loader2, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import Cookie from "js-cookie";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
@@ -24,7 +25,14 @@ declare global {
 }
 export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, aiLoading }: AINotepadProps) {
   const [isCopied, setIsCopied] = useState(false);
-  const [isRecording, setisRecording] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isRecordingSupported, setIsRecordingSupported] = useState(true);
+  const [errorCount, setErrorCount] = useState(0);
+  const voiceError = Cookie.get("speech");
+
+  const setVoiceErrorCookie = () => {
+    Cookie.set("speech", "error", { expires: 30 });
+  };
 
   const copyToClipboard = () => {
     if (!aiInput.trim()) return;
@@ -38,12 +46,18 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    if (errorCount >= 2) {
+      setVoiceErrorCookie();
+    }
+
     const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
     const microphone = SpeechRecognition && new SpeechRecognition();
 
     if (!microphone) {
+      setIsRecordingSupported(false);
+
       if (isRecording) toast.error("Speech recognition not supported");
-      setisRecording(false);
+      setIsRecording(false);
       return;
     }
 
@@ -55,11 +69,13 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
         microphone.start();
         microphone.onend = () => {
           microphone.stop();
-          setisRecording(false);
+          setIsRecording(false);
         };
         microphone.onerror = (event: any) => {
-          console.error("Error occurred in recognition: " + event.error);
-          if (event.error === "not-allowed") toast.error("Microphone not allowed");
+          console.error("Error: " + event.error);
+          if (event.error === "network") setErrorCount((prev) => prev + 1);
+          if (event.error === "not-allowed") return toast.error("Microphone not allowed");
+          if (event.error) return toast.error(`Error: ${event.error}`);
         };
       }
 
@@ -78,6 +94,10 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
     startRecordController();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRecording]);
+
+  useEffect(() => {
+    if (voiceError === "error") setIsRecordingSupported(false);
+  }, [voiceError]);
 
   return (
     <Card className="overflow-hidden p-0 shadow-none">
@@ -116,22 +136,24 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                 />
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      onClick={() => setisRecording((prevState) => !prevState)}
-                      size="icon"
-                      variant="outline"
-                      className="relative"
-                      title="Start voice typing"
-                    >
-                      {isRecording && (
-                        <>
-                          <span className="absolute -right-1 -top-1 h-2.5 w-2.5 animate-ping rounded-full bg-muted-foreground" />
-                          <span className="absolute  -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-muted-foreground" />
-                        </>
-                      )}
-                      {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
-                    </Button>
+                    {isRecordingSupported && (
+                      <Button
+                        type="button"
+                        onClick={() => setIsRecording((prevState) => !prevState)}
+                        size="icon"
+                        variant="outline"
+                        className="relative"
+                        title="Start voice typing"
+                      >
+                        {isRecording && (
+                          <>
+                            <span className="absolute -right-1 -top-1 h-2.5 w-2.5 animate-ping rounded-full bg-muted-foreground" />
+                            <span className="absolute  -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-muted-foreground" />
+                          </>
+                        )}
+                        {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
+                      </Button>
+                    )}
                     <Button
                       type="button"
                       variant="outline"

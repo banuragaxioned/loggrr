@@ -48,7 +48,7 @@ function PageBreadcrumb({ projectDetails, slug }: ProjectDetailsType) {
       {/* Heading */}
       <div className="mt-2 px-2">
         <h1>{projectDetails.name}</h1>
-        <p className="mt-1 text-lg text-muted-foreground">{projectDetails.client.name}</p>
+        <p className="text-sm text-muted-foreground">{projectDetails.client.name}</p>
       </div>
     </div>
   );

@@ -163,7 +163,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
 
   return (
     <div className="p-2">
-      <div className="flex items-center justify-between overflow-y-auto rounded-t-xl bg-secondary px-3 py-2">
+      <div className="box-border flex items-center justify-between overflow-y-auto rounded-t-xl border border-b-0 px-3 py-2">
         <div className="inline-flex items-center gap-x-2 text-xs">
           {/* Dropdown selections */}
           <ComboBox
@@ -209,7 +209,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
           </Button>
         )}
       </div>
-      <div className="border-box z-[3] mx-auto w-full rounded-b-xl border bg-transparent">
+      <div className="z-[3] mx-auto box-border w-full rounded-b-xl border bg-transparent">
         <form
           onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
           onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}

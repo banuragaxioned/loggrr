@@ -5,7 +5,6 @@ import { Check, ChevronDown, Search } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
-import { Input } from "./input";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -78,12 +77,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           className="flex w-full justify-between"
         >
           {icon}
-          <span
-            className={cn(
-              "mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap",
-              !selectedItem?.id && "opacity-50",
-            )}
-          >
+          <span className={cn("mx-[6px] inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap")}>
             {selectedItem?.name || label}
           </span>
           <ChevronDown className="ml-auto h-4 w-4" />
@@ -98,7 +92,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         )}
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <Command className={`${searchable ? "border" : "border-0"} border-box rounded-t-[5px] border-border`}>
+        <Command className={`${searchable ? "border" : "border-0"} box-border rounded-t-[5px] border-border`}>
           {options.length > 0 ? (
             <>
               {searchable && (

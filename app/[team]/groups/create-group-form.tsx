@@ -64,7 +64,7 @@ export function CreateGroupForm({ team }: { team: string }) {
             )}
           />
           <SheetFooter className="mt-2 justify-start space-x-3">
-            <SheetClose>
+            <SheetClose asChild>
               <Button type="button" variant="outline" ref={SheetCloseButton}>
                 Cancel
               </Button>

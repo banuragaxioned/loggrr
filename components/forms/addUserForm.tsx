@@ -32,10 +32,12 @@ export function AddUserInTeam({ team }: { team: string }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      emailAddress: "",
+    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // try creating a user first
     await createUser(values.emailAddress);
 
     // then add the user to the team
@@ -93,7 +95,7 @@ export function AddUserInTeam({ team }: { team: string }) {
             />
             <SheetFooter className="mt-2 justify-start space-x-3">
               <SheetClose asChild>
-                <Button type="submit" variant="outline" ref={SheetCloseButton}>
+                <Button type="button" variant="outline" ref={SheetCloseButton}>
                   Cancel
                 </Button>
               </SheetClose>

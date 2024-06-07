@@ -10,12 +10,12 @@ import { TimeEntryData } from "@/types";
 const commonValidationObj = {
   team: z.string().min(1),
   project: z.number(),
-  milestone: z.number().optional(),
+  milestone: z.number().or(z.null()),
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
   date: z.string(),
-  task: z.number().optional(),
+  task: z.number().or(z.null()),
 };
 
 const TimeEntrySchema = z.object(commonValidationObj);
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
         const index = projectsLog.findIndex((obj) => obj?.project?.id === current.project.id); // Check if project exists
         if (index > -1) {
           projectsLog[index]?.data.push(data);
-          projectsLog[index].total += current?.time / 60;
+          projectsLog[index].total += +(current?.time / 60).toFixed(2);
         } else {
           projectsLog.push({ project: projectObj, data: [data], total: current?.time / 60 });
         }

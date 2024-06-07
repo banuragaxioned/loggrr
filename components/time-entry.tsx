@@ -2,8 +2,8 @@
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
-import { format, startOfToday } from "date-fns";
-import { usePathname, useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
@@ -140,11 +140,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     const dataToSend = {
       team,
       project: project?.id,
-      milestone: milestone?.id,
+      milestone: milestone?.id || null,
       time: +hoursToDecimal(time ?? "0") * 60,
       comments: comment?.trim(),
       billable: billable && project?.billable ? true : false,
-      task: task?.id,
+      task: task?.id || null,
       date: dateToStoreInDB,
     };
 
@@ -250,7 +250,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <Card className="col-span-12 shadow-none md:col-span-8">
+      <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
         </div>
