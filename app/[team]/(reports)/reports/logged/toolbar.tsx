@@ -12,7 +12,6 @@ import { Assignment, DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
-import DropdownFilters from "./dropdown-filter";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
