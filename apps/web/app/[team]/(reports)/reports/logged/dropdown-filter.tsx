@@ -39,7 +39,7 @@ const DropdownFilter = ({ values }: { values: LoggedInterface }) => {
       return labelToDisplay;
     }
 
-    return values.options?.[0].title ?? values.title;
+    return values.options?.[0]?.title ?? values.title;
   };
 
   return (

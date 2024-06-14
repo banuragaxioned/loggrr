@@ -1,19 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+.pnp
 .pnp.js
 
 # testing
 /coverage
 
-# database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
-
 # next.js
-/.next/
+.next/
 /out/
 next-env.d.ts
 
@@ -49,3 +45,5 @@ yarn.lock
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+.turbo
