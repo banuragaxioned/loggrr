@@ -1,8 +1,6 @@
 {
   "extends": "@loggrr/tsconfig/nextjs.json",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }],
-    "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]

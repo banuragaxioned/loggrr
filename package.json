@@ -6,22 +6,21 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter web",
+    "dev:email": "turbo dev --filter email",
+    "build:web": "turbo build --filter web",
+    "build:email": "turbo build --filter email",
     "start": "turbo start",
     "lint": "turbo lint",
-    "type-check": "turbo type-check",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui:add": "pnpm --filter @loggrr/ui ui:add",
     "ui:diff": "pnpm --filter @loggrr/ui ui:diff",
     "manypkg:fix": "manypkg fix",
-    "postinstall": "manypkg check",
-    "check-types": "tsc --noEmit"
+    "postinstall": "manypkg check"
   },
   "dependencies": {
-    "@loggrr/tsconfig": "workspace:*",
     "@manypkg/cli": "^0.21.4",
-    "eslint": "^8.57.0",
-    "tsx": "^4.15.4",
+    "prettier": "^3.3.2",
     "turbo": "^2.0.3",
     "typescript": "^5.4.5"
   },

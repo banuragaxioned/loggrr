@@ -1,8 +1,7 @@
 {
-  "name": "loggr",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "postinstall": "prisma generate",
     "start": "next start",
@@ -89,6 +88,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@loggrr/eslint-config": "workspace:*",
     "@loggrr/tsconfig": "workspace:*",
     "@tailwindcss/forms": "^0.5.7",
     "@types/js-cookie": "^3.0.6",
@@ -102,7 +102,7 @@
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.4",
+    "eslint-config-next": "^14.2.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.3",
     "postcss": "^8.4.38",
