@@ -15,7 +15,7 @@
     "fresh": "pnpm run clean && pnpm install && pnpm run dev",
     "studio": "prisma studio --browser none",
     "preview": "next build && next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "ncu": "pnpm dlx npm-check-updates --interactive",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",

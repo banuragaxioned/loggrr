@@ -12,8 +12,11 @@
     "lint": {
       "dependsOn": ["^lint"]
     },
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["topo"]
     },
     "clean": {
       "cache": false

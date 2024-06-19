@@ -10,7 +10,7 @@
     "build:web": "turbo build --filter web",
     "build:email": "turbo build --filter email",
     "start": "turbo start",
-    "lint": "turbo lint",
+    "lint": "turbo run lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui:add": "pnpm --filter @loggrr/ui ui:add",

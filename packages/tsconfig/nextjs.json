@@ -3,26 +3,25 @@
   "extends": "./base.json",
   "display": "Next.js",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
     "allowJs": true,
     "checkJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "incremental": true,
-    "noUncheckedIndexedAccess": true,
-    "plugins": [{ "name": "next" }],
-    "paths": {
-      "@ui/*": ["../../packages/ui/*"]
-    }
+
+    "plugins": [{ "name": "next" }]
   },
   "exclude": ["node_modules", "build", "dist", ".next"]
 }
