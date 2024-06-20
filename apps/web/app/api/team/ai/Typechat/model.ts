@@ -139,7 +139,7 @@ export function createFetchLanguageModel(url: string, headers: object, defaultPa
       const response = await fetch(url, options);
       if (response.ok) {
         const json = (await response.json()) as { choices: { message: PromptSection }[] };
-        return success(json.choices[0].message.content ?? "");
+        return success(json.choices[0]?.message.content ?? "");
       }
       if (!isTransientHttpError(response.status) || retryCount >= retryMaxAttempts) {
         return error(`REST API error ${response.status}: ${response.statusText}`);

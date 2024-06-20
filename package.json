@@ -12,6 +12,7 @@
     "start": "turbo start",
     "lint": "turbo run lint",
     "clean": "turbo clean",
+    "check-types": "turbo check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui:add": "pnpm --filter @loggrr/ui ui:add",
     "ui:diff": "pnpm --filter @loggrr/ui ui:diff",

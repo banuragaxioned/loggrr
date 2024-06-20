@@ -24,7 +24,8 @@ export function createZodJsonValidator<T extends Record<string, z.ZodType>, K ex
   return validator;
 
   function validate(jsonObject: object) {
-    const result = schema[typeName].safeParse(jsonObject);
+    const result = schema[typeName]?.safeParse(jsonObject);
+    if (!result) return error("Invalid schema");
     if (!result.success) {
       return error(
         result.error.issues
@@ -32,6 +33,7 @@ export function createZodJsonValidator<T extends Record<string, z.ZodType>, K ex
           .join('"'),
       );
     }
+
     return success(result.data as z.TypeOf<T[K]>);
   }
 }

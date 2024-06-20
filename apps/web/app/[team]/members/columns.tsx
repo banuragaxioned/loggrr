@@ -91,7 +91,7 @@ export const getColumn = ({ updateStatus, userGroup, updateUserGroup }: GetColum
           <div className={cn("invisible flex gap-x-3", row.original.role !== "INACTIVE" && "group-hover:visible")}>
             <Button
               title="Inactive"
-              variant={"ghost"}
+              variant="ghost"
               className={cn("h-auto border-0 bg-inherit p-0 text-primary")}
               onClick={() => (row.original.role === "INACTIVE" ? null : updateStatus(row.original.id))}
             >

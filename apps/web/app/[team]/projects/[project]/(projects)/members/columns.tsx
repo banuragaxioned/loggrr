@@ -59,7 +59,7 @@ export const getColumn = ({ removeMember }: GetColumn) => {
       accessorKey: "createdAt",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Added on" />,
       cell: ({ row }) => {
-        const date = row.original.usersOnProject?.[0].createdAt;
+        const date = row.original.usersOnProject?.[0]?.createdAt;
         return <span>{date && format(new Date(date), "MMMM dd, yyyy")}</span>;
       },
       filterFn: "arrIncludesSome",
@@ -89,7 +89,7 @@ export const getColumn = ({ removeMember }: GetColumn) => {
                   <Button
                     type="button"
                     size="sm"
-                    onClick={() => removeMember(row.original.usersOnProject?.[0].id)}
+                    onClick={() => removeMember(row.original.usersOnProject?.[0]?.id ?? 0)}
                     asChild
                   >
                     <DialogClose>Delete</DialogClose>
