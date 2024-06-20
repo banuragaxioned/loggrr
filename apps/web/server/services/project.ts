@@ -337,10 +337,10 @@ export async function getProjectSummary(slug?: string, userId?: number) {
         projectOwner: project.owner.name,
         projectOwnerAvatar: project.owner.image,
         budget: project.milestone.length
-          ? project.milestone.filter((item) => item.projectId === project.id)[0].budget
+          ? project.milestone.filter((item) => item.projectId === project.id)[0]?.budget
           : 0,
         logged: project.timeEntry.length
-          ? project.timeEntry.filter((item) => item.projectId === project.id)[0].time
+          ? project.timeEntry.filter((item) => item.projectId === project.id)[0]?.time
           : 0,
       }));
 }

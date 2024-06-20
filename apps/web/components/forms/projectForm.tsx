@@ -71,7 +71,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
         name: values.project,
         clientId: values.client,
         ownerId: values.owner,
-        interval: intervalList[values.interval].name,
+        interval: intervalList[values.interval]?.name,
         billable: values.billable,
       }),
     });

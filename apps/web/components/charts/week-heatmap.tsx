@@ -65,8 +65,8 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       const weekIndex = Math.floor(diffInDays / 7);
 
       if (weekIndex >= 0 && weekIndex < 7 && dayOfWeekFromToday >= 0 && dayOfWeekFromToday < 7) {
-        transformedData[dayOfWeekFromToday].data[weekIndex].y = entry._sum.time / 60 || 0;
-        transformedData[dayOfWeekFromToday].data[weekIndex].date = format(entry.date, "yyyy-MM-dd");
+        transformedData[dayOfWeekFromToday]!.data[weekIndex]!.y = entry._sum.time / 60 || 0;
+        transformedData[dayOfWeekFromToday]!.data[weekIndex]!.date = format(entry.date, "yyyy-MM-dd");
       }
     });
 

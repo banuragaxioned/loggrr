@@ -118,9 +118,9 @@ export async function GET(req: NextRequest) {
           client: current.project.client,
         };
         const index = projectsLog.findIndex((obj) => obj?.project?.id === current.project.id); // Check if project exists
-        if (index > -1) {
+        if (index && index > -1) {
           projectsLog[index]?.data.push(data);
-          projectsLog[index].total += +(current?.time / 60).toFixed(2);
+          projectsLog[index]!.total += +(current?.time / 60).toFixed(2);
         } else {
           projectsLog.push({ project: projectObj, data: [data], total: current?.time / 60 });
         }
