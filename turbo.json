@@ -20,9 +20,6 @@
     },
     "clean": {
       "cache": false
-    },
-    "generate": {
-      "dependsOn": ["^generate"]
     }
   },
   "globalEnv": [
