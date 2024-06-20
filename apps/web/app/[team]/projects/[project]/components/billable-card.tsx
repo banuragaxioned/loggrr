@@ -1,6 +1,5 @@
 import React from "react";
 import { Info } from "lucide-react";
-
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";

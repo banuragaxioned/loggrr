@@ -1,15 +1,11 @@
 import { notFound } from "next/navigation";
 import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
-
 import { db } from "@/server/db";
 import { getCurrentUser } from "@/server/session";
 import { getMembersByProject, getProjectDetailsById } from "@/server/services/project";
-
 import { SidebarNavItem, projectProps } from "@/types";
-
-import { SecondaryNavigation } from "./components/secondary-nav";
 import { DashboardShell } from "@/components/ui/shell";
-
+import { SecondaryNavigation } from "./components/secondary-nav";
 import PageBreadcrumb from "./components/page-breadcrumb";
 import TimeLoggedCard from "./components/timelogged-card";
 import BillableCard from "./components/billable-card";

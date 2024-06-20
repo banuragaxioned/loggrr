@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { endOfDay, format, startOfDay } from "date-fns";
-
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
@@ -44,13 +43,13 @@ export async function POST(req: NextRequest) {
         project: {
           ...(selectedClients && {
             clientId: {
-              in: selectedClients.split(",").map((id: number) => +id),
+              in: selectedClients.split(",").map((id: number) => Number(id)),
             },
           }),
         },
         ...(selectedMembers && {
           userId: {
-            in: selectedMembers.split(",").map((id: number) => +id),
+            in: selectedMembers.split(",").map((id: number) => Number(id)),
           },
         }),
       },

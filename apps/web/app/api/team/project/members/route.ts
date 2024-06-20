@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
+import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { NextRequest, NextResponse } from "next/server";
 
 const projectMemberSchema = {
   team: z.string().min(1),

@@ -1,13 +1,13 @@
 "use client";
 
-import PHProvider from "./analytics";
 import NextTopLoader from "nextjs-toploader";
-import { TailwindIndicator } from "./tailwind-indicator";
-import { ThemeProvider } from "./theme-provider";
 import { SessionProvider } from "next-auth/react";
-import { Toaster } from "@/components/ui/sonner";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { TailwindIndicator } from "./tailwind-indicator";
+import PHProvider from "./analytics";
+import { ThemeProvider } from "./theme-provider";
 
 const TopLoader = () => {
   const { theme } = useTheme();

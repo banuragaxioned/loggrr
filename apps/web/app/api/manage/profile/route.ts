@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
-
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 

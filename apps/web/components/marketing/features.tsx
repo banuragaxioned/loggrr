@@ -27,10 +27,6 @@ export function FeaturesSection() {
   );
 }
 
-const Skeleton = () => (
-  <div className="flex h-full min-h-[6rem] w-full flex-1 rounded-xl border border-transparent bg-muted"></div>
-);
-
 const items = [
   {
     title: "Effortless time tracking",

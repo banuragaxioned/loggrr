@@ -8,8 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Switch } from "../ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Calendar } from "../ui/calendar";
-import { DateInput } from "./date-input";
 import { Label } from "../ui/label";
+import { DateInput } from "./date-input";
 
 export interface DateRangePickerProps {
   /** Click handler for applying the updates from DateRangePicker. */

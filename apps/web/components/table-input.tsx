@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { DateRange } from "react-day-picker";
+import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
-
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
   const totaTime = data.hoursObj?.totalTime || 0;
   const isOnGoing = data.hoursObj?.frequency === "ONGOING";
   const [range, setRange] = useState<any>({ from: new Date(), to: new Date() });
-  const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable: nonBillable, billable: billable });
+  const [formData, setFormData] = useState<any>({ total: totaTime, nonBillable, billable });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [dateError, setDateError] = useState<boolean>(false);
   const [Ongoing, setOngoing] = useState<boolean>(isOnGoing);
@@ -94,7 +93,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
 
   return (
     <Popover>
-      <PopoverTrigger className="mx-auto flex  w-12 cursor-default items-center justify-center">
+      <PopoverTrigger className="mx-auto flex w-12 cursor-default items-center justify-center">
         <Input
           className="hover:border-hover mx-0 h-auto basis-14 cursor-pointer border-transparent p-0 text-center"
           disabled={true}

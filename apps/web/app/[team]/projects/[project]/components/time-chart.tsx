@@ -3,10 +3,9 @@
 import { format, startOfDay, subDays } from "date-fns";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
-
+import { useSearchParams } from "next/navigation";
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
-import { useSearchParams } from "next/navigation";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];

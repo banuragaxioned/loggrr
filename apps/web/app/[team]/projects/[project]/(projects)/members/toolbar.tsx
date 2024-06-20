@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ListRestart } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableToolbarProps } from "@/types";
@@ -15,7 +14,6 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
 
   useEffect(() => {
     client && table.getColumn("clientName")?.setFilterValue(Array(client));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

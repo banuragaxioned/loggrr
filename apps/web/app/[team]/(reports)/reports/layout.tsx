@@ -6,7 +6,7 @@ interface DashboardLayoutProps {
   params: string;
 }
 
-export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
+export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const user = await getCurrentUser();
 
   if (!user) {

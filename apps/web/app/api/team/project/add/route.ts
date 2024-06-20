@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
+import { ProjectInterval } from "@prisma/client";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { ProjectInterval } from "@prisma/client";
 
 const projectCreateSchema = z.object({
   budget: z.number().optional(),

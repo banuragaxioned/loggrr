@@ -4,9 +4,7 @@ import React from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Users } from "lucide-react";
-
 import { cn } from "@/lib/utils";
-
 import { Card, CardHeader } from "@/components/ui/card";
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { UserAvatar } from "@/components/user-avatar";

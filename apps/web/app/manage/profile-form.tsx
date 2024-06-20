@@ -19,7 +19,7 @@ export function ProfileForm({ user }: { user: any }) {
         method: "PUT",
         body: JSON.stringify({
           id: user.id,
-          name: name,
+          name,
           timezone,
         }),
       });
@@ -30,7 +30,7 @@ export function ProfileForm({ user }: { user: any }) {
 
       toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Error updating profile", error);
+      toast.error("Error updating profile");
     }
   }
 

@@ -1,9 +1,8 @@
 import { Metadata } from "next";
-
 import { pageProps } from "@/types";
-import { Table } from "./table";
 import { getMembers, getProjectMembers } from "@/server/services/members";
 import { AddMemberInProject } from "@/components/forms/addProjectMemberForm";
+import { Table } from "./table";
 
 export const metadata: Metadata = {
   title: `Members`,

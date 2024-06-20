@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { getTimeInHours } from "@/lib/helper";
 import { Info } from "lucide-react";
 import React from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { getTimeInHours } from "@/lib/helper";
 
 type TimeLoggedCardProps = {
   timecardProp: {

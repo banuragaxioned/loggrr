@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
+import { Role } from "@prisma/client";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { Role } from "@prisma/client";
 
 const deactivateUserSchema = z.object({
   team: z.string().min(1),
