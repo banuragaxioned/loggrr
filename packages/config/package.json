@@ -1,0 +1,16 @@
+{
+  "name": "@loggrr/config",
+  "version": "0.0.0",
+  "keywords": [
+    "config",
+    "configuration"
+  ],
+  "main": "index.js",
+  "private": true,
+  "files": [
+    "prettier.config.js"
+  ],
+  "devDependencies": {
+    "prettier": "^3.3.2"
+  }
+}

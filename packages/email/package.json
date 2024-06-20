@@ -1,0 +1,24 @@
+{
+  "name": "email",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    ".react-email"
+  ],
+  "scripts": {
+    "dev": "email dev -p 3001",
+    "build": "email build",
+    "start": "email start",
+    "clean": "rm -rf .turbo node_modules .react-email",
+    "export": "email export"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.19",
+    "@react-email/tailwind": "^0.0.18",
+    "react-email": "2.1.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.5",
+    "@types/react": "^18.3.3"
+  }
+}
