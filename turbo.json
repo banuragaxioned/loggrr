@@ -20,6 +20,27 @@
     },
     "clean": {
       "cache": false
+    },
+    "generate": {
+      "dependsOn": ["^generate"]
     }
-  }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "NEXTAUTH_SECRET",
+    "NEXTAUTH_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "EMAIL_FROM",
+    "EMAIL_HOST",
+    "EMAIL_USER",
+    "EMAIL_PASSWORD",
+    "EMAIL_PORT",
+    "OPENAI_API_KEY",
+    "NEXT_PUBLIC_POSTHOG_HOST",
+    "NEXT_PUBLIC_POSTHOG_KEY"
+  ],
+  "globalPassThroughEnv": ["NODE_ENV", "CI", "VERCEL", "VERCEL_ENV", "VERCEL_URL", "npm_lifecycle_event"],
+  "globalDependencies": ["**/.env.local"]
 }
