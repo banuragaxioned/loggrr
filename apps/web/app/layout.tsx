@@ -1,14 +1,14 @@
 import "./globals.css";
-import { Metadata, Viewport } from "next";
+
+import { type Metadata, type Viewport } from "next";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
-
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
+import { getCurrentUser } from "@/server/session";
+import { getAllProjects } from "@/server/services/project";
 import { ContextProvider } from "./context-provider";
 import { SiteHeader } from "./site-header";
-import { getAllProjects } from "@/server/services/project";
-import { getCurrentUser } from "@/server/session";
 
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         className={cn(
           "min-h-screen items-center overscroll-y-none bg-background font-sans text-base antialiased",
-          `${GeistSans.variable}`,
+          GeistSans.variable,
           fontHeading.variable,
         )}
       >
