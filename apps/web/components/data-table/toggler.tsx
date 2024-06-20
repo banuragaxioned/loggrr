@@ -22,11 +22,12 @@ export function DataTableVisibilityToggler<TData, TValue>({
   title,
   options,
 }: DataTableVisibilityTogglerProps<TData, TValue>) {
-  const [selected, setSelected] = useState<option>(options[0]);
+  const [selected, setSelected] = useState<option>(options[0] ?? { label: "", value: "" });
   const clickHandler = (option: option) => {
     setSelected(option);
     selectionHandler(option.value);
   };
+
   return (
     <Popover>
       <PopoverTrigger asChild>

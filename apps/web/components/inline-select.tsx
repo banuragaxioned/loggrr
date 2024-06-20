@@ -62,7 +62,7 @@ export function InlineSelect<TData, TValue>({
         <Button variant="outline" size="sm" className="h-8 border">
           {selectedValues?.length > 0 ? (
             <>
-              {selectedValues[0].name}
+              {selectedValues?.[0]?.name}
               {selectedValues?.length > 1 && (
                 <>
                   <Separator orientation="vertical" className="mx-2 h-4" />

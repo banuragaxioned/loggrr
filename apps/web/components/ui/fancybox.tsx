@@ -52,8 +52,8 @@ export function FancyBox({ options, selectedValues, setSelectedValues, defaultLa
           >
             <span className="truncate">
               {selectedValues.length === 0 && defaultLabel}
-              {selectedValues.length === 1 && selectedValues[0].label}
-              {selectedValues.length > 1 && `${selectedValues[0].label} + ${selectedValues.length - 1} more`}
+              {selectedValues.length === 1 && selectedValues[0]?.label}
+              {selectedValues.length > 1 && `${selectedValues[0]?.label} + ${selectedValues.length - 1} more`}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>

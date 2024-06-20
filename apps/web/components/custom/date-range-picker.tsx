@@ -44,7 +44,7 @@ const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
     const parts = dateInput.split("-").map((part) => parseInt(part, 10));
     // Create a new Date object using the local timezone
     // Note: Month is 0-indexed, so subtract 1 from the month part
-    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    const date = new Date(parts[0] ?? 0, parts[1] ?? 0 - 1, parts[2]);
     return date;
   } else {
     // If dateInput is already a Date object, return it directly

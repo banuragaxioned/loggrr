@@ -50,7 +50,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
     return (
       <Link
         className={cn(buttonVariants({ variant: "outline", size: "sm" }), "flex gap-2")}
-        href={`/${teamData.teams[0].slug}`}
+        href={`/${teamData?.teams?.[0]?.slug}`}
       >
         Dashboard
         <ChevronRight size={16} />

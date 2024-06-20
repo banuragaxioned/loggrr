@@ -160,9 +160,10 @@ export async function POST(req: NextRequest) {
     const body = TimeEntrySchema.parse(json);
 
     const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === body.team);
+    const workspaceId = user.workspaces.filter((workspace) => workspace.slug === body.team)[0]?.id;
 
     // check if the user has permission to the current team/workspace id if not return 403
-    if (!foundWorkspace) {
+    if (!foundWorkspace || !workspaceId) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
@@ -176,7 +177,7 @@ export async function POST(req: NextRequest) {
         projectId: body.project,
         date: new Date(body.date),
         taskId: body.task,
-        workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
+        workspaceId,
       },
     });
     return NextResponse.json(timeEntry);
