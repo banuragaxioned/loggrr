@@ -44,6 +44,8 @@ export default withSentryConfig(config, {
   org: "loggrr",
   project: "loggrr",
 
+  telemetry: false,
+
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 

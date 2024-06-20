@@ -4,7 +4,7 @@ import { getAllUsers } from "@/server/services/allocation";
 import { NewProjectForm } from "@/components/forms/projectForm";
 import { DashboardHeader } from "@/components/ui/header";
 import { DashboardShell } from "@/components/ui/shell";
-import { pageProps } from "@/types";
+import { type pageProps } from "@/types";
 import { Table } from "./table";
 import { columns } from "./columns";
 

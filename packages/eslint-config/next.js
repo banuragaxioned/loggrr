@@ -15,7 +15,7 @@ const project = resolve(process.cwd(), "tsconfig.json");
 module.exports = {
   extends: [
     "@vercel/style-guide/eslint/node",
-    // "@vercel/style-guide/eslint/typescript",
+    "@vercel/style-guide/eslint/typescript",
     "@vercel/style-guide/eslint/browser",
     "@vercel/style-guide/eslint/react",
     "@vercel/style-guide/eslint/next",
@@ -60,5 +60,6 @@ module.exports = {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
     "tailwindcss/no-custom-classname": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
   },
 };
