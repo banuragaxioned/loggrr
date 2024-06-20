@@ -1,36 +1,36 @@
-import { Dispatch } from "react";
-import { LucideIcon } from "lucide-react";
-import { Workspace, Role, Status } from "@prisma/client";
-import { ColumnDef, Table } from "@tanstack/react-table";
+import type { Dispatch } from "react";
+import type { LucideIcon } from "lucide-react";
+import type { Workspace, Role, Status } from "@prisma/client";
+import type { ColumnDef, Table } from "@tanstack/react-table";
 
-export type UserProfile = {
+export interface UserProfile {
   name: string | null;
   id: number;
   image: string;
-};
+}
 
-export type NavLink = {
+export interface NavLink {
   title: string;
   href: string;
   disabled?: boolean;
   external?: boolean;
   icon?: LucideIcon;
-};
+}
 
-export type DashboardConfig = {
+export interface DashboardConfig {
   mainNav: MainNavItem[];
   sidebarTeam: SidebarNavItem[];
   sidebarProjects: SidebarNavItem[];
   sidebarSkills: SidebarNavItem[];
   sidebarReports: SidebarNavItem[];
   sidebarProfile: SidebarNavItem[];
-};
+}
 
-export type NavItem = {
+export interface NavItem {
   title: string;
   href: string;
   disabled?: boolean;
-};
+}
 
 export type MainNavItem = NavItem;
 
@@ -50,7 +50,7 @@ export type SidebarNavItem = {
     }
 );
 
-export type AllocationDates = {
+export interface AllocationDates {
   [date: string]: {
     id: number;
     billableTime: number;
@@ -59,9 +59,9 @@ export type AllocationDates = {
     updatedAt: Date;
     frequency?: string;
   };
-};
+}
 
-export type ProjectAllocation = {
+export interface ProjectAllocation {
   globalView: boolean;
   clientName: string;
   projectId: number;
@@ -74,9 +74,9 @@ export type ProjectAllocation = {
     allEntries: number;
     allocations: AllocationDates;
   }[];
-};
+}
 
-export type Summary = {
+export interface Summary {
   id: number;
   name: string;
   clientId: number;
@@ -86,49 +86,49 @@ export type Summary = {
   projectOwnerAvatar: string | null;
   budget: number;
   logged: number;
-};
+}
 
-export type SkillScore = {
+export interface SkillScore {
   id: number;
   name: string;
   value: number;
-};
+}
 
 export type SkillRadar = SkillScore[];
 
-export type ProjectInterval = {};
+export interface ProjectInterval {}
 
-export type ComboboxOptions = {
+export interface ComboboxOptions {
   id: number;
   name?: string | null;
-};
+}
 
-export type AllProjectsWithMembers = {
+export interface AllProjectsWithMembers {
   id: number;
   name?: string | null;
   users: ComboboxOptions[];
-};
+}
 
-export type AssignFormValues = {
+export interface AssignFormValues {
   date: Date;
   billableTime: number;
   nonBillableTime: number;
   projectId: number;
   userId: number;
   enddate?: Date;
-};
+}
 
-export type AllUsersWithAllocation = {
+export interface AllUsersWithAllocation {
   id: number;
   name?: string | null;
-};
+}
 
 export interface UserGroup {
   id: number;
   name: string;
 }
 
-export type Members = {
+export interface Members {
   id: number;
   name?: string;
   email: string;
@@ -137,11 +137,16 @@ export type Members = {
   role: Role;
   userGroup: UserGroup[];
   projectId: number;
-};
+}
 
-export type pageProps = { params: { team: Workspace["slug"]; project?: number }; searchParams: Record<string, string> };
+export interface pageProps {
+  params: { team: Workspace["slug"]; project?: number };
+  searchParams: Record<string, string>;
+}
 
-export type projectProps = { params: { project: Workspace["slug"]; team: Workspace["slug"] } };
+export interface projectProps {
+  params: { project: Workspace["slug"]; team: Workspace["slug"] };
+}
 
 export interface TableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -180,12 +185,12 @@ interface Skills {
   skill: string;
 }
 
-export type Client = {
+export interface Client {
   id: number;
   name: string;
   status: Status;
   project: number;
-};
+}
 
 export interface Project {
   billable?: boolean;
@@ -223,11 +228,11 @@ export interface TimeEntryDataObj {
   projectsLog?: ProjectLog[];
 }
 
-export type Milestone = {
+export interface Milestone {
   id: number;
   name: string;
   billable?: boolean;
-};
+}
 
 export interface GetSetDateProps {
   date: Date;

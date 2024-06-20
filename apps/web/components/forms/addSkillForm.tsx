@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Laptop, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
@@ -20,10 +19,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ComboBox } from "../ui/combobox";
 import { AllUsersWithAllocation } from "@/types";
-import { SingleSelectDropdown } from "../ui/single-select-dropdown";
 import { levels } from "@/config/skills";
+import { ComboBox } from "../ui/combobox";
+import { SingleSelectDropdown } from "../ui/single-select-dropdown";
 
 type Scores = {
   id: number;
@@ -69,7 +68,7 @@ export function AddSKill({
       const response = await fetch("/api/team/skill/assign", {
         method: "POST",
         body: JSON.stringify({
-          team: team,
+          team,
           userId: values.userId,
           skillId: values.skillId,
           skillScore: values.skillScore,
@@ -87,13 +86,13 @@ export function AddSKill({
   }
 
   const handelUsers = (selected: string) => {
-    const user = users.find((obj) => obj.id === +selected);
+    const user = users.find((obj) => obj.id === Number(selected));
     setSelectedUser(user);
     form.setValue("userId", user?.id ?? 0);
   };
 
   const handleSkills = (selected: string) => {
-    const skills = skillsList.find((obj) => obj.id === +selected);
+    const skills = skillsList.find((obj) => obj.id === Number(selected));
     setSelectedSkill(skills);
     form.setValue("skillId", skills?.id ?? 0);
   };

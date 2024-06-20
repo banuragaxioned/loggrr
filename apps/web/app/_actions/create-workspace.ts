@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/server/db";
 import { z } from "zod";
+import { db } from "@/server/db";
 
 const schema = z.object({
   name: z.string().min(3),

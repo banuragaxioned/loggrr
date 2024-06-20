@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { User } from "next-auth";
+import type { User } from "next-auth";
 import { signOut } from "next-auth/react";
 import posthog from "posthog-js";
-
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -31,7 +31,7 @@ export async function deleteGroup(team: string, id: number) {
 
   await db.group.delete({
     where: {
-      id: id,
+      id,
       workspace: {
         slug: team,
       },

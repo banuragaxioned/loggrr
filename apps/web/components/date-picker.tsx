@@ -2,15 +2,13 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { addYears, format } from "date-fns";
 import { Calendar as CalendarIcon, Infinity } from "lucide-react";
-import { DateRange } from "react-day-picker";
-
+import type { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { AssignFormValues } from "@/types";
+import type { AssignFormValues, GetSetDateProps } from "@/types";
 import { Checkbox } from "./ui/checkbox";
-import { GetSetDateProps } from "@/types";
 
 interface DatePickerProps extends GetSetDateProps {
   children?: React.ReactNode;

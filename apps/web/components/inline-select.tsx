@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Check } from "lucide-react";
 
 interface Options {
   id: number;

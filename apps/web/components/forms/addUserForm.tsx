@@ -2,10 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetClose,
@@ -15,11 +17,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { toast } from "sonner";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Input } from "../ui/input";
 import { createUser } from "@/app/_actions/user-management";
+import { Input } from "../ui/input";
 
 export function AddUserInTeam({ team }: { team: string }) {
   const router = useRouter();
@@ -47,7 +46,7 @@ export function AddUserInTeam({ team }: { team: string }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        team: team,
+        team,
         emailAddress: values.emailAddress,
       }),
     });

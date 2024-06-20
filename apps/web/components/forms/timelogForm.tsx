@@ -8,12 +8,11 @@ import {
   MessageSquare,
   Milestone as CategoryIcon,
 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-import { ComboBox } from "../ui/combobox";
 import { Project, Milestone } from "@/types";
-import { EditReferenceObj } from "../time-entry";
 import { cn } from "@/lib/utils";
+import { ComboBox } from "../ui/combobox";
+import { EditReferenceObj } from "../time-entry";
 import { Input } from "../ui/input";
 
 export type SelectedData = {
@@ -217,7 +216,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
         >
           <div
             className={cn(
-              onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border",
+              onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0" : "border-border",
               "flex items-center justify-between rounded-b-xl px-3 py-2",
               !isProjectSelected && "pointer-events-none",
             )}

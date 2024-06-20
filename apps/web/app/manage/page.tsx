@@ -1,15 +1,12 @@
 import { getCurrentUser } from "@/server/session";
-
 import { DashboardShell } from "@/components/ui/shell";
-
+import { findUserById } from "../_actions/user-management";
 import { ProfileForm } from "./profile-form";
 import { Appearance } from "./appearance";
-import { db } from "@/server/db";
-import { findUserById } from "../_actions/user-management";
 
 export default async function Manage() {
   const user = await getCurrentUser();
-  const userDetails = await findUserById(user?.id || 0);
+  const userDetails = await findUserById(user?.id ?? 0);
 
   return (
     <DashboardShell>

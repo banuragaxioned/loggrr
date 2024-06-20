@@ -1,13 +1,11 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "./ui/dialog";
 import { Button } from "@/components/ui/button";
-
+import { type Project } from "@/types";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "./ui/dialog";
 import NotepadCards from "./notepad-cards";
 import { ScrollArea } from "./ui/scroll-area";
-import { Project } from "@/types";
-import { SelectedData } from "./forms/timelogForm";
+import { type SelectedData } from "./forms/timelogForm";
 
 const NotepadResponse = ({
   aiResponses,

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
-import { pageProps } from "@/types";
+import { type pageProps } from "@/types";
 import { isMember } from "@/server/services/members";
 
 interface DashboardLayoutProps extends pageProps {

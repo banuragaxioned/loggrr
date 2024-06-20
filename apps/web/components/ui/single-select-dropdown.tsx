@@ -1,7 +1,6 @@
 import React from "react";
-
+import type { LucideIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LucideIcon } from "lucide-react";
 
 interface option {
   id: number;

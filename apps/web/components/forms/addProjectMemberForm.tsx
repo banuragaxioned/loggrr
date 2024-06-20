@@ -4,8 +4,6 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { User } from "lucide-react";
-
-import { ComboBox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ComboBox } from "../ui/combobox";
 
 export interface Users {
   id: number;
@@ -38,8 +37,8 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
         const response = await fetch("/api/team/project/members", {
           method: "POST",
           body: JSON.stringify({
-            team: team,
-            projectId: +project,
+            team,
+            projectId: Number(project),
             userData: selectedUser,
           }),
         });
@@ -51,7 +50,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
         SheetCloseButton.current?.click();
         router.refresh();
       } catch (error) {
-        console.error("Error adding new member", error);
+        toast.error("Error adding new member");
       }
     }
   };
@@ -63,7 +62,7 @@ export function AddMemberInProject({ team, project, users }: { team: string; pro
   };
 
   const dropdownSelectHandler = (selected: string) => {
-    const selectedUser = users.find((user) => user.id === +selected);
+    const selectedUser = users.find((user) => user.id === Number(selected));
     if (selectedUser && !selectedUser?.image) {
       selectedUser.image = "";
     }

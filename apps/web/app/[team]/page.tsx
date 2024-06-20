@@ -1,12 +1,9 @@
 import { notFound } from "next/navigation";
-
 import { getCurrentUser } from "@/server/session";
 import { getAllProjects } from "@/server/services/project";
 import { getRecentEntries, getWeekWiseEntries, getTimelogLastWeek } from "@/server/services/time-entry";
-
-import { pageProps } from "@/types";
+import { type pageProps } from "@/types";
 import { getTimeInHours } from "@/lib/helper";
-
 import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
 import WeekHeatmap from "@/components/charts/week-heatmap";

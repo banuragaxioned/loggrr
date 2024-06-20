@@ -3,12 +3,9 @@ import getServerSession, { type NextAuthOptions, type DefaultSession } from "nex
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import { render } from "@react-email/render";
-
-// import EmailProvider from "next-auth/providers/email";
+import { Role } from "@prisma/client";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
-import { Role } from "@prisma/client";
-
 import WorkspaceJoinedEmail from "@/email/workspace-joined";
 import RegisterEmail from "@/email/register";
 import { siteConfig } from "@/config/site";
@@ -84,7 +81,7 @@ export const authOptions: NextAuthOptions = {
       if (isNewUser && user.email && !user.name) {
         await db.user.update({
           where: {
-            id: +user.id,
+            id: Number(user.id),
           },
           data: {
             name: user.email.split("@")[0],
@@ -97,16 +94,14 @@ export const authOptions: NextAuthOptions = {
           await db.userWorkspace.create({
             data: {
               workspaceId: 1,
-              userId: +user.id,
+              userId: Number(user.id),
               role: Role.USER,
             },
           });
 
-          if (!user) return;
-
           const registerEmailHtml = render(
             RegisterEmail({
-              siteUrl: `${siteConfig.url}`,
+              siteUrl: siteConfig.url,
               siteName: siteConfig.name,
               name: user.name ?? "",
             }),
@@ -144,7 +139,7 @@ export const authOptions: NextAuthOptions = {
           await db.userWorkspace.create({
             data: {
               workspaceId: 3,
-              userId: +user.id,
+              userId: Number(user.id),
               role: Role.USER,
             },
           });

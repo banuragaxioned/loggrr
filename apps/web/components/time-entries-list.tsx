@@ -1,14 +1,11 @@
 import { Fragment } from "react";
 import { CalendarClock, Edit, List, ListRestart, MessageSquare, Milestone as CategoryIcon, Trash } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
 import { TimeEntryDataObj } from "@/types";
-
 import { Skeleton } from "./ui/skeleton";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
-
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
 import { Button } from "./ui/button";

@@ -1,12 +1,12 @@
 "use server";
 
+import { type User, type Workspace } from "@prisma/client";
 import { db } from "@/server/db";
-import { User, Workspace } from "@prisma/client";
 
 export async function addToWorkspace(slug: Workspace["slug"], user: User) {
   try {
     await db.workspace.update({
-      where: { slug: slug },
+      where: { slug },
       data: {
         users: {
           connect: {
@@ -24,7 +24,7 @@ export async function addToWorkspace(slug: Workspace["slug"], user: User) {
 export async function removeFromWorkspace(slug: Workspace["slug"], user: User) {
   try {
     await db.workspace.update({
-      where: { slug: slug },
+      where: { slug },
       data: {
         users: {
           disconnect: {

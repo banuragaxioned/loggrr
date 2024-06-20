@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/server/db";
 import { z } from "zod";
+import { db } from "@/server/db";
 
 const timeEntry = z.object({
   date: z.date(),
@@ -17,11 +17,11 @@ export async function createTimeLog(data: Form, slug: string, userId: number, ti
     data: {
       workspace: {
         connect: {
-          slug: slug,
+          slug,
         },
       },
       date: data.date,
-      time: time,
+      time,
       user: {
         connect: {
           id: userId,
@@ -29,12 +29,12 @@ export async function createTimeLog(data: Form, slug: string, userId: number, ti
       },
       project: {
         connect: {
-          id: +data.projectId,
+          id: Number(data.projectId),
         },
       },
       milestone: {
         connect: {
-          id: +data.milestoneId,
+          id: Number(data.milestoneId),
         },
       },
       comments: data.comment,

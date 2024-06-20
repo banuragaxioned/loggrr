@@ -38,7 +38,7 @@ export async function getProjectsId(slug: string) {
 
 export const getAllUsers = async (slug: string) => {
   const users = await db.user.findMany({
-    where: { workspaces: { some: { workspace: { slug: slug } } } },
+    where: { workspaces: { some: { workspace: { slug } } } },
     select: {
       id: true,
       name: true,

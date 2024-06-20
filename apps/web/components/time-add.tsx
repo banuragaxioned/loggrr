@@ -5,9 +5,7 @@ import { CalendarPlus, Folder, List, Milestone as CategoryIcon, Minus, Plus } fr
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
-
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
-
+import { useTimeEntryState } from "@/store/use-timeentry-store";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -19,17 +17,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-
 import { cn } from "@/lib/utils";
+import { hoursToDecimal } from "@/lib/helper";
+import type { Milestone, Project } from "@/types";
 import { ClassicDatePicker } from "./date-picker";
-
-import { Milestone, Project } from "@/types";
 import { ComboBox } from "./ui/combobox";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { hoursToDecimal } from "@/lib/helper";
 
 export type SelectedData = {
   client?: Milestone;

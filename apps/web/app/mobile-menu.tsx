@@ -5,13 +5,12 @@ import { useParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { ChevronRight, LogOut, Menu, Settings } from "lucide-react";
-
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./theme-toggle";
 import { UserAvatar } from "@/components/user-avatar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./theme-toggle";
 
 interface UserPropsInterface {
   status: string | null | undefined;
@@ -22,7 +21,7 @@ interface UserPropsInterface {
 
 export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) {
   const params = useParams();
-  const slug = params?.team;
+  const slug = String(params.team);
   const { status, name, image, email } = userProps;
 
   const links = [
@@ -62,27 +61,6 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
         },
       ],
     },
-    // TODO: Commenting for future use
-    // {
-    //   id: 4,
-    //   title: "Skills",
-    //   subLinkTitle: "Skills",
-    //   subLinkDescription: "View and manage your skills.",
-    //   subLinks: [
-    //     {
-    //       id: 1,
-    //       title: "Summary",
-    //       description: "View and manage your skills.",
-    //       href: `/${slug}/skills/summary`,
-    //     },
-    //     {
-    //       id: 2,
-    //       title: "Explore",
-    //       description: "View all skills.",
-    //       href: `/${slug}/skills/explore`,
-    //     },
-    //   ],
-    // },
     {
       id: 5,
       title: "Reports",

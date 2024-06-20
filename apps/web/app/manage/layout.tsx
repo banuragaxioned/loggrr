@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
-
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/server/session";
 import { Separator } from "@/components/ui/separator";
 import { SidebarNav } from "./side-nav";

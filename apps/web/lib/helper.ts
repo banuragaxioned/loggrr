@@ -23,7 +23,7 @@ export const getTimeInHoursAndMinutes = (duration: number) => {
 // Get time in hours and minutes
 export const getTimeInHours = (duration: number) => {
   const minutesToHours = (duration / 60).toFixed(2);
-  let hours = parseFloat(minutesToHours.toString().replace(/\.0+$/, ""));
+  const hours = parseFloat(minutesToHours.toString().replace(/\.0+$/, ""));
   return hours;
 };
 
@@ -46,9 +46,8 @@ export const stringToBoolean = (inputString: string | undefined): boolean | null
     return true;
   } else if (inputString === "false") {
     return false;
-  } else {
-    return null;
   }
+  return null;
 };
 
 // Convert hours to decimal

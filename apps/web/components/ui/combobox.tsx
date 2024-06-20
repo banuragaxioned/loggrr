@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { Check, ChevronDown, Search } from "lucide-react";
-
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 type InlineComboboxProps = {
   options: ComboboxOptions[];
@@ -96,7 +95,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           {options.length > 0 ? (
             <>
               {searchable && (
-                <div className="space-between flex w-full items-center rounded-t-[5px] border-b-[1px] border-border ">
+                <div className="space-between flex w-full items-center rounded-t-[5px] border-b-[1px] border-border">
                   <Search size={16} className="ml-[10px] text-gray-400" />
                   <input
                     tabIndex={tabIndex}

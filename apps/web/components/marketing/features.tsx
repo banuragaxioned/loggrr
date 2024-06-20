@@ -1,9 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { BookOpen, Inbox, LucideGanttChartSquare, Scaling, Timer } from "lucide-react";
-
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-
 import timeTrack from "@/assets/images/svgs/time-tracking.svg";
 import smartSuggestions from "@/assets/images/svgs/smart-suggestions.svg";
 import automatedReminders from "@/assets/images/svgs/automated-reminders.svg";

@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/server/db";
 import { z } from "zod";
+import { db } from "@/server/db";
 const { PrismaAdapter } = require("@next-auth/prisma-adapter");
 
 const adapter = PrismaAdapter(db);
@@ -44,7 +44,7 @@ export async function userExists(email: string) {
   try {
     await db.user.findUniqueOrThrow({
       where: {
-        email: email,
+        email,
       },
     });
   } catch (e) {
@@ -56,7 +56,7 @@ export async function userExists(email: string) {
 export async function findUserById(id: number) {
   const result = await db.user.findUnique({
     where: {
-      id: id,
+      id,
     },
     select: {
       id: true,

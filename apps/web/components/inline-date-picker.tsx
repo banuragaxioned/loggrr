@@ -1,9 +1,7 @@
 import { ChevronLeft, ChevronRight, Circle, Redo2 } from "lucide-react";
 import { addDays, isAfter, isToday, startOfToday } from "date-fns";
-
 import { cn } from "@/lib/utils";
 import { GetSetDateProps } from "@/types";
-
 import { Button } from "@/components/ui/button";
 import { getDateString } from "./time-entry";
 import { ClassicDatePicker } from "./date-picker";

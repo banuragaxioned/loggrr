@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageProps } from "@/types";
+import { type pageProps } from "@/types";
 import { getLogged } from "@/server/services/time-entry";
 import { getStartandEndDates } from "@/lib/months";
 import { DashboardShell } from "@/components/ui/shell";

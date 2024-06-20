@@ -3,18 +3,16 @@
 import * as React from "react";
 import { Boxes, Check, ChevronRight, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
-
-import { Role } from "@prisma/client";
+import { useParams } from "next/navigation";
+import type { Role } from "@prisma/client";
 import { cn } from "@/lib/utils";
-
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-interface TeamSwitcherProps extends PopoverTriggerProps {}
+type TeamSwitcherProps = PopoverTriggerProps;
 
 interface Team {
   id: number;
@@ -28,7 +26,6 @@ interface Teams {
 }
 
 export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitcherProps) {
-  const router = useRouter();
   const params = useParams();
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>();
@@ -39,7 +36,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
     }
   }, [teamData]);
 
-  if (params?.team && selectedTeam?.slug !== params.team) {
+  if (params.team && selectedTeam?.slug !== params.team) {
     const team = teamData.teams.find((item) => item.slug === params.team);
     if (team) {
       setSelectedTeam(team);
@@ -73,7 +70,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
           aria-label="Select a team"
           className={cn("min-w-44 justify-between", className)}
         >
-          {selectedTeam?.name && <Boxes className="mr-2 h-5 w-5 shrink-0" />}
+          {selectedTeam?.name ? <Boxes className="mr-2 h-5 w-5 shrink-0" /> : null}
           {selectedTeam?.name ?? "Select Workspace"}
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>

@@ -1,10 +1,9 @@
 import React from "react";
 import { Info } from "lucide-react";
-
+import { getRandomColor } from "@/lib/random-colors";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { RecentEntryProps } from "./time-entry";
-import { getRandomColor } from "@/lib/random-colors";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const RecentEntries = ({

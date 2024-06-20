@@ -5,19 +5,16 @@ import { useParams, usePathname } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import posthog from "posthog-js";
 import { Clock, Loader } from "lucide-react";
-
 import { excludedNavRoutes, siteConfig } from "@/config/site";
-
-import { NavMenu } from "./nav-menu";
-import TeamSwitcher from "./team-switcher";
-
 import { TimeAdd } from "@/components/time-add";
 import { UserAccountNav } from "@/components/user-account";
-import { MobileNavMenu } from "./mobile-menu";
 import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/command-action";
 import { Button } from "@/components/ui/button";
-import { Project } from "@/types";
+import { type Project } from "@/types";
+import { NavMenu } from "./nav-menu";
+import TeamSwitcher from "./team-switcher";
+import { MobileNavMenu } from "./mobile-menu";
 
 export function SiteHeader({ projects }: { projects?: Project[] }) {
   const params = useParams();

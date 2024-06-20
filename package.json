@@ -11,6 +11,7 @@
     "build:email": "turbo build --filter email",
     "start": "turbo start",
     "lint": "turbo run lint",
+    "lint-fix": "turbo run lint -- --fix",
     "clean": "turbo clean",
     "check-types": "turbo check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",

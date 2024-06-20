@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    NODE_ENV: z.enum(["development", "test", "production"]),
+    NODE_ENV: z.enum(["development", "production"]),
     NEXTAUTH_SECRET: process.env.NODE_ENV === "production" ? z.string().min(1) : z.string().min(1).optional(),
     NEXTAUTH_URL: z.preprocess(
       // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
@@ -37,7 +37,7 @@ export const env = createEnv({
     NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
   },
   shared: {
-    NODE_ENV: z.enum(["development", "test", "production"]),
+    NODE_ENV: z.enum(["development", "production"]),
   },
   /*
    * Due to how Next.js bundles environment variables on Edge and Client,

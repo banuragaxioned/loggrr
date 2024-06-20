@@ -1,24 +1,21 @@
 "use client";
 
-import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
+import { useState, useEffect, type FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
-
-import { Milestone, Project, TimeEntryDataObj } from "@/types";
+import { useTimeEntryState } from "@/store/use-timeentry-store";
+import type { Milestone, Project, TimeEntryDataObj } from "@/types";
+import { hoursToDecimal } from "@/lib/helper";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
-
-import { SelectedData } from "./forms/timelogForm";
+import { type SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
 import AINotepad from "./notepad";
 import NotepadResponse from "./notepad-response";
-import { hoursToDecimal } from "@/lib/helper";
 
 export interface RecentEntryProps {
   id: number;

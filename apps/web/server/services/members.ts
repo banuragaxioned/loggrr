@@ -37,7 +37,7 @@ export const getMembers = async (team: string) => {
     },
   });
 
-  const flatMemberList = membersList?.map((list) => {
+  const flatMemberList = membersList.map((list) => {
     return {
       id: list.user.id,
       name: list.user.name,
@@ -54,7 +54,7 @@ export const getMembers = async (team: string) => {
 
 export const getProjectMembers = async ({ projectId, team }: { team: string; projectId: number }) => {
   const membersList = await db.usersOnProject.findMany({
-    where: { projectId: +projectId, workspace: { slug: team } },
+    where: { projectId: Number(projectId), workspace: { slug: team } },
     select: {
       user: {
         select: {
@@ -63,7 +63,7 @@ export const getProjectMembers = async ({ projectId, team }: { team: string; pro
           image: true,
           usersOnProject: {
             where: {
-              projectId: +projectId,
+              projectId: Number(projectId),
             },
             select: {
               id: true,
@@ -89,7 +89,7 @@ export const isMember = async (slug: string, userId: number) => {
     const response = await db.userWorkspace.findFirstOrThrow({
       where: {
         workspace: {
-          slug: slug,
+          slug,
         },
         user: {
           id: userId,
@@ -97,12 +97,8 @@ export const isMember = async (slug: string, userId: number) => {
       },
     });
 
-    if (!response) {
-      throw new Error("You are not a member of this workspace");
-    }
-
     return response;
   } catch (err) {
-    // TODO
+    throw new Error("You are not a member of this workspace");
   }
 };

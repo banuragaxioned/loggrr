@@ -2,16 +2,14 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
+import { startOfDay, addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
 import { Info } from "lucide-react";
-import { startOfDay } from "date-fns";
 import { useTheme } from "next-themes";
 import { Card, Flex, Text } from "@tremor/react";
+import { useTimeEntryState } from "@/store/use-timeentry-store";
+import { Skeleton } from "../ui/skeleton";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
-import { Skeleton } from "../ui/skeleton";
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 interface TimeEntrySum {
   date: Date;

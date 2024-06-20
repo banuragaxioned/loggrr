@@ -56,10 +56,14 @@ module.exports = {
   ],
   // add rules configurations here
   rules: {
+    "@next/next/no-html-link-for-pages": "off",
+    "react/jsx-key": "off",
+    "tailwindcss/no-custom-classname": "off",
     "import/no-default-export": "off",
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
     "tailwindcss/no-custom-classname": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
+    "import/no-named-as-default": "off",
   },
 };

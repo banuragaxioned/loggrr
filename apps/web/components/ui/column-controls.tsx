@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
-
 import { ChevronsUpDown, ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const ColumnControls = ({ children, setSortingType, sortingType, id, index }: any) => {
   return (

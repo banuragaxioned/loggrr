@@ -6,16 +6,14 @@ import { useParams, usePathname, useRouter, useSearchParams } from "next/navigat
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
-
 import { cn } from "@/lib/utils";
-import { Assignment, DataTableToolbarProps } from "@/types";
+import type { Assignment, DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
-
 import { Button } from "@/components/ui/button";
-import MultiSelectFilter from "./multiselect-filters";
-import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
 import { DateRangePicker } from "@/components/custom/date-range-picker";
+import MultiSelectFilter from "./multiselect-filters";
+import { type ClientAndUserInterface } from "./data-table";
 
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
