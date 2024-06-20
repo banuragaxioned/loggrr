@@ -39,7 +39,8 @@
     "EMAIL_PORT",
     "OPENAI_API_KEY",
     "NEXT_PUBLIC_POSTHOG_HOST",
-    "NEXT_PUBLIC_POSTHOG_KEY"
+    "NEXT_PUBLIC_POSTHOG_KEY",
+    "SENTRY_AUTH_TOKEN"
   ],
   "globalPassThroughEnv": ["NODE_ENV", "CI", "VERCEL", "VERCEL_ENV", "VERCEL_URL", "npm_lifecycle_event"],
   "globalDependencies": ["**/.env.local"]
