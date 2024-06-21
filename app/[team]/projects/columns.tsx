@@ -1,12 +1,15 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Status } from "@prisma/client";
 import { UserAvatar } from "@/components/user-avatar";
 import { getTimeInHours } from "@/lib/helper";
-import { Info } from "lucide-react";
 import { CustomTooltip } from "@/components/custom/tooltip";
+
+import { cn } from "@/lib/utils";
+import StatusDropdown from "./status-dropdown";
 
 export type Projects = {
   id: number;
@@ -73,44 +76,18 @@ export const columns: ColumnDef<Projects>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     filterFn: "arrIncludesSome",
   },
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div
-  //         className={cn("invisible flex items-center gap-x-3 group-hover:visible")}
-  //         onClick={(e) => e.stopPropagation()}
-  //       >
-  //         <Popover>
-  //           <PopoverTrigger asChild>
-  //             <Button
-  //               size={"sm"}
-  //               className="h-0 border-none bg-transparent p-3 text-primary hover:text-primary-foreground"
-  //               title="More"
-  //             >
-  //               <MoreVertical height={16} width={16} />
-  //             </Button>
-  //           </PopoverTrigger>
-  //           <PopoverContent className="w-auto overflow-hidden p-0 text-sm">
-  //             <div className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-primary">
-  //               <Edit height={16} width={16} className="mr-2" />
-  //               Edit
-  //             </div>
-  //             <div className="hover:bg-hover flex cursor-pointer items-center border-b border-border p-2 text-destructive">
-  //               <Delete height={16} width={16} className="mr-2" />
-  //               Delete
-  //             </div>
-  //             <div className="hover:bg-hover flex cursor-pointer items-center p-2">
-  //               <Archive height={16} width={16} className="mr-2" />
-  //               Archive
-  //             </div>
-  //           </PopoverContent>
-  //         </Popover>
-  //       </div>
-  //     );
-  //   },
-  //   meta: {
-  //     className: "w-[10%]",
-  //   },
-  // },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const { id, status } = row.original;
+      return (
+        <div className={cn("flex items-center gap-x-3")} onClick={(e) => e.stopPropagation()}>
+          <StatusDropdown id={id} status={status} />
+        </div>
+      );
+    },
+    meta: {
+      className: "w-[20px]",
+    },
+  },
 ];
