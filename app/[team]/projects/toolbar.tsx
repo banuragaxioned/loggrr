@@ -9,11 +9,14 @@ import { DataTableToolbarProps } from "@/types";
 import { removeDuplicatesFromArray } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
   const client = useSearchParams().get("client");
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered = table.getState().columnFilters.length > 0 || status;
 
   const uniqueClientList = removeDuplicatesFromArray(
     table.options.data.map((client: { clientName: string }) => client.clientName) as [],
@@ -37,12 +40,18 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="w-40 lg:w-64"
         />
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
-        )}
         {table.getColumn("clientName") && (
           <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
         )}
+        <Button variant="outline" size="sm" asChild>
+          <Link
+            href={`?${new URLSearchParams({
+              status: status === "all" ? "" : "all",
+            })}`}
+          >
+            Show {status === "all" ? "Published" : "All"}
+          </Link>
+        </Button>
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
             Reset

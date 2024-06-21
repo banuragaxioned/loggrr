@@ -241,9 +241,9 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
   return result.map((item) => ({ id: item.user.id, name: item.user.name }));
 };
 
-export async function getProjects(slug: string) {
+export async function getProjects(slug: string, status: string = "") {
   const projects = await db.project.findMany({
-    where: { workspace: { slug } },
+    where: { workspace: { slug }, ...(status !== "all" && { status: { equals: "PUBLISHED" } }) },
     select: {
       id: true,
       name: true,
