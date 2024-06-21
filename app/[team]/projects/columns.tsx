@@ -16,6 +16,7 @@ export type Projects = {
   name: string | null | undefined;
   status: Status;
   clientName: string;
+  clientId: number;
   budget: number | null;
   logged: number;
   owner: string | null;

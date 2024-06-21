@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 export default async function Projects({ params, searchParams }: pageProps) {
   const { team } = params;
-  const { status } = searchParams;
-  const projectList = await getProjects(team, status);
+  const { status, clients: selectedClients } = searchParams;
+  const projectList = await getProjects(team, status, selectedClients);
   const clients = await getClients(team);
   const users = await getAllUsers(team);
 
