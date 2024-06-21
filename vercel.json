@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/team/ai": {
+    "app/api/team/ai": {
       "maxDuration": 30
     }
   }
