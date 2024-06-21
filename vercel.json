@@ -2,6 +2,9 @@
   "functions": {
     "app/api/team/ai": {
       "maxDuration": 30
+    },
+    "app/**/reports/logged": {
+      "maxDuration": 30
     }
   }
 }
