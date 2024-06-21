@@ -7,6 +7,10 @@ import * as typechat from "./Typechat/typechat";
 import { createTypeScriptJsonValidator } from "./Typechat/ts/validate";
 import { createOpenAILanguageModel } from "./Typechat/model";
 
+export const config = {
+  maxDuration: 30,
+};
+
 type TimeLog = {
   data: {
     id: number;
