@@ -73,6 +73,7 @@ export async function GET(req: NextRequest) {
                 name: true,
               },
             },
+            status: true,
           },
         },
         milestone: {
@@ -116,6 +117,7 @@ export async function GET(req: NextRequest) {
           name: current.project.name,
           billable: current.project.billable,
           client: current.project.client,
+          status: current.project.status,
         };
         const index = projectsLog.findIndex((obj) => obj?.project?.id === current.project.id); // Check if project exists
         if (index > -1) {
