@@ -402,6 +402,7 @@ export const getAllProjects = async (userId?: number, team?: string) => {
           userId,
         },
       },
+      status: "PUBLISHED",
       ...(team && {
         workspace: {
           slug: team,
