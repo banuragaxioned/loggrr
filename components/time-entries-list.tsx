@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { toast } from "sonner";
 
 interface TimeEntries {
   entries: TimeEntryDataObj;
@@ -67,6 +68,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             };
 
             const isEditing = edit.isEditing && edit.id === data.id;
+            const isEditable = entryData.project.status !== "ARCHIVED";
 
             return (
               <Fragment key={i}>
@@ -110,7 +112,13 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                     <div className="mb-1 flex items-center justify-between">
                       <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
                         <span
-                          onClick={() => editEntryHandler(tempObj, data.id)}
+                          onClick={() => {
+                            if (isEditable) {
+                              editEntryHandler(tempObj, data.id);
+                            } else {
+                              toast.message("You can't edit an archived project entry");
+                            }
+                          }}
                           className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
                         >
                           {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}

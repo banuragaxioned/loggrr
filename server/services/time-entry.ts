@@ -68,6 +68,9 @@ export const getRecentEntries = async (slug: string, userId: number) => {
         gte: sevenDaysAgo,
       },
       userId,
+      project: {
+        status: "PUBLISHED",
+      },
     },
     select: {
       id: true,

@@ -12,9 +12,10 @@ export const metadata: Metadata = {
   title: `Projects`,
 };
 
-export default async function Projects({ params }: pageProps) {
+export default async function Projects({ params, searchParams }: pageProps) {
   const { team } = params;
-  const projectList = await getProjects(team);
+  const { status, clients: selectedClients } = searchParams;
+  const projectList = await getProjects(team, status, selectedClients);
   const clients = await getClients(team);
   const users = await getAllUsers(team);
 

@@ -241,9 +241,21 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
   return result.map((item) => ({ id: item.user.id, name: item.user.name }));
 };
 
-export async function getProjects(slug: string) {
+export async function getProjects(slug: string, status: string = "", clients?: string) {
   const projects = await db.project.findMany({
-    where: { workspace: { slug } },
+    where: {
+      workspace: { slug },
+      ...(status !== "all" && {
+        status: { equals: "PUBLISHED" },
+      }),
+      ...(clients && {
+        client: {
+          id: {
+            in: clients.split(",").map((id) => +id),
+          },
+        },
+      }),
+    },
     select: {
       id: true,
       name: true,
@@ -285,6 +297,7 @@ export async function getProjects(slug: string) {
     billable: project.billable,
     interval: project.interval,
     clientName: project.client.name,
+    clientId: project.client.id,
     owner: project.owner.name,
     ownerImage: project.owner.image,
     members: project.usersOnProject,
@@ -353,7 +366,7 @@ export async function getClients(slug: string) {
       name: true,
       status: true,
       project: {
-        distinct: "name",
+        distinct: "id",
       },
     },
     orderBy: {
@@ -389,6 +402,7 @@ export const getAllProjects = async (userId?: number, team?: string) => {
           userId,
         },
       },
+      status: "PUBLISHED",
       ...(team && {
         workspace: {
           slug: team,

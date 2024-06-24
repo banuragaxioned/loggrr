@@ -1,32 +1,53 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { Briefcase, ListRestart } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { clientStatuses } from "@/config/filters";
-import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
-import { ListRestart } from "lucide-react";
 import { DataTableToolbarProps } from "@/types";
-import { removeDuplicatesFromArray } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
-export function DataTableToolbar<TData extends { clientName: string }>({ table }: DataTableToolbarProps<TData>) {
-  const client = useSearchParams().get("client");
+import MultiSelectFilter from "../(reports)/reports/logged/multiselect-filters";
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+export function DataTableToolbar<TData extends { clientName: string; clientId: number }>({
+  table,
+}: DataTableToolbarProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const clients = searchParams.get("clients");
+  const status = searchParams.get("status");
 
-  const uniqueClientList = removeDuplicatesFromArray(
-    table.options.data.map((client: { clientName: string }) => client.clientName) as [],
-  );
-  const clientList = uniqueClientList.map((name: string) => ({
-    label: name,
-    value: name,
-  }));
+  const [uniqueClients, setUniqueClients] = useState<{ name: string; id: number }[]>([]);
+
+  const clientFilter = {
+    title: "Clients",
+    searchable: true,
+    icon: <Briefcase size={16} />,
+    options: uniqueClients,
+  };
+
+  const isFiltered = table.getState().columnFilters.length > 0 || status || clients;
 
   useEffect(() => {
-    client && table.getColumn("clientName")?.setFilterValue(Array(client));
+    const allClients = table.options.data.map((item) => ({ name: item.clientName, id: item.clientId }));
+    const filteredClients = allClients.filter((item, index, self) => index === self.findIndex((t) => t.id === item.id));
+    setUniqueClients(filteredClients);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
+
+  const handleShowArchived = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.currentTarget.checked;
+    router.push(
+      pathname +
+        "?" +
+        new URLSearchParams({
+          status: isChecked ? "all" : "",
+          clients: clients ?? "",
+        }),
+    );
+  };
 
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
@@ -37,14 +58,28 @@ export function DataTableToolbar<TData extends { clientName: string }>({ table }
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="w-40 lg:w-64"
         />
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={clientStatuses} />
-        )}
-        {table.getColumn("clientName") && (
-          <DataTableFacetedFilter column={table.getColumn("clientName")} title="Client" options={clientList} />
-        )}
+        <MultiSelectFilter values={clientFilter} />
+        <div className="flex select-none items-center space-x-2">
+          <input
+            type="checkbox"
+            id="archived"
+            className="flex h-4 w-4 cursor-pointer rounded-md border border-input bg-background p-0 text-sm accent-current ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            onChange={handleShowArchived}
+            checked={status === "all"}
+          />
+          <label htmlFor="archived" className="cursor-pointer text-sm font-medium leading-none">
+            Show archived
+          </label>
+        </div>
         {isFiltered && (
-          <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              table.resetColumnFilters();
+              router.push("?");
+            }}
+            className="h-8 px-2 lg:px-3"
+          >
             Reset
             <ListRestart className="ml-2 h-4 w-4" />
           </Button>
