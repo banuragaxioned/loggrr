@@ -1,19 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { Briefcase, ListRestart } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Briefcase, ListRestart } from "lucide-react";
 import { DataTableToolbarProps } from "@/types";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 
 import MultiSelectFilter from "../(reports)/reports/logged/multiselect-filters";
-import { useEffect, useState } from "react";
 
 export function DataTableToolbar<TData extends { clientName: string; clientId: number }>({
   table,
 }: DataTableToolbarProps<TData>) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const clients = searchParams.get("clients");
   const status = searchParams.get("status");
@@ -27,7 +28,7 @@ export function DataTableToolbar<TData extends { clientName: string; clientId: n
     options: uniqueClients,
   };
 
-  const isFiltered = table.getState().columnFilters.length > 0 || status;
+  const isFiltered = table.getState().columnFilters.length > 0 || status || clients;
 
   useEffect(() => {
     const allClients = table.options.data.map((item) => ({ name: item.clientName, id: item.clientId }));
@@ -35,6 +36,18 @@ export function DataTableToolbar<TData extends { clientName: string; clientId: n
     setUniqueClients(filteredClients);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  const handleShowArchived = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.currentTarget.checked;
+    router.push(
+      pathname +
+        "?" +
+        new URLSearchParams({
+          status: isChecked ? "all" : "",
+          clients: clients ?? "",
+        }),
+    );
+  };
 
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
@@ -46,16 +59,18 @@ export function DataTableToolbar<TData extends { clientName: string; clientId: n
           className="w-40 lg:w-64"
         />
         <MultiSelectFilter values={clientFilter} />
-        <Button variant="outline" size="sm" asChild>
-          <Link
-            href={`?${new URLSearchParams({
-              status: status === "all" ? "" : "all",
-              clients: clients ?? "",
-            })}`}
-          >
-            Show {status === "all" ? "Published" : "All"}
-          </Link>
-        </Button>
+        <div className="flex select-none items-center space-x-2">
+          <input
+            type="checkbox"
+            id="archived"
+            className="flex h-4 w-4 cursor-pointer rounded-md border border-input bg-background p-0 text-sm accent-current ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            onChange={handleShowArchived}
+            checked={status === "all"}
+          />
+          <label htmlFor="archived" className="cursor-pointer text-sm font-medium leading-none">
+            Show archived
+          </label>
+        </div>
         {isFiltered && (
           <Button
             variant="ghost"

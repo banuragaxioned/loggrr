@@ -24,7 +24,7 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
       const data = await response.json();
       if (response.ok) {
         router.refresh();
-        toast.success(`Project ${data.status === "PUBLISHED" ? "published" : "archived"}!`);
+        toast.message(`Project ${data.status === "PUBLISHED" ? "unarchived" : "archived"}`);
         return;
       }
 
@@ -45,7 +45,7 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
         <PopoverClose asChild>
           <Button size="sm" variant="ghost" onClick={() => updateProjectStatus(id, status)}>
             {status === "PUBLISHED" ? <Archive size={16} className="mr-2" /> : <Activity size={16} className="mr-2" />}
-            {status === "PUBLISHED" ? "Archive" : "Publish"}
+            {status === "PUBLISHED" ? "Archive" : "Unarchive"}
           </Button>
         </PopoverClose>
       </PopoverContent>
