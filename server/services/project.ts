@@ -468,12 +468,9 @@ export const getTasks = async (projectId: number, team: string) => {
       id: true,
       name: true,
       budget: true,
+      status: true,
     },
   });
 
-  return tasks.map((task) => ({
-    id: task.id,
-    name: task.name,
-    budget: task.budget,
-  }));
+  return tasks;
 };

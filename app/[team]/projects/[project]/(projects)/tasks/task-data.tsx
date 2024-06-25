@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Edit, Trash, Hourglass, ClipboardCheck } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { Edit, Trash, Hourglass, ClipboardCheck, Archive, Activity } from "lucide-react";
 import { Badge } from "@tremor/react";
 import { toast } from "sonner";
 
@@ -20,12 +20,14 @@ import {
 } from "@/components/ui/dialog";
 
 import { ProjectTaskForm } from "@/components/forms/projectTaskForm";
+import { updateTaskStatus } from "@/app/_actions/update-status";
 
 export interface TaskDataProps {
   taskList: {
     id: number;
     name: string;
     budget: number | null;
+    status: string;
   }[];
   team: string;
   project: number;
@@ -39,6 +41,7 @@ export interface EditReferenceObj {
 
 const TaskData = ({ taskList, team, project }: TaskDataProps) => {
   const router = useRouter();
+  const params = useParams();
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -90,6 +93,17 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
               ...item,
               name: item.name,
               budget: item.budget,
+              status: item.status,
+            };
+
+            const statusToUpdate = item.status === "PUBLISHED" ? "ARCHIVED" : "PUBLISHED";
+
+            const updateTask = async () => {
+              const response = await updateTaskStatus(params.team as string, +params.project, item.id, statusToUpdate);
+              if (response) {
+                toast.message(`Task ${statusToUpdate === "PUBLISHED" ? "unarchived" : "archived"}`);
+                router.refresh();
+              }
             };
 
             return (
@@ -100,20 +114,24 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                     <p className="text-sm font-medium">{item?.name}</p>
                   </div>
                 </div>
-                <div className="invisible flex gap-4 group-hover:visible">
+                <div className="invisible flex gap-1 group-hover:visible">
+                  <button onClick={updateTask} title="Archive" className="p-1 hover:opacity-75">
+                    {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
+                  </button>
                   <button
                     onClick={() => {
                       setIsFormOpen(true);
                       editEntryHandler(tempObj, item.id);
                     }}
                     title="Edit"
+                    className="p-1 hover:opacity-75"
                   >
                     <Edit size={16} />
                   </button>
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <button title="Delete">
+                      <button title="Delete" className="p-1 hover:opacity-75">
                         <Trash size={16} className="text-destructive" />
                       </button>
                     </DialogTrigger>
