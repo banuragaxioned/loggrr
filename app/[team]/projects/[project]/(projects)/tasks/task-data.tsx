@@ -110,7 +110,11 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
               </div>
             </div>
             <div className="flex gap-1 group-hover:visible md:invisible">
-              <button onClick={updateTask} title="Archive" className="p-1 hover:opacity-75">
+              <button
+                onClick={updateTask}
+                title={item.status === "PUBLISHED" ? "Archive" : "Unarchive"}
+                className="p-1 hover:opacity-75"
+              >
                 {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
               </button>
               <button

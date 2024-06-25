@@ -110,7 +110,11 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
               </div>
             </div>
             <div className="flex gap-1 group-hover:visible md:invisible">
-              <button onClick={updateMilestone} title="Archive" className="p-1 hover:opacity-75">
+              <button
+                onClick={updateMilestone}
+                title={item.status === "PUBLISHED" ? "Archive" : "Unarchive"}
+                className="p-1 hover:opacity-75"
+              >
                 {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
               </button>
               <button
@@ -123,7 +127,6 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
               >
                 <Edit size={16} />
               </button>
-
               <Dialog>
                 <DialogTrigger asChild>
                   <button title="Delete" className="p-1 hover:opacity-75">
