@@ -74,11 +74,11 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
               data.task?.status !== "ARCHIVED";
             let messageFor = "";
             if (entryData.project.status === "ARCHIVED") {
-              messageFor = "project";
+              messageFor = "Project";
             } else if (data.milestone?.status === "ARCHIVED") {
-              messageFor = "category";
+              messageFor = "Category";
             } else if (data.task?.status === "ARCHIVED") {
-              messageFor = "task";
+              messageFor = "Task";
             }
 
             return (
@@ -127,7 +127,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             if (isEditable) {
                               editEntryHandler(tempObj, data.id);
                             } else {
-                              toast.message(`You can't edit an archived ${messageFor} time entry`);
+                              toast.message(`${messageFor} archived. No modifications allowed.`);
                             }
                           }}
                           className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
@@ -163,7 +163,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           <span
                             className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
                             onClick={() => {
-                              toast.message(`You can't delete an archived ${messageFor} time entry`);
+                              toast.message(`${messageFor} archived. No modifications allowed.`);
                             }}
                           >
                             <Trash size={16} />
