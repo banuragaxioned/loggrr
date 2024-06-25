@@ -44,6 +44,10 @@ export function NewMilestoneForm({ team, project, edit, setEdit, isFormOpen, set
   const [isOngoing, setOngoing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      budget: "",
+    },
   });
 
   useEffect(() => {

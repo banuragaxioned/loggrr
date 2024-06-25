@@ -41,6 +41,10 @@ export function ProjectTaskForm({ team, project, edit, setEdit, isFormOpen, setI
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      budget: "",
+    },
   });
 
   useEffect(() => {

@@ -18,10 +18,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import { ProjectTaskForm } from "@/components/forms/projectTaskForm";
 import { updateTaskStatus } from "@/app/_actions/update-status";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface ListProps {
   id: number;
@@ -109,7 +109,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 <p className="text-sm font-medium">{item?.name}</p>
               </div>
             </div>
-            <div className="invisible flex gap-1 group-hover:visible">
+            <div className="flex gap-1 group-hover:visible md:invisible">
               <button onClick={updateTask} title="Archive" className="p-1 hover:opacity-75">
                 {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
               </button>
@@ -169,7 +169,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
           <Accordion type="single" collapsible className="w-full" defaultValue="published">
             <AccordionItem value="published" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Published task
+                Published tasks
               </AccordionTrigger>
               <AccordionContent>
                 {publishedTasks.length > 0 ? List(publishedTasks) : <p className="py-3.5">No published task found!</p>}
@@ -179,7 +179,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="archived" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Archived task
+                Archived tasks
               </AccordionTrigger>
               <AccordionContent>
                 {archivedTasks.length > 0 ? List(archivedTasks) : <p className="py-3.5">No archived task found!</p>}

@@ -447,11 +447,7 @@ export const getMilestones = async (projectId: number, team: string) => {
     },
   });
 
-  return milestoneList.map((milestone) => ({
-    id: milestone?.id,
-    name: milestone.name,
-    budget: milestone.budget,
-  }));
+  return milestoneList;
 };
 
 export const getTasks = async (projectId: number, team: string) => {

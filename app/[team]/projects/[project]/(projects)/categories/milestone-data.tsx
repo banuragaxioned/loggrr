@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Edit, Hourglass, Milestone as CategoryIcon, Trash } from "lucide-react";
+import { Edit, Hourglass, Milestone as CategoryIcon, Trash, Archive, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@tremor/react";
 
@@ -18,15 +18,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import { NewMilestoneForm } from "@/components/forms/milestonesForm";
+import { updateMilestoneStatus } from "@/app/_actions/update-status";
+
+interface ListProps {
+  id: number;
+  name: string;
+  budget: number | null;
+  status: string;
+}
 
 export interface MilestoneDataProps {
-  milestoneList: {
-    id: number;
-    name: string;
-    budget: number | null;
-  }[];
+  milestoneList: ListProps[];
   team: string;
   project: number;
 }
@@ -73,6 +78,82 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
     }
   };
 
+  const archivedMilestones = milestoneList.filter((milestone) => milestone.status === "ARCHIVED");
+  const publishedMilestones = milestoneList.filter((milestone) => milestone.status === "PUBLISHED");
+
+  const List = (data: ListProps[]) => (
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {data.map((item, index) => {
+        const tempObj = {
+          ...item,
+          name: item.name,
+          budget: item.budget,
+          status: item.status,
+        };
+
+        const statusToUpdate = item.status === "PUBLISHED" ? "ARCHIVED" : "PUBLISHED";
+
+        const updateMilestone = async () => {
+          const response = await updateMilestoneStatus(team, +project, item.id, statusToUpdate);
+          if (response) {
+            toast.message(`Category ${statusToUpdate === "PUBLISHED" ? "unarchived" : "archived"}`);
+            router.refresh();
+          }
+        };
+
+        return (
+          <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
+            <div className="flex items-center justify-start space-x-5">
+              <div className="flex gap-2">
+                {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                <p className="text-sm font-medium">{item?.name}</p>
+              </div>
+            </div>
+            <div className="flex gap-1 group-hover:visible md:invisible">
+              <button onClick={updateMilestone} title="Archive" className="p-1 hover:opacity-75">
+                {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
+              </button>
+              <button
+                onClick={() => {
+                  setIsFormOpen(true);
+                  editEntryHandler(tempObj, item.id);
+                }}
+                title="Edit"
+                className="p-1 hover:opacity-75"
+              >
+                <Edit size={16} />
+              </button>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button title="Delete" className="p-1 hover:opacity-75">
+                    <Trash size={16} className="text-destructive" />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Are you sure to delete this category?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete your category.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" size="sm" asChild>
+                      <DialogClose>Cancel</DialogClose>
+                    </Button>
+                    <Button type="button" size="sm" onClick={() => deleteMilestone(item.id)} asChild>
+                      <DialogClose>Delete</DialogClose>
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+
   return (
     <>
       <NewMilestoneForm
@@ -84,61 +165,35 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
         setIsFormOpen={setIsFormOpen}
       />
       {Array.isArray(milestoneList) && milestoneList.length ? (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {milestoneList.map((item, index) => {
-            const tempObj = {
-              ...item,
-              name: item.name,
-              budget: item.budget,
-            };
-
-            return (
-              <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
-                <div className="flex items-center justify-start space-x-5">
-                  <div className="flex gap-2">
-                    {item.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
-                    <p className="text-sm font-medium">{item?.name}</p>
-                  </div>
-                </div>
-                <div className="invisible flex gap-4 group-hover:visible">
-                  <button
-                    onClick={() => {
-                      setIsFormOpen(true);
-                      editEntryHandler(tempObj, item.id);
-                    }}
-                    title="Edit"
-                  >
-                    <Edit size={16} />
-                  </button>
-
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button title="Delete">
-                        <Trash size={16} className="text-destructive" />
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Are you sure to delete this category?</DialogTitle>
-                        <DialogDescription>
-                          This action cannot be undone. This will permanently delete your category and all associated
-                          time entries.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <Button type="button" variant="outline" size="sm" asChild>
-                          <DialogClose>Cancel</DialogClose>
-                        </Button>
-                        <Button type="button" size="sm" onClick={() => deleteMilestone(item.id)} asChild>
-                          <DialogClose>Delete</DialogClose>
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </Card>
-            );
-          })}
+        <div className="flex flex-col gap-4">
+          <Accordion type="single" collapsible className="w-full" defaultValue="published">
+            <AccordionItem value="published" className="rounded-xl border px-4">
+              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
+                Published categories
+              </AccordionTrigger>
+              <AccordionContent>
+                {publishedMilestones.length > 0 ? (
+                  List(publishedMilestones)
+                ) : (
+                  <p className="py-3.5">No published category found!</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="archived" className="rounded-xl border px-4">
+              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
+                Archived categories
+              </AccordionTrigger>
+              <AccordionContent>
+                {archivedMilestones.length > 0 ? (
+                  List(archivedMilestones)
+                ) : (
+                  <p className="py-3.5">No archived category found!</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       ) : (
         <Card className="flex h-[200px] flex-col items-center justify-center space-y-2 p-11 text-center shadow-none lg:h-[414px]">
