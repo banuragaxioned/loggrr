@@ -68,7 +68,18 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             };
 
             const isEditing = edit.isEditing && edit.id === data.id;
-            const isEditable = entryData.project.status !== "ARCHIVED";
+            const isEditable =
+              entryData.project.status !== "ARCHIVED" &&
+              data.milestone?.status !== "ARCHIVED" &&
+              data.task?.status !== "ARCHIVED";
+            let messageFor = "";
+            if (entryData.project.status === "ARCHIVED") {
+              messageFor = "project";
+            } else if (data.milestone?.status === "ARCHIVED") {
+              messageFor = "category";
+            } else if (data.task?.status === "ARCHIVED") {
+              messageFor = "task";
+            }
 
             return (
               <Fragment key={i}>
@@ -116,7 +127,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             if (isEditable) {
                               editEntryHandler(tempObj, data.id);
                             } else {
-                              toast.message("You can't edit an archived project time entry");
+                              toast.message(`You can't edit an archived ${messageFor} time entry`);
                             }
                           }}
                           className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
@@ -152,7 +163,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           <span
                             className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
                             onClick={() => {
-                              toast.message("You can't delete an archived project time entry");
+                              toast.message(`You can't delete an archived ${messageFor} time entry`);
                             }}
                           >
                             <Trash size={16} />

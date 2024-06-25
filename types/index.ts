@@ -228,6 +228,7 @@ export type Milestone = {
   id: number;
   name: string;
   billable?: boolean;
+  status?: Status;
 };
 
 export interface GetSetDateProps {
