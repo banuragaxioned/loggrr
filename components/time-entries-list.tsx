@@ -116,7 +116,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             if (isEditable) {
                               editEntryHandler(tempObj, data.id);
                             } else {
-                              toast.message("You can't edit an archived project entry");
+                              toast.message("You can't edit an archived project time entry");
                             }
                           }}
                           className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
@@ -124,29 +124,40 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
                         </span>
                         {/* Open a modal on delete click */}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <span className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black">
-                              <Trash size={16} />
-                            </span>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                              <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
-                              <DialogDescription>
-                                This action cannot be undone. This will permanently delete your time entry.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                              <Button type="button" variant="outline" size="sm" asChild>
-                                <DialogClose>Cancel</DialogClose>
-                              </Button>
-                              <Button type="button" size="sm" onClick={() => deleteEntryHandler(data.id)} asChild>
-                                <DialogClose>Delete</DialogClose>
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                        {isEditable ? (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <span className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black">
+                                <Trash size={16} />
+                              </span>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
+                                <DialogDescription>
+                                  This action cannot be undone. This will permanently delete your time entry.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <Button type="button" variant="outline" size="sm" asChild>
+                                  <DialogClose>Cancel</DialogClose>
+                                </Button>
+                                <Button type="button" size="sm" onClick={() => deleteEntryHandler(data.id)} asChild>
+                                  <DialogClose>Delete</DialogClose>
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        ) : (
+                          <span
+                            className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
+                            onClick={() => {
+                              toast.message("You can't delete an archived project time entry");
+                            }}
+                          >
+                            <Trash size={16} />
+                          </span>
+                        )}
                       </div>
                       <span className="shrink-0 text-sm font-semibold normal-nums opacity-60">
                         {data?.time.toFixed(2)} h
