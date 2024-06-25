@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Edit, Trash, Hourglass, ClipboardCheck, Archive, Activity } from "lucide-react";
 import { Badge } from "@tremor/react";
+import { Badge as CnBadge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -173,7 +174,12 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
           <Accordion type="single" collapsible className="w-full" defaultValue="published">
             <AccordionItem value="published" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Published tasks
+                <span>
+                  Published tasks
+                  <CnBadge variant="secondary" className="ml-2">
+                    {publishedTasks.length}
+                  </CnBadge>
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 {publishedTasks.length > 0 ? List(publishedTasks) : <p className="py-3.5">No published task found!</p>}
@@ -183,7 +189,12 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="archived" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Archived tasks
+                <span>
+                  Archived tasks
+                  <CnBadge variant="secondary" className="ml-2">
+                    {archivedTasks.length}
+                  </CnBadge>
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 {archivedTasks.length > 0 ? List(archivedTasks) : <p className="py-3.5">No archived task found!</p>}

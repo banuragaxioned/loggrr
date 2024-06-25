@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Edit, Hourglass, Milestone as CategoryIcon, Trash, Archive, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@tremor/react";
+import { Badge as CnBadge } from "@/components/ui/badge";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -172,7 +173,12 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
           <Accordion type="single" collapsible className="w-full" defaultValue="published">
             <AccordionItem value="published" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Published categories
+                <span>
+                  Published categories
+                  <CnBadge variant="secondary" className="ml-2">
+                    {publishedMilestones.length}
+                  </CnBadge>
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 {publishedMilestones.length > 0 ? (
@@ -186,7 +192,12 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="archived" className="rounded-xl border px-4">
               <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                Archived categories
+                <span>
+                  Archived categories
+                  <CnBadge variant="secondary" className="ml-2">
+                    {archivedMilestones.length}
+                  </CnBadge>
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 {archivedMilestones.length > 0 ? (
