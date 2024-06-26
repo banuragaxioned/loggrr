@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Activity, Archive, MoreVertical } from "lucide-react";
+import { Archive, ArchiveRestore, MoreVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -44,7 +44,11 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
       <PopoverContent className="w-auto overflow-hidden p-0 text-sm" align="end">
         <PopoverClose asChild>
           <Button size="sm" variant="ghost" onClick={() => updateProjectStatus(id, status)}>
-            {status === "PUBLISHED" ? <Archive size={16} className="mr-2" /> : <Activity size={16} className="mr-2" />}
+            {status === "PUBLISHED" ? (
+              <Archive size={16} className="mr-2" />
+            ) : (
+              <ArchiveRestore size={16} className="mr-2" />
+            )}
             {status === "PUBLISHED" ? "Archive" : "Unarchive"}
           </Button>
         </PopoverClose>

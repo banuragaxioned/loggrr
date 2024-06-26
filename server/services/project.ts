@@ -414,9 +414,14 @@ export const getAllProjects = async (userId?: number, team?: string) => {
       name: true,
       billable: true,
       client: { select: { id: true, name: true } },
-      milestone: { select: { id: true, budget: true, projectId: true, name: true } },
+      milestone: {
+        select: { id: true, budget: true, projectId: true, name: true },
+        where: {
+          status: "PUBLISHED",
+        },
+      },
       timeEntry: { select: { id: true, time: true, projectId: true } },
-      task: { select: { id: true, name: true } },
+      task: { select: { id: true, name: true }, where: { status: "PUBLISHED" } },
       workspace: { select: { slug: true } },
     },
     orderBy: {
@@ -447,11 +452,7 @@ export const getMilestones = async (projectId: number, team: string) => {
     },
   });
 
-  return milestoneList.map((milestone) => ({
-    id: milestone?.id,
-    name: milestone.name,
-    budget: milestone.budget,
-  }));
+  return milestoneList;
 };
 
 export const getTasks = async (projectId: number, team: string) => {
@@ -468,12 +469,9 @@ export const getTasks = async (projectId: number, team: string) => {
       id: true,
       name: true,
       budget: true,
+      status: true,
     },
   });
 
-  return tasks.map((task) => ({
-    id: task.id,
-    name: task.name,
-    budget: task.budget,
-  }));
+  return tasks;
 };

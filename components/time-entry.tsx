@@ -232,7 +232,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       for (const entry of allAiEntries) {
         const isDataValidated = () => {
           const { project, comment, time } = entry || {};
-          return project && comment?.trim().length && +(time ?? "0");
+          return project && comment?.trim().length && time && +time;
         };
 
         if (isDataValidated()) {

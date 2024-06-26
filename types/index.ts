@@ -196,7 +196,7 @@ export interface Project {
   client?: Milestone;
   workspace?: string;
   uuid?: string;
-  status?: string;
+  status?: Status;
 }
 
 export interface TimeEntryProperties {
@@ -228,6 +228,7 @@ export type Milestone = {
   id: number;
   name: string;
   billable?: boolean;
+  status?: Status;
 };
 
 export interface GetSetDateProps {
