@@ -170,44 +170,22 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
       />
       {Array.isArray(milestoneList) && milestoneList.length ? (
         <div className="flex flex-col gap-4">
-          <Accordion type="single" collapsible className="w-full" defaultValue="published">
-            <AccordionItem value="published" className="rounded-xl border px-4">
-              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                <span>
-                  Published categories
-                  <CnBadge variant="secondary" className="ml-2">
-                    {publishedMilestones.length}
-                  </CnBadge>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                {publishedMilestones.length > 0 ? (
-                  List(publishedMilestones)
-                ) : (
-                  <p className="py-3.5">No published category found!</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="archived" className="rounded-xl border px-4">
-              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                <span>
-                  Archived categories
-                  <CnBadge variant="secondary" className="ml-2">
-                    {archivedMilestones.length}
-                  </CnBadge>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                {archivedMilestones.length > 0 ? (
-                  List(archivedMilestones)
-                ) : (
-                  <p className="py-3.5">No archived category found!</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          {publishedMilestones.length > 0 && List(publishedMilestones)}
+          {archivedMilestones.length > 0 && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="archived" className="border-none">
+                <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
+                  <span>
+                    Archived categories
+                    <CnBadge variant="secondary" className="ml-2">
+                      {archivedMilestones.length}
+                    </CnBadge>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>{List(archivedMilestones)}</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
         </div>
       ) : (
         <Card className="flex h-[200px] flex-col items-center justify-center space-y-2 p-11 text-center shadow-none lg:h-[414px]">

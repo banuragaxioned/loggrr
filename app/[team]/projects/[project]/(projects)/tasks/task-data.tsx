@@ -171,36 +171,22 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
       />
       {Array.isArray(taskList) && taskList.length > 0 ? (
         <div className="flex flex-col gap-4">
-          <Accordion type="single" collapsible className="w-full" defaultValue="published">
-            <AccordionItem value="published" className="rounded-xl border px-4">
-              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                <span>
-                  Published tasks
-                  <CnBadge variant="secondary" className="ml-2">
-                    {publishedTasks.length}
-                  </CnBadge>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                {publishedTasks.length > 0 ? List(publishedTasks) : <p className="py-3.5">No published task found!</p>}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="archived" className="rounded-xl border px-4">
-              <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
-                <span>
-                  Archived tasks
-                  <CnBadge variant="secondary" className="ml-2">
-                    {archivedTasks.length}
-                  </CnBadge>
-                </span>
-              </AccordionTrigger>
-              <AccordionContent>
-                {archivedTasks.length > 0 ? List(archivedTasks) : <p className="py-3.5">No archived task found!</p>}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          {publishedTasks.length > 0 && List(publishedTasks)}
+          {archivedTasks.length > 0 && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="archived" className="border-none">
+                <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
+                  <span>
+                    Archived tasks
+                    <CnBadge variant="secondary" className="ml-2">
+                      {archivedTasks.length}
+                    </CnBadge>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>{List(archivedTasks)}</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
         </div>
       ) : (
         <Card className="flex h-[200px] flex-col items-center justify-center space-y-2 p-11 text-center shadow-none lg:h-[414px]">
