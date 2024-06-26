@@ -419,9 +419,18 @@ export const getAllProjects = async (userId?: number, team?: string) => {
         where: {
           status: "PUBLISHED",
         },
+        orderBy: {
+          name: "asc",
+        },
       },
       timeEntry: { select: { id: true, time: true, projectId: true } },
-      task: { select: { id: true, name: true }, where: { status: "PUBLISHED" } },
+      task: {
+        select: { id: true, name: true },
+        where: { status: "PUBLISHED" },
+        orderBy: {
+          name: "asc",
+        },
+      },
       workspace: { select: { slug: true } },
     },
     orderBy: {
@@ -450,6 +459,9 @@ export const getMilestones = async (projectId: number, team: string) => {
         id: +projectId,
       },
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   return milestoneList;
@@ -470,6 +482,9 @@ export const getTasks = async (projectId: number, team: string) => {
       name: true,
       budget: true,
       status: true,
+    },
+    orderBy: {
+      name: "asc",
     },
   });
 
