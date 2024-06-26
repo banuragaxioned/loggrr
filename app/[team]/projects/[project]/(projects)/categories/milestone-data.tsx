@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Edit, Hourglass, Milestone as CategoryIcon, Trash, Archive, Activity } from "lucide-react";
+import { Edit, Hourglass, Milestone as CategoryIcon, Trash, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@tremor/react";
 import { Badge as CnBadge } from "@/components/ui/badge";
@@ -116,7 +116,7 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                 title={item.status === "PUBLISHED" ? "Archive" : "Unarchive"}
                 className="p-1 hover:opacity-75"
               >
-                {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
+                {item.status === "PUBLISHED" ? <Archive size={16} /> : <ArchiveRestore size={16} />}
               </button>
               <button
                 onClick={() => {
@@ -176,7 +176,7 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
               <AccordionItem value="archived" className="border-none">
                 <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
                   <span>
-                    Archived categories
+                    Archived
                     <CnBadge variant="secondary" className="ml-2">
                       {archivedMilestones.length}
                     </CnBadge>

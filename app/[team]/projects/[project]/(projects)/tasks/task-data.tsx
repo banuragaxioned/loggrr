@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Edit, Trash, Hourglass, ClipboardCheck, Archive, Activity } from "lucide-react";
+import { Edit, Trash, Hourglass, ClipboardCheck, Archive, ArchiveRestore } from "lucide-react";
 import { Badge } from "@tremor/react";
 import { Badge as CnBadge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -116,7 +116,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 title={item.status === "PUBLISHED" ? "Archive" : "Unarchive"}
                 className="p-1 hover:opacity-75"
               >
-                {item.status === "PUBLISHED" ? <Archive size={16} /> : <Activity size={16} />}
+                {item.status === "PUBLISHED" ? <Archive size={16} /> : <ArchiveRestore size={16} />}
               </button>
               <button
                 onClick={() => {
@@ -177,7 +177,7 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
               <AccordionItem value="archived" className="border-none">
                 <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
                   <span>
-                    Archived tasks
+                    Archived
                     <CnBadge variant="secondary" className="ml-2">
                       {archivedTasks.length}
                     </CnBadge>
