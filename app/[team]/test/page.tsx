@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ClientMessage } from "@/app/_actions/ai-action";
 import { useActions, useUIState } from "ai/rsc";
 import { generateId } from "ai";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 // Force the page to be dynamic and allow streaming responses up to 30 seconds
 export const dynamic = "force-dynamic";
@@ -23,16 +25,15 @@ export default function Home() {
           </div>
         ))}
       </div>
-
       <div>
-        <input
+        <Input
           type="text"
           value={input}
           onChange={(event) => {
             setInput(event.target.value);
           }}
         />
-        <button
+        <Button
           onClick={async () => {
             setConversation((currentConversation: ClientMessage[]) => [
               ...currentConversation,
@@ -45,7 +46,7 @@ export default function Home() {
           }}
         >
           Send Message
-        </button>
+        </Button>
       </div>
     </div>
   );

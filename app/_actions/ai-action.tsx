@@ -5,12 +5,12 @@ import { openai } from "@ai-sdk/openai";
 import { ReactNode } from "react";
 import { z } from "zod";
 import { generateId } from "ai";
-import { Stock } from "@/components/ai/stock";
 import { TimeEntries } from "@/components/ai/logged";
 
 export interface ServerMessage {
   role: "user" | "assistant";
   content: string;
+  display?: ReactNode;
 }
 
 export interface ClientMessage {
@@ -25,7 +25,7 @@ export async function continueConversation(input: string): Promise<ClientMessage
   const history = getMutableAIState();
 
   const result = await streamUI({
-    model: openai("gpt-3.5-turbo"),
+    model: openai("gpt-4o"),
     messages: [...history.get(), { role: "user", content: input }],
     text: ({ content, done }) => {
       if (done) {
@@ -35,22 +35,14 @@ export async function continueConversation(input: string): Promise<ClientMessage
       return <div>{content}</div>;
     },
     tools: {
-      showStockInformation: {
-        description: "Get stock information for symbol for the last numOfMonths months",
+      // get today's date
+      getDate: {
+        description: "Get today's date",
         parameters: z.object({
-          symbol: z.string().describe("The stock symbol to get information for"),
-          numOfMonths: z.number().describe("The number of months to get historical information for"),
+          format: z.string().transform((str) => new Date(str)),
         }),
-        generate: async ({ symbol, numOfMonths }) => {
-          history.done((messages: ServerMessage[]) => [
-            ...messages,
-            {
-              role: "assistant",
-              content: `Showing stock information for ${symbol}`,
-            },
-          ]);
-
-          return <Stock symbol={symbol} numOfMonths={numOfMonths} />;
+        generate: () => {
+          return new Date().toString();
         },
       },
       showLoggedTime: {
