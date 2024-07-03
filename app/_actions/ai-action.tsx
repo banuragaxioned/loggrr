@@ -10,7 +10,6 @@ import { TimeEntries } from "@/components/ai/logged";
 export interface ServerMessage {
   role: "user" | "assistant";
   content: string;
-  display?: ReactNode;
 }
 
 export interface ClientMessage {
@@ -26,6 +25,7 @@ export async function continueConversation(input: string): Promise<ClientMessage
 
   const result = await streamUI({
     model: openai("gpt-4o"),
+    system: `You help users understand their time entries. ` + `For context, today's date is ${new Date()}. `,
     messages: [...history.get(), { role: "user", content: input }],
     text: ({ content, done }) => {
       if (done) {
@@ -36,15 +36,15 @@ export async function continueConversation(input: string): Promise<ClientMessage
     },
     tools: {
       // get today's date
-      getDate: {
-        description: "Get today's date",
-        parameters: z.object({
-          format: z.string().transform((str) => new Date(str)),
-        }),
-        generate: () => {
-          return new Date().toString();
-        },
-      },
+      // getDate: {
+      //   description: "Get today's date",
+      //   parameters: z.object({
+      //     format: z.string().transform((str) => new Date(str)),
+      //   }),
+      //   generate: () => {
+      //     return new Date().toString();
+      //   },
+      // },
       showLoggedTime: {
         description: "Get the total time logged for the user",
         parameters: z.object({
@@ -66,7 +66,6 @@ export async function continueConversation(input: string): Promise<ClientMessage
               content: `Showing logged time for for ${userId} between ${startDate} and ${endDate}`,
             },
           ]);
-
           return <TimeEntries userId={userId} startDate={startDate} endDate={endDate} />;
         },
       },

@@ -7,32 +7,22 @@ export async function TimeEntries({ userId, startDate, endDate }: { userId: numb
   const res = await getLoggedTime("axioned", userId, startOfDay(startDate), endOfDay(endDate));
   console.log(res);
 
+  // loop through the response and sum/total the time logged for each project
+  const total = res.reduce((acc, entry) => acc + (entry._sum?.time ?? 0), 0);
+
   return (
     <div>
-      {/* show sum of time logged, grouped by project */}
-      {/* <TimeCard /> */}
-      {res.map((entry) => (
-        <div key={entry.projectId}>
-          {entry.projectId}: {entry._sum.time}
-        </div>
-      ))}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardDescription>
+            {startDate.toDateString()} - {endDate.toDateString()}
+          </CardDescription>
+          <CardTitle className="text-4xl">{total / 60}</CardTitle>
+        </CardHeader>
+        <CardFooter>
+          <Progress value={(total / 60 / 7.5) * 100} />
+        </CardFooter>
+      </Card>
     </div>
-  );
-}
-
-export default function TimeCard() {
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardDescription>This Week</CardDescription>
-        <CardTitle className="text-4xl">$1,329</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="text-xs text-muted-foreground">+25% from last week</div>
-      </CardContent>
-      <CardFooter>
-        <Progress value={25} aria-label="25% increase" />
-      </CardFooter>
-    </Card>
   );
 }
