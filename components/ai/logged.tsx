@@ -1,6 +1,6 @@
 import { getLoggedTime } from "@/server/services/ai";
 import { endOfDay, startOfDay } from "date-fns";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getTimeInHours } from "@/lib/helper";
 
@@ -18,7 +18,7 @@ export async function ShowTimeEntries({
   billable?: boolean;
 }) {
   const res = await getLoggedTime(workspace, startOfDay(startDate), endOfDay(endDate), userId, billable);
-  const total = getTimeInHours(res._sum.time || 0);
+  const total = getTimeInHours(res._sum.time ?? 0);
 
   return (
     <div>
@@ -38,7 +38,7 @@ export async function ShowTimeEntries({
 }
 
 // skeleton of the logged time component
-export async function ShowTimeEntriesSkeleton({}) {
+export async function ShowTimeEntriesSkeleton() {
   return (
     <div>
       <Card>

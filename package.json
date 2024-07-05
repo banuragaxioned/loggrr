@@ -20,6 +20,7 @@
     "ncu": "pnpm dlx npm-check-updates --interactive",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
+    "sonar-scanner": "sonar-scanner -Dsonar.projectKey=loggrr -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.axioned.com",
     "analyze": "ANALYZE=true pnpm run build"
   },
   "dependencies": {
