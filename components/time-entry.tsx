@@ -4,7 +4,6 @@ import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -19,6 +18,7 @@ import RecentEntries from "./recent-entries";
 import AINotepad from "./notepad";
 import NotepadResponse from "./notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
+import { generateId } from "ai";
 
 export interface RecentEntryProps {
   id: number;
@@ -209,7 +209,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       const updatedAiResponse = data.result.data?.map((response: any) => {
         const updatedResponse = {
           ...response,
-          uuid: uuidv4(),
+          uuid: generateId(),
           project: projects
             .map((project) => ({ id: project.id, name: project.name, billable: project.billable }))
             .find((project) => project.id === response.id),
