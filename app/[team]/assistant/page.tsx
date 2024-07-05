@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
-export default function Home() {
+export default function Assistant() {
   const [input, setInput] = useState<string>("");
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
@@ -25,7 +25,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <div>
+      <div className="flex gap-2 rounded-xl border px-2 py-2">
         <Input
           type="text"
           value={input}
@@ -34,6 +34,7 @@ export default function Home() {
           }}
         />
         <Button
+          type="submit"
           onClick={async () => {
             setConversation((currentConversation: ClientMessage[]) => [
               ...currentConversation,
@@ -45,7 +46,7 @@ export default function Home() {
             setConversation((currentConversation: ClientMessage[]) => [...currentConversation, message]);
           }}
         >
-          Send Message
+          Send
         </Button>
       </div>
     </div>
