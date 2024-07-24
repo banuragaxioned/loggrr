@@ -41,25 +41,6 @@ export async function continueConversation(input: string): Promise<ClientMessage
       return <div>{content}</div>;
     },
     tools: {
-      lookupFlight: {
-        description: "lookup details for a flight",
-        parameters: z.object({
-          flightNumber: z.string().describe("The flight number"),
-        }),
-        generate: async function* ({ flightNumber }) {
-          yield `Looking up details for flight ${flightNumber}...`;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          const details = { flightNumber, departureTime: "10:00", arrivalTime: "12:00" };
-          return (
-            <div>
-              <div>Flight Number: {details.flightNumber}</div>
-              <div>Departure Time: {details.departureTime}</div>
-              <div>Arrival Time: {details.arrivalTime}</div>
-            </div>
-          );
-        },
-      },
       showLoggedTime: {
         description: "Get the total time logged for the user",
         parameters: z.object({
@@ -95,6 +76,27 @@ export async function continueConversation(input: string): Promise<ClientMessage
               endDate={endDate}
               billable={billable}
             />
+          );
+        },
+      },
+      showProjects: {
+        description: "Show the projects for the user",
+        parameters: z.object({
+          workspace: z.string().min(1).describe("The workspace slug to get the projects for"),
+          userId: z.number().optional().describe("The user ID to get the projects for"),
+        }),
+        generate: async function* ({ workspace, userId }) {
+          yield `Showing projects for ${userId} on the workspace ${workspace}.`;
+          const projects = [
+            { id: 1, name: "Project 1" },
+            { id: 2, name: "Project 2" },
+          ];
+          return (
+            <div>
+              {projects.map((project) => (
+                <div key={project.id}>{project.name}</div>
+              ))}
+            </div>
           );
         },
       },
