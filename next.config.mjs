@@ -28,9 +28,9 @@ const config = {
         permanent: true,
       },
       {
-        source: "/:team/reports",
-        destination: "/:team/reports/summary",
-        permanent: true,
+        source: "/:team/reports/logged",
+        destination: "/:team/",
+        permanent: false,
       },
     ];
   },

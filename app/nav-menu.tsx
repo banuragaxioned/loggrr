@@ -14,6 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { toast } from "sonner";
 
 export function NavMenu() {
   const params = useParams();
@@ -78,7 +79,9 @@ export function NavMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem> */}
         <NavigationMenuItem>
-          <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
+          <Link href="" passHref onClick={() => {
+            toast.error("Global Reports is temporarily unavailable. Please use Project Details page for now.")
+          }}>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>Reports</NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
