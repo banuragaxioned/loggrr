@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getCurrentUser } from "@/server/session";
 import { getAllProjects } from "@/server/services/project";
-import { getRecentEntries, getWeekWiseEntries, getTimelogLastWeek } from "@/server/services/time-entry";
+import { getRecentEntries, getTimelogLastWeek } from "@/server/services/time-entry";
 
 import { pageProps } from "@/types";
 import { getTimeInHours } from "@/lib/helper";
@@ -22,7 +22,7 @@ export default async function Dashboard({ params }: pageProps) {
   const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id);
   const recentTimeEntries = await getRecentEntries(team, user.id);
-  const sevenWeekTimeEntries = await getWeekWiseEntries(team, user.id, 7);
+  // const sevenWeekTimeEntries = await getWeekWiseEntries(team, user.id, 7);
 
   const maxHourPerDay = 7.5;
 
@@ -39,7 +39,7 @@ export default async function Dashboard({ params }: pageProps) {
           maxValue={maxHourPerDay * 5}
           type="hours"
         />
-        <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} />
+        {/* <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} /> */}
       </aside>
     </div>
   );

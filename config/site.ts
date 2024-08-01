@@ -37,11 +37,33 @@ export const siteConfig: SiteConfig = {
       title: "Skills",
       href: "/skills",
     },
+    {
+      title: "Reports",
+      href: "/reports",
+    },
   ],
   links: {
     help: "mailto:loggr@axioned.com",
   },
 };
+
+export const reportConfig: ReportingConfig[] = [
+  {
+    name: "Logged",
+    description: "Explore the time logged by your and the team.",
+    path: "/logged",
+  },
+  {
+    name: "Assigned",
+    description: "Find out who is assigned to what.",
+    path: "/assigned",
+  },
+  {
+    name: "Available",
+    description: "Find out who is available to work.",
+    path: "/available",
+  },
+];
 
 // routes that don't need nav menu
 export const excludedNavRoutes = ["/", "/thanks", "/manage", "/manage/appearance", "/manage/notifications"];

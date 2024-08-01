@@ -88,4 +88,26 @@ export const dashboardConfig: DashboardConfig = {
       // icon: CreditCard,
     },
   ],
+  sidebarReports: [
+    {
+      title: "Summary",
+      href: "/reports/summary",
+      // icon: User,
+    },
+    {
+      title: "Assigned",
+      href: "/reports/assigned",
+      // icon: FileTextIcon,
+    },
+    {
+      title: "Logged",
+      href: "/reports/logged",
+      // icon: Settings,
+    },
+    {
+      title: "Available",
+      href: "/reports/available",
+      // icon: CreditCard,
+    },
+  ],
 };

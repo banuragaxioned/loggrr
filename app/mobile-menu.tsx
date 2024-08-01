@@ -83,20 +83,20 @@ export function MobileNavMenu({ userProps }: { userProps: UserPropsInterface }) 
     //     },
     //   ],
     // },
-    // {
-    //   id: 5,
-    //   title: "Reports",
-    //   subLinkTitle: "Reporting",
-    //   subLinkDescription: "View and download reports for your projects and teams.",
-    //   subLinks: [
-    //     {
-    //       id: 1,
-    //       title: "Logged",
-    //       description: "View how many hours have been logged.",
-    //       href: `/${slug}/reports/logged`,
-    //     },
-    //   ],
-    // },
+    {
+      id: 5,
+      title: "Reports",
+      subLinkTitle: "Reporting",
+      subLinkDescription: "View and download reports for your projects and teams.",
+      subLinks: [
+        {
+          id: 1,
+          title: "Logged",
+          description: "View how many hours have been logged.",
+          href: `/${slug}/reports/logged`,
+        },
+      ],
+    },
   ];
 
   return (

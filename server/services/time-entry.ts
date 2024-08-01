@@ -27,31 +27,31 @@ export const getTimelogLastWeek = async (slug: string, userId: number) => {
   return response._sum.time ?? 0;
 };
 
-export const getWeekWiseEntries = async (slug: string, userId: number, weekCount: number = 1) => {
-  const today = new Date();
-  const totalDaysinSelectedWeek = subDays(today, weekCount * 7);
+// export const getWeekWiseEntries = async (slug: string, userId: number, weekCount: number = 1) => {
+//   const today = new Date();
+//   const totalDaysinSelectedWeek = subDays(today, weekCount * 7);
 
-  const response = await db.timeEntry.groupBy({
-    by: ["date"],
-    orderBy: {
-      date: "desc",
-    },
-    where: {
-      userId: userId,
-      workspace: {
-        slug,
-      },
-      date: {
-        gte: totalDaysinSelectedWeek,
-      },
-    },
-    _sum: {
-      time: true,
-    },
-  });
+//   const response = await db.timeEntry.groupBy({
+//     by: ["date"],
+//     orderBy: {
+//       date: "desc",
+//     },
+//     where: {
+//       userId: userId,
+//       workspace: {
+//         slug,
+//       },
+//       date: {
+//         gte: totalDaysinSelectedWeek,
+//       },
+//     },
+//     _sum: {
+//       time: true,
+//     },
+//   });
 
-  return response;
-};
+//   return response;
+// };
 
 // Gets last 7 days entries including today with unique project IDs
 export const getRecentEntries = async (slug: string, userId: number) => {
