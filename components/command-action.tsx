@@ -125,7 +125,7 @@ export function CommandMenu(CommandProps: CommandPropType) {
               />
               <Moon
                 size="16"
-                className="absolute mr-2 rotate-90 scale-0 transition-all  dark:rotate-0 dark:scale-100 dark:text-zinc-400"
+                className="absolute mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 dark:text-zinc-400"
               />
               <span>Switch Light/Dark color mode</span>
               <CommandShortcut>Action</CommandShortcut>

@@ -148,7 +148,7 @@ export default function AINotepad({ notebookSubmitHandler, aiInput, setAiInput, 
                         {isRecording && (
                           <>
                             <span className="absolute -right-1 -top-1 h-2.5 w-2.5 animate-ping rounded-full bg-muted-foreground" />
-                            <span className="absolute  -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-muted-foreground" />
+                            <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-muted-foreground" />
                           </>
                         )}
                         {isRecording ? <MicOff size={16} /> : <Mic size={16} />}

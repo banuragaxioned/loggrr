@@ -79,7 +79,7 @@ export const columns: ColumnDef<Logged>[] = [
 
       return (
         <span className={`relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
-          <span className={`${depth > 0 ? "opacity-50" : ""} mr-1 `}>{formatted}</span>
+          <span className={`${depth > 0 ? "opacity-50" : ""} mr-1`}>{formatted}</span>
           {original.billable && (
             <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
           )}
