@@ -2,31 +2,36 @@
 
 import nodemailer from "nodemailer";
 import { env } from "@/env.mjs";
+import { render } from "@react-email/render";
 
-type EmailPayload = {
+interface EmailPayload {
   to: string;
   subject: string;
-  html: string;
-};
+  html: JSX.Element;
+}
 
-// Replace with your SMTP credentials
-const smtpOptions = {
-  host: env.EMAIL_HOST || "smtp.mailtrap.io",
-  port: parseInt(env.EMAIL_PORT || "2525"),
-  secure: false,
+const transporter = nodemailer.createTransport({
+  host: env.EMAIL_HOST,
+  port: Number(env.EMAIL_PORT),
+  secure: true,
   auth: {
-    user: env.EMAIL_USER || "user",
-    pass: env.EMAIL_PASSWORD || "password",
+    user: env.EMAIL_USER,
+    pass: env.EMAIL_PASSWORD,
   },
-};
+  from: env.EMAIL_FROM,
+});
 
-export const sendEmail = async (data: EmailPayload) => {
-  const transporter = nodemailer.createTransport({
-    ...smtpOptions,
-  });
+export async function sendEmail(payload: EmailPayload) {
+  try {
+    const htmlContent = render(payload.html);
 
-  return await transporter.sendMail({
-    from: env.EMAIL_FROM,
-    ...data,
-  });
-};
+    await transporter.sendMail({
+      ...payload,
+      html: await htmlContent,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return { success: false, error: "Failed to send email" };
+  }
+}

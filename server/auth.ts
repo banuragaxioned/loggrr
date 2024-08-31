@@ -101,13 +101,11 @@ export const authOptions: NextAuthOptions = {
 
           if (!user) return;
 
-          const registerEmailHtml = render(
-            RegisterEmail({
-              siteUrl: `${siteConfig.url}`,
-              siteName: siteConfig.name,
-              name: user.name ?? "",
-            }),
-          );
+          const registerEmailHtml = RegisterEmail({
+            siteUrl: `${siteConfig.url}`,
+            siteName: siteConfig.name,
+            name: user.name ?? "",
+          });
 
           const registerEmailOptions = {
             to: user.email,
@@ -118,14 +116,12 @@ export const authOptions: NextAuthOptions = {
           await sendEmail(registerEmailOptions);
 
           // TODO: Replace hardcode values with workspace data
-          const workspaceEmailHtml = render(
-            WorkspaceJoinedEmail({
-              username: user.name ?? "Folk",
-              inviteLink: `${siteConfig.url}/axioned`,
-              teamName: "Axioned",
-              siteName: siteConfig.name,
-            }),
-          );
+          const workspaceEmailHtml = WorkspaceJoinedEmail({
+            username: user.name ?? "Folk",
+            inviteLink: `${siteConfig.url}/axioned`,
+            teamName: "Axioned",
+            siteName: siteConfig.name,
+          });
 
           const workspaceEmailOptions = {
             to: user.email,
