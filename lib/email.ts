@@ -13,12 +13,11 @@ interface EmailPayload {
 const transporter = nodemailer.createTransport({
   host: env.EMAIL_HOST,
   port: Number(env.EMAIL_PORT),
-  secure: true,
+  secure: false,
   auth: {
     user: env.EMAIL_USER,
     pass: env.EMAIL_PASSWORD,
   },
-  from: env.EMAIL_FROM,
 });
 
 export async function sendEmail(payload: EmailPayload) {
@@ -27,6 +26,7 @@ export async function sendEmail(payload: EmailPayload) {
 
     await transporter.sendMail({
       ...payload,
+      from: env.EMAIL_FROM,
       html: await htmlContent,
     });
     return { success: true };
