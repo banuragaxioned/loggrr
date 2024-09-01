@@ -2,7 +2,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import getServerSession, { type NextAuthOptions, type DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
-import { render } from "@react-email/render";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
@@ -77,30 +76,39 @@ export const authOptions: NextAuthOptions = {
   ],
   events: {
     async signIn({ user, isNewUser }) {
-      // If the user is new and doesn't have a name, set it to the first part of the email
-      if (isNewUser && user.email && !user.name) {
-        await db.user.update({
+      // If the user is new and has an email, check if they have a workspace
+      if (isNewUser && user.email) {
+        const userEmailDomain = user.email.split("@")[1];
+
+        const workspace = await db.workspace.findUnique({
           where: {
-            id: +user.id,
-          },
-          data: {
-            name: user.email.split("@")[0],
+            domain: userEmailDomain,
           },
         });
-      }
 
-      if (isNewUser && user.email) {
-        if (user.email.endsWith("@axioned.com")) {
+        // If the user has a workspace, add them to the workspace
+        if (workspace) {
           await db.userWorkspace.create({
             data: {
-              workspaceId: 1,
-              userId: +user.id,
+              workspaceId: workspace.id,
+              userId: Number(user.id),
               role: Role.USER,
             },
           });
 
-          if (!user) return;
+          // If the user doesn't have a name, set it to the first part of the email
+          if (!user.name) {
+            await db.user.update({
+              where: {
+                id: Number(user.id),
+              },
+              data: {
+                name: user.email.split("@")[0],
+              },
+            });
+          }
 
+          // Send the user a welcome email
           const registerEmailHtml = RegisterEmail({
             siteUrl: `${siteConfig.url}`,
             siteName: siteConfig.name,
@@ -109,38 +117,27 @@ export const authOptions: NextAuthOptions = {
 
           const registerEmailOptions = {
             to: user.email,
-            subject: "Welcome to Loggrr",
+            subject: `Welcome to ${siteConfig.name}`,
             html: registerEmailHtml,
           };
 
           await sendEmail(registerEmailOptions);
 
-          // TODO: Replace hardcode values with workspace data
+          // Notify the user that they have joined a workspace automatically
           const workspaceEmailHtml = WorkspaceJoinedEmail({
             username: user.name ?? "Folk",
-            inviteLink: `${siteConfig.url}/axioned`,
-            teamName: "Axioned",
+            inviteLink: `${siteConfig.url}/${workspace.slug}`,
+            teamName: workspace.name,
             siteName: siteConfig.name,
           });
 
           const workspaceEmailOptions = {
             to: user.email,
-            subject: "You've joined Axioned workspace",
+            subject: `You've joined ${workspace.name} workspace`,
             html: workspaceEmailHtml,
           };
 
           await sendEmail(workspaceEmailOptions);
-        }
-
-        // * Hardcode values for Transigma workspace
-        if (user.email.endsWith("@transigma.com")) {
-          await db.userWorkspace.create({
-            data: {
-              workspaceId: 3,
-              userId: +user.id,
-              role: Role.USER,
-            },
-          });
         }
       }
     },
