@@ -49,3 +49,5 @@ yarn.lock
 
 # SonarQube
 .scannerwork/
+
+certificates
