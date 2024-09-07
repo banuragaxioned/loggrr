@@ -100,6 +100,7 @@ enum Role {
   OWNER
   MANAGER
   USER
+  GUEST
   INACTIVE
 }
 
@@ -214,7 +215,7 @@ model UserWorkspace {
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   userId      Int
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role        Role      @default(USER)
+  role        Role      @default(GUEST)
   status      Status    @default(PUBLISHED)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
