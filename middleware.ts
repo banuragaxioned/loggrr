@@ -4,7 +4,6 @@ import { parse } from "./lib/middleware/utils";
 export default withAuth(
   function middleware(req) {
     const { key } = parse(req);
-    console.log("Key:", key);
   },
   {
     callbacks: {
