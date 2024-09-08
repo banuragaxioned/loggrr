@@ -1,5 +1,6 @@
-import { Card, Flex, MarkerBar, Text } from "@tremor/react";
+import { Flex, MarkerBar, Text } from "@tremor/react";
 import { CalendarDays } from "lucide-react";
+import { Card } from "./ui/tremor-card";
 
 interface CategoryBarProps {
   title: string;

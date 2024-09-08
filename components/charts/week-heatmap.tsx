@@ -6,12 +6,12 @@ import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } f
 import { Info } from "lucide-react";
 import { startOfDay } from "date-fns";
 import { useTheme } from "next-themes";
-import { Card, Flex, Text } from "@tremor/react";
-
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
+import { Flex, Text } from "@tremor/react";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
+import { Card } from "./ui/tremor-card";
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 interface TimeEntrySum {
   date: Date;

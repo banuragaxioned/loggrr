@@ -9,6 +9,7 @@ async function main() {
     create: {
       name: "Axioned",
       slug: "axioned",
+      domain: "axioned.com",
     },
   });
 

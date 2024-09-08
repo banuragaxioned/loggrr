@@ -94,7 +94,7 @@ export const TableInput = ({ hours, data, type, setSubmitCount }: any) => {
 
   return (
     <Popover>
-      <PopoverTrigger className="mx-auto flex  w-12 cursor-default items-center justify-center">
+      <PopoverTrigger className="mx-auto flex w-12 cursor-default items-center justify-center">
         <Input
           className="hover:border-hover mx-0 h-auto basis-14 cursor-pointer border-transparent p-0 text-center"
           disabled={true}

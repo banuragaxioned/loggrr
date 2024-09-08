@@ -217,7 +217,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
         >
           <div
             className={cn(
-              onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0 " : "border-border",
+              onCommentFocus ? "rounded-b-sm border-primary ring-2 ring-primary ring-offset-0" : "border-border",
               "flex items-center justify-between rounded-b-xl px-3 py-2",
               !isProjectSelected && "pointer-events-none",
             )}
