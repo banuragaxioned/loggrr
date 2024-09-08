@@ -105,8 +105,8 @@ importers:
         specifier: ^8.19.3
         version: 8.19.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tremor/react':
-        specifier: ^3.18.0
-        version: 3.18.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.10(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.5.4)))
+        specifier: ^3.18.1
+        version: 3.18.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.10(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.5.4)))
       ai:
         specifier: ^3.3.28
         version: 3.3.28(react@18.3.1)(sswr@2.1.0(svelte@4.2.18))(svelte@4.2.18)(vue@3.4.31(typescript@5.5.4))(zod@3.23.8)
@@ -1693,8 +1693,8 @@ packages:
   '@tanstack/virtual-core@3.5.1':
     resolution: {integrity: sha512-046+AUSiDru/V9pajE1du8WayvBKeCvJ2NmKPy/mR8/SbKKrqmSbj7LJBfXE+nSq4f5TBXvnCzu0kcYebI9WdQ==}
 
-  '@tremor/react@3.18.0':
-    resolution: {integrity: sha512-fyzFbV9DPRbAdba2EXeELVK3oJhJB+/Q+Fv5iNEZ5A5K8WHYIMFCnOs+rrAl0ZnHBxdfKI+OCPZFtJilPrRMnw==}
+  '@tremor/react@3.18.1':
+    resolution: {integrity: sha512-Tyt6pDsPUyVr6cIDZIVgO2gIdLMG7R8oqhA/i/yBnAAAsljfIAIV6azP/jIVIqbvar6mczm5wwbSX8eOfc0yVQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: '>=16.6.0'
@@ -5458,7 +5458,7 @@ snapshots:
 
   '@tanstack/virtual-core@3.5.1': {}
 
-  '@tremor/react@3.18.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.10(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.5.4)))':
+  '@tremor/react@3.18.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.10(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.5.4)))':
     dependencies:
       '@floating-ui/react': 0.19.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@headlessui/react': 1.7.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
