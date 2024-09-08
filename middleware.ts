@@ -8,9 +8,9 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => {
-        console.log("Auth callback triggered, token present:", !!token);
-        return !!token;
+      authorized({ token }) {
+        if (token) return true; // If there is a token, the user is authenticated
+        return false;
       },
     },
   },
@@ -22,10 +22,9 @@ export const config = {
      * Match all paths except for:
      * 1. /api/ routes
      * 2. /_next/ (Next.js internals)
-     * 3. /_proxy/ (proxies for third-party services)
-     * 4. /_static (inside /public)
-     * 5. /_vercel (Vercel internals)
-     * 6. Static files (e.g. /favicon.ico, /sitemap.xml, /robots.txt, etc.)
+     * 3. /_static (inside /public)
+     * 4. /_vercel (Vercel internals)
+     * 5. Static files (e.g. /favicon.ico, /sitemap.xml, /robots.txt, etc.)
      */
     "/((?!api/|_next/static|_next/image|thanks|favicon.ico|favicon.svg|^$).+)",
   ],
