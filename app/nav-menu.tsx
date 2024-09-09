@@ -25,7 +25,7 @@ const NAV_ITEMS = [
         title: "Projects",
         description: "Manage and view your projects.",
         slug: "projects",
-        denyAccess: ["GUEST"],
+        denyAccess: ["GUEST"], // Deny access to GUEST role, Add more if needed
       },
       {
         id: 2,
@@ -56,7 +56,7 @@ const NAV_ITEMS = [
       },
     ],
   },
-  { id: 3, title: "Reports", slug: "reports/logged", denyAccess: ["GUEST"] },
+  { id: 3, title: "Reports", slug: "reports/logged", denyAccess: [""] },
 ];
 
 export function NavMenu({ role }: { role: string }) {
@@ -68,33 +68,39 @@ export function NavMenu({ role }: { role: string }) {
     e.preventDefault();
   };
 
-  const isGuest = role === "GUEST";
-
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
-        {NAV_ITEMS.map((item) => (
-          <NavigationMenuItem key={item.id}>
-            {item.subItems ? (
-              <NavigationMenuTrigger onClick={stopCollapse}>
-                {item.title}
-                <NavigationMenuContent>
-                  <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
-                    {item.subItems.map((subItem) => (
-                      <Link key={subItem.id} href={`/${team}/${subItem.slug}`} legacyBehavior passHref>
-                        <ListItem title={subItem.title}>{subItem.description}</ListItem>
-                      </Link>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuTrigger>
-            ) : (
-              <Link href={`/${team}/${item.slug}`} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>{item.title}</NavigationMenuLink>
-              </Link>
-            )}
-          </NavigationMenuItem>
-        ))}
+        {NAV_ITEMS.map((item) => {
+          const isSubItemsPresent =
+            item.subItems && item.subItems.filter((subItem) => !subItem.denyAccess.includes(role)).length > 0;
+
+          return (
+            <NavigationMenuItem key={item.id}>
+              {isSubItemsPresent && (
+                <NavigationMenuTrigger onClick={stopCollapse}>
+                  {item.title}
+                  <NavigationMenuContent>
+                    <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
+                      {item.subItems
+                        .filter((subItem) => !subItem.denyAccess.includes(role))
+                        .map((subItem) => (
+                          <Link key={subItem.id} href={`/${team}/${subItem.slug}`} legacyBehavior passHref>
+                            <ListItem title={subItem.title}>{subItem.description}</ListItem>
+                          </Link>
+                        ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuTrigger>
+              )}
+              {!isSubItemsPresent && item.slug && !item.denyAccess.includes(role) && (
+                <Link href={`/${team}/${item.slug}`} legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>{item.title}</NavigationMenuLink>
+                </Link>
+              )}
+            </NavigationMenuItem>
+          );
+        })}
       </NavigationMenuList>
     </NavigationMenu>
   );

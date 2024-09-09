@@ -64,7 +64,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
                 <>
                   {filteredProjects && <TimeAdd projects={filteredProjects} />}
                   {teamData && <TeamSwitcher teams={teamData} />}
-                  <MobileNavMenu userProps={{ status, name, image, email }} />
+                  <MobileNavMenu userProps={{ status, name, image, email }} role={workspaceRole} />
                 </>
               </div>
             )}
