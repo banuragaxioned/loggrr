@@ -40,7 +40,6 @@ export async function POST(req: Request) {
             slug: body.team,
           },
         },
-        role: Role.USER,
       },
     });
 

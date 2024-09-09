@@ -92,7 +92,6 @@ export const authOptions: NextAuthOptions = {
             data: {
               workspaceId: workspace.id,
               userId: Number(user.id),
-              role: Role.USER,
             },
           });
 
