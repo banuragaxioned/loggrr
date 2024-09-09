@@ -15,73 +15,86 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-export function NavMenu() {
+const NAV_ITEMS = [
+  {
+    id: 1,
+    title: "Projects",
+    subItems: [
+      {
+        id: 1,
+        title: "Projects",
+        description: "Manage and view your projects.",
+        slug: "projects",
+        denyAccess: ["GUEST"],
+      },
+      {
+        id: 2,
+        title: "Clients",
+        description: "View clients associated with your projects.",
+        slug: "clients",
+        denyAccess: ["GUEST"],
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Members",
+    subItems: [
+      {
+        id: 1,
+        title: "Manage Members",
+        description: "Manage members and their permissions.",
+        slug: "members",
+        denyAccess: ["GUEST"],
+      },
+      {
+        id: 2,
+        title: "Groups",
+        description: "View various groups of members in the project.",
+        slug: "groups",
+        denyAccess: ["GUEST"],
+      },
+    ],
+  },
+  { id: 3, title: "Reports", slug: "reports/logged", denyAccess: ["GUEST"] },
+];
+
+export function NavMenu({ role }: { role: string }) {
   const params = useParams();
-  const slug = params?.team;
+  const { team } = params || {};
 
   const stopCollapse = (e: React.MouseEvent) => {
     if (e.detail === 0) return;
     e.preventDefault();
   };
 
+  const isGuest = role === "GUEST";
+
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={stopCollapse}>Projects</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
-              <Link href={`/${slug}/projects`} legacyBehavior passHref>
-                <ListItem title="Projects">Manage and view your projects.</ListItem>
+        {NAV_ITEMS.map((item) => (
+          <NavigationMenuItem key={item.id}>
+            {item.subItems ? (
+              <NavigationMenuTrigger onClick={stopCollapse}>
+                {item.title}
+                <NavigationMenuContent>
+                  <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
+                    {item.subItems.map((subItem) => (
+                      <Link key={subItem.id} href={`/${team}/${subItem.slug}`} legacyBehavior passHref>
+                        <ListItem title={subItem.title}>{subItem.description}</ListItem>
+                      </Link>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuTrigger>
+            ) : (
+              <Link href={`/${team}/${item.slug}`} legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>{item.title}</NavigationMenuLink>
               </Link>
-              <Link href={`/${slug}/clients`} legacyBehavior passHref>
-                <ListItem title="Clients">View clients associated with your projects.</ListItem>
-              </Link>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={stopCollapse}>Members</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 p-2 md:w-[350px] lg:grid-cols-1">
-              <Link href={`/${slug}/members`} legacyBehavior passHref>
-                <ListItem title="Manage Members">Manage members and their permissions.</ListItem>
-              </Link>
-              <Link href={`/${slug}/groups`} legacyBehavior passHref>
-                <ListItem title="Groups">View various groups of members in the project.</ListItem>
-              </Link>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        {/*
-          // TODO: Commenting for future use
-         */}
-        {/* <NavigationMenuItem>
-          <NavigationMenuTrigger onClick={stopCollapse}>Skills</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 p-2 md:w-[460px] lg:grid-cols-[.75fr_1fr]">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild>
-                  <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                    <div className="mb-2 mt-4 text-lg font-medium">Skills</div>
-                    <p className="text-sm leading-tight text-muted-foreground">View and manage your skills.</p>
-                  </div>
-                </NavigationMenuLink>
-              </li>
-              <Link href={`/${slug}/skills/summary`} legacyBehavior passHref>
-                <ListItem title="Summary">View and manage your skills.</ListItem>
-              </Link>
-              <Link href={`/${slug}/skills/explore`} legacyBehavior passHref>
-                <ListItem title="Explore">View all skills.</ListItem>
-              </Link>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem> */}
-        <NavigationMenuItem>
-          <Link href={`/${slug}/reports/logged`} legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Reports</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
+            )}
+          </NavigationMenuItem>
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   );

@@ -26,6 +26,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
   const filteredProjects = projects?.filter((project) => project.workspace === slug);
+  const workspaceRole = teamData?.find((team) => team.slug === slug)?.role ?? "GUEST";
 
   posthog.identify(String(userId), { email, name });
 
@@ -44,7 +45,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
           <nav>
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
-              {isNavVisible && <NavMenu />}
+              {isNavVisible && <NavMenu role={workspaceRole} />}
               {teamData && <TeamSwitcher teams={teamData} />}
               {status === "loading" && <Loader className="mr-1" />}
               {status === "authenticated" && (
