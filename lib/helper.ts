@@ -118,7 +118,6 @@ export const getUserRole = (teamData?: { slug: string; role: string }[], slug?: 
 };
 
 // Check if user has access to the page
-const denyAccess = ["", "GUEST"];
-export const checkAccess = (role: string) => {
+export const checkAccess = (role: string, denyAccess = ["GUEST"]) => {
   return !denyAccess.includes(role);
 };
