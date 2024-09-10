@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/command-action";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types";
+import { getUserRole } from "@/lib/helper";
 
 export function SiteHeader({ projects }: { projects?: Project[] }) {
   const params = useParams();
@@ -26,7 +27,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
   const filteredProjects = projects?.filter((project) => project.workspace === slug);
-  const workspaceRole = teamData?.find((team) => team.slug === slug)?.role ?? "GUEST";
+  const workspaceRole = getUserRole(teamData, slug);
 
   posthog.identify(String(userId), { email, name });
 
