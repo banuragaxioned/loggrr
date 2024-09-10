@@ -14,6 +14,7 @@ import PageBreadcrumb from "./components/page-breadcrumb";
 import TimeLoggedCard from "./components/timelogged-card";
 import BillableCard from "./components/billable-card";
 import TeamsCard from "./components/teams-card";
+import { checkAccess, getUserRole } from "@/lib/helper";
 
 interface DashboardLayoutProps extends projectProps {
   children?: React.ReactNode;
@@ -22,8 +23,10 @@ interface DashboardLayoutProps extends projectProps {
 export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
   const user = await getCurrentUser();
   const { project: projectId, team: slug } = params;
+  const workspaceRole = getUserRole(user?.workspaces, slug);
+  const hasAccess = checkAccess(workspaceRole);
 
-  if (!user || !projectId) {
+  if (!user || !projectId || !hasAccess) {
     return notFound();
   }
 

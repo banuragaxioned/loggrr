@@ -111,3 +111,13 @@ export const hoursToDecimal = (val: string) => {
 
   return val;
 };
+
+// Get user role based on team slug and workspace role
+export const getUserRole = (teamData?: { slug: string; role: string }[], slug?: string) => {
+  return teamData?.find((team) => team.slug === slug)?.role ?? "GUEST";
+};
+
+// Check if user has access to the page
+export const checkAccess = (role: string, denyAccess = ["GUEST"]) => {
+  return !denyAccess.includes(role);
+};

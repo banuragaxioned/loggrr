@@ -6,6 +6,9 @@ import { getGroups } from "@/server/services/groups";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
 import { Table } from "./table";
+import { getCurrentUser } from "@/server/session";
+import { checkAccess, getUserRole } from "@/lib/helper";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: `Members`,
@@ -13,6 +16,14 @@ export const metadata: Metadata = {
 
 const ManageMembers = async ({ params }: pageProps) => {
   const { team } = params;
+  const user = await getCurrentUser();
+  const workspaceRole = getUserRole(user?.workspaces, team);
+  const hasAccess = checkAccess(workspaceRole);
+
+  if (!hasAccess) {
+    return notFound();
+  }
+
   const data = await getMembers(team);
   const userGroup = await getGroups(team);
 

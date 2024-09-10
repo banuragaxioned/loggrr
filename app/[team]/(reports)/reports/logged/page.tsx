@@ -8,12 +8,23 @@ import { DashboardHeader } from "@/components/ui/header";
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { getCurrentUser } from "@/server/session";
+import { checkAccess, getUserRole } from "@/lib/helper";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: `Logged`,
 };
 
 export default async function Page({ params, searchParams }: pageProps) {
+  const user = await getCurrentUser();
+  const workspaceRole = getUserRole(user?.workspaces, params.team);
+  const hasAccess = checkAccess(workspaceRole, [""]);
+
+  if (!user || !hasAccess) {
+    return notFound();
+  }
+
   const selectedRange = searchParams.range;
   const selectedBilling = searchParams.billable;
   const selectedProject = searchParams.project;

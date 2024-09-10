@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/command-action";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types";
+import { getUserRole } from "@/lib/helper";
 
 export function SiteHeader({ projects }: { projects?: Project[] }) {
   const params = useParams();
@@ -26,6 +27,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   const { data: sessionData, status } = useSession();
   const { id: userId, email, name, workspaces: teamData, image } = sessionData?.user || {};
   const filteredProjects = projects?.filter((project) => project.workspace === slug);
+  const workspaceRole = getUserRole(teamData, slug);
 
   posthog.identify(String(userId), { email, name });
 
@@ -44,7 +46,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
           <nav>
             {/* Desktop Navigation */}
             <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
-              {isNavVisible && <NavMenu />}
+              {isNavVisible && <NavMenu role={workspaceRole} />}
               {teamData && <TeamSwitcher teams={teamData} />}
               {status === "loading" && <Loader className="mr-1" />}
               {status === "authenticated" && (
@@ -63,7 +65,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
                 <>
                   {filteredProjects && <TimeAdd projects={filteredProjects} />}
                   {teamData && <TeamSwitcher teams={teamData} />}
-                  <MobileNavMenu userProps={{ status, name, image, email }} />
+                  <MobileNavMenu userProps={{ status, name, image, email }} role={workspaceRole} />
                 </>
               </div>
             )}
