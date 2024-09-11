@@ -125,17 +125,15 @@ export const getLogged = async (
   project?: string,
   clients?: string,
   members?: string,
-  userRole?: string,
+  hasFullAccess?: boolean,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
   const isBillable = stringToBoolean(billing);
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
-  const denyFilterUpdate = ["GUEST"];
-  const hasAccess = !denyFilterUpdate.includes(userRole ?? "GUEST");
 
-  const allClients = hasAccess
+  const allClients = hasFullAccess
     ? await db.client.findMany({
         where: {
           workspace: {
@@ -152,7 +150,7 @@ export const getLogged = async (
       })
     : [];
 
-  const allUsers = hasAccess
+  const allUsers = hasFullAccess
     ? await db.user.findMany({
         where: {
           workspaces: {
@@ -236,7 +234,7 @@ export const getLogged = async (
                   in: members?.split(",").map((id) => +id),
                 },
               }),
-              ...(!hasAccess &&
+              ...(!hasFullAccess &&
                 loggedUserId && {
                   userId: {
                     equals: loggedUserId,

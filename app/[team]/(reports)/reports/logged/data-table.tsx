@@ -27,7 +27,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
-  role?: string;
+  hasFullAccess?: boolean;
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
@@ -35,7 +35,13 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
   return regex.test(row.original.name);
 };
 
-export function DataTable<TData, TValue>({ columns, data, allClients, allUsers, role }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  allClients,
+  allUsers,
+  hasFullAccess,
+}: DataTableProps<TData, TValue>) {
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -91,7 +97,7 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers, 
         allClients={allClients}
         allUsers={allUsers}
         handlePrintClick={handlePrintClick}
-        role={role}
+        hasFullAccess={hasFullAccess}
       />
       <Table>
         <TableHeader>

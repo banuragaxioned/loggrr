@@ -20,7 +20,9 @@ export default async function Page({ params, searchParams }: pageProps) {
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, params.team);
   const denyAccess = [""];
+  const denyFilters = ["GUEST"];
   const hasAccess = checkAccess(workspaceRole, denyAccess);
+  const hasFullAccess = checkAccess(workspaceRole, denyFilters);
 
   if (!user || !hasAccess) {
     return notFound();
@@ -44,7 +46,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedProject,
     selectedClients,
     selectedMembers,
-    workspaceRole,
+    hasFullAccess,
   );
 
   // Transformed data as per the table structure
@@ -107,7 +109,7 @@ export default async function Page({ params, searchParams }: pageProps) {
           data={transformedData}
           allClients={allClients}
           allUsers={allUsers}
-          role={workspaceRole}
+          hasFullAccess={hasFullAccess}
         />
       </div>
     </DashboardShell>

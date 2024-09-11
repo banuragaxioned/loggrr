@@ -21,7 +21,7 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
   handlePrintClick: () => void;
-  role?: string;
+  hasFullAccess?: boolean;
 }
 
 const projectFilter = {
@@ -41,11 +41,9 @@ export function DataTableToolbar<TData>({
   allClients,
   allUsers,
   handlePrintClick,
-  role,
+  hasFullAccess,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const [isExportLoading, setIsExportLoading] = useState(false);
-  const denyFilterUpdate = ["GUEST"];
-  const hasAccess = !denyFilterUpdate.includes(role ?? "GUEST");
 
   const { team: slug } = useParams();
   const router = useRouter();
@@ -187,7 +185,7 @@ export function DataTableToolbar<TData>({
         {/* <li>
           <DropdownFilters values={projectFilter} />
         </li> */}
-        {hasAccess && (
+        {hasFullAccess && (
           <>
             <li>
               <MultiSelectFilter values={clientFilter} />
