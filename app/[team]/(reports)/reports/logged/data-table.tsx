@@ -27,6 +27,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
+  role?: string;
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
@@ -34,7 +35,7 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
   return regex.test(row.original.name);
 };
 
-export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, allClients, allUsers, role }: DataTableProps<TData, TValue>) {
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -85,7 +86,13 @@ export function DataTable<TData, TValue>({ columns, data, allClients, allUsers }
 
   return (
     <div>
-      <DataTableToolbar table={table} allClients={allClients} allUsers={allUsers} handlePrintClick={handlePrintClick} />
+      <DataTableToolbar
+        table={table}
+        allClients={allClients}
+        allUsers={allUsers}
+        handlePrintClick={handlePrintClick}
+        role={role}
+      />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

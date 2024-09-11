@@ -19,7 +19,8 @@ export const metadata: Metadata = {
 export default async function Page({ params, searchParams }: pageProps) {
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, params.team);
-  const hasAccess = checkAccess(workspaceRole, [""]);
+  const denyAccess = [""];
+  const hasAccess = checkAccess(workspaceRole, denyAccess);
 
   if (!user || !hasAccess) {
     return notFound();
@@ -43,6 +44,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedProject,
     selectedClients,
     selectedMembers,
+    workspaceRole,
   );
 
   // Transformed data as per the table structure
@@ -100,7 +102,13 @@ export default async function Page({ params, searchParams }: pageProps) {
     <DashboardShell>
       <DashboardHeader heading="Logged Hours" text="View the hours that are logged." />
       <div className="mb-8">
-        <DataTable columns={columns} data={transformedData} allClients={allClients} allUsers={allUsers} />
+        <DataTable
+          columns={columns}
+          data={transformedData}
+          allClients={allClients}
+          allUsers={allUsers}
+          role={workspaceRole}
+        />
       </div>
     </DashboardShell>
   );
