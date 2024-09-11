@@ -22,9 +22,14 @@ export async function POST(req: NextRequest) {
     const start = startOfDay(startDate);
     const end = endOfDay(endDate);
 
-    if (!user.workspaces.find((workspace) => workspace.slug === slug)) {
+    const userWorkspace = user.workspaces.find((workspace) => workspace.slug === slug);
+
+    if (!userWorkspace) {
       return new Response("Unauthorized!", { status: 403 });
     }
+
+    const workspaceRole = userWorkspace.role;
+    const hasFullAccess = !["GUEST"].includes(workspaceRole);
 
     const response = await db.timeEntry.findMany({
       where: {
@@ -53,6 +58,12 @@ export async function POST(req: NextRequest) {
             in: selectedMembers.split(",").map((id: number) => +id),
           },
         }),
+        ...(!hasFullAccess &&
+          user.id && {
+            userId: {
+              equals: user.id,
+            },
+          }),
       },
       select: {
         project: {
