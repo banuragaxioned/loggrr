@@ -21,6 +21,7 @@ interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProp
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
   handlePrintClick: () => void;
+  hasFullAccess?: boolean;
 }
 
 const projectFilter = {
@@ -40,6 +41,7 @@ export function DataTableToolbar<TData>({
   allClients,
   allUsers,
   handlePrintClick,
+  hasFullAccess,
 }: DataTableToolbarExtendedProps<Assignment>) {
   const [isExportLoading, setIsExportLoading] = useState(false);
 
@@ -140,10 +142,10 @@ export function DataTableToolbar<TData>({
     <Button className="flex gap-1.5" variant="outline" asChild size="sm">
       <Link
         href={`?${new URLSearchParams({
-          range: selectedRange ?? "",
-          project: selectedProject ?? "",
-          clients: selectedClients ?? "",
-          members: selectedMembers ?? "",
+          ...(selectedRange && { range: selectedRange ?? "" }),
+          ...(selectedProject && { project: selectedProject ?? "" }),
+          ...(selectedClients && { clients: selectedClients ?? "" }),
+          ...(selectedMembers && { members: selectedMembers ?? "" }),
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
@@ -183,12 +185,16 @@ export function DataTableToolbar<TData>({
         {/* <li>
           <DropdownFilters values={projectFilter} />
         </li> */}
-        <li>
-          <MultiSelectFilter values={clientFilter} />
-        </li>
-        <li>
-          <MultiSelectFilter values={peopleFilter} />
-        </li>
+        {hasFullAccess && (
+          <>
+            <li>
+              <MultiSelectFilter values={clientFilter} />
+            </li>
+            <li>
+              <MultiSelectFilter values={peopleFilter} />
+            </li>
+          </>
+        )}
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
         <li className="print:hidden">
