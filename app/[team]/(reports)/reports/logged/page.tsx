@@ -4,7 +4,7 @@ import { pageProps } from "@/types";
 import { getLogged } from "@/server/services/time-entry";
 import { getStartandEndDates } from "@/lib/months";
 import { DashboardShell } from "@/components/ui/shell";
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";

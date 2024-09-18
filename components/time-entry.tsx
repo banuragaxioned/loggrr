@@ -15,8 +15,8 @@ import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import RecentEntries from "./recent-entries";
-import AINotepad from "./notepad";
-import NotepadResponse from "./notepad-response";
+import AINotepad from "./ai/notepad";
+import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
 

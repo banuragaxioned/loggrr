@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 import { DashboardShell } from "@/components/ui/shell";
 import { NewSkillForm } from "@/components/forms/skillForm";
 import { getSkills } from "@/server/services/skill";

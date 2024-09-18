@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 
 import { ComboBox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "./ui/card";
-import { SelectedData } from "./forms/timelogForm";
+import { Card, CardContent } from "@/components/ui/card";
+import { SelectedData } from "@/components/forms/timelogForm";
 
 import { cn } from "@/lib/utils";
 import { Project, Milestone } from "@/types";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 const initialDataState = {
   client: undefined,

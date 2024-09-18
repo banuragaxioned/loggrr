@@ -1,13 +1,20 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 import NotepadCards from "./notepad-cards";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Project } from "@/types";
-import { SelectedData } from "./forms/timelogForm";
+import { SelectedData } from "@/components/forms/timelogForm";
 
 const NotepadResponse = ({
   aiResponses,

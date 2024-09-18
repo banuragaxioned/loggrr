@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import Cookie from "js-cookie";
 
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type AINotepadProps = {
   notebookSubmitHandler: (input: string) => void;

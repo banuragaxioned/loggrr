@@ -1,6 +1,6 @@
 import { CategoryBar, Flex, Text } from "@tremor/react";
 import { Info } from "lucide-react";
-import { Card } from "./ui/tremor-card";
+import { Card } from "@/components/ui/tremor-card";
 
 interface CategoryBarProps {
   values?: number[];

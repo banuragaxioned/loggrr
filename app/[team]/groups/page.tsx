@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 import { DashboardShell } from "@/components/ui/shell";
 import type { Metadata } from "next";
 import { pageProps } from "@/types";
