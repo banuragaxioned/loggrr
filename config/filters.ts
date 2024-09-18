@@ -21,6 +21,11 @@ export const roles = [
     label: "Inactive",
     icon: MinusCircle,
   },
+  {
+    value: "GUEST",
+    label: "Guest",
+    icon: User,
+  },
 ];
 
 export const weekOptions = [
