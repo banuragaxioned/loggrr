@@ -1,7 +1,9 @@
 import { endOfDay, startOfDay, subDays } from "date-fns";
 
-import { db } from "@/server/db";
+import { db, drizzleClient } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { and, asc, eq } from "drizzle-orm";
+import { project, task, workspace } from "@/drizzle/schema";
 
 // Get project details by project id
 export const getProjectDetailsById = async (slug: string, projectId: number) => {
@@ -468,25 +470,26 @@ export const getMilestones = async (projectId: number, team: string) => {
 };
 
 export const getTasks = async (projectId: number, team: string) => {
-  const tasks = await db.task.findMany({
-    where: {
-      workspace: {
-        slug: team,
-      },
-      project: {
-        id: +projectId,
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-      budget: true,
-      status: true,
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
+  
+  const tasks = await drizzleClient.select({
+    id: task.id,
+    name: task.name,
+    budget: task.budget,
+    status: task.status,
+  })
+  .from(task)
+  .leftJoin(workspace, eq(
+    workspace.id, task.workspaceId
+  ))
+  .leftJoin(project, eq(
+    project.id, task.projectId
+  ))
+  .where(
+    and(
+      eq(workspace.slug, team),
+      eq(project.id, projectId)
+  ))
+  .orderBy(asc(task.name))
 
   return tasks;
 };
