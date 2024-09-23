@@ -1,15 +1,15 @@
-import { Activity, Archive, MinusCircle, User } from "lucide-react";
+import { Activity, Archive, User, UserCog, UserPen, UserX } from "lucide-react";
 
 export const roles = [
   {
     value: "OWNER",
     label: "Owner",
-    icon: User,
+    icon: UserCog,
   },
   {
     value: "MANAGER",
     label: "Manager",
-    icon: User,
+    icon: UserPen,
   },
   {
     value: "USER",
@@ -17,9 +17,14 @@ export const roles = [
     icon: User,
   },
   {
+    value: "GUEST",
+    label: "Guest",
+    icon: User,
+  },
+  {
     value: "INACTIVE",
     label: "Inactive",
-    icon: MinusCircle,
+    icon: UserX,
   },
 ];
 

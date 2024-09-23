@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/ui/shell";
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 import { AddUserInTeam } from "@/components/forms/addUserForm";
 import { getMembers } from "@/server/services/members";
 import { getGroups } from "@/server/services/groups";

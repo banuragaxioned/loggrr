@@ -9,7 +9,7 @@ import { useTheme } from "next-themes";
 import { Flex, Text } from "@tremor/react";
 import { Skeleton } from "../ui/skeleton";
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
-import { Card } from "./ui/tremor-card";
+import { Card } from "@/components/ui/tremor-card";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 

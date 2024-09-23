@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/server/session";
 import { authOptions } from "@/server/auth";
 import { redirect } from "next/navigation";
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 import { DashboardShell } from "@/components/ui/shell";
 import { getSkills, getUserSkills } from "@/server/services/skill";
 import { Overview } from "@/components/charts/skills-radar";

@@ -125,6 +125,7 @@ export const getLogged = async (
   project?: string,
   clients?: string,
   members?: string,
+  hasFullAccess?: boolean,
 ) => {
   const session = await getServerSession(authOptions);
   const loggedUserId = session && session.user.id;
@@ -132,39 +133,43 @@ export const getLogged = async (
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
 
-  const allClients = await db.client.findMany({
-    where: {
-      workspace: {
-        slug: slug,
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
-
-  const allUsers = await db.user.findMany({
-    where: {
-      workspaces: {
-        some: {
+  const allClients = hasFullAccess
+    ? await db.client.findMany({
+        where: {
           workspace: {
             slug: slug,
           },
         },
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      })
+    : [];
+
+  const allUsers = hasFullAccess
+    ? await db.user.findMany({
+        where: {
+          workspaces: {
+            some: {
+              workspace: {
+                slug: slug,
+              },
+            },
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      })
+    : [];
 
   const query = await db.client.findMany({
     where: {
@@ -229,6 +234,12 @@ export const getLogged = async (
                   in: members?.split(",").map((id) => +id),
                 },
               }),
+              ...(!hasFullAccess &&
+                loggedUserId && {
+                  userId: {
+                    equals: loggedUserId,
+                  },
+                }),
             },
             select: {
               user: {

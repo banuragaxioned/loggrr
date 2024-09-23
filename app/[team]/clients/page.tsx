@@ -1,5 +1,5 @@
 import { getClients } from "@/server/services/project";
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 import { DashboardShell } from "@/components/ui/shell";
 import { NewClientForm } from "@/components/forms/clientForm";
 import type { Metadata } from "next";

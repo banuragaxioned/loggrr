@@ -4,7 +4,7 @@ import { pageProps } from "@/types";
 import { getLogged } from "@/server/services/time-entry";
 import { getStartandEndDates } from "@/lib/months";
 import { DashboardShell } from "@/components/ui/shell";
-import { DashboardHeader } from "@/components/ui/header";
+import { DashboardHeader } from "@/components/ui/shell";
 
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
@@ -19,7 +19,10 @@ export const metadata: Metadata = {
 export default async function Page({ params, searchParams }: pageProps) {
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, params.team);
-  const hasAccess = checkAccess(workspaceRole, [""]);
+  const denyAccess = [""];
+  const denyFilters = ["GUEST"];
+  const hasAccess = checkAccess(workspaceRole, denyAccess);
+  const hasFullAccess = checkAccess(workspaceRole, denyFilters);
 
   if (!user || !hasAccess) {
     return notFound();
@@ -43,6 +46,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     selectedProject,
     selectedClients,
     selectedMembers,
+    hasFullAccess,
   );
 
   // Transformed data as per the table structure
@@ -100,7 +104,13 @@ export default async function Page({ params, searchParams }: pageProps) {
     <DashboardShell>
       <DashboardHeader heading="Logged Hours" text="View the hours that are logged." />
       <div className="mb-8">
-        <DataTable columns={columns} data={transformedData} allClients={allClients} allUsers={allUsers} />
+        <DataTable
+          columns={columns}
+          data={transformedData}
+          allClients={allClients}
+          allUsers={allUsers}
+          hasFullAccess={hasFullAccess}
+        />
       </div>
     </DashboardShell>
   );
