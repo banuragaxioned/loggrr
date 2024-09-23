@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 // Drizzle imports
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import * as schema from "@/drizzle/schema";
+import * as schema from "@/server/db/schema";
 
 // Prisma
 const globalForPrisma = globalThis as unknown as {

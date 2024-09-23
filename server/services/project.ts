@@ -1,9 +1,9 @@
 import { endOfDay, startOfDay, subDays } from "date-fns";
+import { and, asc, eq } from "drizzle-orm";
 
 import { db, dz } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
-import { and, asc, eq } from "drizzle-orm";
-import { project, task, workspace } from "@/drizzle/schema";
+import { project, task, workspace } from "@/server/db/schema";
 
 // Get project details by project id
 export const getProjectDetailsById = async (slug: string, projectId: number) => {
