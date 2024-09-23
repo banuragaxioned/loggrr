@@ -1,9 +1,7 @@
 import { endOfDay, startOfDay, subDays } from "date-fns";
-import { and, asc, eq } from "drizzle-orm";
 
-import { db, dz } from "@/server/db";
+import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
-import { project, task, workspace } from "@/server/db/schema";
 
 // Get project details by project id
 export const getProjectDetailsById = async (slug: string, projectId: number) => {
@@ -467,21 +465,4 @@ export const getMilestones = async (projectId: number, team: string) => {
   });
 
   return milestoneList;
-};
-
-export const getTasks = async (projectId: number, team: string) => {
-  const tasks = await dz
-    .select({
-      id: task.id,
-      name: task.name,
-      budget: task.budget,
-      status: task.status,
-    })
-    .from(task)
-    .leftJoin(workspace, eq(workspace.id, task.workspaceId))
-    .leftJoin(project, eq(project.id, task.projectId))
-    .where(and(eq(workspace.slug, team), eq(project.id, projectId)))
-    .orderBy(asc(task.name));
-
-  return tasks;
 };

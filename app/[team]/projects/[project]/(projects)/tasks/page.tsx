@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { getTasks } from "@/server/services/project";
+import { getTasks } from "@/server/db/queries";
 import { pageProps } from "@/types";
 import TaskData from "./task-data";
 
