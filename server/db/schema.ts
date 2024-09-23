@@ -16,6 +16,138 @@ export const projectInterval = pgEnum("ProjectInterval", ["FIXED", "MONTHLY"]);
 export const role = pgEnum("Role", ["OWNER", "MANAGER", "USER", "GUEST", "INACTIVE"]);
 export const status = pgEnum("Status", ["DRAFT", "PUBLISHED", "ARCHIVED", "DEACTIVATED"]);
 
+// Workspace schema
+export const workspace = pgTable(
+  "Workspace",
+  {
+    id: serial("id").primaryKey().notNull(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
+    status: status("status").default("PUBLISHED").notNull(),
+    domain: text("domain").unique(),
+    domainVerified: boolean("domainVerified").default(false).notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
+  },
+  (table) => {
+    return {
+      domainKey: uniqueIndex("Workspace_domain_key").using("btree", table.domain.asc().nullsLast()),
+      slugKey: uniqueIndex("Workspace_slug_key").using("btree", table.slug.asc().nullsLast()),
+      workspaceDomainKey: uniqueIndex("workspace_domain_key").using("btree", table.domain.asc().nullsLast()),
+      workspaceSlugKey: uniqueIndex("workspace_slug_key").using("btree", table.slug.asc().nullsLast()),
+    };
+  },
+);
+
+export const workspaceRelations = relations(workspace, ({ many }) => ({
+  client: many(client),
+  project: many(project),
+  milestone: many(milestone),
+  task: many(task),
+  timeEntry: many(timeEntry),
+  group: many(group),
+  skill: many(skill),
+  skillScore: many(skillScore),
+  users: many(userWorkspace),
+  userOnGroup: many(userOnGroup),
+  usersOnProject: many(usersOnProject),
+}));
+
+// User workspace schema
+export const userWorkspace = pgTable(
+  "UserWorkspace",
+  {
+    id: serial("id").primaryKey().notNull(),
+    workspaceId: integer("workspaceId")
+      .notNull()
+      .references(() => workspace.id),
+    userId: integer("userId")
+      .notNull()
+      .references(() => user.id),
+    role: role("role").default("USER").notNull(),
+    status: status("status").default("PUBLISHED").notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
+  },
+  (table) => {
+    return {
+      userIdIdx: index("UserWorkspace_userId_idx").using("btree", table.userId.asc().nullsLast()),
+      userIdWorkspaceIdIdx: index("UserWorkspace_userId_workspaceId_idx").using(
+        "btree",
+        table.userId.asc().nullsLast(),
+        table.workspaceId.asc().nullsLast(),
+      ),
+      userIdWorkspaceIdKey: uniqueIndex("UserWorkspace_userId_workspaceId_key").using(
+        "btree",
+        table.userId.asc().nullsLast(),
+        table.workspaceId.asc().nullsLast(),
+      ),
+      userIdWorkspaceIdRoleIdx: index("UserWorkspace_userId_workspaceId_role_idx").using(
+        "btree",
+        table.userId.asc().nullsLast(),
+        table.workspaceId.asc().nullsLast(),
+        table.role.asc().nullsLast(),
+      ),
+      workspaceIdIdx: index("UserWorkspace_workspaceId_idx").using("btree", table.workspaceId.asc().nullsLast()),
+      userWorkspaceUnique: uniqueIndex("user_workspace_unique").using(
+        "btree",
+        table.userId.asc().nullsLast(),
+        table.workspaceId.asc().nullsLast(),
+      ),
+      userWorkspaceUserIdx: index("user_workspace_user_idx").using("btree", table.userId.asc().nullsLast()),
+      userWorkspaceWorkspaceIdx: index("user_workspace_workspace_idx").using(
+        "btree",
+        table.workspaceId.asc().nullsLast(),
+      ),
+    };
+  },
+);
+
+export const userWorkspaceRelations = relations(userWorkspace, ({ one }) => ({
+  user: one(user, { fields: [userWorkspace.userId], references: [user.id] }),
+  workspace: one(workspace, { fields: [userWorkspace.workspaceId], references: [workspace.id] }),
+}));
+
+// Client schema
+export const client = pgTable(
+  "Client",
+  {
+    id: serial("id").primaryKey().notNull(),
+    name: text("name").notNull(),
+    workspaceId: integer("workspaceId")
+      .notNull()
+      .references(() => workspace.id),
+    status: status("status").default("PUBLISHED").notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
+  },
+  (table) => {
+    return {
+      workspaceIdIdx: index("Client_workspaceId_idx").using("btree", table.workspaceId.asc().nullsLast()),
+      clientWorkspaceIdx: index("client_workspace_idx").using("btree", table.workspaceId.asc().nullsLast()),
+      clientWorkspaceIdWorkspaceIdFk: foreignKey({
+        columns: [table.workspaceId],
+        foreignColumns: [workspace.id],
+        name: "Client_workspaceId_Workspace_id_fk",
+      })
+        .onUpdate("cascade")
+        .onDelete("cascade"),
+    };
+  },
+);
+
+export const clientRelations = relations(client, ({ one, many }) => ({
+  workspace: one(workspace, { fields: [client.workspaceId], references: [workspace.id] }),
+  project: many(project),
+}));
+
+// Project schema
 export const project = pgTable(
   "Project",
   {
@@ -61,6 +193,7 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   usersOnProject: many(usersOnProject),
 }));
 
+// User on project schema
 export const usersOnProject = pgTable(
   "UsersOnProject",
   {
@@ -116,6 +249,7 @@ export const usersOnProjectRelations = relations(usersOnProject, ({ one }) => ({
   user: one(user, { fields: [usersOnProject.userId], references: [user.id] }),
 }));
 
+// Milestone schema
 export const milestone = pgTable(
   "Milestone",
   {
@@ -156,6 +290,7 @@ export const milestoneRelations = relations(milestone, ({ one, many }) => ({
   timeEntry: many(timeEntry),
 }));
 
+// Task schema
 export const task = pgTable(
   "Task",
   {
@@ -190,6 +325,13 @@ export const task = pgTable(
   },
 );
 
+export const taskRelations = relations(task, ({ one, many }) => ({
+  workspace: one(workspace, { fields: [task.workspaceId], references: [workspace.id] }),
+  project: one(project, { fields: [task.projectId], references: [project.id] }),
+  timeEntry: many(timeEntry),
+}));
+
+// Time entry schema
 export const timeEntry = pgTable(
   "TimeEntry",
   {
@@ -264,6 +406,7 @@ export const timeEntryRelations = relations(timeEntry, ({ one }) => ({
   task: one(task, { fields: [timeEntry.taskId], references: [task.id] }),
 }));
 
+// Skill score schema
 export const skillScore = pgTable(
   "SkillScore",
   {
@@ -301,6 +444,7 @@ export const skillScoreRelations = relations(skillScore, ({ one }) => ({
   workspace: one(workspace, { fields: [skillScore.workspaceId], references: [workspace.id] }),
 }));
 
+// Skill schema
 export const skill = pgTable(
   "Skill",
   {
@@ -324,86 +468,7 @@ export const skillRelations = relations(skill, ({ one }) => ({
   workspace: one(workspace, { fields: [skill.workspaceId], references: [workspace.id] }),
 }));
 
-export const workspace = pgTable(
-  "Workspace",
-  {
-    id: serial("id").primaryKey().notNull(),
-    name: text("name").notNull(),
-    slug: text("slug").notNull().unique(),
-    status: status("status").default("PUBLISHED").notNull(),
-    domain: text("domain").unique(),
-    domainVerified: boolean("domainVerified").default(false).notNull(),
-    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
-  },
-  (table) => {
-    return {
-      domainKey: uniqueIndex("Workspace_domain_key").using("btree", table.domain.asc().nullsLast()),
-      slugKey: uniqueIndex("Workspace_slug_key").using("btree", table.slug.asc().nullsLast()),
-      workspaceDomainKey: uniqueIndex("workspace_domain_key").using("btree", table.domain.asc().nullsLast()),
-      workspaceSlugKey: uniqueIndex("workspace_slug_key").using("btree", table.slug.asc().nullsLast()),
-    };
-  },
-);
-
-export const userWorkspace = pgTable(
-  "UserWorkspace",
-  {
-    id: serial("id").primaryKey().notNull(),
-    workspaceId: integer("workspaceId")
-      .notNull()
-      .references(() => workspace.id),
-    userId: integer("userId")
-      .notNull()
-      .references(() => user.id),
-    role: role("role").default("USER").notNull(),
-    status: status("status").default("PUBLISHED").notNull(),
-    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
-  },
-  (table) => {
-    return {
-      userIdIdx: index("UserWorkspace_userId_idx").using("btree", table.userId.asc().nullsLast()),
-      userIdWorkspaceIdIdx: index("UserWorkspace_userId_workspaceId_idx").using(
-        "btree",
-        table.userId.asc().nullsLast(),
-        table.workspaceId.asc().nullsLast(),
-      ),
-      userIdWorkspaceIdKey: uniqueIndex("UserWorkspace_userId_workspaceId_key").using(
-        "btree",
-        table.userId.asc().nullsLast(),
-        table.workspaceId.asc().nullsLast(),
-      ),
-      userIdWorkspaceIdRoleIdx: index("UserWorkspace_userId_workspaceId_role_idx").using(
-        "btree",
-        table.userId.asc().nullsLast(),
-        table.workspaceId.asc().nullsLast(),
-        table.role.asc().nullsLast(),
-      ),
-      workspaceIdIdx: index("UserWorkspace_workspaceId_idx").using("btree", table.workspaceId.asc().nullsLast()),
-      userWorkspaceUnique: uniqueIndex("user_workspace_unique").using(
-        "btree",
-        table.userId.asc().nullsLast(),
-        table.workspaceId.asc().nullsLast(),
-      ),
-      userWorkspaceUserIdx: index("user_workspace_user_idx").using("btree", table.userId.asc().nullsLast()),
-      userWorkspaceWorkspaceIdx: index("user_workspace_workspace_idx").using(
-        "btree",
-        table.workspaceId.asc().nullsLast(),
-      ),
-    };
-  },
-);
-
-export const userWorkspaceRelations = relations(userWorkspace, ({ one }) => ({
-  user: one(user, { fields: [userWorkspace.userId], references: [user.id] }),
-  workspace: one(workspace, { fields: [userWorkspace.workspaceId], references: [workspace.id] }),
-}));
-
+// Group schema
 export const group = pgTable(
   "Group",
   {
@@ -427,6 +492,7 @@ export const groupRelations = relations(group, ({ one }) => ({
   workspace: one(workspace, { fields: [group.workspaceId], references: [workspace.id] }),
 }));
 
+// User on group schema
 export const userOnGroup = pgTable(
   "UserOnGroup",
   {
@@ -479,6 +545,7 @@ export const userOnGroupRelations = relations(userOnGroup, ({ one }) => ({
   workspace: one(workspace, { fields: [userOnGroup.workspaceId], references: [workspace.id] }),
 }));
 
+// User schema
 export const user = pgTable(
   "User",
   {
@@ -501,6 +568,7 @@ export const user = pgTable(
   },
 );
 
+// Session schema
 export const session = pgTable(
   "Session",
   {
@@ -524,6 +592,7 @@ export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, { fields: [session.userId], references: [user.id] }),
 }));
 
+// Verification token schema
 export const verificationToken = pgTable(
   "VerificationToken",
   {
@@ -548,6 +617,7 @@ export const verificationToken = pgTable(
   },
 );
 
+// Account schema
 export const account = pgTable(
   "Account",
   {
@@ -586,58 +656,4 @@ export const account = pgTable(
 
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, { fields: [account.userId], references: [user.id] }),
-}));
-
-export const workspaceRelations = relations(workspace, ({ many }) => ({
-  client: many(client),
-  project: many(project),
-  milestone: many(milestone),
-  task: many(task),
-  timeEntry: many(timeEntry),
-  group: many(group),
-  skill: many(skill),
-  skillScore: many(skillScore),
-  users: many(userWorkspace),
-  userOnGroup: many(userOnGroup),
-  usersOnProject: many(usersOnProject),
-}));
-
-export const taskRelations = relations(task, ({ one, many }) => ({
-  workspace: one(workspace, { fields: [task.workspaceId], references: [workspace.id] }),
-  project: one(project, { fields: [task.projectId], references: [project.id] }),
-  timeEntry: many(timeEntry),
-}));
-
-export const client = pgTable(
-  "Client",
-  {
-    id: serial("id").primaryKey().notNull(),
-    name: text("name").notNull(),
-    workspaceId: integer("workspaceId")
-      .notNull()
-      .references(() => workspace.id),
-    status: status("status").default("PUBLISHED").notNull(),
-    createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { precision: 3, mode: "string" }).notNull(),
-  },
-  (table) => {
-    return {
-      workspaceIdIdx: index("Client_workspaceId_idx").using("btree", table.workspaceId.asc().nullsLast()),
-      clientWorkspaceIdx: index("client_workspace_idx").using("btree", table.workspaceId.asc().nullsLast()),
-      clientWorkspaceIdWorkspaceIdFk: foreignKey({
-        columns: [table.workspaceId],
-        foreignColumns: [workspace.id],
-        name: "Client_workspaceId_Workspace_id_fk",
-      })
-        .onUpdate("cascade")
-        .onDelete("cascade"),
-    };
-  },
-);
-
-export const clientRelations = relations(client, ({ one, many }) => ({
-  workspace: one(workspace, { fields: [client.workspaceId], references: [workspace.id] }),
-  project: many(project),
 }));
