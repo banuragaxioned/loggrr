@@ -1,6 +1,6 @@
 import { endOfDay, startOfDay, subDays } from "date-fns";
 
-import { db, drizzleClient } from "@/server/db";
+import { db, dz } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { and, asc, eq } from "drizzle-orm";
 import { project, task, workspace } from "@/drizzle/schema";
@@ -470,26 +470,18 @@ export const getMilestones = async (projectId: number, team: string) => {
 };
 
 export const getTasks = async (projectId: number, team: string) => {
-  
-  const tasks = await drizzleClient.select({
-    id: task.id,
-    name: task.name,
-    budget: task.budget,
-    status: task.status,
-  })
-  .from(task)
-  .leftJoin(workspace, eq(
-    workspace.id, task.workspaceId
-  ))
-  .leftJoin(project, eq(
-    project.id, task.projectId
-  ))
-  .where(
-    and(
-      eq(workspace.slug, team),
-      eq(project.id, projectId)
-  ))
-  .orderBy(asc(task.name))
+  const tasks = await dz
+    .select({
+      id: task.id,
+      name: task.name,
+      budget: task.budget,
+      status: task.status,
+    })
+    .from(task)
+    .leftJoin(workspace, eq(workspace.id, task.workspaceId))
+    .leftJoin(project, eq(project.id, task.projectId))
+    .where(and(eq(workspace.slug, team), eq(project.id, projectId)))
+    .orderBy(asc(task.name));
 
   return tasks;
 };

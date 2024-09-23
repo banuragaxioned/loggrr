@@ -23,8 +23,8 @@ if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 // drizzle
 export const client = postgres(env.DATABASE_URL, { max: 10, onnotice: () => {} });
 
-export const drizzleClient = drizzle(client, { schema, logger: true });
+export const dz = drizzle(client, { schema, logger: true });
 
-export type DrizzleClient = typeof drizzle;
+export type Dz = typeof drizzle;
 
-export default drizzleClient;
+export default dz;

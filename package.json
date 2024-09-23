@@ -23,10 +23,10 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "sonar-scanner": "sonar-scanner -Dsonar.projectKey=loggrr -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.axioned.com",
     "analyze": "ANALYZE=true pnpm run build",
-    "dr:generate": "drizzle-kit generate",
-    "dr:migrate": "drizzle-kit migrate",
-    "dr:introspect": "drizzle-kit introspect",
-    "dr:studio": "drizzle-kit studio"
+    "dz:generate": "drizzle-kit generate",
+    "dz:migrate": "drizzle-kit migrate",
+    "dz:introspect": "drizzle-kit introspect",
+    "dz:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.60",
