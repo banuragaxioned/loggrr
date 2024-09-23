@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import { pageProps } from "@/types";
 import MilestoneData from "./milestone-data";
-import { getMilestones } from "@/server/services/project";
+import { getMilestones } from "@/server/db/queries";
 
 export const metadata: Metadata = {
   title: `Categories`,

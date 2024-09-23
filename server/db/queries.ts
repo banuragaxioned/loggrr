@@ -1,7 +1,24 @@
 import { and, asc, eq } from "drizzle-orm";
 
 import dz from ".";
-import { project, task, workspace } from "./schema";
+import { milestone, project, task, workspace } from "./schema";
+
+export const getMilestones = async (projectId: number, team: string) => {
+  const milestones = await dz
+    .select({
+      id: milestone.id,
+      name: milestone.name,
+      budget: milestone.budget,
+      status: milestone.status,
+    })
+    .from(milestone)
+    .leftJoin(workspace, eq(workspace.id, milestone.workspaceId))
+    .leftJoin(project, eq(project.id, milestone.projectId))
+    .where(and(eq(workspace.slug, team), eq(project.id, projectId)))
+    .orderBy(asc(milestone.name));
+
+  return milestones;
+};
 
 export const getTasks = async (projectId: number, team: string) => {
   const tasks = await dz
