@@ -4,8 +4,8 @@ import { env } from "@/env.mjs";
 import { PrismaClient } from "@prisma/client";
 
 // Drizzle imports
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import * as schema from "@/server/db/schema";
 
 // Prisma
@@ -22,7 +22,7 @@ export const db =
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 
 // Drizzle
-export const client = postgres(env.DATABASE_URL);
-export const dz = drizzle(client, { schema });
+export const sql = neon(env.DATABASE_URL);
+export const dz = drizzle(sql, { schema });
 export type Dz = typeof drizzle;
 export default dz;

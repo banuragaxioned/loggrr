@@ -14,6 +14,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.53.0)
+  '@neondatabase/serverless':
+    specifier: ^0.9.5
+    version: 0.9.5
   '@next-auth/prisma-adapter':
     specifier: ^1.0.7
     version: 1.0.7(@prisma/client@5.19.1)(next-auth@4.24.7)
@@ -121,7 +124,7 @@ dependencies:
     version: 3.6.0
   drizzle-orm:
     specifier: ^0.33.0
-    version: 0.33.0(@prisma/client@5.19.1)(@types/pg@8.11.10)(@types/react@18.3.7)(pg@8.13.0)(postgres@3.4.4)(prisma@5.19.1)(react@18.3.1)
+    version: 0.33.0(@neondatabase/serverless@0.9.5)(@prisma/client@5.19.1)(@types/pg@8.11.10)(@types/react@18.3.7)(pg@8.13.0)(prisma@5.19.1)(react@18.3.1)
   framer-motion:
     specifier: ^11.5.4
     version: 11.5.4(react-dom@18.3.1)(react@18.3.1)
@@ -155,9 +158,6 @@ dependencies:
   pg:
     specifier: ^8.13.0
     version: 8.13.0
-  postgres:
-    specifier: ^3.4.4
-    version: 3.4.4
   posthog-js:
     specifier: ^1.161.6
     version: 1.161.6
@@ -1445,6 +1445,12 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  /@neondatabase/serverless@0.9.5:
+    resolution: {integrity: sha512-siFas6gItqv6wD/pZnvdu34wEqgG3nSE6zWZdq5j2DEsa+VvX8i/5HXJOo06qrw5axPXn+lGCxeR+NLaSPIXug==}
+    dependencies:
+      '@types/pg': 8.11.6
+    dev: false
 
   /@next-auth/prisma-adapter@1.0.7(@prisma/client@5.19.1)(next-auth@4.24.7):
     resolution: {integrity: sha512-Cdko4KfcmKjsyHFrWwZ//lfLUbcLqlyFqjd/nYE2m3aZ7tjMNUjpks47iw7NTCnXf+5UWz5Ypyt1dSs1EP5QJw==}
@@ -3329,6 +3335,14 @@ packages:
       pg-protocol: 1.7.0
       pg-types: 4.0.2
 
+  /@types/pg@8.11.6:
+    resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
+    dependencies:
+      '@types/node': 22.5.5
+      pg-protocol: 1.7.0
+      pg-types: 4.0.2
+    dev: false
+
   /@types/prop-types@15.7.12:
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
@@ -4366,7 +4380,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.33.0(@prisma/client@5.19.1)(@types/pg@8.11.10)(@types/react@18.3.7)(pg@8.13.0)(postgres@3.4.4)(prisma@5.19.1)(react@18.3.1):
+  /drizzle-orm@0.33.0(@neondatabase/serverless@0.9.5)(@prisma/client@5.19.1)(@types/pg@8.11.10)(@types/react@18.3.7)(pg@8.13.0)(prisma@5.19.1)(react@18.3.1):
     resolution: {integrity: sha512-SHy72R2Rdkz0LEq0PSG/IdvnT3nGiWuRk+2tXZQ90GVq/XQhpCzu/EFT3V2rox+w8MlkBQxifF8pCStNYnERfA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -4455,11 +4469,11 @@ packages:
       sqlite3:
         optional: true
     dependencies:
+      '@neondatabase/serverless': 0.9.5
       '@prisma/client': 5.19.1(prisma@5.19.1)
       '@types/pg': 8.11.10
       '@types/react': 18.3.7
       pg: 8.13.0
-      postgres: 3.4.4
       prisma: 5.19.1
       react: 18.3.1
     dev: false
@@ -6510,11 +6524,6 @@ packages:
 
   /postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
-
-  /postgres@3.4.4:
-    resolution: {integrity: sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==}
-    engines: {node: '>=12'}
-    dev: false
 
   /posthog-js@1.161.6:
     resolution: {integrity: sha512-UO0z/YTuan55Kl5Yg9Xs5x1PKUkm2zGKUNPioznb4GLRcxFnLBkWoeKQXNro2YZsYJvK+MY8jlF3cdGa8BZ8/Q==}
