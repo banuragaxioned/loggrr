@@ -62,10 +62,10 @@ export const userWorkspace = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     role: role("role").default("USER").notNull(),
     status: status("status").default("PUBLISHED").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
@@ -120,7 +120,7 @@ export const client = pgTable(
     name: text("name").notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     status: status("status").default("PUBLISHED").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -135,9 +135,7 @@ export const client = pgTable(
         columns: [table.workspaceId],
         foreignColumns: [workspace.id],
         name: "Client_workspaceId_Workspace_id_fk",
-      })
-        .onUpdate("cascade")
-        .onDelete("cascade"),
+      }),
     };
   },
 );
@@ -154,7 +152,7 @@ export const project = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     status: status("status").default("PUBLISHED").notNull(),
     ownerId: integer("ownerId")
@@ -162,7 +160,7 @@ export const project = pgTable(
       .references(() => user.id),
     clientId: integer("clientId")
       .notNull()
-      .references(() => client.id),
+      .references(() => client.id, { onDelete: "cascade" }),
     budget: integer("budget"),
     billable: boolean("billable").default(false).notNull(),
     interval: projectInterval("interval").notNull(),
@@ -200,13 +198,13 @@ export const usersOnProject = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     projectId: integer("projectId")
       .notNull()
-      .references(() => project.id),
+      .references(() => project.id, { onDelete: "cascade" }),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     status: status("status").default("PUBLISHED").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -256,10 +254,10 @@ export const milestone = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     projectId: integer("projectId")
       .notNull()
-      .references(() => project.id),
+      .references(() => project.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     budget: integer("budget"),
     status: status("status").default("PUBLISHED").notNull(),
@@ -297,10 +295,10 @@ export const task = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     projectId: integer("projectId")
       .notNull()
-      .references(() => project.id),
+      .references(() => project.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     status: status("status").default("PUBLISHED").notNull(),
     budget: integer("budget"),
@@ -339,15 +337,15 @@ export const timeEntry = pgTable(
     date: timestamp("date", { precision: 3, mode: "string" }).notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     projectId: integer("projectId")
       .notNull()
-      .references(() => project.id),
+      .references(() => project.id, { onDelete: "cascade" }),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
-    milestoneId: integer("milestoneId").references(() => milestone.id),
-    taskId: integer("taskId").references(() => task.id),
+      .references(() => user.id, { onDelete: "cascade" }),
+    milestoneId: integer("milestoneId").references(() => milestone.id, { onDelete: "cascade" }),
+    taskId: integer("taskId").references(() => task.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -413,13 +411,13 @@ export const skillScore = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     skillId: integer("skillId")
       .notNull()
-      .references(() => skill.id),
+      .references(() => skill.id, { onDelete: "cascade" }),
     level: integer("level").default(0).notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -451,7 +449,7 @@ export const skill = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -464,8 +462,9 @@ export const skill = pgTable(
   }),
 );
 
-export const skillRelations = relations(skill, ({ one }) => ({
+export const skillRelations = relations(skill, ({ one, many }) => ({
   workspace: one(workspace, { fields: [skill.workspaceId], references: [workspace.id] }),
+  skillScore: many(skillScore),
 }));
 
 // Group schema
@@ -475,7 +474,7 @@ export const group = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -488,8 +487,9 @@ export const group = pgTable(
   }),
 );
 
-export const groupRelations = relations(group, ({ one }) => ({
+export const groupRelations = relations(group, ({ one, many }) => ({
   workspace: one(workspace, { fields: [group.workspaceId], references: [workspace.id] }),
+  userOnGroup: many(userOnGroup),
 }));
 
 // User on group schema
@@ -499,13 +499,13 @@ export const userOnGroup = pgTable(
     id: serial("id").primaryKey().notNull(),
     workspaceId: integer("workspaceId")
       .notNull()
-      .references(() => workspace.id),
+      .references(() => workspace.id, { onDelete: "cascade" }),
     groupId: integer("groupId")
       .notNull()
-      .references(() => group.id),
+      .references(() => group.id, { onDelete: "cascade" }),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     status: status("status").default("PUBLISHED").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -568,6 +568,17 @@ export const user = pgTable(
   },
 );
 
+export const userRelations = relations(user, ({ one, many }) => ({
+  accounts: many(account),
+  sessions: many(session),
+  skillScore: many(skillScore),
+  timeEntry: many(timeEntry),
+  ownedProjects: many(project),
+  userWorkspaces: many(userWorkspace),
+  usersOnGroup: many(userOnGroup),
+  usersOnProject: many(usersOnProject),
+}));
+
 // Session schema
 export const session = pgTable(
   "Session",
@@ -576,7 +587,7 @@ export const session = pgTable(
     sessionToken: text("sessionToken").notNull(),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     expires: timestamp("expires", { precision: 3, mode: "string" }).notNull(),
   },
   (table) => {
@@ -624,7 +635,7 @@ export const account = pgTable(
     id: serial("id").primaryKey().notNull(),
     userId: integer("userId")
       .notNull()
-      .references(() => user.id),
+      .references(() => user.id, { onDelete: "cascade" }),
     type: text("type").notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
