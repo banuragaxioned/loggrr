@@ -4,9 +4,10 @@ import { Check, ChevronDown, Search } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
+import { CommandEmpty } from "cmdk";
 
 type InlineComboboxProps = {
   options: ComboboxOptions[];
@@ -46,6 +47,10 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>([]);
+
+  if (label === "Project") {
+    console.log(options);
+  }
 
   useEffect(() => {
     if (options.length > 0) {
@@ -93,43 +98,37 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         onPointerDown={(e) => e.stopPropagation()}
       >
         <Command className={`${searchable ? "border" : "border-0"} box-border rounded-t-[5px] border-border`}>
-          {options.length > 0 ? (
-            <>
-              {searchable && (
-                <div className="space-between flex w-full items-center rounded-t-[5px] border-b-[1px] border-border">
-                  <Search size={16} className="ml-[10px] text-gray-400" />
-                  <input
-                    tabIndex={tabIndex}
-                    className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pl-[5px] pr-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
-                    autoFocus
-                    placeholder={placeholder ?? "Search here..."}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              )}
-              <CommandList className="max-h-[200px] w-full px-[5px] py-[8px]">
-                {filteredOptions.length > 0 ? (
-                  filteredOptions.map((option) => (
-                    <CommandItem
-                      key={option.id}
-                      value={`${option.id}`}
-                      onSelect={() => handleOptionSelect(option)}
-                      className="w-full cursor-pointer justify-between"
-                    >
-                      {option.name}
-                      {selectedItem?.id === option.id && <Check size={16} className="shrink-0" />}
-                    </CommandItem>
-                  ))
-                ) : (
-                  <CommandEmpty className="px-[14px] py-2 text-[14px]">No results found.</CommandEmpty>
-                )}
-              </CommandList>
-            </>
-          ) : (
-            <div className="w-full cursor-pointer p-3 text-sm" onClick={() => setOpen(false)}>
-              No options found!
+          {searchable && (
+            <div className="space-between flex w-full items-center rounded-t-[5px] border-b-[1px] border-border">
+              <Search size={16} className="ml-[10px] text-gray-400" />
+              <input
+                tabIndex={tabIndex}
+                className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pl-[5px] pr-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-none`}
+                autoFocus
+                placeholder={placeholder ?? "Search here..."}
+                value={inputValue}
+                onChange={handleInputChange}
+              />
             </div>
+          )}
+          {filteredOptions.length > 0 ? (
+            <CommandList className="max-h-[200px] w-full px-[5px] py-[8px]">
+              {filteredOptions.map((option) => (
+                <CommandItem
+                  key={option.id}
+                  value={`${option.id}`}
+                  onSelect={() => handleOptionSelect(option)}
+                  className="w-full cursor-pointer justify-between"
+                >
+                  {option.name}
+                  {selectedItem?.id === option.id && <Check size={16} className="shrink-0" />}
+                </CommandItem>
+              ))}
+            </CommandList>
+          ) : (
+            <CommandEmpty className="w-full p-3 text-xs" onClick={() => setOpen(false)}>
+              No options found!
+            </CommandEmpty>
           )}
         </Command>
       </PopoverContent>
