@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { Check, ChevronDown, Search } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "@/components/ui/button";
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./command";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "./command";
 import { ComboboxOptions, AssignFormValues } from "@/types";
 import { cn } from "@/lib/utils";
 import { CommandEmpty } from "cmdk";
@@ -47,10 +47,34 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState<ComboboxOptions[]>([]);
+  const [groupedOptions, setGroupedOptions] = useState<any[]>([]);
+  const isProjectDropdown = label === "Project";
 
-  if (label === "Project") {
-    console.log(options);
-  }
+  useEffect(() => {
+    if (isProjectDropdown) {
+      setGroupedOptions(
+        Object.values(
+          options.reduce((acc, item) => {
+            const clientId = item.client.id;
+
+            // If the client doesn't exist in the accumulator, create it
+            if (!acc[clientId]) {
+              acc[clientId] = {
+                clientId: item.client.id,
+                clientName: item.client.name,
+                projects: [],
+              };
+            }
+
+            // Add the project to the respective client
+            acc[clientId].projects.push(item);
+
+            return acc;
+          }, {}),
+        ),
+      );
+    }
+  }, [options, isProjectDropdown]);
 
   useEffect(() => {
     if (options.length > 0) {
@@ -113,17 +137,39 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           )}
           {filteredOptions.length > 0 ? (
             <CommandList className="max-h-[200px] w-full px-[5px] py-[8px]">
-              {filteredOptions.map((option) => (
-                <CommandItem
-                  key={option.id}
-                  value={`${option.id}`}
-                  onSelect={() => handleOptionSelect(option)}
-                  className="w-full cursor-pointer justify-between"
-                >
-                  {option.name}
-                  {selectedItem?.id === option.id && <Check size={16} className="shrink-0" />}
-                </CommandItem>
-              ))}
+              {/* Grouped options for Project dropdown */}
+              {isProjectDropdown &&
+                groupedOptions.map((group, index) => (
+                  <React.Fragment key={group.clientId}>
+                    <CommandGroup key={group.clientId} heading={group.clientName} className="px-0">
+                      {group.projects.map((project: ComboboxOptions) => (
+                        <CommandItem
+                          key={project.id}
+                          value={`${project.id}`}
+                          onSelect={() => handleOptionSelect(project)}
+                          className="w-full cursor-pointer justify-between"
+                        >
+                          <span>{project.name}</span>
+                          {selectedItem?.id === project.id && <Check size={16} className="shrink-0" />}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                    {index !== groupedOptions.length - 1 && <CommandSeparator />}
+                  </React.Fragment>
+                ))}
+              {/* Normal options */}
+              {!isProjectDropdown &&
+                filteredOptions.map((option) => (
+                  <CommandItem
+                    key={option.id}
+                    value={`${option.id}`}
+                    onSelect={() => handleOptionSelect(option)}
+                    className="w-full cursor-pointer justify-between"
+                  >
+                    {option.name}
+                    {selectedItem?.id === option.id && <Check size={16} className="shrink-0" />}
+                  </CommandItem>
+                ))}
             </CommandList>
           ) : (
             <CommandEmpty className="w-full p-3 text-xs" onClick={() => setOpen(false)}>
@@ -160,6 +206,7 @@ const InlineCombobox = ({
       setInputValue(selectedUser?.name ? selectedUser?.name : "");
       setVal(fieldName, selectedUser?.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   return (
