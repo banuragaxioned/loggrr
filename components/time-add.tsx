@@ -267,7 +267,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   label="Category"
                   selectedItem={selectedData?.milestone}
                   handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-                  disabled={!selectedData?.project?.id}
+                  disabled={!selectedData?.project?.id || !projectMilestones.length}
                   className="w-full max-w-full"
                 />
               </div>
@@ -279,7 +279,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   label="Task"
                   selectedItem={selectedData?.task}
                   handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-                  disabled={!selectedData?.project?.id}
+                  disabled={!selectedData?.project?.id || !projectTasks.length}
                   className="w-full max-w-full"
                 />
               </div>
