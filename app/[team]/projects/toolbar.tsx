@@ -43,8 +43,8 @@ export function DataTableToolbar<TData extends { clientName: string; clientId: n
       pathname +
         "?" +
         new URLSearchParams({
-          status: isChecked ? "all" : "",
-          clients: clients ?? "",
+          ...(isChecked && { status: "all" }),
+          ...(clients && { clients }),
         }),
     );
   };

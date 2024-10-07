@@ -263,35 +263,14 @@ export async function getProjects(slug: string, status: string = "", clients?: s
       interval: true,
       client: { select: { id: true, name: true } },
       owner: { select: { id: true, name: true, image: true } },
-      usersOnProject: {
-        select: {
-          user: { select: { id: true, name: true, image: true } },
-        },
-      },
-      milestone: {
-        select: {
-          budget: true,
-        },
-      },
-      timeEntry: {
-        select: {
-          time: true,
-        },
-        where: {
-          date: {
-            gte: subDays(new Date(), 30),
-          },
-        },
-      },
       status: true,
-      budget: true,
     },
     orderBy: {
       name: "asc",
     },
   });
 
-  const projectList = projects.map((project) => ({
+  return projects.map((project) => ({
     id: project.id,
     name: project.name,
     billable: project.billable,
@@ -300,13 +279,8 @@ export async function getProjects(slug: string, status: string = "", clients?: s
     clientId: project.client.id,
     owner: project.owner.name,
     ownerImage: project.owner.image,
-    members: project.usersOnProject,
     status: project.status,
-    budget: project.budget,
-    logged: project.timeEntry.map((obj) => obj.time).reduce((prev, current) => prev + current, 0),
   }));
-
-  return projectList;
 }
 
 export async function getProjectSummary(slug?: string, userId?: number) {

@@ -17,8 +17,8 @@ export type Projects = {
   status: Status;
   clientName: string;
   clientId: number;
-  budget: number | null;
-  logged: number;
+  budget?: number;
+  logged?: number;
   owner: string | null;
   ownerImage: string | null;
 };
@@ -43,29 +43,10 @@ export const columns: ColumnDef<Projects>[] = [
             name: row.original.owner ? row.original.owner : "",
             image: row.original.ownerImage ? row.original.ownerImage : "",
           }}
-          className="z-10 mr-2 inline-block h-6 w-6"
+          className="z-10 mr-2 inline-block h-6 w-6 bg-slate-300"
         />
         <span className="cursor-default">{row.original.owner}</span>
       </div>
-    ),
-    filterFn: "arrIncludesSome",
-  },
-  {
-    accessorKey: "logged",
-    meta: {
-      className: "w-[10%]",
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Logged"
-        child={
-          <CustomTooltip trigger={<Info className="ml-1.5" size={14} />} content="Over last 30 days" sideOffset={10} />
-        }
-      />
-    ),
-    cell: ({ row }) => (
-      <span className="block w-full pr-[35%] text-right tabular-nums">{`${Math.round(getTimeInHours(row.original.logged))} h`}</span>
     ),
     filterFn: "arrIncludesSome",
   },

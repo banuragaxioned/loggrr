@@ -118,11 +118,14 @@ export function DataTableToolbar<TData>({
     }
   };
 
-  // Update the URL with the new selectedOptions
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
 
       return params.toString();
     },
@@ -146,7 +149,7 @@ export function DataTableToolbar<TData>({
           ...(selectedProject && { project: selectedProject ?? "" }),
           ...(selectedClients && { clients: selectedClients ?? "" }),
           ...(selectedMembers && { members: selectedMembers ?? "" }),
-          billable: generateBillingQuery()?.nextValue ?? "",
+          ...(generateBillingQuery()?.nextValue && { billable: generateBillingQuery()?.nextValue }),
         })}`}
       >
         <CircleDollarSign
