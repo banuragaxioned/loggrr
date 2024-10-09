@@ -96,15 +96,15 @@ export const getRecentEntries = async (slug: string, userId: number) => {
           status: "PUBLISHED",
         },
       },
-      task: {
-        select: {
-          id: true,
-          name: true,
-        },
-        where: {
-          status: "PUBLISHED",
-        },
-      },
+      // task: {
+      //   select: {
+      //     id: true,
+      //     name: true,
+      //   },
+      //   where: {
+      //     status: "PUBLISHED",
+      //   },
+      // },
       billable: true,
       time: true,
       comments: true,
