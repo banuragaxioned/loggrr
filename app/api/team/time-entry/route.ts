@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
         billable: true,
         comments: true,
         time: true,
-        // date: true,
+        date: true,
         project: {
           select: {
             id: true,
