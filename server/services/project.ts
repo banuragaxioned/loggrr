@@ -397,7 +397,7 @@ export const getAllProjects = async (userId?: number, team?: string) => {
           name: "asc",
         },
       },
-      timeEntry: { select: { id: true, time: true, projectId: true } },
+      // timeEntry: { select: { id: true, time: true, projectId: true } },
       task: {
         select: { id: true, name: true },
         where: { status: "PUBLISHED" },
@@ -432,6 +432,12 @@ export const getMilestones = async (projectId: number, team: string) => {
       project: {
         id: +projectId,
       },
+    },
+    select: {
+      id: true,
+      name: true,
+      budget: true,
+      status: true,
     },
     orderBy: {
       name: "asc",
