@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
+import { revalidateTag } from "next/cache";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -183,6 +184,7 @@ export async function POST(req: NextRequest) {
         workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
+    revalidateTag("timeEntry");
     return NextResponse.json(timeEntry);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -227,6 +229,7 @@ export async function PUT(req: NextRequest) {
         updatedAt: new Date(),
       },
     });
+    revalidateTag("timeEntry");
 
     return NextResponse.json(query);
   } catch (error) {
@@ -262,6 +265,7 @@ export async function DELETE(req: NextRequest) {
         id: +id,
       },
     });
+    revalidateTag("timeEntry");
 
     return NextResponse.json(query);
   } catch (error) {

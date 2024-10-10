@@ -19,7 +19,6 @@ import AINotepad from "./ai/notepad";
 import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
-
 export interface RecentEntryProps {
   id: number;
   project?: Project;
@@ -90,7 +89,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
    */
   const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`, {
+        next: {
+          tags: ["timeEntry"],
+        }
+      });
       const data = await response.json();
       if (Object.keys(data).length > 0) {
         setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
