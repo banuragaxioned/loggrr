@@ -91,7 +91,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`, {
         next: {
-          tags: ["timeEntry"],
+           tags: ['timeEntry'],
+           revalidate: 60,
         }
       });
       const data = await response.json();
@@ -250,7 +251,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       console.error("Error submitting all time entries", error);
     }
   };
-
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
