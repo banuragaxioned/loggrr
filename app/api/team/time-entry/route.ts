@@ -1,3 +1,5 @@
+'use server';
+
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { parse, formatISO } from "date-fns";
@@ -6,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -22,7 +24,7 @@ const commonValidationObj = {
 const TimeEntrySchema = z.object(commonValidationObj);
 const TimeEntryUpdateSchema = z.object({ ...commonValidationObj, id: z.number().min(1) });
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, res: NextResponse) {
   const searchParams = req.nextUrl.searchParams;
   const team = searchParams.get("team");
   const date = searchParams.get("date");
@@ -141,9 +143,15 @@ export async function GET(req: NextRequest) {
       },
     );
 
-    if (updatedResponse.projectsLog.length < 1 || updatedResponse.dayTotal === 0) return NextResponse.json({});
-
-    return NextResponse.json(updatedResponse);
+    let returnResponse = NextResponse.json(updatedResponse);
+    if (updatedResponse.projectsLog.length < 1 || updatedResponse.dayTotal === 0) {
+      returnResponse = NextResponse.json({ dayTotal: 0, projectsLog: [] });
+    }
+    // returnResponse.headers.set("Cache-Control", 'max-age=6000,  must-revalidate, stale-while-revalidate=60');
+    // returnResponse.headers.set("Cache-Control", "stale-while-revalidate=600 ");
+    returnResponse.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=0');
+   
+    return returnResponse
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 422 });
@@ -153,7 +161,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -184,7 +192,8 @@ export async function POST(req: NextRequest) {
         workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
-    revalidateTag("timeEntry");
+    // revalidateTag("timeEntry");
+    revalidatePath("/api/team/time-entry");
     return NextResponse.json(timeEntry);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -229,7 +238,7 @@ export async function PUT(req: NextRequest) {
         updatedAt: new Date(),
       },
     });
-    revalidateTag("timeEntry");
+     revalidateTag("timeEntry");  
 
     return NextResponse.json(query);
   } catch (error) {
@@ -265,7 +274,7 @@ export async function DELETE(req: NextRequest) {
         id: +id,
       },
     });
-    revalidateTag("timeEntry");
+     revalidateTag("timeEntry");  
 
     return NextResponse.json(query);
   } catch (error) {
