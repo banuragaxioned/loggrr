@@ -90,6 +90,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   const getTimeEntries = useCallback(async () => {
     try {
       const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`, {
+        cache: "force-cache",
         next: {
            tags: ['timeEntry'],
            revalidate: 60,

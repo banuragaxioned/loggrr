@@ -149,7 +149,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     }
     // returnResponse.headers.set("Cache-Control", 'max-age=6000,  must-revalidate, stale-while-revalidate=60');
     // returnResponse.headers.set("Cache-Control", "stale-while-revalidate=600 ");
-    returnResponse.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=0');
+    // returnResponse.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=0');
    
     return returnResponse
   } catch (error) {
