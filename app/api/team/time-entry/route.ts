@@ -193,7 +193,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
     // revalidateTag("timeEntry");
-    revalidatePath("/api/team/time-entry");
+    // revalidatePath("/api/team/time-entry");
     return NextResponse.json(timeEntry);
   } catch (error) {
     if (error instanceof z.ZodError) {
