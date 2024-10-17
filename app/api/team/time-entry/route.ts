@@ -2,10 +2,13 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { parse, formatISO } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/env.mjs"
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
+import redisClient, { connectRedis } from "@/server/redis";
+await connectRedis();
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -45,61 +48,81 @@ export async function GET(req: NextRequest) {
     if (!foundWorkspace) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
-
-    const response = await db.timeEntry.findMany({
-      where: {
-        userId: user.id,
-        workspace: {
-          slug: team ? team : "",
+    const cachedData = await redisClient.get(JSON.stringify(req.nextUrl));
+    let response;
+    if (cachedData) {
+      response = JSON.parse(cachedData);
+      console.log("cached data");
+    } else {
+      response = await db.timeEntry.findMany({
+        where: {
+          userId: user.id,
+          workspace: {
+            slug: team ? team : "",
+          },
+          date: {
+            equals: isoDateString,
+          },
         },
-        date: {
-          equals: isoDateString,
-        },
-      },
-      select: {
-        id: true,
-        billable: true,
-        comments: true,
-        time: true,
-        date: true,
-        project: {
-          select: {
-            id: true,
-            name: true,
-            billable: true,
-            client: {
-              select: {
-                id: true,
-                name: true,
+        select: {
+          id: true,
+          billable: true,
+          comments: true,
+          time: true,
+          date: true,
+          project: {
+            select: {
+              id: true,
+              name: true,
+              billable: true,
+              client: {
+                select: {
+                  id: true,
+                  name: true,
+                },
               },
+              status: true,
             },
-            status: true,
+          },
+          milestone: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+            },
+          },
+          task: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+            },
           },
         },
-        milestone: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
+        orderBy: {
+          project: {
+            name: "asc", // Shows projects by name in ascending order
           },
         },
-        task: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
-          },
-        },
-      },
-      orderBy: {
-        project: {
-          name: "asc", // Shows projects by name in ascending order
-        },
-      },
-    });
+      });
+      await redisClient.set(JSON.stringify(req.nextUrl), JSON.stringify(response), {
+        EX: +env.CACHE_TTL,
+      });
+    }
 
     const updatedResponse = response.reduce(
-      (acc: TimeEntryData, current) => {
+      (
+        acc: TimeEntryData,
+        current: {
+          time: number;
+          id: any;
+          billable: any;
+          milestone: any;
+          task: any;
+          comments: any;
+          project: { id: number; name: any; billable: any; client: any; status: any };
+        },
+      ) => {
         // Accumulate day total here
         const dayTotal = +(acc.dayTotal + current.time / 60).toFixed(2);
 
@@ -183,6 +206,19 @@ export async function POST(req: NextRequest) {
         workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
+
+    const date = new Date(body.date);
+    const formattedDate = date.toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+    const cachedUrl = `${JSON.stringify(req.nextUrl).replace(/"/g, "")}?team=${body.team}&date=${formattedDate.replace(/ /g, "%20")}`;
+
+    await redisClient.del(JSON.stringify(cachedUrl));
+
     return NextResponse.json(timeEntry);
   } catch (error) {
     if (error instanceof z.ZodError) {
