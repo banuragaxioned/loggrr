@@ -52,7 +52,6 @@ export async function GET(req: NextRequest) {
     let response;
     if (cachedData) {
       response = JSON.parse(cachedData);
-      console.log("cached data");
     } else {
       response = await db.timeEntry.findMany({
         where: {
