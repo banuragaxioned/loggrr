@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     const session = await getServerSession(authOptions);
-
+console.log("data", data);
     if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
 
     const { user } = session;
 
-    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers } = data;
-    const { startDate, endDate } = getStartandEndDates(selectedRange);
+    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedProject } = data;
+    const { startDate, endDate } = selectedRange ? getStartandEndDates(selectedRange) : getStartandEndDates("", 30);
     const isBillable = stringToBoolean(selectedBilling);
     const start = startOfDay(startDate);
     const end = endOfDay(endDate);
@@ -50,6 +50,11 @@ export async function POST(req: NextRequest) {
           ...(selectedClients && {
             clientId: {
               in: selectedClients.split(",").map((id: number) => +id),
+            },
+          }),
+          ...(selectedProject && {
+            id: {
+              equals: +selectedProject,
             },
           }),
         },
