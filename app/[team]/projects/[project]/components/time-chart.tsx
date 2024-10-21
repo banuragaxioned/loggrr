@@ -7,6 +7,9 @@ import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recha
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
 import { useSearchParams } from "next/navigation";
+import { Info } from "lucide-react";
+
+import { CustomTooltip as CustomTooltipUI } from "@/components/custom/tooltip";
 
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
@@ -29,6 +32,7 @@ const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
   const searchParams = useSearchParams();
   const selectedRange = searchParams.get("range");
   const [, end] = selectedRange?.split(",") || [];
+  const totalTime = getTimeInHours(timeEntries.reduce((acc, curr) => acc + curr.time, 0));
 
   const formatXAxis = (tickItem: Date) => format(tickItem, "MMMdd");
   const formatYAxis = (tickItem: number) => `${tickItem}h`;
@@ -100,6 +104,11 @@ const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
     <Card className="select-none p-0 shadow-none">
       <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
         <p className="font-semibold">Day-wise distribution</p>
+        <CustomTooltipUI
+          content={`Total: ${totalTime} hours`}
+          trigger={<Info size={16} className="text-muted-foreground" />}
+          sideOffset={10}
+        />
       </CardHeader>
       <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
         <ResponsiveContainer width="100%" height="100%">

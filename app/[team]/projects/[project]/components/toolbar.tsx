@@ -79,7 +79,7 @@ export function DataTableToolbar({
         headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
       };
 
-      csvDownload(dataToConvert);
+      // csvDownload(dataToConvert);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
@@ -165,7 +165,7 @@ export function DataTableToolbar({
         </li>
       </ul>
       {/* Right Area */}
-      <div className="no-print flex flex-wrap items-center justify-end gap-2">
+      {/* <div className="no-print flex flex-wrap items-center justify-end gap-2">
         <CustomTooltip
           trigger={
             <Button
@@ -180,7 +180,7 @@ export function DataTableToolbar({
           }
           content="Export CSV"
         />
-      </div>
+      </div> */}
     </div>
   );
 }
