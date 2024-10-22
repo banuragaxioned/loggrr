@@ -3,12 +3,11 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfDay, startOfMonth, startOfToday, subDays } from "date-fns";
+import { format, startOfDay, startOfToday, subDays } from "date-fns";
 import { CircleDollarSign, Download, ListRestart, Loader2, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
-import { DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
@@ -72,7 +71,9 @@ export function DataTableToolbar({
       }
 
       const data = await response.json();
-      const filename = `Logged Report ${data[0]?.project}.csv`;
+
+      const currentTime = format(new Date(), "dd-MM-yyyy (hh﹕mm a)");
+      const filename = `Project Report ${data[0]?.project} ${currentTime}.csv`;
 
       const dataToConvert = {
         data,
