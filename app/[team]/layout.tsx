@@ -21,5 +21,15 @@ export default async function DashboardLayout({ children, params }: DashboardLay
     return notFound();
   }
 
+  if (isMemberFound && isMemberFound.role === "INACTIVE") {
+    return (
+      <div className="container flex min-h-[calc(100vh-100px)] items-center text-center">
+        <div className="w-full">
+          Your account is currently inactive. Please contact the administrator for assistance.
+        </div>
+      </div>
+    );
+  }
+
   return <div className="container">{children}</div>;
 }
