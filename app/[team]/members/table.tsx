@@ -14,32 +14,39 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { getColumn } from "./columns";
+import { Role } from "@prisma/client";
 
 interface MemberTableProps<TData> {
   data: TData[];
   team: string;
   userGroup: UserGroup[];
+  userRole: Role;
 }
 
-export function Table<TData, TValue>({ data, team, userGroup }: MemberTableProps<TData>) {
+export function Table<TData, TValue>({ data, team, userGroup, userRole }: MemberTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
   const router = useRouter();
 
-  const updateStatus = async (id: number) => {
-    const response = await fetch("/api/team/members/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const updateStatus = async (id: number, role: string, name?: string) => {
+    const canUpdateRole = userRole === Role.OWNER || userRole === Role.MANAGER;
+
+    if (!canUpdateRole) {
+      toast.message("You need to be a manager or owner to update role.");
+      return;
+    }
+
+    const response = await fetch("/api/team/members/update-role", {
+      method: "PUT",
       body: JSON.stringify({
         team,
         userId: id,
+        role,
       }),
     });
 
-    if (response.ok) toast.success("Status Updated");
+    if (response.ok) toast.success(`${name} is now ${role}`);
 
     router.refresh();
   };

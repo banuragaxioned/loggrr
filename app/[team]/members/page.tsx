@@ -9,6 +9,7 @@ import { Table } from "./table";
 import { getCurrentUser } from "@/server/session";
 import { checkAccess, getUserRole } from "@/lib/helper";
 import { notFound } from "next/navigation";
+import { Role } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: `Members`,
@@ -32,7 +33,7 @@ const ManageMembers = async ({ params }: pageProps) => {
       <DashboardHeader heading="Members" text="This is a list of all the member in your team">
         <AddUserInTeam team={team} />
       </DashboardHeader>
-      {data && <Table team={team} data={data} userGroup={userGroup} />}
+      {data && <Table team={team} data={data} userGroup={userGroup} userRole={workspaceRole as Role} />}
     </DashboardShell>
   );
 };
