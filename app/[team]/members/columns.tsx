@@ -16,7 +16,7 @@ declare module "@tanstack/react-table" {
 }
 
 interface GetColumn {
-  updateStatus: (id: number, role: string, name?: string) => void;
+  updateStatus: (id: number, role: string, name?: string, userRole?: string) => void;
   userGroup: UserGroup[];
   updateUserGroup: (options: { id: number }[], id: number) => void;
 }

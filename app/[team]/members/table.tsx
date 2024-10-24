@@ -29,11 +29,17 @@ export function Table<TData, TValue>({ data, team, userGroup, userRole }: Member
 
   const router = useRouter();
 
-  const updateStatus = async (id: number, role: string, name?: string) => {
+  const updateStatus = async (id: number, role: string, name?: string, selectedUserRole?: string) => {
     const canUpdateRole = userRole === Role.OWNER || userRole === Role.MANAGER;
+    const canUpdateOwner = canUpdateRole && (selectedUserRole !== Role.OWNER || userRole === selectedUserRole);
 
     if (!canUpdateRole) {
       toast.message("You need to be a manager or owner to update role.");
+      return;
+    }
+
+    if (!canUpdateOwner) {
+      toast.message("You need to be an owner to update role.");
       return;
     }
 
