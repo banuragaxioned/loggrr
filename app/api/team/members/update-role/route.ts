@@ -4,12 +4,13 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
 
-const deactivateUserSchema = z.object({
+const updateRoleSchema = z.object({
   team: z.string().min(1),
   userId: z.number().min(1),
+  role: z.string().min(1),
 });
 
-export async function POST(req: Request) {
+export async function PUT(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     const { user } = session;
 
     const json = await req.json();
-    const body = deactivateUserSchema.parse(json);
+    const body = updateRoleSchema.parse(json);
 
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const deactivateUser = await db.userWorkspace.updateMany({
+    await db.userWorkspace.updateMany({
       where: {
         workspace: {
           slug: body.team,
@@ -36,11 +37,13 @@ export async function POST(req: Request) {
         userId: body.userId,
       },
       data: {
-        role: Role.INACTIVE,
+        role: body.role as Role,
       },
     });
 
-    return new Response(JSON.stringify(deactivateUser));
+    const response = { message: `User is now ${body.role}` };
+
+    return new Response(JSON.stringify(response));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 });
