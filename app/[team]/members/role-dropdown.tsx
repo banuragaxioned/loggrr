@@ -24,7 +24,7 @@ const RoleDropdown = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm" className="h-8" title="Update role" variant="outline">
+        <Button size="sm" className="h-8 text-xs" title="Update role" variant="outline">
           {userRole}
         </Button>
       </PopoverTrigger>
@@ -38,12 +38,12 @@ const RoleDropdown = ({
                 {Object.values(ROLES).map((role) => (
                   <CommandItem
                     key={role}
-                    className="flex cursor-pointer items-center justify-between"
+                    className="flex cursor-pointer items-center justify-between capitalize"
                     onSelect={(currentValue) => {
                       updateStatus(id, currentValue, name);
                     }}
                   >
-                    {role}
+                    {role.toLowerCase()}
                     <Check className={cn("mr-2 h-4 w-4", userRole === role ? "opacity-100" : "opacity-0")} />
                   </CommandItem>
                 ))}
