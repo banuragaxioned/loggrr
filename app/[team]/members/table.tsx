@@ -30,37 +30,43 @@ export function Table<TData, TValue>({ data, team, userGroup, userRole }: Member
   const router = useRouter();
 
   const updateStatus = async (id: number, role: string, name?: string, selectedUserRole?: string) => {
-    const canUpdateRole = userRole === Role.OWNER || userRole === Role.MANAGER;
-    const canUpdateOwner = canUpdateRole && (selectedUserRole !== Role.OWNER || userRole === selectedUserRole);
-    const isManagerPromotingToOwner = userRole === Role.MANAGER && role === Role.OWNER;
+    // Define role hierarchy and permissions
+    const isOwner = userRole === Role.OWNER;
+    const isManager = userRole === Role.MANAGER;
+    const isPromotingToOwner = role === Role.OWNER;
 
-    if (!canUpdateRole) {
-      toast.message("You need to be a manager or owner to update role.");
+    // Early return for insufficient permissions
+    if (!isOwner && !isManager) {
+      toast.error("You need to be a manager or owner to update role.");
       return;
     }
 
-    if (!canUpdateOwner) {
-      toast.message("You need to be an owner to update role.");
+    // Check promotion restrictions
+    if (isManager && isPromotingToOwner) {
+      toast.error("Only owners can promote someone to owner.");
       return;
     }
 
-    if (isManagerPromotingToOwner) {
-      toast.message("Only owners can promote someone to owner.");
+    // Check if trying to modify an owner's role
+    if (selectedUserRole === Role.OWNER && !isOwner) {
+      toast.error("Only owners can modify other owners' roles.");
       return;
     }
 
-    const response = await fetch("/api/team/members/update-role", {
-      method: "PUT",
-      body: JSON.stringify({
-        team,
-        userId: id,
-        role,
-      }),
-    });
+    try {
+      const response = await fetch("/api/team/members/update-role", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ team, userId: id, role }),
+      });
 
-    if (response.ok) toast.success(`${name} is now ${role}`);
+      if (!response.ok) throw new Error("Failed to update role");
 
-    router.refresh();
+      toast.success(`${name ?? "User"} is now ${role}`);
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to update role");
+    }
   };
 
   const updateUserGroup = async (options: { id: number }[], userId: number) => {
