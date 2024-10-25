@@ -32,6 +32,7 @@ export function Table<TData, TValue>({ data, team, userGroup, userRole }: Member
   const updateStatus = async (id: number, role: string, name?: string, selectedUserRole?: string) => {
     const canUpdateRole = userRole === Role.OWNER || userRole === Role.MANAGER;
     const canUpdateOwner = canUpdateRole && (selectedUserRole !== Role.OWNER || userRole === selectedUserRole);
+    const isManagerPromotingToOwner = userRole === Role.MANAGER && role === Role.OWNER;
 
     if (!canUpdateRole) {
       toast.message("You need to be a manager or owner to update role.");
@@ -40,6 +41,11 @@ export function Table<TData, TValue>({ data, team, userGroup, userRole }: Member
 
     if (!canUpdateOwner) {
       toast.message("You need to be an owner to update role.");
+      return;
+    }
+
+    if (isManagerPromotingToOwner) {
+      toast.message("Only owners can promote someone to owner.");
       return;
     }
 
