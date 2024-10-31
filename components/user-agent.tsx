@@ -8,7 +8,7 @@ export default function FacebookRedirect() {
     const isFacebookApp = /FBAN|FBAV/.test(userAgent);
 
     if (isFacebookApp) {
-      window.location.href = "https://loggrr.com/thanks";
+      window.open("https://loggrr.com/thanks", "_system");
     }
   }, []);
 
