@@ -1,6 +1,7 @@
-"use client"; // Ensure this is client-side
+"use client";
 
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function FacebookRedirect() {
   useEffect(() => {
@@ -8,7 +9,12 @@ export default function FacebookRedirect() {
     const isFacebookApp = /FBAN|FBAV/.test(userAgent);
 
     if (isFacebookApp) {
-      window.open("https://loggrr.com/thanks", "_blank");
+      toast.info(
+        "Google prohits logging into another app's webview as a security measure. Please click on 'Open in external browser'.",
+        {
+          duration: Infinity,
+        },
+      );
     }
   }, []);
 
