@@ -36,7 +36,7 @@ const config = {
         ],
       },
       {
-        source: "/api/:path*",
+        source: "/",
         headers: [
           {
             key: "X-Frame-Options",
