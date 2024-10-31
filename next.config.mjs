@@ -20,36 +20,6 @@ const config = {
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: "frame-ancestors 'none'",
-          },
-        ],
-      },
-      {
-        source: "/",
-        headers: [
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: "frame-ancestors 'none'",
-          },
-        ],
-      },
-    ];
-  },
   async redirects() {
     return [
       {
