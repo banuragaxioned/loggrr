@@ -3,12 +3,11 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfDay, startOfMonth, startOfToday, subDays } from "date-fns";
+import { format, startOfDay, startOfToday, subDays } from "date-fns";
 import { CircleDollarSign, Download, ListRestart, Loader2, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
-import { DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
@@ -32,9 +31,11 @@ export function DataTableToolbar({
   const searchParams = useSearchParams();
   const locale = useLocale();
 
-  const selectedRange = searchParams.get("range");
+  const selectedRange = searchParams.get("range") 
   const selectedBilling = searchParams.get("billable");
   const selectedMembers = searchParams.get("members");
+const defaultDay = selectedRange ? undefined : 30;
+  const selectedProject = pathname.includes("projects") ? pathname.split("/")[3] : null;
 
   const peopleFilter = {
     title: "Members",
@@ -61,6 +62,8 @@ export function DataTableToolbar({
           selectedRange,
           selectedBilling,
           selectedMembers,
+          selectedProject,
+          defaultDay,
         }),
       });
 
@@ -70,7 +73,7 @@ export function DataTableToolbar({
 
       const data = await response.json();
       const currentTime = format(new Date(), "dd-MM-yyyy (hh﹕mm a)");
-      const filename = `Logged Report ${currentTime}.csv`;
+      const filename = `Project Report ${data[0]?.project} ${currentTime}.csv`;
 
       const dataToConvert = {
         data,
@@ -79,7 +82,7 @@ export function DataTableToolbar({
         headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
       };
 
-      // csvDownload(dataToConvert);
+      csvDownload(dataToConvert);
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
@@ -166,7 +169,7 @@ export function DataTableToolbar({
       </ul>
       {/* Right Area */}
       <div className="no-print flex flex-wrap items-center justify-end gap-2">
-        {/* <CustomTooltip
+        <CustomTooltip
           trigger={
             <Button
               disabled={isExportLoading}
@@ -179,7 +182,7 @@ export function DataTableToolbar({
             </Button>
           }
           content="Export CSV"
-        /> */}
+        />
       </div>
     </div>
   );

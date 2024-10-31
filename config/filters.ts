@@ -1,4 +1,4 @@
-import { Activity, Archive, User, UserCog, UserPen, UserX } from "lucide-react";
+import { Activity, Archive, User, UserCog, UserMinus, UserPen, UserX } from "lucide-react";
 
 export const roles = [
   {
@@ -19,7 +19,7 @@ export const roles = [
   {
     value: "GUEST",
     label: "Guest",
-    icon: User,
+    icon: UserMinus,
   },
   {
     value: "INACTIVE",
