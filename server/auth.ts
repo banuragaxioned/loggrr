@@ -33,7 +33,7 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db as any),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -163,6 +163,7 @@ export const authOptions: NextAuthOptions = {
               },
             },
           },
+          cacheStrategy: { ttl: 600 },
         });
 
         session.user.workspaces = workspaces.map((list) => {
