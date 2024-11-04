@@ -26,6 +26,8 @@ export const env = createEnv({
     EMAIL_PASSWORD: z.string().min(1),
     EMAIL_PORT: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
+    REDIS_URL: z.string().url(),
+    CACHE_TTL: z.string().min(1),
   },
   /*
    * Environment variables available on the client (and server).
@@ -60,5 +62,7 @@ export const env = createEnv({
     EMAIL_PORT: process.env.EMAIL_PORT,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    REDIS_URL: process.env.REDIS_URL,
+    CACHE_TTL: process.env.CACHE_TTL,
   },
 });
