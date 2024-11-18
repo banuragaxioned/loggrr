@@ -28,12 +28,13 @@ export default async function Projects({ params, searchParams }: pageProps) {
   const { status, clients: selectedClients } = searchParams;
   const rawProjectList = await getProjects(team, status, selectedClients);
   const clients = await getClients(team);
-  const users = await getAllUsers(team);
+  const users = (await getAllUsers(team)).map(user => ({ ...user, name: user.name ?? '' }));
   const projectList = rawProjectList.map(project => ({
     ...project,
     clients,
     users,
-    team
+    team,
+    interval: Number(project.interval)
   }));
 
   return (

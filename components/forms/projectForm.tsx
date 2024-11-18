@@ -47,11 +47,11 @@ interface EditProjectFormProps {
   users: AllUsersWithAllocation[];
   projectDetails: {
     id: number;
-    budget: number;
+    budget: number | undefined;
     team: string;
-    name: string;
+    name: string | null | undefined;
     clientId: number;
-    owner: string;
+    owner: string | null;
     interval: number;
     billable: boolean;
   };
@@ -268,7 +268,7 @@ export function EditProjectForm({ team, clients, users, projectDetails }: EditPr
   const [selectedInterval, setSelectedInterval] = useState<any>(intervalList.find(interval => interval.id === projectDetails.interval));
   const [selectedOwner, setSelectedOwner] = useState<any>(users.find(user => user.name === projectDetails.owner));
   const [selectedClient, setSelectedClient] = useState<any>(clients.find(client => client.id === projectDetails.clientId));
-  const [projectName, setProjectName] = useState<string>(projectDetails.name);
+  const [projectName] = useState<string>(projectDetails.name ?? "");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

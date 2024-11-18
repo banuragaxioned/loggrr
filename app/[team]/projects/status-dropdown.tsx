@@ -24,11 +24,11 @@ interface UpdateProjectStatusResponse {
 
 interface ProjectDetails {
   id: number;
-  budget: number;
+  budget: number | undefined;
   team: string;
-  name: string;
+  name: string | null | undefined;
   clientId: number;
-  owner: string;
+  owner: string | null;
   interval: number;
   billable: boolean;
 }
@@ -61,7 +61,6 @@ const StatusDropdown = ({ id, status, clients, users, team, projectDetails }: St
   };
 
   return (
-    <>
       <Popover>
         <PopoverTrigger asChild>
           <Button size="sm" className="h-0 border-none bg-transparent p-3" title="More" variant="ghost">
@@ -85,7 +84,6 @@ const StatusDropdown = ({ id, status, clients, users, team, projectDetails }: St
           </PopoverClose>
         </PopoverContent>
       </Popover>
-    </>
   );
 };
 
