@@ -21,6 +21,19 @@ export type Projects = {
   logged?: number;
   owner: string | null;
   ownerImage: string | null;
+  clients: {
+    id: number;
+    name: string;
+    project: number;
+    status: Status;
+  }[];
+  users: {
+    id: number;
+    name: string;
+  }[];
+  team: string;
+  interval: number;
+  billable: boolean;
 };
 
 export const columns: ColumnDef<Projects>[] = [
@@ -61,10 +74,21 @@ export const columns: ColumnDef<Projects>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id, status } = row.original;
+      const { id, status, clients, users, team, budget, clientId, owner, interval, billable, name } = row.original;
+      const projectDetails = {
+        id,
+        budget,
+        team,
+        name,
+        clientId,
+        owner,
+        interval,
+        billable,
+      }
+      
       return (
         <div className={cn("flex items-center gap-x-3")} onClick={(e) => e.stopPropagation()}>
-          <StatusDropdown id={id} status={status} />
+          <StatusDropdown id={id} status={status} clients={clients} users={users} team={team} projectDetails={projectDetails} />
         </div>
       );
     },
