@@ -225,6 +225,7 @@ export async function PUT(req: NextRequest) {
         projectId: body.project,
         taskId: body.task,
         updatedAt: new Date(),
+        date: new Date(body.date),
       },
     });
 
