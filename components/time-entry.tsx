@@ -176,8 +176,10 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
   };
 
   useEffect(() => {
-    getTimeEntries();
-  }, [getTimeEntries, updateTime]);
+    if (!edit.isEditing) {
+      getTimeEntries();
+    }
+  }, [getTimeEntries, updateTime, edit.isEditing]);
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
