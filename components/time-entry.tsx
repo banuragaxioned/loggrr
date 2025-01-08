@@ -180,7 +180,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
       getTimeEntries();
     }
   }, [getTimeEntries, updateTime, edit.isEditing]);
-  
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
