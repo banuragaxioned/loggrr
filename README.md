@@ -23,6 +23,7 @@ Clean and simple time logging solution for teams that embrace transparency and w
 ### Installation
 
 ```bash
+
 # Setup environment variables
 cp .env.example env
 
