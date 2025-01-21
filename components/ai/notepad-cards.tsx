@@ -1,6 +1,6 @@
 import React, { Dispatch, FormEvent, useEffect, useState } from "react";
 import { CircleDollarSign, Folder, Check, List, X, Milestone as CategoryIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import { ComboBox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
