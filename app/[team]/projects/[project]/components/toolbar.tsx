@@ -31,10 +31,10 @@ export function DataTableToolbar({
   const searchParams = useSearchParams();
   const locale = useLocale();
 
-  const selectedRange = searchParams.get("range") 
+  const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
   const selectedMembers = searchParams.get("members");
-const defaultDay = selectedRange ? undefined : 30;
+  const defaultDay = selectedRange ? undefined : 30;
   const selectedProject = pathname.includes("projects") ? pathname.split("/")[3] : null;
 
   const peopleFilter = {
