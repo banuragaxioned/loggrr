@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const TopLoader = () => {
   const { theme } = useTheme();
@@ -30,11 +31,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
     <>
       <PHProvider>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-          <TopLoader />
-          <TooltipProvider>
-            <SessionProvider>{children}</SessionProvider>
-          </TooltipProvider>
-          <Toaster richColors />
+          <NuqsAdapter>
+            <TopLoader />
+            <TooltipProvider>
+              <SessionProvider>{children}</SessionProvider>
+            </TooltipProvider>
+            <Toaster richColors />
+          </NuqsAdapter>
         </ThemeProvider>
       </PHProvider>
       <TailwindIndicator />
