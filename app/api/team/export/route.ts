@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
-    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedProject, defaultDay } = data;
+    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedProject, defaultDay } =
+      data;
     const { startDate, endDate } = getStartandEndDates(selectedRange, defaultDay);
     const isBillable = stringToBoolean(selectedBilling);
     const start = startOfDay(startDate);

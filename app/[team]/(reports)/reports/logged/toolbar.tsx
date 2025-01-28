@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
+import { useQueryState } from "nuqs";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
@@ -51,11 +52,11 @@ export function DataTableToolbar<TData>({
   const searchParams = useSearchParams();
   const locale = useLocale();
 
-  const selectedRange = searchParams.get("range");
-  const selectedBilling = searchParams.get("billable");
-  const selectedProject = searchParams.get("project");
-  const selectedClients = searchParams.get("clients");
-  const selectedMembers = searchParams.get("members");
+  const [selectedRange, setSelectedRange] = useQueryState("range");
+  const [selectedBilling, setSelectedBilling] = useQueryState("billable");
+  const [selectedProject, setSelectedProject] = useQueryState("project");
+  const [selectedClients] = useQueryState("clients");
+  const [selectedMembers] = useQueryState("members");
 
   const clientFilter = {
     title: "Clients",
@@ -133,7 +134,7 @@ export function DataTableToolbar<TData>({
   );
 
   const updateDateRange = (range: string) => {
-    router.push(pathname + "?" + createQueryString("range", range));
+    setSelectedRange(range || null);
   };
 
   const [start, end] = selectedRange?.split(",") || [];
@@ -142,28 +143,29 @@ export function DataTableToolbar<TData>({
 
   // Billing status toggle button
   const billingStatusToggleButton = (
-    <Button className="flex gap-1.5" variant="outline" asChild size="sm">
-      <Link
-        href={`?${new URLSearchParams({
-          ...(selectedRange && { range: selectedRange ?? "" }),
-          ...(selectedProject && { project: selectedProject ?? "" }),
-          ...(selectedClients && { clients: selectedClients ?? "" }),
-          ...(selectedMembers && { members: selectedMembers ?? "" }),
-          ...(generateBillingQuery()?.nextValue && { billable: generateBillingQuery()?.nextValue }),
-        })}`}
-      >
-        <CircleDollarSign
-          size={18}
-          className={cn(
-            selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
-            selectedBilling === "false" && "text-slate-400",
-            !selectedBilling && "text-black dark:text-white",
-          )}
-        />
-        {generateBillingQuery()?.text}
-      </Link>
+    <Button
+      className="flex gap-1.5"
+      variant="outline"
+      size="sm"
+      onClick={() => setSelectedBilling(generateBillingQuery()?.nextValue || null)}
+    >
+      <CircleDollarSign
+        size={18}
+        className={cn(
+          selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
+          selectedBilling === "false" && "text-slate-400",
+          !selectedBilling && "text-black dark:text-white",
+        )}
+      />
+      {generateBillingQuery()?.text}
     </Button>
   );
+
+  const handleReset = () => {
+    setSelectedRange(null);
+    setSelectedBilling(null);
+    setSelectedProject(null);
+  };
 
   return (
     <div className="mb-4 flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
@@ -202,11 +204,9 @@ export function DataTableToolbar<TData>({
         <li>{billingStatusToggleButton}</li>
         <li className="print:hidden">
           {isResetButtonVisibile && (
-            <Button variant="ghost" size="sm" className="flex gap-1.5" asChild>
-              <Link href={`?`}>
-                Reset
-                <ListRestart size={16} />
-              </Link>
+            <Button variant="ghost" size="sm" className="flex gap-1.5" onClick={handleReset}>
+              Reset
+              <ListRestart size={16} />
             </Button>
           )}
         </li>

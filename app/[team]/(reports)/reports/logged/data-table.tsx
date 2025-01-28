@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ColumnDef,
   flexRender,
@@ -42,6 +43,8 @@ export function DataTable<TData, TValue>({
   allUsers,
   hasFullAccess,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -65,6 +68,10 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+
+  useEffect(() => {
+    router.refresh();
+  }, [searchParams, router]);
 
   const handlePrintClick = () => {
     setIsPrintMode(true);

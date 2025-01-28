@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 
 import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
@@ -33,6 +34,7 @@ interface TimeEntryProps {
   team: string;
   projects: Project[];
   recentTimeEntries: RecentEntryProps[];
+  initialDate: Date;
 }
 
 export interface EditReferenceObj {
@@ -53,11 +55,14 @@ export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
-export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: TimeEntryProps) => {
   const router = useRouter();
+  const [date, setDate] = useQueryState("date", {
+    parse: (value: string) => new Date(value),
+    serialize: (date: Date) => format(date, "yyyy-MM-dd"),
+    defaultValue: initialDate,
+  });
   const updateTime = useTimeEntryState((state) => state.updateTime);
-  const date = useTimeEntryState((state) => state.date);
-  const setDate = useTimeEntryState((state) => state.setDate);
   const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
@@ -254,7 +259,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries }: TimeEntryProps)
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
-          <InlineDatePicker date={date} setDate={setDate} dayTotalTime={dayTotalTime} />
+          <InlineDatePicker date={date} setDate={(newDate: Date) => setDate(newDate)} dayTotalTime={dayTotalTime} />
         </div>
         <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
         {dayTotalTime && (

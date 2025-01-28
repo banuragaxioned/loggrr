@@ -11,13 +11,15 @@ import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
 import WeekHeatmap from "@/components/charts/week-heatmap";
 
-export default async function Dashboard({ params }: pageProps) {
+export default async function Dashboard({ params, searchParams }: pageProps) {
   const user = await getCurrentUser();
   const { team } = params;
 
   if (!user) {
     return notFound();
   }
+
+  const date = searchParams.date ? new Date(searchParams.date) : new Date();
 
   const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id);
@@ -29,7 +31,12 @@ export default async function Dashboard({ params }: pageProps) {
   return (
     <div className="col-span-12 mb-6 grid w-full grid-cols-12 items-start gap-4">
       <main className="col-span-12 flex flex-col gap-4 lg:col-span-9">
-        <TimeEntry team={team} projects={projects ? projects : []} recentTimeEntries={recentTimeEntries} />
+        <TimeEntry
+          team={team}
+          projects={projects ? projects : []}
+          recentTimeEntries={recentTimeEntries}
+          initialDate={date}
+        />
       </main>
       <aside className="hidden space-y-4 lg:col-span-3 lg:block">
         <CategoryDataBar
