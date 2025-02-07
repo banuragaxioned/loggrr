@@ -4,12 +4,11 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
 import { Info } from "lucide-react";
-import { startOfDay } from "date-fns";
 import { useTheme } from "next-themes";
 import { Flex, Text } from "@tremor/react";
 import { Skeleton } from "../ui/skeleton";
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
 import { Card } from "@/components/ui/tremor-card";
+import { useRouter } from "next/navigation";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -21,7 +20,7 @@ interface TimeEntrySum {
 }
 
 const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
-  const setDate = useTimeEntryState((state) => state.setDate);
+  const router = useRouter();
   const [data, setData] = React.useState<any>(null);
   const { theme } = useTheme();
 
@@ -81,9 +80,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
 
   const options = {
     chart: {
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
       width: "100%",
       height: "100%",
       animations: {
@@ -97,11 +94,13 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
         },
       },
       events: {
-        click: (event: any, chartContext: any, config: any) => {
-          const { date } = config.config.series[config.seriesIndex]?.data[config.dataPointIndex] || {};
+        click: (event: any, chartContext: any, { seriesIndex, dataPointIndex, config }: any) => {
+          if (!config?.series?.[seriesIndex]?.data?.[dataPointIndex]) return;
+
+          const { date } = config.series[seriesIndex].data[dataPointIndex];
           const isClickable = date && !isAfter(date, addDays(startOfToday(), 1));
           if (date && isClickable) {
-            setDate(startOfDay(date));
+            router.push(`?date=${format(date, "yyyy-MM-dd")}`);
           }
         },
       },
