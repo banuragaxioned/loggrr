@@ -14,7 +14,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-interface TeamSwitcherProps extends PopoverTriggerProps {}
+interface TeamSwitcherProps extends PopoverTriggerProps {
+  teams: Team[];
+}
 
 interface Team {
   id: number;
@@ -27,38 +29,35 @@ interface Teams {
   teams: Team[];
 }
 
-export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitcherProps) {
+export default function TeamSwitcher({ teams, className }: TeamSwitcherProps) {
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>();
 
   React.useEffect(() => {
-    if (teamData.teams.length === 1) {
-      setSelectedTeam(teamData.teams[0]);
+    if (teams.length === 1) {
+      setSelectedTeam(teams[0]);
     }
-  }, [teamData]);
+  }, [teams]);
 
   if (params?.team && selectedTeam?.slug !== params.team) {
-    const team = teamData.teams.find((item) => item.slug === params.team);
+    const team = teams.find((item) => item.slug === params.team);
     if (team) {
       setSelectedTeam(team);
     }
   }
 
-  if (teamData.teams.length === 1 && !params.team) {
+  if (teams.length === 1 && !params.team) {
     return (
-      <Link
-        className={cn(buttonVariants({ variant: "outline", size: "sm" }), "flex gap-2")}
-        href={`/${teamData.teams[0].slug}`}
-      >
+      <Link className={cn(buttonVariants({ variant: "outline", size: "sm" }), "flex gap-2")} href={`/${teams[0].slug}`}>
         Dashboard
         <ChevronRight size={16} />
       </Link>
     );
   }
 
-  if (teamData.teams.length <= 1) {
+  if (teams.length <= 1) {
     return null;
   }
 
@@ -81,7 +80,7 @@ export default function TeamSwitcher(teamData: Teams, { className }: TeamSwitche
       <PopoverContent className="-ml-2 w-52 p-0 md:-ml-3" align="start">
         <Command>
           <CommandList>
-            {teamData.teams.map((item) => (
+            {teams.map((item) => (
               <CommandItem
                 key={item.slug}
                 onSelect={() => {
