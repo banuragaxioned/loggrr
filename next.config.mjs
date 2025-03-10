@@ -17,9 +17,7 @@ const config = {
       },
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
-  },
+  serverExternalPackages: ["@prisma/client"],
   async redirects() {
     return [
       {
