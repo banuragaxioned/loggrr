@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -rf .turbo"
+  },
   "exports": {
     "./base": "./base.js",
     "./next-js": "./next.js",
@@ -10,16 +13,16 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.26.0",
-    "@typescript-eslint/parser": "^8.26.0",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-turbo": "^2.4.2",
+    "eslint-plugin-turbo": "^2.4.4",
     "globals": "^15.15.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0"
+    "typescript-eslint": "^8.26.1"
   }
 }

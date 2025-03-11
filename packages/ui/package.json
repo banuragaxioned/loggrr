@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "clean": "rm -rf dist && rm -rf node_modules && rm -rf .turbo && rm -rf .next",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
