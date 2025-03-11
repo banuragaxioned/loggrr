@@ -1,8 +1,15 @@
 {
   "name": "@workspace/ui",
   "version": "0.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "exports": {
+    "./globals.css": "./src/styles/globals.css",
+    "./postcss.config": "./postcss.config.mjs",
+    "./lib/*": "./src/lib/*.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts"
+  },
   "scripts": {
     "clean": "rm -rf dist && rm -rf node_modules && rm -rf .turbo && rm -rf .next",
     "lint": "eslint . --max-warnings 0"
@@ -35,12 +42,5 @@
     "@workspace/typescript-config": "workspace:*",
     "tailwindcss": "^4.0.12",
     "typescript": "^5.8.2"
-  },
-  "exports": {
-    "./globals.css": "./src/styles/globals.css",
-    "./postcss.config": "./postcss.config.mjs",
-    "./lib/*": "./src/lib/*.ts",
-    "./components/*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts"
   }
 }

@@ -1,15 +1,15 @@
 {
   "name": "@workspace/eslint-config",
   "version": "0.0.0",
-  "type": "module",
   "private": true,
-  "scripts": {
-    "clean": "rm -rf node_modules && rm -rf .turbo"
-  },
+  "type": "module",
   "exports": {
     "./base": "./base.js",
     "./next-js": "./next.js",
     "./react-internal": "./react-internal.js"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -rf .turbo"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.2.1",

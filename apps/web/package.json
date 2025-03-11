@@ -1,15 +1,15 @@
 {
   "name": "web",
   "version": "0.0.1",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
     "clean": "rm -rf dist && rm -rf node_modules && rm -rf .turbo && rm -rf .next",
-    "start": "next start",
+    "dev": "next dev --turbopack",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "start": "next start",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
