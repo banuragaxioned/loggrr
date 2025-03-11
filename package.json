@@ -6,11 +6,13 @@
     "build": "turbo build",
     "clean": "turbo clean && rm -rf node_modules && rm -rf .turbo",
     "dev": "turbo dev",
-    "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "postinstall": "manypkg check",
+    "lint": "turbo lint",
     "manypkg:fix": "manypkg fix",
-    "postinstall": "manypkg check"
+    "pkg:update": "pnpm up --recursive -i --latest i"
   },
+  "prettier": "@axioned/prettier-config",
   "devDependencies": {
     "@axioned/prettier-config": "^1.0.5",
     "@manypkg/cli": "^0.23.0",
@@ -23,6 +25,5 @@
   "packageManager": "pnpm@10.6.2",
   "engines": {
     "node": ">=22"
-  },
-  "prettier": "@axioned/prettier-config"
+  }
 }
