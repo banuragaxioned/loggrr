@@ -9,12 +9,14 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@axioned/prettier-config": "^1.0.5",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "prettier": "^3.5.3",
     "turbo": "^2.4.4",
     "typescript": "5.8.2"
   },
+  "prettier": "@axioned/prettier-config",
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
