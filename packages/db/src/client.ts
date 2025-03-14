@@ -3,7 +3,7 @@ import "dotenv/config";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema";
+import * as schema from "./schemas";
 
 const getEnvVariable = (name: string) => {
   const value = process.env[name];

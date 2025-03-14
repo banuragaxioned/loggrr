@@ -1,2 +1,2 @@
-export * from "./schema";
-export * from "./database";
+export * from "drizzle-orm/sql";
+export { alias } from "drizzle-orm/pg-core";

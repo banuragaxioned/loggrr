@@ -1,0 +1,30 @@
+{
+  "name": "@workspace/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "generate": "pnpx @better-auth/cli generate --output ../db/src/schemas/auth-schema.ts",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@workspace/db": "workspace:*",
+    "better-auth": "1.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "^9.22.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  }
+}
