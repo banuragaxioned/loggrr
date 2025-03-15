@@ -1,6 +1,7 @@
 import type { BetterAuthOptions } from "better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 import { db } from "@workspace/db/client";
 
@@ -8,6 +9,7 @@ export const config = {
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
+  plugins: [admin()],
   secret: process.env.BETTER_AUTH_SECRET!,
   socialProviders: {
     google: {
