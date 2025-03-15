@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "clean": "turbo clean && rm -rf node_modules && rm -rf .turbo",
+    "db:studio": "turbo db:studio",
     "dev": "turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "postinstall": "manypkg check",
@@ -22,8 +23,9 @@
     "turbo": "^2.4.4",
     "typescript": "^5.8.2"
   },
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.6.3",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.14.0",
+    "pnpm": ">=9.15.4"
   }
 }

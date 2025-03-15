@@ -39,6 +39,20 @@ export async function AuthShowcase() {
         <Button
           formAction={async () => {
             "use server";
+            const users = await auth.api.listUsers({
+              headers: await headers(),
+              query: {},
+            });
+            console.log(users);
+          }}>
+          List Users
+        </Button>
+      </form>
+
+      <form>
+        <Button
+          formAction={async () => {
+            "use server";
             await auth.api.signOut({
               headers: await headers(),
             });

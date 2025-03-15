@@ -25,6 +25,9 @@
     },
     "db:seed": {
       "outputs": []
+    },
+    "db:studio": {
+      "outputs": []
     }
   }
 }
