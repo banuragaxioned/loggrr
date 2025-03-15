@@ -4,7 +4,7 @@ import { nanoid } from "../utils/nano";
 export const status = pgEnum("status", ["draft", "active", "completed", "cancelled"]);
 export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 
-export const projects = pgTable("projects", {
+export const project = pgTable("project", {
   id: text("id")
     .$defaultFn(() => nanoid(10))
     .primaryKey()
@@ -17,13 +17,13 @@ export const projects = pgTable("projects", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const milestones = pgTable("milestones", {
+export const milestone = pgTable("milestone", {
   id: text("id")
     .$defaultFn(() => nanoid(10))
     .primaryKey()
     .notNull(),
   projectId: text("project_id")
-    .references(() => projects.id)
+    .references(() => project.id)
     .notNull(),
   name: text("name").notNull(),
   description: text("description"),
@@ -34,13 +34,13 @@ export const milestones = pgTable("milestones", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const tasks = pgTable("tasks", {
+export const task = pgTable("task", {
   id: text("id")
     .$defaultFn(() => nanoid(10))
     .primaryKey()
     .notNull(),
   projectId: text("project_id")
-    .references(() => projects.id)
+    .references(() => project.id)
     .notNull(),
   name: text("name").notNull(),
   description: text("description"),
