@@ -4,6 +4,15 @@ import { user } from "./auth-schema";
 
 export const estimateStatus = pgEnum("estimate_status", ["draft", "pending", "approved", "rejected", "cancelled"]);
 
+export const skill = pgTable("skill", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const estimate = pgTable("estimate", {
   id: text("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
@@ -25,7 +34,9 @@ export const estimateItem = pgTable("estimate_item", {
   estimateId: text("estimate_id")
     .references(() => estimate.id)
     .notNull(),
-  skill: text("skill").notNull(), // This could be a reference to a skills table if needed
+  skillId: text("skill_id")
+    .references(() => skill.id)
+    .notNull(),
   duration: integer("duration").notNull(), // Duration in minutes
   rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
   currency: text("currency").default("USD").notNull(),
@@ -45,9 +56,6 @@ export const assignment = pgTable("assignment", {
   estimateItemId: text("estimate_item_id")
     .references(() => estimateItem.id)
     .notNull(),
-  duration: integer("duration").notNull(), // Duration in minutes
-  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
-  currency: text("currency").default("USD").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
