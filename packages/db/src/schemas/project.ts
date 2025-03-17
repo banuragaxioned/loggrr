@@ -5,6 +5,7 @@ export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "comp
 
 export const project = pgTable("project", {
   id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
   archived: boolean("archived").default(false).notNull(),
@@ -15,6 +16,7 @@ export const project = pgTable("project", {
 
 export const category = pgTable("category", {
   id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
   projectId: text("project_id")
     .references(() => project.id)
     .notNull(),
@@ -29,6 +31,7 @@ export const category = pgTable("category", {
 
 export const task = pgTable("task", {
   id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
   projectId: text("project_id")
     .references(() => project.id)
     .notNull(),

@@ -1,0 +1,53 @@
+import { pgTable, text, timestamp, integer, pgEnum, decimal } from "drizzle-orm/pg-core";
+import { project } from "./project";
+import { user } from "./auth-schema";
+
+export const estimateStatus = pgEnum("estimate_status", ["draft", "pending", "approved", "rejected", "cancelled"]);
+
+export const estimate = pgTable("estimate", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
+  projectId: text("project_id")
+    .references(() => project.id)
+    .notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  status: estimateStatus("status").default("draft").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const estimateItem = pgTable("estimate_item", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
+  estimateId: text("estimate_id")
+    .references(() => estimate.id)
+    .notNull(),
+  skill: text("skill").notNull(), // This could be a reference to a skills table if needed
+  duration: integer("duration").notNull(), // Duration in minutes
+  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
+  currency: text("currency").default("USD").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const assignment = pgTable("assignment", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull(),
+  projectId: text("project_id")
+    .references(() => project.id)
+    .notNull(),
+  userId: text("user_id")
+    .references(() => user.id)
+    .notNull(),
+  estimateItemId: text("estimate_item_id")
+    .references(() => estimateItem.id)
+    .notNull(),
+  duration: integer("duration").notNull(), // Duration in minutes
+  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
+  currency: text("currency").default("USD").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
