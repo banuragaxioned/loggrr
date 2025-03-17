@@ -1,14 +1,10 @@
 import { pgTable, text, timestamp, boolean, pgEnum, integer } from "drizzle-orm/pg-core";
-import { nanoid } from "../utils/nano";
 
 export const status = pgEnum("status", ["draft", "active", "completed", "cancelled"]);
 export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 
 export const project = pgTable("project", {
-  id: text("id")
-    .$defaultFn(() => nanoid(10))
-    .primaryKey()
-    .notNull(),
+  id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
   archived: boolean("archived").default(false).notNull(),
@@ -17,11 +13,8 @@ export const project = pgTable("project", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const milestone = pgTable("milestone", {
-  id: text("id")
-    .$defaultFn(() => nanoid(10))
-    .primaryKey()
-    .notNull(),
+export const category = pgTable("category", {
+  id: text("id").primaryKey(),
   projectId: text("project_id")
     .references(() => project.id)
     .notNull(),
@@ -35,10 +28,7 @@ export const milestone = pgTable("milestone", {
 });
 
 export const task = pgTable("task", {
-  id: text("id")
-    .$defaultFn(() => nanoid(10))
-    .primaryKey()
-    .notNull(),
+  id: text("id").primaryKey(),
   projectId: text("project_id")
     .references(() => project.id)
     .notNull(),
