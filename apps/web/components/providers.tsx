@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -10,9 +11,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
-      enableColorScheme
-    >
-      {children}
+      enableColorScheme>
+      <NuqsAdapter>{children}</NuqsAdapter>
     </NextThemesProvider>
   );
 }
