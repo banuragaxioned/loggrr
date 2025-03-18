@@ -1,10 +1,8 @@
-import { session } from "./../../db/src/schemas/auth-schema";
 import type { BetterAuthOptions } from "better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, organization, openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
-
 import { db } from "@workspace/db/client";
 
 export const config = {
