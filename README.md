@@ -1,6 +1,23 @@
-# shadcn/ui monorepo template
+# Loggrr
 
-This template is for creating a monorepo with shadcn/ui.
+Clean and simple time logging solution for teams that embrace transparency and want to focus on what really matters.
+
+## Tech stack
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [Next.js](https://nextjs.org)
+- [Better Auth](https://www.better-auth.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [React Hook Form](https://react-hook-form.com)
+- [Vercel](https://vercel.com)
+
+## Prerequisites
+
+- [nvm](https://github.com/nvm-sh/nvm), [fnm](https://github.com/Schniz/fnm) or [Node.js](https://nodejs.org/en/)
+- [pnpm](https://pnpm.io/)
+- [Docker](https://docs.docker.com/get-docker/) (for local development)
 
 ## Usage
 

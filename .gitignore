@@ -21,7 +21,7 @@ coverage
 ## React email
 .react-email
 
-# SonarQube	# Debug
+# SonarQube
 .scannerwork/
 
 # Build Outputs
