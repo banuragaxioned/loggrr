@@ -9,7 +9,16 @@ export const config = {
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  plugins: [admin(), organization(), openAPI({})],
+  plugins: [
+    admin(),
+    organization({
+      teams: {
+        enabled: true,
+      },
+      allowUserToCreateOrganization: false,
+    }),
+    openAPI({}),
+  ],
   secret: process.env.BETTER_AUTH_SECRET!,
   session: {
     cookieCache: {
