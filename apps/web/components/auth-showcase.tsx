@@ -15,6 +15,7 @@ import {
 } from "@workspace/ui/components/dialog";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
+import { Separator } from "@workspace/ui/components/separator";
 
 async function listUsers() {
   const result = await auth.api.listUsers({
@@ -67,95 +68,116 @@ export async function AuthShowcase() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-8 w-full max-w-2xl mx-auto px-4">
       <p className="text-center">
         <span>Logged in as {session.user.name}</span>
       </p>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>List Users</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Users</DialogTitle>
-            <DialogDescription>List of all users in the system</DialogDescription>
-          </DialogHeader>
-          <div className="border rounded-lg p-4 space-y-2 max-h-[300px] overflow-auto">
-            <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(users, null, 2)}</pre>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* User Section */}
+      <section className="w-full">
+        <h2 className="text-xl font-bold mb-4">Users</h2>
+        <div className="flex gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>List Users</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Users</DialogTitle>
+                <DialogDescription>List of all users in the system</DialogDescription>
+              </DialogHeader>
+              <div className="border rounded-lg p-4 space-y-2 max-h-[300px] overflow-auto">
+                <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(users, null, 2)}</pre>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </section>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>List Organizations</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Organizations</DialogTitle>
-            <DialogDescription>List of all organizations</DialogDescription>
-          </DialogHeader>
-          <div className="border rounded-lg p-4 space-y-2 max-h-[300px] overflow-auto">
-            <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(organizations, null, 2)}</pre>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <Separator />
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Create Organization</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Organization</DialogTitle>
-            <DialogDescription>Create a new organization to collaborate with your team.</DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4">
-            <div>
-              <Label htmlFor="name">Organization Name</Label>
-              <Input id="name" name="name" placeholder="Acme Corp" required />
-            </div>
-            <div>
-              <Label htmlFor="slug">Organization Slug</Label>
-              <Input id="slug" name="slug" placeholder="acme-corp" required />
-            </div>
-            <DialogFooter>
-              <Button
-                formAction={async (formData: FormData) => {
-                  "use server";
-                  const name = formData.get("name") as string;
-                  const slug = formData.get("slug") as string;
+      {/* Organization Section */}
+      <section className="w-full">
+        <h2 className="text-xl font-bold mb-4">Organizations</h2>
+        <div className="flex gap-2 flex-wrap">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>List Organizations</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Organizations</DialogTitle>
+                <DialogDescription>List of all organizations</DialogDescription>
+              </DialogHeader>
+              <div className="border rounded-lg p-4 space-y-2 max-h-[300px] overflow-auto">
+                <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(organizations, null, 2)}</pre>
+              </div>
+            </DialogContent>
+          </Dialog>
 
-                  await auth.api.createOrganization({
-                    headers: await headers(),
-                    body: {
-                      name,
-                      slug,
-                    },
-                  });
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Create Organization</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create Organization</DialogTitle>
+                <DialogDescription>Create a new organization to collaborate with your team.</DialogDescription>
+              </DialogHeader>
+              <form className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Organization Name</Label>
+                  <Input id="name" name="name" placeholder="Acme Corp" required />
+                </div>
+                <div>
+                  <Label htmlFor="slug">Organization Slug</Label>
+                  <Input id="slug" name="slug" placeholder="acme-corp" required />
+                </div>
+                <DialogFooter>
+                  <Button
+                    formAction={async (formData: FormData) => {
+                      "use server";
+                      const name = formData.get("name") as string;
+                      const slug = formData.get("slug") as string;
 
-                  redirect("/");
-                }}>
-                Create
-              </Button>
-            </DialogFooter>
+                      await auth.api.createOrganization({
+                        headers: await headers(),
+                        body: {
+                          name,
+                          slug,
+                        },
+                      });
+
+                      redirect("/");
+                    }}>
+                    Create
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </section>
+
+      <Separator />
+
+      {/* Sign Out Section */}
+      <section className="w-full">
+        <div className="flex justify-center">
+          <form>
+            <Button
+              formAction={async () => {
+                "use server";
+                await auth.api.signOut({
+                  headers: await headers(),
+                });
+                redirect("/");
+              }}>
+              Sign out
+            </Button>
           </form>
-        </DialogContent>
-      </Dialog>
-
-      <form>
-        <Button
-          formAction={async () => {
-            "use server";
-            await auth.api.signOut({
-              headers: await headers(),
-            });
-            redirect("/");
-          }}>
-          Sign out
-        </Button>
-      </form>
+        </div>
+      </section>
     </div>
   );
 }
