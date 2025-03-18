@@ -1,0 +1,21 @@
+{
+  "extends": "@workspace/typescript-config/base.json",
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "incremental": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "resolveJsonModule": true,
+    "moduleDetection": "force"
+  },
+  "include": ["src", "*.ts"],
+  "exclude": ["node_modules"]
+}
