@@ -3,6 +3,9 @@
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
       enableColorScheme>
-      <NuqsAdapter>{children}</NuqsAdapter>
+      <NuqsAdapter>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </NuqsAdapter>
     </NextThemesProvider>
   );
 }
