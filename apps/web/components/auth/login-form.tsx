@@ -1,8 +1,5 @@
 import { cn } from "@workspace/ui/lib/utils";
-import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { Input } from "@workspace/ui/components/input";
-import { Label } from "@workspace/ui/components/label";
 import { LoginGoogleButton } from "./login-google-button";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
