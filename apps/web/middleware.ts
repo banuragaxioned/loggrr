@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   });
 
   if (!session) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
@@ -24,6 +24,6 @@ export const config = {
      * 4. /_vercel (Vercel internals)
      * 5. Static files (e.g. /favicon.ico, /sitemap.xml, /robots.txt, etc.)
      */
-    "/((?!api/|_next/static|_next/image|thanks|favicon.ico|favicon.svg|^$).+)",
+    "/((?!api/|_next/static|_next/image|login|thanks|favicon.ico|favicon.svg|^$).+)",
   ],
 };
