@@ -1,4 +1,4 @@
-import { AuthShowcase } from "@/components/auth-showcase";
+import { AuthShowcase } from "@/components/auth/showcase";
 
 export default function Page() {
   return (
