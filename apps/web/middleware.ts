@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { auth } from "@workspace/auth";
+import { betterFetch } from "@better-fetch/fetch";
+
+type Session = typeof auth.$Infer.Session;
+
 export async function middleware(request: NextRequest) {
-  const sessionCookie = getSessionCookie(request, {
-    // Optionally pass config if cookie name, prefix or useSecureCookies option is customized in auth config.
-    cookieName: "session_token",
-    cookiePrefix: "better-auth",
-    useSecureCookies: true,
+  const { data: session } = await betterFetch<Session>("/api/auth/get-session", {
+    baseURL: request.nextUrl.origin,
+    headers: {
+      cookie: request.headers.get("cookie") || "", // Forward the cookies from the request
+    },
   });
 
-  if (!sessionCookie) {
+  if (!session) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
