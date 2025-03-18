@@ -9,7 +9,8 @@
       "default": "./src/index.ts"
     },
     "./middleware": "./src/middleware.ts",
-    "./client": "./src/client.ts"
+    "./client": "./src/client.ts",
+    "./env": "./env.ts"
   },
   "scripts": {
     "format": "prettier --check . --ignore-path ../../.gitignore",
@@ -18,6 +19,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "^0.12.0",
     "@workspace/db": "workspace:*",
     "better-auth": "1.2.4",
     "next": "^15.2.3",
