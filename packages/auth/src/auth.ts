@@ -17,7 +17,6 @@ export const config = {
       teams: {
         enabled: true,
       },
-      allowUserToCreateOrganization: false,
     }),
     openAPI(),
     nextCookies(),
