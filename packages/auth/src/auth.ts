@@ -4,6 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, organization, openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@workspace/db/client";
+import { env } from "../env";
 
 export const config = {
   database: drizzleAdapter(db, {
@@ -19,7 +20,7 @@ export const config = {
     openAPI(),
     nextCookies(),
   ],
-  secret: process.env.BETTER_AUTH_SECRET!,
+  secret: env.AUTH_SECRET,
   session: {
     cookieCache: {
       enabled: true,
@@ -28,8 +29,8 @@ export const config = {
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
 } satisfies BetterAuthOptions;
