@@ -19,7 +19,7 @@
     "@manypkg/cli": "^0.23.0",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "prettier": "^3.5.3",
+    "prettier": "^3.4.2",
     "turbo": "^2.4.4",
     "typescript": "^5.8.2"
   },

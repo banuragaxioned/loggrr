@@ -14,7 +14,8 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "resolveJsonModule": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "jsx": "preserve"
   },
   "include": ["src", "*.ts"],
   "exclude": ["node_modules"]
