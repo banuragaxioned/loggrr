@@ -28,7 +28,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "drizzle-orm": "0.40.1",
-    "nanoid": "^5.1.4",
+    "nanoid": "^5.1.5",
     "pg": "^8.14.1",
     "postgres": "3.4.5"
   },

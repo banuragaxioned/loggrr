@@ -14,7 +14,6 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
-      "dependsOn": ["^dev"],
       "cache": false,
       "persistent": true
     },
@@ -31,6 +30,17 @@
       "outputs": []
     }
   },
-  "globalEnv": ["DATABASE_URL", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "AUTH_SECRET", "TURBO_TELEMETRY_DISABLED"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "AUTH_SECRET",
+    "TURBO_TELEMETRY_DISABLED",
+    "EMAIL_FROM",
+    "EMAIL_HOST",
+    "EMAIL_PORT",
+    "EMAIL_USER",
+    "EMAIL_PASSWORD"
+  ],
   "globalPassThroughEnv": ["NODE_ENV", "CI", "VERCEL", "VERCEL_ENV", "VERCEL_URL", "npm_lifecycle_event"]
 }

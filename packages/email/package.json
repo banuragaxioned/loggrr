@@ -1,0 +1,21 @@
+{
+  "name": "@workspace/email",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "email dev --port 3005",
+    "build": "email build",
+    "export": "email export",
+    "start": "email start",
+    "clean": "rm -rf .turbo node_modules .react-email"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.34",
+    "@types/nodemailer": "^6.4.17",
+    "nodemailer": "^6.10.0",
+    "react-email": "^3.0.7"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*"
+  }
+}
