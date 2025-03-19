@@ -21,7 +21,7 @@ importers:
         specifier: workspace:*
         version: link:tooling/typescript
       prettier:
-        specifier: ^3.5.3
+        specifier: ^3.4.2
         version: 3.5.3
       turbo:
         specifier: ^2.4.4

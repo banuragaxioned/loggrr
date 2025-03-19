@@ -1,10 +1,11 @@
-import type { BetterAuthOptions } from "better-auth";
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, organization, openAPI } from "better-auth/plugins";
+import { admin, organization, openAPI, magicLink } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@workspace/db/client";
 import { env } from "../env";
+import { sendEmail } from "@workspace/email/lib/send";
+import { MagicLinkEmail } from "@workspace/email/emails/magic-link";
 
 export const config = {
   database: drizzleAdapter(db, {
@@ -19,6 +20,16 @@ export const config = {
     }),
     openAPI(),
     nextCookies(),
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        // send email to user
+        await sendEmail({
+          to: email,
+          subject: "Magic Link",
+          html: MagicLinkEmail({ magicLink: url }),
+        });
+      },
+    }),
   ],
   secret: env.AUTH_SECRET,
   session: {
