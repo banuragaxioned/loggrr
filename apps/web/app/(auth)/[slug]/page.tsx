@@ -12,7 +12,7 @@ export default async function SlugPage(props: pageProps) {
   }
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="space-y-8">
       <h1 className="text-2xl font-bold">Slug: {slug}</h1>
     </div>
   );
