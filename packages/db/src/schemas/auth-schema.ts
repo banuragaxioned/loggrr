@@ -102,3 +102,9 @@ export const team = pgTable("team", {
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at"),
 });
+
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
+
+export type Organization = typeof organization.$inferSelect;
+export type NewOrganization = typeof organization.$inferInsert;
