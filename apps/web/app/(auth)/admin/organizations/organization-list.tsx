@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
 
 interface Organization {
@@ -10,21 +10,27 @@ interface Organization {
 
 export function OrganizationList({ organizations }: { organizations: Organization[] }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {organizations.map((org) => (
-        <Card key={org.id}>
-          <CardHeader className="flex flex-row items-center gap-4">
-            <Avatar>
-              <AvatarImage src={org.image || undefined} alt={org.name} />
-              <AvatarFallback>{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle className="text-base">{org.name}</CardTitle>
-              <p className="text-sm text-muted-foreground">{org.slug}</p>
-            </div>
-          </CardHeader>
-        </Card>
-      ))}
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Organization</TableHead>
+          <TableHead>Slug</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {organizations.map((org) => (
+          <TableRow key={org.id}>
+            <TableCell className="flex items-center gap-3">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={org.image || undefined} alt={org.name} />
+                <AvatarFallback>{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              {org.name}
+            </TableCell>
+            <TableCell>{org.slug}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
