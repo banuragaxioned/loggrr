@@ -1,7 +1,11 @@
+import { Organization } from "@workspace/db/schema";
 import { notFound } from "next/navigation";
 
-export default async function SlugPage({ params }: { params: { slug: string } }) {
-  const { slug } = await params;
+export type pageProps = { params: Promise<{ slug: Organization["slug"] }> };
+
+export default async function SlugPage(props: pageProps) {
+  const params = await props.params;
+  const { slug } = params;
   // TODO: Add organization validation logic
   if (!slug) {
     notFound();
