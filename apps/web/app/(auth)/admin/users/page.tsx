@@ -2,6 +2,8 @@ import { auth } from "@workspace/auth";
 import { UserList } from "./user-list";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 async function getUsers() {
   try {
     const headersList = await headers();

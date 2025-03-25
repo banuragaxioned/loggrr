@@ -2,6 +2,7 @@ import { cn } from "@workspace/ui/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { LoginGoogleButton } from "./login-google-button";
 import { MagicLinkSection } from "./magic-link-button";
+import Link from "next/link";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -24,8 +25,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="/terms">Terms of Service</a> and{" "}
-        <a href="/privacy">Privacy Policy</a>.
+        By clicking continue, you agree to our <Link href="/terms">Terms of Service</Link> and{" "}
+        <Link href="/privacy">Privacy Policy</Link>.
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import { auth } from "@workspace/auth";
 import { OrganizationList } from "./organization-list";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 async function getOrganizations() {
   try {
     const headersList = await headers();

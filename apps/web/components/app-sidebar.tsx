@@ -152,7 +152,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher orgs={data.orgs} />
+        <OrganizationSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

@@ -61,7 +61,7 @@ export function OrganizationSwitcher() {
       }
     }
     init();
-  }, [currentSlug]);
+  }, [currentSlug, router]);
 
   const handleOrgChange = async (org: Organization) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
