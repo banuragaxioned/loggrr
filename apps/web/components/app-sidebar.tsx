@@ -9,6 +9,7 @@ import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@workspace/ui/components/sidebar";
 import { OrganizationSwitcher } from "./organization-switcher";
+import Search from "./search";
 
 const data = {
   user: {
@@ -155,6 +156,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <OrganizationSwitcher />
       </SidebarHeader>
       <SidebarContent>
+        <Search />
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
