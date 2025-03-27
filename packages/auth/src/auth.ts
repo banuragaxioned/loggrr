@@ -6,6 +6,7 @@ import { db } from "@workspace/db/client";
 import { env } from "../env";
 import { sendEmail } from "@workspace/email/lib/send";
 import { MagicLinkEmail } from "@workspace/email/emails/magic-link";
+import { OrganizationInviteEmail } from "@workspace/email/emails/organization-invite";
 
 export const config = {
   database: drizzleAdapter(db, {
@@ -17,12 +18,23 @@ export const config = {
       teams: {
         enabled: true,
       },
+      async sendInvitationEmail(data) {
+        const inviteLink = `/accept-invitation/${data.id}`;
+        await sendEmail({
+          to: data.email,
+          subject: `Invitation to join ${data.organization.name} on Loggrr`,
+          html: OrganizationInviteEmail({
+            organizationName: data.organization.name,
+            invitorName: data.inviter.user.name,
+            inviteLink,
+          }),
+        });
+      },
     }),
     openAPI(),
     nextCookies(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        // send email to user
         await sendEmail({
           to: email,
           subject: "Magic Link",
