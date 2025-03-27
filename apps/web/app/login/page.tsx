@@ -1,5 +1,4 @@
 import { LoginForm } from "@/components/auth/login-form";
-import { Clock } from "lucide-react";
 import { getSession } from "@workspace/auth";
 import { redirect } from "next/navigation";
 

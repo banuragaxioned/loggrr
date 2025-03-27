@@ -1,9 +1,14 @@
-import { AuthShowcase } from "@/components/auth/showcase";
+import { getSession } from "@workspace/auth";
 import { Clock } from "lucide-react";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+export default async function Page() {
+  const session = await getSession();
 
-export default function Page() {
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="flex items-center justify-center min-h-svh">
       <div className="flex flex-col items-center justify-center gap-4">
@@ -13,7 +18,6 @@ export default function Page() {
           </div>
           Loggrr
         </div>
-        <AuthShowcase />
       </div>
     </div>
   );

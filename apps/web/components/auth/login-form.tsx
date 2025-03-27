@@ -2,7 +2,6 @@ import { cn } from "@workspace/ui/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { LoginGoogleButton } from "./login-google-button";
 import { MagicLinkSection } from "./magic-link-button";
-import Link from "next/link";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
