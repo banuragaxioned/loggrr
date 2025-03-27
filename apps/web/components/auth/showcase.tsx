@@ -68,7 +68,9 @@ export async function AuthShowcase() {
     if (!session) {
       return (
         <div className="flex flex-col items-center justify-center gap-8 w-full max-w-2xl mx-auto px-4">
-          <Link href="/login">Login</Link>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
         </div>
       );
     }
