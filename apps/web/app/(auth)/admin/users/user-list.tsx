@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
-
+import { UserAvatar } from "@/components/ui/user-avatar";
 interface User {
   id: string;
   name: string;
@@ -23,10 +22,7 @@ export function UserList({ users }: { users: User[] }) {
         {users.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.image || undefined} alt={user.name} />
-                <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
+              <UserAvatar name={user.name} image={user.image!} />
               {user.name}
             </TableCell>
             <TableCell>{user.email}</TableCell>

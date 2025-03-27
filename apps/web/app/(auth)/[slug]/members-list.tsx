@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@workspace/ui/components/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { authClient } from "@workspace/auth/client";
 import { useEffect, useState } from "react";
 
@@ -20,10 +20,7 @@ export function MembersList() {
   return (
     <div className="grid gap-4">
       <div className="flex items-center gap-4 p-4 border rounded-lg">
-        <Avatar>
-          <AvatarImage src={data.user.image!} />
-          <AvatarFallback>M</AvatarFallback>
-        </Avatar>
+        <UserAvatar name={data.user.name} image={data.user.image} />
         <div>
           <p className="text-sm font-medium">{data.user.name}</p>
           <p className="text-sm text-muted-foreground">{data.role}</p>
