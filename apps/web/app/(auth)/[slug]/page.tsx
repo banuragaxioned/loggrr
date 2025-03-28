@@ -8,7 +8,7 @@ export type pageProps = { params: Promise<{ slug: Organization["slug"] }> };
 export default async function SlugPage(props: pageProps) {
   const params = await props.params;
   const { slug } = params;
-  const result = await caller.test.getCurrentUser();
+  const result = await caller.user.get();
 
   if (!slug) {
     notFound();
