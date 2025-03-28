@@ -13,7 +13,7 @@
     "@react-email/components": "^0.0.34",
     "@types/nodemailer": "^6.4.17",
     "nodemailer": "^6.10.0",
-    "react-email": "^3.0.7"
+    "react-email": "^4.0.1"
   },
   "devDependencies": {
     "@workspace/typescript-config": "workspace:*"
