@@ -25,7 +25,7 @@ export const organizationRouter = createTRPCRouter({
       });
       return organizations;
     }),
-  getActiveMember: protectedProcedure.query(async () => {
+  getMembers: protectedProcedure.query(async () => {
     const member = await auth.api.getActiveMember({
       headers: await headers(),
     });

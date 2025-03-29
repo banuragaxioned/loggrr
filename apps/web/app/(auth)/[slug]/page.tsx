@@ -10,9 +10,8 @@ export default async function SlugPage(props: pageProps) {
   const params = await props.params;
   const { slug } = params;
 
-  const user = await caller.user.get();
-  const organizations = await caller.organization.getAll();
-  const activeMember = await caller.organization.getActiveMember();
+  const members = await caller.organization.getMembers();
+  const teams = await caller.organization.getTeams();
 
   if (!slug) {
     notFound();
@@ -21,12 +20,13 @@ export default async function SlugPage(props: pageProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Organization Members</h1>
+        <h2 className="text-2xl font-bold">Members</h2>
+        <pre>{JSON.stringify(members, null, 2)}</pre>
       </div>
-
-      <pre>{JSON.stringify(user, null, 2)}</pre>
-      <pre>{JSON.stringify(organizations, null, 2)}</pre>
-      <pre>{JSON.stringify(activeMember, null, 2)}</pre>
+      <div>
+        <h2 className="text-2xl font-bold">Teams</h2>
+        <pre>{JSON.stringify(teams, null, 2)}</pre>
+      </div>
       <ClientGreeting />
       <MembersList />
     </div>

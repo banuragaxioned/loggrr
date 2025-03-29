@@ -22,20 +22,22 @@ const t = initTRPC.context<{ session: AuthSession | null }>().create({
   transformer: superjson,
 });
 
-// Auth middleware
-const isAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" });
+const isAuthenticated = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authenticated",
+    });
   }
   return next({
     ctx: {
+      ...ctx,
       session: ctx.session,
     },
   });
 });
 
-// Base router and procedure helpers
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
-export const protectedProcedure = t.procedure.use(isAuthed);
+export const protectedProcedure = t.procedure.use(isAuthenticated);
