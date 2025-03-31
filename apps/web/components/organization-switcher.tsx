@@ -25,6 +25,7 @@ export function OrganizationSwitcher() {
   const params = useParams();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
   const currentOrg = params.organization as Organization["slug"];
 
   const { mutate: setActiveOrgMutation } = useMutation(
