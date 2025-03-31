@@ -16,6 +16,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@workspace/ui/components/sidebar";
 import type { Organization as OrganizationType } from "@workspace/db/schema";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Organization = Pick<OrganizationType, "id" | "name" | "slug">;
 
@@ -23,9 +24,16 @@ export function OrganizationSwitcher() {
   const router = useRouter();
   const params = useParams();
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const currentOrg = params.organization as Organization["slug"];
 
-  const { mutate: setActiveOrgMutation } = useMutation(trpc.organization.setActive.mutationOptions());
+  const { mutate: setActiveOrgMutation } = useMutation(
+    trpc.organization.setActive.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries();
+      },
+    }),
+  );
   const { data: organizations, isLoading } = useQuery(trpc.organization.getAll.queryOptions());
 
   const activeOrg = organizations?.find((org) => org.slug === currentOrg) ?? organizations?.[0];

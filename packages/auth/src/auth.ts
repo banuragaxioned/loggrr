@@ -44,12 +44,6 @@ export const config = {
     }),
   ],
   secret: env.AUTH_SECRET,
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 60 * 60, // Cache duration in seconds
-    },
-  },
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,

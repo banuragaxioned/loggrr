@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 export const userRouter = createTRPCRouter({
   getCurrent: protectedProcedure.query(({ ctx }) => {
     return {
+      session: ctx.session.session,
       user: ctx.session.user,
     };
   }),

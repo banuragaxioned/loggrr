@@ -1,8 +1,8 @@
-import { Organization } from "@workspace/db/schema";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
 import { ClientTeams } from "./client-teams";
 import { InfoCard } from "@/components/ui/info-card";
+import { type Organization } from "@workspace/db/schema";
 
 export type pageProps = { params: Promise<{ organization: Organization["id"] }> };
 
