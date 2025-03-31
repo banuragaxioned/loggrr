@@ -3,7 +3,7 @@ import { getInitials } from "@workspace/ui/lib/utils";
 
 interface UserAvatarProps {
   name: string;
-  image?: string;
+  image?: string | null;
   className?: string;
 }
 
