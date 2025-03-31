@@ -1,8 +1,8 @@
 import { Organization } from "@workspace/db/schema";
 import { notFound } from "next/navigation";
-import { MembersList } from "./members-list";
 import { caller } from "@/trpc/server";
-import { ClientGreeting } from "./client-greeting";
+import { ClientTeams } from "./client-teams";
+import { UserAvatar } from "@/components/ui/user-avatar";
 
 export type pageProps = { params: Promise<{ slug: Organization["slug"] }> };
 
@@ -10,7 +10,7 @@ export default async function SlugPage(props: pageProps) {
   const params = await props.params;
   const { slug } = params;
 
-  const members = await caller.organization.getMembers();
+  const currentMember = await caller.organization.currentMember();
   const teams = await caller.organization.getTeams();
 
   if (!slug) {
@@ -20,15 +20,25 @@ export default async function SlugPage(props: pageProps) {
   return (
     <div className="space-y-8">
       <div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="col-span-1">
+            <h2 className="text-2xl font-bold">Teams (server)</h2>
+            <pre>{JSON.stringify(teams, null, 2)}</pre>
+          </div>
+          <div className="col-span-1">
+            <h2 className="text-2xl font-bold">Teams (client)</h2>
+            <ClientTeams />
+          </div>
+        </div>
         <h2 className="text-2xl font-bold">Members</h2>
-        <pre>{JSON.stringify(members, null, 2)}</pre>
+        {currentMember && (
+          <div>
+            <UserAvatar name={currentMember.user.name} image={currentMember.user.image} />
+            <p>{currentMember.user.name}</p>
+            <p>{currentMember.role}</p>
+          </div>
+        )}
       </div>
-      <div>
-        <h2 className="text-2xl font-bold">Teams</h2>
-        <pre>{JSON.stringify(teams, null, 2)}</pre>
-      </div>
-      <ClientGreeting />
-      <MembersList />
     </div>
   );
 }

@@ -3,7 +3,8 @@
 import * as React from "react";
 import { ChevronDown, Clock } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,60 +14,41 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@workspace/ui/components/sidebar";
-import { getOrganizations, setActiveOrganization } from "@/lib/auth/organization";
 import type { Organization } from "@workspace/db/schema";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+
+type OrganizationWithSlug = Pick<Organization, "id" | "name" | "slug">;
 
 export function OrganizationSwitcher() {
   const router = useRouter();
   const params = useParams();
-  const [orgs, setOrgs] = React.useState<Organization[]>([]);
-  const [activeOrg, setActiveOrg] = React.useState<Organization>();
-  const [isLoading, setIsLoading] = React.useState(true);
-  const currentSlug = params?.slug as string;
+  const trpc = useTRPC();
+
+  const [activeOrg, setActiveOrg] = React.useState<OrganizationWithSlug>();
+  const currentSlug = params.slug as Organization["slug"];
+
+  const setActiveOrgMutation = useMutation(trpc.organization.set.mutationOptions());
+  const { data: organizations, isLoading } = useQuery(trpc.organization.getAll.queryOptions());
 
   React.useEffect(() => {
-    async function init() {
-      try {
-        const organizations = await getOrganizations();
-        if (!organizations?.length) {
-          setIsLoading(false);
-          return;
-        }
+    if (!organizations?.length) return;
 
-        const validOrgs = organizations.filter(
-          (org): org is Organization & { slug: string } => Boolean(org.slug) && typeof org.slug === "string",
-        );
+    const org = organizations.find((org) => org.slug === currentSlug) ?? organizations[0];
 
-        if (!validOrgs.length) {
-          setIsLoading(false);
-          return;
-        }
+    if (!org?.slug) return;
 
-        setOrgs(validOrgs);
-        const org = validOrgs.find((org) => org.slug === currentSlug) ?? validOrgs[0];
-        if (!org) {
-          setIsLoading(false);
-          return;
-        }
+    setActiveOrg(org);
 
-        setActiveOrg(org);
-
-        if (!currentSlug || currentSlug !== org.slug) {
-          await setActiveOrganization(org.slug);
-          router.push(`/${org.slug}`);
-        }
-      } finally {
-        setIsLoading(false);
-      }
+    // Only redirect if we're on an invalid path
+    if (!currentSlug || !org.slug) {
+      router.push(`/${org.slug}`);
     }
-    init();
-  }, [currentSlug, router]);
+  }, [currentSlug, router, organizations]);
 
-  const handleOrgChange = async (org: Organization) => {
+  const handleOrgChange = async (org: OrganizationWithSlug) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
     setActiveOrg(org);
-    await setActiveOrganization(org.slug);
+    setActiveOrgMutation.mutate({ slug: org.slug });
     router.push(`/${org.slug}`);
   };
 
@@ -95,12 +77,14 @@ export function OrganizationSwitcher() {
                 <Skeleton className="h-4 w-full" />
               </div>
             ) : (
-              orgs.map((org, index) => (
-                <DropdownMenuItem key={org.id} onClick={() => handleOrgChange(org)} className="gap-2 p-2">
-                  {org.name}
-                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              ))
+              organizations
+                ?.filter((org) => org.slug)
+                .map((org, index) => (
+                  <DropdownMenuItem key={org.id} onClick={() => handleOrgChange(org)} className="gap-2 p-2">
+                    {org.name}
+                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                ))
             )}
           </DropdownMenuContent>
         </DropdownMenu>

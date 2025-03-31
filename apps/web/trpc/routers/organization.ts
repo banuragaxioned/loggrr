@@ -10,22 +10,21 @@ export const organizationRouter = createTRPCRouter({
     });
     return organizations;
   }),
-  setActive: protectedProcedure
+  set: protectedProcedure
     .input(
       z.object({
-        slug: z.string(),
+        slug: z.string().min(1),
       }),
     )
     .mutation(async ({ input }) => {
-      const organizations = await auth.api.setActiveOrganization({
+      await auth.api.setActiveOrganization({
         headers: await headers(),
         body: {
           organizationSlug: input.slug,
         },
       });
-      return organizations;
     }),
-  getMembers: protectedProcedure.query(async () => {
+  currentMember: protectedProcedure.query(async () => {
     const member = await auth.api.getActiveMember({
       headers: await headers(),
     });
