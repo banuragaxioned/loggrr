@@ -36,10 +36,11 @@ export function OrganizationSwitcher() {
     setActiveOrgMutation({ slug: activeOrg.slug });
   }, [activeOrg?.slug, currentOrg, setActiveOrgMutation]);
 
-  const handleOrgChange = async (org: Organization) => {
+  const handleSetActiveOrg = async (org: Organization) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
     setActiveOrgMutation({ slug: org.slug });
     router.push(`/${org.slug}`);
+    router.refresh();
   };
 
   return (
@@ -70,7 +71,7 @@ export function OrganizationSwitcher() {
               organizations
                 ?.filter((org) => org.slug)
                 .map((org, index) => (
-                  <DropdownMenuItem key={org.id} onClick={() => handleOrgChange(org)} className="gap-2 p-2">
+                  <DropdownMenuItem key={org.id} onClick={() => handleSetActiveOrg(org)} className="gap-2 p-2">
                     <span className="flex-1">{org.name}</span>
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
