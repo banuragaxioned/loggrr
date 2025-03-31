@@ -14,37 +14,33 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@workspace/ui/components/sidebar";
-import type { Organization } from "@workspace/db/schema";
+import type { Organization as OrganizationType } from "@workspace/db/schema";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-type OrganizationWithSlug = Pick<Organization, "id" | "name" | "slug">;
+type Organization = Pick<OrganizationType, "id" | "name" | "slug">;
 
 export function OrganizationSwitcher() {
   const router = useRouter();
   const params = useParams();
   const trpc = useTRPC();
 
-  const [activeOrg, setActiveOrg] = React.useState<OrganizationWithSlug>();
-  const currentSlug = params.slug as Organization["slug"];
+  const currentOrg = params.organization as Organization["slug"];
 
-  const setActiveOrgMutation = useMutation(trpc.organization.set.mutationOptions());
+  const setActiveOrgMutation = useMutation(trpc.organization.setActive.mutationOptions());
   const { data: organizations, isLoading } = useQuery(trpc.organization.getAll.queryOptions());
 
-  // Set active org based on current slug or first org
+  const activeOrg = organizations?.find((org) => org.slug === currentOrg) ?? organizations?.[0];
+
+  // Set initial active org if needed
   React.useEffect(() => {
-    if (!organizations?.length) return;
+    if (!activeOrg?.slug || activeOrg.slug === currentOrg) return;
+    setActiveOrgMutation.mutate({ slug: activeOrg.slug });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeOrg?.slug, currentOrg]);
 
-    const org = organizations.find((org) => org.slug === currentSlug) ?? organizations[0];
-    if (!org?.slug) return;
-
-    setActiveOrg(org);
-    setActiveOrgMutation.mutate({ slug: org.slug });
-  }, [organizations, currentSlug]);
-
-  const handleOrgChange = async (org: OrganizationWithSlug) => {
+  const handleOrgChange = async (org: Organization) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
     setActiveOrgMutation.mutate({ slug: org.slug });
-    setActiveOrg(org);
     router.push(`/${org.slug}`);
   };
 
@@ -77,7 +73,7 @@ export function OrganizationSwitcher() {
                 ?.filter((org) => org.slug)
                 .map((org, index) => (
                   <DropdownMenuItem key={org.id} onClick={() => handleOrgChange(org)} className="gap-2 p-2">
-                    {org.name}
+                    <span className="flex-1">{org.name}</span>
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 ))

@@ -10,7 +10,7 @@ export const organizationRouter = createTRPCRouter({
     });
     return organizations;
   }),
-  set: protectedProcedure
+  setActive: protectedProcedure
     .input(
       z.object({
         slug: z.string().min(1),

@@ -16,6 +16,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // Handle organization preferences for login path
+  if (request.nextUrl.pathname.includes("/login")) {
+    const preferenceCookie = request.cookies.get("user-preferences");
+    if (preferenceCookie) {
+      const preferences = JSON.parse(preferenceCookie.value);
+      const { lastOrganizationSlug } = preferences as {
+        lastOrganizationSlug?: string;
+      };
+
+      if (lastOrganizationSlug) {
+        return NextResponse.redirect(new URL(`/${lastOrganizationSlug}`, request.url));
+      }
+    }
+  }
+
   return NextResponse.next();
 }
 

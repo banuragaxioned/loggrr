@@ -2,19 +2,18 @@ import { Organization } from "@workspace/db/schema";
 import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
 import { ClientTeams } from "./client-teams";
-import { UserAvatar } from "@/components/ui/user-avatar";
 import { InfoCard } from "@/components/ui/info-card";
 
-export type pageProps = { params: Promise<{ slug: Organization["slug"] }> };
+export type pageProps = { params: Promise<{ organization: Organization["id"] }> };
 
-export default async function SlugPage(props: pageProps) {
+export default async function OrganizationPage(props: pageProps) {
   const params = await props.params;
-  const { slug } = params;
+  const { organization } = params;
 
   const currentMember = await caller.organization.currentMember();
   const teams = await caller.organization.getTeams();
 
-  if (!slug) {
+  if (!organization) {
     notFound();
   }
 
