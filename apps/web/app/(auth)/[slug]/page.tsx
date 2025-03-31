@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { caller } from "@/trpc/server";
 import { ClientTeams } from "./client-teams";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { InfoCard } from "@/components/ui/info-card";
 
 export type pageProps = { params: Promise<{ slug: Organization["slug"] }> };
 
@@ -32,11 +33,14 @@ export default async function SlugPage(props: pageProps) {
         </div>
         <h2 className="text-2xl font-bold">Members</h2>
         {currentMember && (
-          <div>
-            <UserAvatar name={currentMember.user.name} image={currentMember.user.image} />
-            <p>{currentMember.user.name}</p>
-            <p>{currentMember.role}</p>
-          </div>
+          <InfoCard
+            id={currentMember.id}
+            title={currentMember.user.name}
+            description={currentMember.role}
+            image={currentMember.user.image}
+            href={`/${currentMember.user.id}`}
+            showAvatar={true}
+          />
         )}
       </div>
     </div>

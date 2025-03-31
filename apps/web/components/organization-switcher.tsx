@@ -30,25 +30,21 @@ export function OrganizationSwitcher() {
   const setActiveOrgMutation = useMutation(trpc.organization.set.mutationOptions());
   const { data: organizations, isLoading } = useQuery(trpc.organization.getAll.queryOptions());
 
+  // Set active org based on current slug or first org
   React.useEffect(() => {
     if (!organizations?.length) return;
 
     const org = organizations.find((org) => org.slug === currentSlug) ?? organizations[0];
-
     if (!org?.slug) return;
 
     setActiveOrg(org);
-
-    // Only redirect if we're on an invalid path
-    if (!currentSlug || !org.slug) {
-      router.push(`/${org.slug}`);
-    }
-  }, [currentSlug, router, organizations]);
+    setActiveOrgMutation.mutate({ slug: org.slug });
+  }, [organizations, currentSlug]);
 
   const handleOrgChange = async (org: OrganizationWithSlug) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
-    setActiveOrg(org);
     setActiveOrgMutation.mutate({ slug: org.slug });
+    setActiveOrg(org);
     router.push(`/${org.slug}`);
   };
 
