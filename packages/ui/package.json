@@ -15,6 +15,10 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^4.1.3",
     "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-checkbox": "^1.1.4",
@@ -39,7 +43,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
     "date-fns": "^4.1.0",
-    "lucide-react": "^0.485.0",
+    "lucide-react": "^0.486.0",
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
     "react-day-picker": "^8.10.1",
