@@ -23,10 +23,9 @@ export function OrganizationSwitcher() {
   const router = useRouter();
   const params = useParams();
   const trpc = useTRPC();
-
   const currentOrg = params.organization as Organization["slug"];
 
-  const setActiveOrgMutation = useMutation(trpc.organization.setActive.mutationOptions());
+  const { mutate: setActiveOrgMutation } = useMutation(trpc.organization.setActive.mutationOptions());
   const { data: organizations, isLoading } = useQuery(trpc.organization.getAll.queryOptions());
 
   const activeOrg = organizations?.find((org) => org.slug === currentOrg) ?? organizations?.[0];
@@ -34,13 +33,12 @@ export function OrganizationSwitcher() {
   // Set initial active org if needed
   React.useEffect(() => {
     if (!activeOrg?.slug || activeOrg.slug === currentOrg) return;
-    setActiveOrgMutation.mutate({ slug: activeOrg.slug });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeOrg?.slug, currentOrg]);
+    setActiveOrgMutation({ slug: activeOrg.slug });
+  }, [activeOrg?.slug, currentOrg, setActiveOrgMutation]);
 
   const handleOrgChange = async (org: Organization) => {
     if (!org.slug || org.slug === activeOrg?.slug) return;
-    setActiveOrgMutation.mutate({ slug: org.slug });
+    setActiveOrgMutation({ slug: org.slug });
     router.push(`/${org.slug}`);
   };
 
