@@ -10,10 +10,10 @@
     "clean": "rm -rf .turbo node_modules .react-email"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.34",
+    "@react-email/components": "^0.0.36",
     "@types/nodemailer": "^6.4.17",
     "nodemailer": "^6.10.0",
-    "react-email": "^4.0.1"
+    "react-email": "^4.0.4"
   },
   "devDependencies": {
     "@workspace/typescript-config": "workspace:*"
