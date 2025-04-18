@@ -5,42 +5,31 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
+      "outputs": ["dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
-    "check-types": {
+    "check": {
       "dependsOn": ["^check-types"]
+    },
+    "clean": {
+      "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "clean": {
-      "cache": false
-    },
-    "db:migrate": {
-      "outputs": []
-    },
-    "db:seed": {
-      "outputs": []
+    "db:push": {
+      "cache": false,
+      "persistent": true
     },
     "db:studio": {
-      "outputs": []
+      "cache": false,
+      "persistent": true
+    },
+    "auth:gen": {
+      "cache": false
     }
-  },
-  "globalEnv": [
-    "DATABASE_URL",
-    "GOOGLE_CLIENT_ID",
-    "GOOGLE_CLIENT_SECRET",
-    "AUTH_SECRET",
-    "TURBO_TELEMETRY_DISABLED",
-    "EMAIL_FROM",
-    "EMAIL_HOST",
-    "EMAIL_PORT",
-    "EMAIL_USER",
-    "EMAIL_PASSWORD"
-  ],
-  "globalPassThroughEnv": ["NODE_ENV", "CI", "VERCEL", "VERCEL_ENV", "VERCEL_URL", "npm_lifecycle_event"]
+  }
 }
