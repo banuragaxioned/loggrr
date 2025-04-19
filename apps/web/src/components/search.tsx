@@ -16,7 +16,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 
-export default function Search() {
+export default function Search({ className }: { className?: string }) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ export default function Search() {
   }, []);
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={className}>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
