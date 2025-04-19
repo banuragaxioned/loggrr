@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { BriefcaseBusiness, ChevronDown, Plus } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,9 +13,10 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useEffect } from "react";
+import { SKIPPED_PATHS } from "@/constants";
 
 export function OrganizationSwitcher() {
   const { organization } = useParams<{ organization: string }>();
@@ -25,10 +25,24 @@ export function OrganizationSwitcher() {
   const { data: organizations, isPending: isOrganizationsPending } = authClient.useListOrganizations();
   const { data: activeOrganization, isPending: isActiveTeamPending } = authClient.useActiveOrganization();
 
-  if (organization !== activeOrganization?.slug && !isActiveTeamPending && !isOrganizationsPending) {
-    authClient.organization.setActive({ organizationSlug: organization });
-    toast.success("Success setting active organization: ");
-  }
+  useEffect(() => {
+    if (
+      !SKIPPED_PATHS.includes(organization) &&
+      organization !== activeOrganization?.slug &&
+      !isActiveTeamPending &&
+      !isOrganizationsPending
+    ) {
+      authClient.organization.setActive({
+        organizationSlug: organization,
+        fetchOptions: {
+          onError: () => {
+            toast.error("You are not authorized to access this page");
+            redirect("/dashboard");
+          },
+        },
+      });
+    }
+  }, [organization, activeOrganization?.slug, isActiveTeamPending, isOrganizationsPending]);
 
   return (
     <SidebarMenu>
