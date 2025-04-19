@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { trpc } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 
@@ -28,15 +29,9 @@ export default function Home() {
         <section className="rounded-lg border p-4">
           <h2 className="mb-2 font-medium">API Status</h2>
           <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
+            <div className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`} />
             <span className="text-sm text-muted-foreground">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
+              {healthCheck.isLoading ? "Checking..." : healthCheck.data ? "Connected" : "Disconnected"}
             </span>
           </div>
         </section>
@@ -44,22 +39,10 @@ export default function Home() {
         <section>
           <h2 className="mb-3 font-medium">Core Features</h2>
           <ul className="grid grid-cols-2 gap-3">
-            <FeatureItem
-              title="Type-Safe API"
-              description="End-to-end type safety with tRPC"
-            />
-            <FeatureItem
-              title="Modern React"
-              description="TanStack Router + TanStack Query"
-            />
-            <FeatureItem
-              title="Fast Backend"
-              description="Lightweight Hono server"
-            />
-            <FeatureItem
-              title="Beautiful UI"
-              description="TailwindCSS + shadcn/ui components"
-            />
+            <FeatureItem title="Type-Safe API" description="End-to-end type safety with tRPC" />
+            <FeatureItem title="Modern React" description="TanStack Router + TanStack Query" />
+            <FeatureItem title="Fast Backend" description="Lightweight Hono server" />
+            <FeatureItem title="Beautiful UI" description="TailwindCSS + shadcn/ui components" />
           </ul>
         </section>
       </div>
@@ -67,13 +50,7 @@ export default function Home() {
   );
 }
 
-function FeatureItem({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+function FeatureItem({ title, description }: { title: string; description: string }) {
   return (
     <li className="border-l-2 border-primary py-1 pl-3">
       <h3 className="font-medium">{title}</h3>
