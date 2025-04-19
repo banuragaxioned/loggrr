@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { signIn } from "@/lib/auth-client";
 
 export function LoginGoogleButton() {
   return (
@@ -10,7 +10,7 @@ export function LoginGoogleButton() {
       className="w-full"
       type="button"
       onClick={() =>
-        authClient.signIn.social({
+        signIn.social({
           provider: "google",
           callbackURL: process.env.NEXT_PUBLIC_URL + "/dashboard",
         })

@@ -1,4 +1,4 @@
-import { authClient } from "@/lib/auth-client";
+import { signIn, useSession } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -11,7 +11,7 @@ import { LoginGoogleButton } from "./auth/google-button";
 
 export default function SignInForm() {
   const router = useRouter();
-  const { isPending } = authClient.useSession();
+  const { isPending } = useSession();
 
   const form = useForm({
     defaultValues: {
@@ -19,7 +19,7 @@ export default function SignInForm() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      await authClient.signIn.email(
+      await signIn.email(
         {
           email: value.email,
           password: value.password,
