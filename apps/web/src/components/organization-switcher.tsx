@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Plus } from "lucide-react";
-
+import { BriefcaseBusiness, ChevronDown, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,17 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 
-export function OrganizationSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string;
-    logo: React.ElementType;
-    plan: string;
-  }[];
-}) {
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+export function OrganizationSwitcher() {
+  const { data: organizations } = authClient.useListOrganizations();
+  const { data: activeTeam } = authClient.useActiveOrganization();
+
+  console.log(activeTeam);
 
   if (!activeTeam) {
     return null;
@@ -36,7 +31,7 @@ export function OrganizationSwitcher({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="w-fit px-1.5">
               <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-3" />
+                <BriefcaseBusiness className="size-3" />
               </div>
               <span className="truncate font-semibold">{activeTeam.name}</span>
               <ChevronDown className="opacity-50" />
@@ -44,10 +39,16 @@ export function OrganizationSwitcher({
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 rounded-lg" align="start" side="bottom" sideOffset={4}>
             <DropdownMenuLabel className="text-xs text-muted-foreground">Teams</DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem key={team.name} onClick={() => setActiveTeam(team)} className="gap-2 p-2">
+            {organizations?.map((team, index) => (
+              <DropdownMenuItem
+                key={team.name}
+                onClick={() => {
+                  authClient.organization.setActive({ organizationId: team.id });
+                }}
+                className="gap-2 p-2"
+              >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  <BriefcaseBusiness className="size-4 shrink-0" />
                 </div>
                 {team.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
