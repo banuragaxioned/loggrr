@@ -9,7 +9,7 @@ import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
 import { LoginGoogleButton } from "./auth/google-button";
 
-export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) {
+export default function SignInForm() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -115,11 +115,8 @@ export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () 
       </form>
 
       <div className="mt-4 text-center">
-        <Button variant="link" onClick={onSwitchToSignUp} className="text-indigo-600 hover:text-indigo-800">
-          Need an account? Sign Up
-        </Button>
+        <LoginGoogleButton />
       </div>
-      <LoginGoogleButton />
     </div>
   );
 }
