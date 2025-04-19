@@ -3,18 +3,18 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
+    "auth:gen": "pnpx @better-auth/cli generate --output ../server/src/db/schema/auth.ts",
     "build": "tsc && tsc-alias",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf node_modules && rm -rf .turbo",
-    "auth:gen": "pnpx @better-auth/cli generate --output ../server/src/db/schema/auth.ts",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/src/index.js",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/src/index.js"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.11",
+    "@ai-sdk/google": "^1.2.12",
     "@hono/node-server": "^1.14.1",
     "@hono/trpc-server": "^0.3.4",
     "@trpc/client": "^11.1.0",
