@@ -5,8 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { useRef, useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function AI() {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: `${process.env.NEXT_PUBLIC_SERVER_URL}/ai`,
   });
@@ -14,8 +18,18 @@ export default function AI() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!session && !isPending) {
+      router.push("/login");
+    }
+  }, [session, isPending]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="grid grid-rows-[1fr_auto] overflow-hidden w-full mx-auto p-4">
