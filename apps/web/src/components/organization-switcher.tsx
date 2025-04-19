@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect } from "react";
-import { SKIPPED_PATHS } from "@/constants";
+import { NON_ORGANIZATION_PATHS } from "@/constants";
 
 export function OrganizationSwitcher() {
   const { organization } = useParams<{ organization: string }>();
@@ -27,7 +27,7 @@ export function OrganizationSwitcher() {
 
   useEffect(() => {
     if (
-      !SKIPPED_PATHS.includes(organization) &&
+      !NON_ORGANIZATION_PATHS.includes(organization) &&
       organization !== activeOrganization?.slug &&
       !isActiveTeamPending &&
       !isOrganizationsPending
