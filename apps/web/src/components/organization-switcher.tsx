@@ -13,15 +13,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function OrganizationSwitcher() {
-  const { data: organizations } = authClient.useListOrganizations();
-  const { data: activeTeam } = authClient.useActiveOrganization();
+  const { organization } = useParams<{ organization: string }>();
+  const router = useRouter();
 
-  console.log(activeTeam);
+  const { data: organizations, isPending: isOrganizationsPending } = authClient.useListOrganizations();
+  const { data: activeOrganization, isPending: isActiveTeamPending } = authClient.useActiveOrganization();
 
-  if (!activeTeam) {
-    return null;
+  if (organization !== activeOrganization?.slug && !isActiveTeamPending && !isOrganizationsPending) {
+    authClient.organization.setActive({ organizationSlug: organization });
+    toast.success("Success setting active organization: ");
   }
 
   return (
@@ -29,21 +35,27 @@ export function OrganizationSwitcher() {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="w-fit px-1.5">
+            <SidebarMenuButton className="w-fit px-1.5 space-x-2">
               <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <BriefcaseBusiness className="size-3" />
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={activeOrganization?.logo ?? ""} />
+                  <AvatarFallback className="rounded-lg">{activeOrganization?.name.charAt(0)}</AvatarFallback>
+                </Avatar>
               </div>
-              <span className="truncate font-semibold">{activeTeam.name}</span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">{activeOrganization?.name ?? "No active organization"}</span>
+              </div>
               <ChevronDown className="opacity-50" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64 rounded-lg" align="start" side="bottom" sideOffset={4}>
-            <DropdownMenuLabel className="text-xs text-muted-foreground">Teams</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">Organizations</DropdownMenuLabel>
             {organizations?.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => {
                   authClient.organization.setActive({ organizationId: team.id });
+                  router.push(`/${team.slug}`);
                 }}
                 className="gap-2 p-2"
               >
@@ -55,7 +67,7 @@ export function OrganizationSwitcher() {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem className="gap-2 p-2" disabled>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
