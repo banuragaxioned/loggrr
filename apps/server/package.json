@@ -6,11 +6,14 @@
     "auth:gen": "pnpx @better-auth/cli generate --output ../server/src/db/schema/auth.ts",
     "build": "tsc && tsc-alias",
     "check-types": "tsc --noEmit",
-    "clean": "rm -rf node_modules && rm -rf .turbo",
+    "clean": "rm -rf node_modules && rm -rf .turbo && rm -rf .wrangler && rm -rf dist",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev": "tsx watch src/index.ts",
+    "node-dev": "tsx watch src/index.ts",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "start": "node dist/src/index.js"
   },
   "dependencies": {
@@ -33,6 +36,7 @@
     "drizzle-kit": "^0.31.0",
     "tsc-alias": "^1.8.15",
     "tsx": "^4.19.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.4.0"
   }
 }
