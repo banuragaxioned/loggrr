@@ -9,8 +9,10 @@ export const auth = betterAuth({
     provider: "pg",
     schema: schema,
   }),
+  baseURL: process.env.BETTER_AUTH_URL,
   trustedOrigins: [process.env.CORS_ORIGIN!],
   emailAndPassword: { enabled: false },
+  secret: process.env.AUTH_SECRET,
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
