@@ -1,7 +1,0 @@
-packages/ui/src/components/
-
-dist
-node_modules
-.next
-build
-.react-email

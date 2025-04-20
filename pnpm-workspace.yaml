@@ -2,7 +2,9 @@ packages:
   - apps/*
   - packages/*
   - tooling/*
+
 onlyBuiltDependencies:
+  - '@biomejs/biome'
   - core-js-pure
   - esbuild
   - sharp

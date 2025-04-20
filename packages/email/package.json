@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/email",
+  "name": "@loggrr/email",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,10 +12,7 @@
   "dependencies": {
     "@react-email/components": "^0.0.36",
     "@types/nodemailer": "^6.4.17",
-    "nodemailer": "^6.10.0",
-    "react-email": "^4.0.4"
-  },
-  "devDependencies": {
-    "@workspace/typescript-config": "workspace:*"
+    "nodemailer": "^6.10.1",
+    "react-email": "^4.0.7"
   }
 }
