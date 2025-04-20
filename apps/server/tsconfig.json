@@ -12,7 +12,6 @@
       "@/*": ["./src/*"]
     },
     "outDir": "./dist",
-    "types": ["@cloudflare/workers-types/2023-07-01", "node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   },

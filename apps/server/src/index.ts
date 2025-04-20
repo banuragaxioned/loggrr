@@ -10,7 +10,7 @@ import { createContext } from "./lib/context";
 import { appRouter } from "./routers/index";
 import { auth } from "./lib/auth";
 
-const app = new Hono<{ Bindings: CloudflareBindings }>();
+const app = new Hono();
 
 app.use(logger());
 
@@ -56,7 +56,6 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-/*
 import { serve } from "@hono/node-server";
 
 serve(
@@ -68,6 +67,3 @@ serve(
     console.log(`Server is running on http://localhost:${info.port}`);
   },
 );
-*/
-
-export default app;
