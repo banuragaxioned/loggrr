@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -92,6 +92,12 @@ export const invitation = pgTable("invitation", {
 });
 
 export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
+
 export type Session = typeof session.$inferSelect;
+
 export type Organization = typeof organization.$inferSelect;
+export type NewOrganization = typeof organization.$inferInsert;
+
 export type Member = typeof member.$inferSelect;
+export type NewMember = typeof member.$inferInsert;
