@@ -1,8 +1,4 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import Search from "@/components/search";
-import UserMenu from "@/components/user-menu";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
 
 export type pageProps = { params: Promise<{ organization: string }> };
 
