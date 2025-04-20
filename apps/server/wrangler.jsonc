@@ -4,7 +4,4 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-04-20",
   "compatibility_flags": ["nodejs_compat"],
-  "placement": {
-    "mode": "smart",
-  },
 }

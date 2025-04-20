@@ -9,27 +9,13 @@ export const auth = betterAuth({
     provider: "pg",
     schema: schema,
   }),
-  trustedOrigins: [process.env.CORS_ORIGIN || ""],
+  trustedOrigins: [process.env.CORS_ORIGIN!],
   emailAndPassword: { enabled: false },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      redirectURI: process.env.CORS_ORIGIN + "/api/auth/callback/google",
     },
   },
   plugins: [openAPI(), admin(), organization()],
-  advanced: {
-    crossSubDomainCookies: {
-      enabled: true,
-      domain: ".loggrr.com",
-    },
-    defaultCookieAttributes: {
-      secure: true,
-      httpOnly: true,
-      sameSite: "none", // Allows CORS-based cookie sharing across subdomains
-      partitioned: true, // New browser standards will mandate this for foreign cookies
-    },
-    useSecureCookies: true,
-  },
 });
