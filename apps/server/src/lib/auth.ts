@@ -29,7 +29,17 @@ export const auth = (env: Env) =>
         clientSecret: env.GOOGLE_CLIENT_SECRET,
       },
     },
-    plugins: [openAPI(), admin(), organization()],
+    plugins: [
+      openAPI(),
+      admin(),
+      organization({
+        teams: {
+          enabled: true,
+          maximumTeams: 10,
+          allowRemovingAllTeams: false,
+        },
+      }),
+    ],
     advanced: {
       crossSubDomainCookies: {
         enabled: true,
