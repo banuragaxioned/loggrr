@@ -10,6 +10,8 @@ node_modules
 
 # Local env files
 .env*
+.*.vars
+!.dev.vars.example
 !.env.example
 
 # Testing
