@@ -6,9 +6,9 @@ import { logger } from "hono/logger";
 import { streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import { stream } from "hono/streaming";
-import { createContext } from "./lib/context";
-import { appRouter } from "./routers/index";
-import { auth } from "./lib/auth";
+import { createContext } from "@/lib/context";
+import { appRouter } from "@/routers/index";
+import { auth } from "@/lib/auth";
 
 export interface Env {
   CORS_ORIGIN: string;

@@ -1,8 +1,8 @@
 import { betterAuth } from "better-auth";
 import { openAPI, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db";
-import * as schema from "../db/schema/auth";
+import { db } from "@/db";
+import * as schema from "@/db/schema/auth";
 
 export interface Env {
   DATABASE_URL: string;
