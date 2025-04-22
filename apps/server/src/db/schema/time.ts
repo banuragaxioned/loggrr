@@ -5,7 +5,7 @@ import { member } from "./auth";
 export const timeLogStatus = pgEnum("time_log_status", ["pending", "approved", "rejected", "invoiced"]);
 
 export const timeLog = pgTable("time_log", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })

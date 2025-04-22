@@ -6,7 +6,7 @@ import { skill } from "./skill";
 export const estimateStatus = pgEnum("estimate_status", ["draft", "pending", "approved", "rejected", "cancelled"]);
 
 export const estimate = pgTable("estimate", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })
@@ -27,7 +27,7 @@ export const estimate = pgTable("estimate", {
 });
 
 export const estimateItem = pgTable("estimate_item", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   estimateId: integer("estimate_id")
     .references(() => estimate.id, { onDelete: "cascade" })
@@ -49,7 +49,7 @@ export const estimateItem = pgTable("estimate_item", {
 });
 
 export const assignment = pgTable("assignment", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })

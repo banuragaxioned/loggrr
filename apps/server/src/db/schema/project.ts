@@ -4,7 +4,7 @@ export const status = pgEnum("status", ["draft", "active", "completed", "cancell
 export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 
 export const client = pgTable("client", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   image: text("image"),
@@ -13,7 +13,7 @@ export const client = pgTable("client", {
 });
 
 export const project = pgTable("project", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   clientId: integer("client_id")
     .references(() => client.id)
@@ -27,7 +27,7 @@ export const project = pgTable("project", {
 });
 
 export const category = pgTable("category", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id)
@@ -42,7 +42,7 @@ export const category = pgTable("category", {
 });
 
 export const task = pgTable("task", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id)
