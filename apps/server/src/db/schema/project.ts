@@ -4,7 +4,7 @@ export const status = pgEnum("status", ["draft", "active", "completed", "cancell
 export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 
 export const client = pgTable("client", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   image: text("image"),
@@ -13,9 +13,9 @@ export const client = pgTable("client", {
 });
 
 export const project = pgTable("project", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  clientId: text("client_id")
+  clientId: integer("client_id")
     .references(() => client.id)
     .notNull(),
   name: text("name").notNull(),
@@ -27,9 +27,9 @@ export const project = pgTable("project", {
 });
 
 export const category = pgTable("category", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: text("project_id")
+  projectId: integer("project_id")
     .references(() => project.id)
     .notNull(),
   name: text("name").notNull(),
@@ -42,9 +42,9 @@ export const category = pgTable("category", {
 });
 
 export const task = pgTable("task", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: text("project_id")
+  projectId: integer("project_id")
     .references(() => project.id)
     .notNull(),
   name: text("name").notNull(),
@@ -55,6 +55,9 @@ export const task = pgTable("task", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export type Client = typeof client.$inferSelect;
+export type NewClient = typeof client.$inferInsert;
 
 export type Project = typeof project.$inferSelect;
 export type NewProject = typeof project.$inferInsert;

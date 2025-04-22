@@ -5,14 +5,18 @@ import { member } from "./auth";
 export const timeLogStatus = pgEnum("time_log_status", ["pending", "approved", "rejected", "invoiced"]);
 
 export const timeLog = pgTable("time_log", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: text("project_id")
+  projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })
     .notNull(),
-  categoryId: text("category_id").references(() => category.id, { onDelete: "set null" }),
-  taskId: text("task_id").references(() => task.id, { onDelete: "set null" }),
-  memberId: text("member_id")
+  categoryId: integer("category_id")
+    .references(() => category.id, { onDelete: "set null" })
+    .notNull(),
+  taskId: integer("task_id")
+    .references(() => task.id, { onDelete: "set null" })
+    .notNull(),
+  memberId: integer("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
   startTime: timestamp("start_time").defaultNow().notNull(),

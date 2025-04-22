@@ -1,8 +1,8 @@
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer } from "drizzle-orm/pg-core";
 import { member } from "./auth";
 
 export const skill = pgTable("skill", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
@@ -17,12 +17,12 @@ export const skill = pgTable("skill", {
 });
 
 export const memberSkill = pgTable("member_skill", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  memberId: text("member_id")
+  memberId: integer("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
-  skillId: text("skill_id")
+  skillId: integer("skill_id")
     .references(() => skill.id, { onDelete: "cascade" })
     .notNull(),
   level: text("level").notNull(), // e.g., "beginner", "intermediate", "expert"

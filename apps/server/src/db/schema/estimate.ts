@@ -6,9 +6,9 @@ import { skill } from "./skill";
 export const estimateStatus = pgEnum("estimate_status", ["draft", "pending", "approved", "rejected", "cancelled"]);
 
 export const estimate = pgTable("estimate", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: text("project_id")
+  projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })
     .notNull(),
   name: text("name").notNull(),
@@ -27,12 +27,12 @@ export const estimate = pgTable("estimate", {
 });
 
 export const estimateItem = pgTable("estimate_item", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  estimateId: text("estimate_id")
+  estimateId: integer("estimate_id")
     .references(() => estimate.id, { onDelete: "cascade" })
     .notNull(),
-  skillId: text("skill_id")
+  skillId: integer("skill_id")
     .references(() => skill.id, { onDelete: "cascade" })
     .notNull(),
   duration: integer("duration").notNull(), // Duration in minutes
@@ -49,15 +49,15 @@ export const estimateItem = pgTable("estimate_item", {
 });
 
 export const assignment = pgTable("assignment", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: text("project_id")
+  projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })
     .notNull(),
-  memberId: text("member_id")
+  memberId: integer("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
-  estimateItemId: text("estimate_item_id")
+  estimateItemId: integer("estimate_item_id")
     .references(() => estimateItem.id, { onDelete: "cascade" })
     .notNull(),
   createdById: text("created_by_id")
