@@ -113,3 +113,8 @@ export type NewOrganization = typeof organization.$inferInsert;
 
 export type Member = typeof member.$inferSelect;
 export type NewMember = typeof member.$inferInsert;
+
+export type Team = typeof team.$inferSelect;
+export type NewTeam = typeof team.$inferInsert;
+
+export type Invitation = typeof invitation.$inferSelect;
