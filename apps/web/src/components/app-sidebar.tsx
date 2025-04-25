@@ -13,6 +13,7 @@ import {
   Settings2,
   Sparkles,
   Trash2,
+  User,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -24,20 +25,15 @@ import { OrganizationSwitcher } from "@/components/organization-switcher";
 const data = {
   navMain: [
     {
-      title: "Search",
-      url: "#",
-      icon: Search,
-    },
-    {
-      title: "Ask AI",
-      url: "#",
-      icon: Sparkles,
-    },
-    {
       title: "Home",
       url: "/dashboard",
       icon: Home,
       isActive: true,
+    },
+    {
+      title: "Ask AI",
+      url: "/ai",
+      icon: Sparkles,
     },
     {
       title: "Inbox",
@@ -47,6 +43,11 @@ const data = {
     },
   ],
   navSecondary: [
+    {
+      title: "Account",
+      url: "/account",
+      icon: User,
+    },
     {
       title: "Settings",
       url: "#",

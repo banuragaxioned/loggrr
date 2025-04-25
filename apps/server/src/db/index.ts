@@ -1,3 +1,8 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
+import * as schema from "./schema";
 
-export const db = drizzle(process.env.DATABASE_URL!);
+export interface Env {
+  DATABASE_URL: string;
+}
+
+export const db = (env: Env) => drizzle(env.DATABASE_URL, { schema });

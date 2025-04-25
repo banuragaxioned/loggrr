@@ -1,23 +1,55 @@
 import { betterAuth } from "better-auth";
 import { openAPI, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db";
-import * as schema from "../db/schema/auth";
+import { db } from "@/db";
+import * as schema from "@/db/schema/auth";
 
-export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    schema: schema,
-  }),
-  baseURL: process.env.BETTER_AUTH_URL,
-  trustedOrigins: [process.env.CORS_ORIGIN!],
-  emailAndPassword: { enabled: false },
-  secret: process.env.AUTH_SECRET,
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+export interface Env {
+  DATABASE_URL: string;
+  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL: string;
+  CORS_ORIGIN: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+}
+
+export const auth = (env: Env) =>
+  betterAuth({
+    database: drizzleAdapter(db(env), {
+      provider: "pg",
+      schema: schema,
+    }),
+    baseURL: env.BETTER_AUTH_URL,
+    trustedOrigins: [env.CORS_ORIGIN, "https://loggrr.com", "https://v1.loggrr.com"],
+    emailAndPassword: { enabled: false },
+    secret: env.BETTER_AUTH_SECRET,
+    socialProviders: {
+      google: {
+        clientId: env.GOOGLE_CLIENT_ID,
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
+      },
     },
-  },
-  plugins: [openAPI(), admin(), organization()],
-});
+    plugins: [
+      openAPI(),
+      admin(),
+      organization({
+        teams: {
+          enabled: true,
+          maximumTeams: 10,
+          allowRemovingAllTeams: false,
+        },
+      }),
+    ],
+    advanced: {
+      crossSubDomainCookies: {
+        enabled: true,
+        domain: ".loggrr.com",
+      },
+      defaultCookieAttributes: {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none", // Allows CORS-based cookie sharing across subdomains
+        partitioned: true, // New browser standards will mandate this for foreign cookies
+      },
+    },
+  });

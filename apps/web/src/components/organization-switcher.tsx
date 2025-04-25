@@ -74,7 +74,10 @@ export function OrganizationSwitcher() {
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <BriefcaseBusiness className="size-4 shrink-0" />
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={team.logo ?? ""} />
+                    <AvatarFallback className="rounded-lg">{team.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
                 </div>
                 {team.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>

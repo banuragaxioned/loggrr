@@ -3,7 +3,7 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "auth:gen": "pnpx @better-auth/cli generate --output ../server/src/db/schema/auth.ts",
+    "auth:gen": "pnpx @better-auth/cli generate --config ./src/lib/auth.ts --output ../server/src/db/schema/auth.ts",
     "build": "tsc && tsc-alias",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf node_modules && rm -rf .turbo && rm -rf .wrangler && rm -rf dist",
