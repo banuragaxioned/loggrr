@@ -16,7 +16,7 @@ app.use(logger());
 
 app.use("/*", async (c, next) => {
   return cors({
-    origin: c.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN!,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -24,13 +24,13 @@ app.use("/*", async (c, next) => {
 });
 
 app.on(["POST", "GET"], "/api/auth/**", async (c) => {
-  const authHandler = auth(c.env).handler;
+  const authHandler = auth.handler;
   return authHandler(c.req.raw);
 });
 
 app.use("/trpc/*", async (c, next) => {
   const tRPCHandler = trpcServer({
-    router: appRouter(c.env),
+    router: appRouter,
     createContext: async (_opts) => {
       return createContext({ context: c });
     },
