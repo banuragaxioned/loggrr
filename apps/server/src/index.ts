@@ -10,23 +10,13 @@ import { createContext } from "@/lib/context";
 import { appRouter } from "@/routers/index";
 import { auth } from "@/lib/auth";
 
-export interface Env {
-  CORS_ORIGIN: string;
-  DATABASE_URL: string;
-  BETTER_AUTH_SECRET: string;
-  BETTER_AUTH_URL: string;
-  GOOGLE_CLIENT_ID: string;
-  GOOGLE_CLIENT_SECRET: string;
-  GOOGLE_GENERATIVE_AI_API_KEY: string;
-}
-
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono();
 
 app.use(logger());
 
 app.use("/*", async (c, next) => {
   return cors({
-    origin: c.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN!,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -34,20 +24,19 @@ app.use("/*", async (c, next) => {
 });
 
 app.on(["POST", "GET"], "/api/auth/**", async (c) => {
-  const authHandler = auth(c.env).handler;
+  const authHandler = auth.handler;
   return authHandler(c.req.raw);
 });
 
-app.use("/trpc/*", async (c, next) => {
-  const tRPCHandler = trpcServer({
-    router: appRouter(c.env),
-    createContext: async (_opts) => {
-      return createContext({ context: c });
+app.use(
+  "/trpc/*",
+  trpcServer({
+    router: appRouter,
+    createContext: (_opts, context) => {
+      return createContext({ context });
     },
-  });
-
-  return tRPCHandler(c, next);
-});
+  }),
+);
 
 // AI chat endpoint
 app.post("/ai", async (c) => {
@@ -69,4 +58,14 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-export default app;
+import { serve } from "@hono/node-server";
+
+serve(
+  {
+    fetch: app.fetch,
+    port: 3000,
+  },
+  (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`);
+  },
+);

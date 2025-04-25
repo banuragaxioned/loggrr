@@ -4,7 +4,7 @@ export const status = pgEnum("status", ["draft", "active", "completed", "cancell
 export const taskStatus = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 
 export const client = pgTable("client", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   image: text("image"),
