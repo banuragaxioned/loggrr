@@ -1,8 +1,8 @@
 import { betterAuth } from "better-auth";
 import { openAPI, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db";
-import * as schema from "@/db/schema/auth";
+import { db } from "../db";
+import * as schema from "../db/schema/auth";
 import { env } from "process";
 
 export const auth = betterAuth({
@@ -11,7 +11,7 @@ export const auth = betterAuth({
     schema: schema,
   }),
   baseURL: env.BETTER_AUTH_URL,
-  trustedOrigins: [env.CORS_ORIGIN!, "https://loggrr.com", "https://v1.loggrr.com"],
+  trustedOrigins: [env.CORS_ORIGIN!],
   emailAndPassword: { enabled: false },
   secret: env.BETTER_AUTH_SECRET,
   socialProviders: {

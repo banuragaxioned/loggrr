@@ -1,4 +1,4 @@
-import { protectedProcedure, publicProcedure, router } from "@/lib/trpc";
+import { protectedProcedure, publicProcedure, router } from "../lib/trpc";
 import { todoRouter } from "./todo";
 import { clientRouter } from "./client";
 
