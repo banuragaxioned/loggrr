@@ -12,6 +12,7 @@
       "@/*": ["./src/*"]
     },
     "outDir": "./dist",
+    "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   },
