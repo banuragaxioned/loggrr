@@ -28,16 +28,15 @@ app.on(["POST", "GET"], "/api/auth/**", async (c) => {
   return authHandler(c.req.raw);
 });
 
-app.use("/trpc/*", async (c, next) => {
-  const tRPCHandler = trpcServer({
+app.use(
+  "/trpc/*",
+  trpcServer({
     router: appRouter,
-    createContext: async (_opts) => {
-      return createContext({ context: c });
+    createContext: (_opts, context) => {
+      return createContext({ context });
     },
-  });
-
-  return tRPCHandler(c, next);
-});
+  }),
+);
 
 // AI chat endpoint
 app.post("/ai", async (c) => {
