@@ -10,11 +10,9 @@ export const appRouter = router({
     return {
       message: "This is private",
       user: ctx.session.user,
-      organizationId: ctx.session.session.activeOrganizationId,
     };
   }),
   todo: todoRouter,
   client: clientRouter,
 });
-
 export type AppRouter = typeof appRouter;
