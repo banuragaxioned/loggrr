@@ -63,7 +63,7 @@ import { serve } from "@hono/node-server";
 serve(
   {
     fetch: app.fetch,
-    hostname: "0.0.0.0",
+    hostname: "127.0.0.1",
     port: 3000,
   },
   (info) => {
