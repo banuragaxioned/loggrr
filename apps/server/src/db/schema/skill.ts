@@ -19,7 +19,7 @@ export const skill = pgTable("skill", {
 export const memberSkill = pgTable("member_skill", {
   id: integer("id").primaryKey(),
   organizationId: text("organization_id").notNull(),
-  memberId: integer("member_id")
+  memberId: text("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
   skillId: integer("skill_id")

@@ -54,7 +54,7 @@ export const assignment = pgTable("assignment", {
   projectId: integer("project_id")
     .references(() => project.id, { onDelete: "cascade" })
     .notNull(),
-  memberId: integer("member_id")
+  memberId: text("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
   estimateItemId: integer("estimate_item_id")

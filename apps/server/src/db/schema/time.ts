@@ -16,7 +16,7 @@ export const timeLog = pgTable("time_log", {
   taskId: integer("task_id")
     .references(() => task.id, { onDelete: "set null" })
     .notNull(),
-  memberId: integer("member_id")
+  memberId: text("member_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
   startTime: timestamp("start_time").defaultNow().notNull(),
