@@ -2,26 +2,22 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  Blocks,
-  Calendar,
-  Command,
+  BarChart3,
+  Briefcase,
+  Folder,
   Home,
-  Inbox,
   MessageCircleQuestion,
-  Search,
   Settings2,
   Sparkles,
-  Trash2,
   User,
+  Users,
 } from "lucide-react";
-
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { NavWorkspace } from "./nav-workspace";
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -35,11 +31,27 @@ const data = {
       url: "/ai",
       icon: Sparkles,
     },
+  ],
+  navWorkspace: [
     {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-      badge: "10",
+      name: "Clients",
+      url: "clients",
+      icon: Briefcase,
+    },
+    {
+      name: "Projects",
+      url: "projects",
+      icon: Folder,
+    },
+    {
+      name: "Members",
+      url: "members",
+      icon: Users,
+    },
+    {
+      name: "Reports",
+      url: "reports/logged",
+      icon: BarChart3,
     },
   ],
   navSecondary: [
@@ -69,6 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>
+        <NavWorkspace links={data.navWorkspace} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />
