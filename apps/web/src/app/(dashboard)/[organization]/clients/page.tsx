@@ -17,12 +17,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { DashboardHeader, DashboardShell } from "@/components/shell";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Clients() {
   const [newClientName, setNewClientName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const clients = useQuery(trpc.client.getAll.queryOptions());
+  const clients = useQuery({
+    ...trpc.client.getAll.queryOptions(),
+    placeholderData: [],
+  });
+
   const createMutation = useMutation(
     trpc.client.create.mutationOptions({
       onSuccess: () => {
@@ -84,12 +89,19 @@ export default function Clients() {
         </DashboardHeader>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {clients.data?.map((client) => (
-            <div key={client.id} className="rounded-lg border p-4">
-              <h2>{client.name}</h2>
-              <p className="text-sm text-muted-foreground">{client.createdAt}</p>
-            </div>
-          ))}
+          {clients.isFetching
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-lg border p-4">
+                  <Skeleton className="h-6 w-32 mb-2" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+              ))
+            : clients.data?.map((client) => (
+                <div key={client.id} className="rounded-lg border p-4">
+                  <h2>{client.name}</h2>
+                  <p className="text-sm text-muted-foreground">{client.createdAt}</p>
+                </div>
+              ))}
         </div>
       </DashboardShell>
     </>
