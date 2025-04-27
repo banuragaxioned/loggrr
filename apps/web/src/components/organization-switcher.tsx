@@ -17,6 +17,7 @@ import { redirect, useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { NON_ORGANIZATION_PATHS } from "@/constants";
+import { queryClient } from "@/utils/trpc";
 
 export function OrganizationSwitcher() {
   const { organization } = useParams<{ organization: string }>();
@@ -35,6 +36,9 @@ export function OrganizationSwitcher() {
       authClient.organization.setActive({
         organizationSlug: organization,
         fetchOptions: {
+          onSuccess: () => {
+            queryClient.invalidateQueries();
+          },
           onError: () => {
             toast.error("You are not authorized to access this page");
             redirect("/dashboard");
@@ -68,8 +72,15 @@ export function OrganizationSwitcher() {
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => {
-                  authClient.organization.setActive({ organizationId: team.id });
-                  router.push(`/${team.slug}`);
+                  authClient.organization.setActive({
+                    organizationId: team.id,
+                    fetchOptions: {
+                      onSuccess: () => {
+                        queryClient.invalidateQueries();
+                        router.push(`/${team.slug}`);
+                      },
+                    },
+                  });
                 }}
                 className="gap-2 p-2"
               >
