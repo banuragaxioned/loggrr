@@ -13,7 +13,7 @@ export const client = pgTable("client", {
 });
 
 export const project = pgTable("project", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   clientId: integer("client_id")
     .references(() => client.id)
