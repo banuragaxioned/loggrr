@@ -1,29 +1,20 @@
 "use client";
 
 import { DataTable } from "@/components/data-table/data-table";
-import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
-import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
-import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
 import { trpc } from "@/utils/trpc";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import type { ColumnDef } from "@tanstack/react-table";
+import { useQuery } from "@tanstack/react-query";
+import type { Column, ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Plus, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useState, useMemo } from "react";
 import { DashboardHeader, DashboardShell } from "@/components/shell";
+import { format } from "date-fns";
+import { parseAsString, useQueryState } from "nuqs";
+import { CreateProjectForm } from "./create-project-form";
+import { Input } from "@/components/ui/input";
 
 interface Project {
   id: number;
@@ -46,10 +37,13 @@ const columns: ColumnDef<Project>[] = [
   {
     id: "name",
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }: { column: Column<Project, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+    cell: ({ cell }) => <div>{cell.getValue<Project["name"]>()}</div>,
     meta: {
       label: "Name",
-      placeholder: "Search by name...",
+      placeholder: "Search projects and clients...",
       variant: "text",
     },
     enableColumnFilter: true,
@@ -57,23 +51,23 @@ const columns: ColumnDef<Project>[] = [
   {
     id: "clientName",
     accessorFn: (row) => row.clientId,
-    header: "Client",
+    header: ({ column }: { column: Column<Project, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Client" />
+    ),
     cell: ({ row, table }) => {
       const clients = (table.options.meta as { clients: Client[] }).clients;
       const client = clients.find((c) => c.id === row.getValue("clientName"));
-      return client?.name || "Unknown";
+      return <div>{client?.name || "Unknown"}</div>;
     },
-    meta: {
-      label: "Client",
-      placeholder: "Search by client...",
-      variant: "text",
-    },
-    enableColumnFilter: true,
+    enableColumnFilter: false,
   },
   {
     id: "status",
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }: { column: Column<Project, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ cell }) => <div>{cell.getValue<Project["status"]>()}</div>,
     meta: {
       label: "Status",
       variant: "select",
@@ -86,12 +80,19 @@ const columns: ColumnDef<Project>[] = [
     },
     enableColumnFilter: true,
   },
+  {
+    id: "createdAt",
+    accessorKey: "createdAt",
+    header: ({ column }: { column: Column<Project, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
+    cell: ({ cell }) => format(new Date(cell.getValue<Project["createdAt"]>()), "MMM d, yyyy"),
+  },
 ];
 
-export default function LoggedPage() {
-  const [newProjectName, setNewProjectName] = useState("");
-  const [selectedClient, setSelectedClient] = useState("");
+export default function ProjectsPage() {
   const [isOpen, setIsOpen] = useState(false);
+  const [name] = useQueryState("name", parseAsString.withDefault(""));
 
   const projects = useQuery({
     ...trpc.project.getAll.queryOptions(),
@@ -103,31 +104,21 @@ export default function LoggedPage() {
     placeholderData: [],
   });
 
-  const createMutation = useMutation(
-    trpc.project.create.mutationOptions({
-      onSuccess: () => {
-        projects.refetch();
-        setNewProjectName("");
-        setSelectedClient("");
-        setIsOpen(false);
-      },
-    }),
-  );
-
-  const handleCreateProject = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newProjectName.trim() && selectedClient) {
-      createMutation.mutate({
-        name: newProjectName,
-        clientId: parseInt(selectedClient),
-      });
-    }
-  };
+  const filteredData = useMemo(() => {
+    if (!name) return projects.data || [];
+    const searchTerm = name.toLowerCase();
+    return (projects.data || []).filter((project) => {
+      const client = (clients.data || []).find((c) => c.id === project.clientId);
+      return (
+        project.name.toLowerCase().includes(searchTerm) || (client?.name.toLowerCase().includes(searchTerm) ?? false)
+      );
+    });
+  }, [projects.data, clients.data, name]);
 
   const { table } = useDataTable({
-    data: projects.data || [],
+    data: filteredData,
     columns,
-    pageCount: Math.ceil((projects.data?.length || 0) / 20),
+    pageCount: Math.ceil((filteredData.length || 0) / 20),
     meta: {
       clients: clients.data || [],
     },
@@ -136,71 +127,20 @@ export default function LoggedPage() {
   return (
     <DashboardShell>
       <DashboardHeader heading="Projects" text="You can find the list of projects here">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Project
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right">
-            <form onSubmit={handleCreateProject} className="space-y-4">
-              <SheetHeader>
-                <SheetTitle>Create New Project</SheetTitle>
-                <SheetDescription>Create a new project to start tracking time.</SheetDescription>
-              </SheetHeader>
-              <div className="p-4 space-y-4">
-                <div>
-                  <label htmlFor="client">Client</label>
-                  <Select value={selectedClient} onValueChange={setSelectedClient} disabled={createMutation.isPending}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a client" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clients.data?.map((client) => (
-                        <SelectItem key={client.id} value={client.id.toString()}>
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label htmlFor="project-name">Project Name</label>
-                  <Input
-                    id="project-name"
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Enter project name"
-                    disabled={createMutation.isPending}
-                  />
-                </div>
-              </div>
-
-              <SheetFooter>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={createMutation.isPending || !newProjectName.trim() || !selectedClient}
-                >
-                  {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Project"}
-                </Button>
-                <SheetClose asChild>
-                  <Button variant="outline" className="w-full">
-                    Cancel
-                  </Button>
-                </SheetClose>
-              </SheetFooter>
-            </form>
-          </SheetContent>
-        </Sheet>
+        <Button onClick={() => setIsOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Project
+        </Button>
       </DashboardHeader>
       <DataTable table={table}>
-        <DataTableAdvancedToolbar table={table}>
-          <DataTableFilterList table={table} />
-          <DataTableSortList table={table} />
-        </DataTableAdvancedToolbar>
+        <DataTableToolbar table={table} />
       </DataTable>
+      <CreateProjectForm
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        onSuccess={() => projects.refetch()}
+        clients={clients.data || []}
+      />
     </DashboardShell>
   );
 }
