@@ -1,8 +1,9 @@
 import { betterAuth } from "better-auth";
-import { openAPI, oAuthProxy, admin, organization } from "better-auth/plugins";
+import { openAPI, oAuthProxy, magicLink, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
+import { sendMail } from "./email";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -32,6 +33,15 @@ export const auth = betterAuth({
   plugins: [
     openAPI(),
     oAuthProxy(),
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await sendMail({
+          to: email,
+          subject: "Magic Link",
+          text: `Your magic link is ${url}`,
+        });
+      },
+    }),
     admin(),
     organization({
       teams: {
