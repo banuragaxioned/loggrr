@@ -12,12 +12,15 @@ import { useSession, signOut } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function UserMenu() {
   const { data: session, isPending } = useSession();
+  const router = useRouter();
 
   if (isPending) {
-    return <Skeleton className="h-9 w-24" />;
+    return <Skeleton className="size-8 rounded-full" />;
   }
 
   if (!session) {
@@ -31,7 +34,10 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{session.user.name}</Button>
+        <Avatar>
+          <AvatarImage src={session.user.image!} />
+          <AvatarFallback>{session.user.name.charAt(0)}</AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-card">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -42,7 +48,13 @@ export default function UserMenu() {
             variant="destructive"
             className="w-full"
             onClick={() => {
-              signOut();
+              signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    router.push("/login");
+                  },
+                },
+              });
             }}
           >
             Sign Out

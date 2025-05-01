@@ -37,7 +37,7 @@ export function SessionsList() {
         setLoading(true);
 
         // Get current session
-        const currentSession = await authClient.getSession();
+        const currentSession = authClient.useSession();
         setCurrentSessionId(currentSession?.data?.session?.id || null);
 
         // Get all sessions
