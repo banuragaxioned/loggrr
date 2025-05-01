@@ -6,6 +6,7 @@ import * as schema from "../db/schema/auth";
 import { sendMail } from "./email";
 import { render } from "@react-email/render";
 import MagicLinkEmail from "../emails/magic-link";
+import OrganizationInviteEmail from "../emails/organization-invite";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -51,6 +52,21 @@ export const auth = betterAuth({
         enabled: true,
         maximumTeams: 10,
         allowRemovingAllTeams: false,
+      },
+      async sendInvitationEmail(data) {
+        const inviteLink = process.env.CORS_ORIGIN! + `/accept-invitation/${data.id}`;
+        const html = await render(
+          OrganizationInviteEmail({
+            organizationName: data.organization.name,
+            invitorName: data.inviter.user.name,
+            inviteLink,
+          }),
+        );
+        await sendMail({
+          to: data.email,
+          subject: "Organization Invitation",
+          html,
+        });
       },
     }),
   ],
