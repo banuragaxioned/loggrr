@@ -4,6 +4,8 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
 import { sendMail } from "./email";
+import { render } from "@react-email/render";
+import { MagicLinkEmail } from "@loggrr/email/emails/magic-link";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -35,10 +37,11 @@ export const auth = betterAuth({
     oAuthProxy(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
+        const html = await render(MagicLinkEmail({ magicLink: url }));
         await sendMail({
           to: email,
           subject: "Magic Link",
-          text: `Your magic link is ${url}`,
+          html,
         });
       },
     }),
