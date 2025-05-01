@@ -256,12 +256,6 @@ importers:
       '@react-email/components':
         specifier: ^0.0.36
         version: 0.0.36(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/nodemailer':
-        specifier: ^6.4.17
-        version: 6.4.17
-      nodemailer:
-        specifier: ^6.10.1
-        version: 6.10.1
       react:
         specifier: ^19.1.0
         version: 19.1.0

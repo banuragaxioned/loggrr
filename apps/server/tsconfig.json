@@ -7,6 +7,9 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "lib": ["ESNext"],
     "outDir": "./dist",
     "types": ["node", "hono"],
