@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack --port=3001",
     "build": "next build",
-    "clean": "rm -rf node_modules && rm -rf .turbo",
+    "clean": "rm -rf node_modules && rm -rf .turbo && rm -rf .next",
     "start": "next start",
     "lint": "next lint"
   },
