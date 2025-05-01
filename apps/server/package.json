@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
+    "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.11.14",
     "drizzle-kit": "^0.31.0",
     "tsc-alias": "^1.8.15",
