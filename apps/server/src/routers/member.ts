@@ -20,7 +20,7 @@ export const memberRouter = router({
       })
       .from(member)
       .innerJoin(user, eq(member.userId, user.id))
-      .where(eq(member.organizationId, ctx.session.session.activeOrganizationId!));
+      .where(eq(member.organizationId, ctx.session.activeOrganizationId!));
 
     return members;
   }),

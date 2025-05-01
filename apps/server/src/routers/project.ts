@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 
 export const projectRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return await db.select().from(project).where(eq(project.organizationId, ctx.session.session.activeOrganizationId!));
+    return await db.select().from(project).where(eq(project.organizationId, ctx.session.activeOrganizationId!));
   }),
   create: protectedProcedure
     .input(
@@ -19,7 +19,7 @@ export const projectRouter = router({
       return await db.insert(project).values({
         name: input.name,
         clientId: input.clientId,
-        organizationId: ctx.session.session.activeOrganizationId!,
+        organizationId: ctx.session.activeOrganizationId!,
         status: "active",
         archived: false,
       });
