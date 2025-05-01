@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { openAPI, admin, organization } from "better-auth/plugins";
+import { openAPI, oAuthProxy, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
@@ -17,6 +17,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirectUri: process.env.CORS_ORIGIN! + "/api/auth/callback/google",
       overrideUserInfoOnSignIn: true,
       mapProfileToUser: (profile) => {
         console.log(profile);
@@ -30,6 +31,7 @@ export const auth = betterAuth({
   },
   plugins: [
     openAPI(),
+    oAuthProxy(),
     admin(),
     organization({
       teams: {
