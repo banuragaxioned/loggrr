@@ -5,7 +5,7 @@ import { signIn } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
-import { MailIcon } from "lucide-react";
+import { MailIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const emailSchema = z.object({
@@ -62,8 +62,12 @@ export function MagicLinkForm() {
       </form.Field>
 
       <Button type="submit" variant="outline" className="w-full" disabled={form.state.isSubmitting}>
-        <MailIcon className="mr-2 h-4 w-4" />
-        {form.state.isSubmitting ? "Sending..." : "Send Magic Link"}
+        {form.state.isSubmitting ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <MailIcon className="mr-2 h-4 w-4" />
+        )}
+        Send Magic Link
       </Button>
     </form>
   );
