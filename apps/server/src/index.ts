@@ -6,11 +6,15 @@ import { logger } from "hono/logger";
 import { streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import { stream } from "hono/streaming";
-import { createContext } from "./lib/context";
 import { appRouter } from "./routers/index";
 import { auth } from "./lib/auth";
 
-const app = new Hono();
+const app = new Hono<{
+  Variables: {
+    user: typeof auth.$Infer.Session.user | null;
+    session: typeof auth.$Infer.Session.session | null;
+  };
+}>();
 
 app.use(logger());
 
@@ -19,8 +23,24 @@ app.use("/*", async (c, next) => {
     origin: process.env.CORS_ORIGIN!,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
     credentials: true,
   })(c, next);
+});
+
+app.use("*", async (c, next) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+  if (!session) {
+    c.set("user", null);
+    c.set("session", null);
+    return next();
+  }
+
+  c.set("user", session.user);
+  c.set("session", session.session);
+  return next();
 });
 
 app.on(["POST", "GET"], "/api/auth/**", async (c) => {
@@ -32,9 +52,11 @@ app.use(
   "/trpc/*",
   trpcServer({
     router: appRouter,
-    createContext: (_opts, context) => {
-      return createContext({ context });
-    },
+    createContext: (_opts, context) => ({
+      ...context,
+      user: context.get("user"),
+      session: context.get("session"),
+    }),
   }),
 );
 

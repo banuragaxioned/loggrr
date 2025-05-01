@@ -1,24 +1,29 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { Context } from "./context";
+import type { Context as HonoContext } from "hono";
 
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<HonoContext>().create();
 
 export const router = t.router;
 
 export const publicProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session) {
+  const user = ctx.get("user");
+  const session = ctx.get("session");
+
+  if (!user || !session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Authentication required",
       cause: "No session",
     });
   }
+
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session.session,
+      user,
+      session,
     },
   });
 });
