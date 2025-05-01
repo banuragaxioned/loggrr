@@ -2,7 +2,7 @@ import { parseAsIndex, parseAsInteger, useQueryStates } from "nuqs";
 
 const paginationParsers = {
   pageIndex: parseAsIndex.withDefault(0),
-  pageSize: parseAsInteger.withDefault(10),
+  pageSize: parseAsInteger.withDefault(20),
 };
 const paginationUrlKeys = {
   pageIndex: "page",

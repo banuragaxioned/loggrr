@@ -127,7 +127,7 @@ export default function LoggedPage() {
   const { table } = useDataTable({
     data: projects.data || [],
     columns,
-    pageCount: Math.ceil((projects.data?.length || 0) / 10),
+    pageCount: Math.ceil((projects.data?.length || 0) / 20),
     meta: {
       clients: clients.data || [],
     },
