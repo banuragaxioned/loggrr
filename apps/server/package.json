@@ -12,7 +12,7 @@
     "db:studio": "drizzle-kit studio",
     "node-dev": "tsx watch src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "start": "node dist/src/index.js"
+    "start": "tsx src/index.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.14",
