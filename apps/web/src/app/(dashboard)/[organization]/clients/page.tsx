@@ -1,109 +1,84 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { useDataTable } from "@/hooks/use-data-table";
 import { trpc } from "@/utils/trpc";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Loader2, Plus } from "lucide-react";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import type { Column, ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState, useMemo } from "react";
 import { DashboardHeader, DashboardShell } from "@/components/shell";
-import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
+import { parseAsString, useQueryState } from "nuqs";
+import { CreateClientForm } from "./create-client-form";
 
-export default function Clients() {
-  const [newClientName, setNewClientName] = useState("");
+interface Client {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  organizationId: string;
+  image: string | null;
+}
+
+const columns: ColumnDef<Client>[] = [
+  {
+    id: "name",
+    accessorKey: "name",
+    header: ({ column }: { column: Column<Client, unknown> }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ cell }) => <div>{cell.getValue<Client["name"]>()}</div>,
+    meta: {
+      label: "Name",
+      placeholder: "Search by name...",
+      variant: "text",
+    },
+    enableColumnFilter: true,
+  },
+  {
+    id: "createdAt",
+    accessorKey: "createdAt",
+    header: ({ column }: { column: Column<Client, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
+    cell: ({ cell }) => format(new Date(cell.getValue<Client["createdAt"]>()), "MMM d, yyyy"),
+  },
+];
+
+export default function ClientsPage() {
   const [isOpen, setIsOpen] = useState(false);
+  const [name] = useQueryState("name", parseAsString.withDefault(""));
 
   const clients = useQuery({
     ...trpc.client.getAll.queryOptions(),
     placeholderData: [],
   });
 
-  const createMutation = useMutation(
-    trpc.client.create.mutationOptions({
-      onSuccess: () => {
-        clients.refetch();
-        setNewClientName("");
-        setIsOpen(false);
-      },
-    }),
-  );
+  const filteredData = useMemo(() => {
+    if (!name) return clients.data || [];
+    return (clients.data || []).filter((client) => client.name.toLowerCase().includes(name.toLowerCase()));
+  }, [clients.data, name]);
 
-  const handleCreateClient = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newClientName.trim()) {
-      createMutation.mutate({ name: newClientName });
-    }
-  };
+  const { table } = useDataTable({
+    data: filteredData,
+    columns,
+    pageCount: Math.ceil((filteredData.length || 0) / 20),
+  });
 
   return (
-    <>
-      <DashboardShell>
-        <DashboardHeader heading="Clients" text="You can find the list of clients here">
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button>
-                <Plus className="size-4" />
-                New Client
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <form onSubmit={handleCreateClient} className="space-y-4">
-                <SheetHeader>
-                  <SheetTitle>Create New Client</SheetTitle>
-                  <SheetDescription>Create a new client to start tracking their time.</SheetDescription>
-                </SheetHeader>
-                <div className="p-4">
-                  <label htmlFor="client-name">Client Name</label>
-                  <Input
-                    id="client-name"
-                    value={newClientName}
-                    onChange={(e) => setNewClientName(e.target.value)}
-                    placeholder="Enter client name"
-                    disabled={createMutation.isPending}
-                  />
-                </div>
-
-                <SheetFooter>
-                  <Button type="submit" className="w-full" disabled={createMutation.isPending || !newClientName.trim()}>
-                    {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Client"}
-                  </Button>
-                  <SheetClose asChild>
-                    <Button variant="outline" className="w-full">
-                      Cancel
-                    </Button>
-                  </SheetClose>
-                </SheetFooter>
-              </form>
-            </SheetContent>
-          </Sheet>
-        </DashboardHeader>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {clients.isFetching
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="rounded-lg border p-4">
-                  <Skeleton className="h-6 w-32 mb-2" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              ))
-            : clients.data?.map((client) => (
-                <div key={client.id} className="rounded-lg border p-4">
-                  <h2>{client.name}</h2>
-                  <p className="text-sm text-muted-foreground">{client.createdAt}</p>
-                </div>
-              ))}
-        </div>
-      </DashboardShell>
-    </>
+    <DashboardShell>
+      <DashboardHeader heading="Clients" text="You can find the list of clients here">
+        <Button onClick={() => setIsOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Client
+        </Button>
+      </DashboardHeader>
+      <DataTable table={table}>
+        <DataTableToolbar table={table} />
+      </DataTable>
+      <CreateClientForm open={isOpen} onOpenChange={setIsOpen} onSuccess={() => clients.refetch()} />
+    </DashboardShell>
   );
 }
