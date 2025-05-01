@@ -5,7 +5,7 @@ interface MagicLinkEmailProps {
   magicLink: string;
 }
 
-export function MagicLinkEmail({ magicLink }: MagicLinkEmailProps) {
+export const MagicLinkEmailComponent = ({ magicLink }: MagicLinkEmailProps) => {
   return (
     <Html>
       <Tailwind>
@@ -55,4 +55,6 @@ export function MagicLinkEmail({ magicLink }: MagicLinkEmailProps) {
       </Tailwind>
     </Html>
   );
-}
+};
+
+export default MagicLinkEmailComponent;

@@ -5,7 +5,7 @@ import { db } from "../db";
 import * as schema from "../db/schema/auth";
 import { sendMail } from "./email";
 import { render } from "@react-email/render";
-import { MagicLinkEmail } from "../emails/magic-link";
+import MagicLinkEmail from "../emails/magic-link";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
