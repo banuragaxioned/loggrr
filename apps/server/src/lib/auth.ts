@@ -1,8 +1,11 @@
 import { betterAuth } from "better-auth";
-import { openAPI, admin, organization } from "better-auth/plugins";
+import { openAPI, oAuthProxy, magicLink, admin, organization } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
+import { sendMail } from "./email";
+import { render } from "@react-email/render";
+import { MagicLinkEmail } from "@loggrr/email/emails/magic-link";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -17,6 +20,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirectUri: process.env.CORS_ORIGIN! + "/api/auth/callback/google",
       overrideUserInfoOnSignIn: true,
       mapProfileToUser: (profile) => {
         console.log(profile);
@@ -30,6 +34,17 @@ export const auth = betterAuth({
   },
   plugins: [
     openAPI(),
+    oAuthProxy(),
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        const html = await render(MagicLinkEmail({ magicLink: url }));
+        await sendMail({
+          to: email,
+          subject: "Magic Link",
+          html,
+        });
+      },
+    }),
     admin(),
     organization({
       teams: {

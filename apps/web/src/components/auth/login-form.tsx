@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginGoogleButton } from "./google-button";
+import { MagicLinkForm } from "./magic-link";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -15,9 +16,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             <div className="flex flex-col gap-4">
               <LoginGoogleButton />
             </div>
-            {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+            <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div> */}
+            </div>
+            <MagicLinkForm />
           </div>
         </CardContent>
       </Card>

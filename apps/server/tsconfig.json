@@ -8,13 +8,10 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "lib": ["ESNext"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "outDir": "./dist",
-    "types": ["node"],
+    "types": ["node", "hono"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "react"
   },
   "tsc-alias": {
     "resolveFullPaths": true

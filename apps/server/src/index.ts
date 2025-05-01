@@ -81,6 +81,7 @@ app.get("/", (c) => {
 });
 
 import { serve } from "@hono/node-server";
+import { sendMail } from "./lib/email";
 
 serve(
   {

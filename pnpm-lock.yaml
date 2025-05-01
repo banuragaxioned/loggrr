@@ -38,9 +38,15 @@ importers:
       '@hono/trpc-server':
         specifier: ^0.3.4
         version: 0.3.4(@trpc/server@11.1.2(typescript@5.8.3))(hono@4.7.8)
+      '@loggrr/email':
+        specifier: workspace:*
+        version: link:../../packages/email
       '@neondatabase/serverless':
         specifier: ^1.0.0
         version: 1.0.0
+      '@react-email/render':
+        specifier: ^1.0.6
+        version: 1.0.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@trpc/client':
         specifier: ^11.1.2
         version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
@@ -62,6 +68,9 @@ importers:
       hono:
         specifier: ^4.7.8
         version: 4.7.8
+      nodemailer:
+        specifier: ^6.10.1
+        version: 6.10.1
       pg:
         specifier: ^8.15.6
         version: 8.15.6
