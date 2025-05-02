@@ -24,7 +24,6 @@ export const auth = betterAuth({
       redirectUri: process.env.CORS_ORIGIN! + "/api/auth/callback/google",
       overrideUserInfoOnSignIn: true,
       mapProfileToUser: (profile) => {
-        console.log(profile);
         return {
           name: profile.name,
           email: profile.email,
