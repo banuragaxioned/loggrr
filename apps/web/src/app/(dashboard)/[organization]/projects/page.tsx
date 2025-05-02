@@ -14,23 +14,16 @@ import { DashboardHeader, DashboardShell } from "@/components/shell";
 import { format } from "date-fns";
 import { parseAsString, useQueryState } from "nuqs";
 import { CreateProjectForm } from "./create-project-form";
-import { Input } from "@/components/ui/input";
 
 interface Project {
   id: number;
   name: string;
   clientId: number;
-  createdAt: string;
+  clientName: string | null;
   status: "draft" | "active" | "completed" | "cancelled";
-  updatedAt: string;
-  organizationId: string;
-  description: string | null;
   archived: boolean;
-}
-
-interface Client {
-  id: number;
-  name: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const columns: ColumnDef<Project>[] = [
@@ -50,15 +43,11 @@ const columns: ColumnDef<Project>[] = [
   },
   {
     id: "clientName",
-    accessorFn: (row) => row.clientId,
+    accessorKey: "clientName",
     header: ({ column }: { column: Column<Project, unknown> }) => (
       <DataTableColumnHeader column={column} title="Client" />
     ),
-    cell: ({ row, table }) => {
-      const clients = (table.options.meta as { clients: Client[] }).clients;
-      const client = clients.find((c) => c.id === row.getValue("clientName"));
-      return <div>{client?.name || "Unknown"}</div>;
-    },
+    cell: ({ cell }) => <div>{cell.getValue<Project["clientName"]>()}</div>,
     enableColumnFilter: false,
   },
   {
@@ -107,13 +96,12 @@ export default function ProjectsPage() {
   const filteredData = useMemo(() => {
     if (!name) return projects.data || [];
     const searchTerm = name.toLowerCase();
-    return (projects.data || []).filter((project) => {
-      const client = (clients.data || []).find((c) => c.id === project.clientId);
-      return (
-        project.name.toLowerCase().includes(searchTerm) || (client?.name.toLowerCase().includes(searchTerm) ?? false)
-      );
-    });
-  }, [projects.data, clients.data, name]);
+    return (projects.data || []).filter(
+      (project) =>
+        project.name.toLowerCase().includes(searchTerm) ||
+        (project.clientName?.toLowerCase().includes(searchTerm) ?? false),
+    );
+  }, [projects.data, name]);
 
   const { table } = useDataTable({
     data: filteredData,

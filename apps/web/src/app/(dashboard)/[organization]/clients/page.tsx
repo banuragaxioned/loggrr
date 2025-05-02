@@ -20,8 +20,6 @@ interface Client {
   name: string;
   createdAt: string;
   updatedAt: string;
-  organizationId: string;
-  image: string | null;
 }
 
 const columns: ColumnDef<Client>[] = [
