@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../lib/trpc";
-import { getClients, createClient } from "@/db/queries";
+import { getClients, createClient } from "../db/queries";
 
 export const clientRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {

@@ -27,7 +27,7 @@ export const project = pgTable("project", {
 });
 
 export const category = pgTable("category", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id)
@@ -42,7 +42,7 @@ export const category = pgTable("category", {
 });
 
 export const task = pgTable("task", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   projectId: integer("project_id")
     .references(() => project.id)

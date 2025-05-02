@@ -2,7 +2,7 @@ import { pgTable, text, timestamp, integer } from "drizzle-orm/pg-core";
 import { member } from "./auth";
 
 export const skill = pgTable("skill", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
@@ -17,7 +17,7 @@ export const skill = pgTable("skill", {
 });
 
 export const memberSkill = pgTable("member_skill", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   memberId: text("member_id")
     .references(() => member.id, { onDelete: "cascade" })

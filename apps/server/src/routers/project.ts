@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../lib/trpc";
-import { createProject, getProjectById, getProjects } from "@/db/queries";
+import { createProject, getProjectById, getProjects } from "../db/queries";
 
 export const projectRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
