@@ -3,6 +3,8 @@ import { todoRouter } from "./todo";
 import { clientRouter } from "./client";
 import { projectRouter } from "./project";
 import { memberRouter } from "./member";
+import { estimateRouter } from "./estimate";
+import { skillRouter } from "./skill";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -18,6 +20,8 @@ export const appRouter = router({
   client: clientRouter,
   project: projectRouter,
   member: memberRouter,
+  estimate: estimateRouter,
+  skill: skillRouter,
 });
 
 export type AppRouter = typeof appRouter;
