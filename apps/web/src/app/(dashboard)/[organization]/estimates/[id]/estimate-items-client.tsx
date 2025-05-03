@@ -45,12 +45,6 @@ const columns: ColumnDef<EstimateItem>[] = [
       <DataTableColumnHeader column={column} title="Duration" />
     ),
     cell: ({ cell }) => <div>{cell.getValue<EstimateItem["duration"]>()} minutes</div>,
-    meta: {
-      label: "Duration",
-      placeholder: "Search duration...",
-      variant: "text",
-    },
-    enableColumnFilter: true,
   },
 ];
 
