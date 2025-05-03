@@ -38,10 +38,8 @@ export const estimateRouter = router({
     .input(
       z.object({
         estimateId: z.number(),
-        skillId: z.number(),
+        positionId: z.number(),
         duration: z.number(),
-        rate: z.string(),
-        currency: z.string(),
         memberId: z.string(),
       }),
     )

@@ -4,7 +4,7 @@ import { clientRouter } from "./client";
 import { projectRouter } from "./project";
 import { memberRouter } from "./member";
 import { estimateRouter } from "./estimate";
-import { skillRouter } from "./skill";
+import { positionRouter } from "./position";
 import { assignmentRouter } from "./assignment";
 
 export const appRouter = router({
@@ -22,7 +22,7 @@ export const appRouter = router({
   project: projectRouter,
   member: memberRouter,
   estimate: estimateRouter,
-  skill: skillRouter,
+  position: positionRouter,
   assignment: assignmentRouter,
 });
 

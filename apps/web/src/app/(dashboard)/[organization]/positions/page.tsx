@@ -12,23 +12,25 @@ import { Plus } from "lucide-react";
 import { useState, useMemo } from "react";
 import { DashboardHeader, DashboardShell } from "@/components/shell";
 import { parseAsString, useQueryState } from "nuqs";
-import { CreateSkillForm } from "./create-skill-form";
+import { CreatePositionForm } from "./create-position-form";
 
-interface Skill {
+interface Position {
   id: number;
   name: string;
   description: string | null;
 }
 
-const columns: ColumnDef<Skill>[] = [
+const columns: ColumnDef<Position>[] = [
   {
     id: "name",
     accessorKey: "name",
-    header: ({ column }: { column: Column<Skill, unknown> }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ cell }) => <div>{cell.getValue<Skill["name"]>()}</div>,
+    header: ({ column }: { column: Column<Position, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+    cell: ({ cell }) => <div>{cell.getValue<Position["name"]>()}</div>,
     meta: {
       label: "Name",
-      placeholder: "Search skills...",
+      placeholder: "Search positions...",
       variant: "text",
     },
     enableColumnFilter: true,
@@ -36,10 +38,10 @@ const columns: ColumnDef<Skill>[] = [
   {
     id: "description",
     accessorKey: "description",
-    header: ({ column }: { column: Column<Skill, unknown> }) => (
+    header: ({ column }: { column: Column<Position, unknown> }) => (
       <DataTableColumnHeader column={column} title="Description" />
     ),
-    cell: ({ cell }) => <div>{cell.getValue<Skill["description"]>()}</div>,
+    cell: ({ cell }) => <div>{cell.getValue<Position["description"]>()}</div>,
     meta: {
       label: "Description",
       placeholder: "Search descriptions...",
@@ -49,24 +51,24 @@ const columns: ColumnDef<Skill>[] = [
   },
 ];
 
-export default function SkillsPage() {
+export default function PositionsPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [name] = useQueryState("name", parseAsString.withDefault(""));
 
-  const skills = useQuery({
-    ...trpc.skill.getAll.queryOptions(),
+  const positions = useQuery({
+    ...trpc.position.getAll.queryOptions(),
     placeholderData: [],
   });
 
   const filteredData = useMemo(() => {
-    if (!name) return skills.data || [];
+    if (!name) return positions.data || [];
     const searchTerm = name.toLowerCase();
-    return (skills.data || []).filter(
-      (skill) =>
-        skill.name.toLowerCase().includes(searchTerm) ||
-        (skill.description?.toLowerCase().includes(searchTerm) ?? false),
+    return (positions.data || []).filter(
+      (position) =>
+        position.name.toLowerCase().includes(searchTerm) ||
+        (position.description?.toLowerCase().includes(searchTerm) ?? false),
     );
-  }, [skills.data, name]);
+  }, [positions.data, name]);
 
   const { table } = useDataTable({
     data: filteredData,
@@ -76,16 +78,16 @@ export default function SkillsPage() {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Skills" text="You can find the list of skills here">
+      <DashboardHeader heading="Positions" text="You can find the list of positions here">
         <Button onClick={() => setIsOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          New Skill
+          New Position
         </Button>
       </DashboardHeader>
       <DataTable table={table}>
         <DataTableToolbar table={table} />
       </DataTable>
-      <CreateSkillForm open={isOpen} onOpenChange={setIsOpen} onSuccess={() => skills.refetch()} />
+      <CreatePositionForm open={isOpen} onOpenChange={setIsOpen} onSuccess={() => positions.refetch()} />
     </DashboardShell>
   );
 }

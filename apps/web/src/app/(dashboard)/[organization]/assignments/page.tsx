@@ -23,10 +23,8 @@ interface Assignment {
   memberId: string;
   memberName: string;
   estimateItemId: number;
-  skillName: string;
+  positionName: string;
   duration: number;
-  rate: string;
-  currency: string;
   organizationId: string;
   createdById: string;
   updatedById: string;
@@ -67,12 +65,12 @@ const columns: ColumnDef<Assignment>[] = [
     id: "skillName",
     accessorKey: "skillName",
     header: ({ column }: { column: Column<Assignment, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Skill" />
+      <DataTableColumnHeader column={column} title="Position" />
     ),
-    cell: ({ cell }) => <div>{cell.getValue<Assignment["skillName"]>()}</div>,
+    cell: ({ cell }) => <div>{cell.getValue<Assignment["positionName"]>()}</div>,
     meta: {
-      label: "Skill",
-      placeholder: "Search skills...",
+      label: "Position",
+      placeholder: "Search positions...",
       variant: "text",
     },
     enableColumnFilter: true,
@@ -84,14 +82,6 @@ const columns: ColumnDef<Assignment>[] = [
       <DataTableColumnHeader column={column} title="Duration" />
     ),
     cell: ({ cell }) => <div>{formatMinutesToHours(cell.getValue<Assignment["duration"]>())}h</div>,
-  },
-  {
-    id: "rate",
-    accessorKey: "rate",
-    header: ({ column }: { column: Column<Assignment, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Rate" />
-    ),
-    cell: ({ row }) => <div>{formatCurrency(row.original.rate, row.original.currency)}</div>,
   },
 ];
 
@@ -111,7 +101,7 @@ export default function AssignmentsPage() {
       (assignment) =>
         assignment.projectName.toLowerCase().includes(searchTerm) ||
         assignment.memberName.toLowerCase().includes(searchTerm) ||
-        assignment.skillName.toLowerCase().includes(searchTerm),
+        assignment.positionName.toLowerCase().includes(searchTerm),
     );
   }, [assignments.data, name]);
 

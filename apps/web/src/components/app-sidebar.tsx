@@ -60,8 +60,8 @@ const data = {
       icon: File,
     },
     {
-      name: "Skills",
-      url: "skills",
+      name: "Positions",
+      url: "positions",
       icon: File,
     },
     {

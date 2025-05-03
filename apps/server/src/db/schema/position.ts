@@ -1,21 +1,11 @@
-import { pgTable, text, timestamp, integer, pgEnum, decimal, date } from "drizzle-orm/pg-core";
-import { project } from "./project";
+import { pgTable, text, timestamp, integer, decimal } from "drizzle-orm/pg-core";
 import { member } from "./auth";
-import { position } from "./position";
 
-export const estimateStatus = pgEnum("estimate_status", ["draft", "pending", "approved", "rejected", "cancelled"]);
-
-export const estimate = pgTable("estimate", {
+export const position = pgTable("position", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  projectId: integer("project_id")
-    .references(() => project.id, { onDelete: "cascade" })
-    .notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  status: estimateStatus("status").default("draft").notNull(),
-  startDate: date("start_date").notNull(),
-  endDate: date("end_date"),
   createdById: text("created_by_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
@@ -26,37 +16,37 @@ export const estimate = pgTable("estimate", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const estimateItem = pgTable("estimate_item", {
+export const positionLevel = pgTable("position_level", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
-  estimateId: integer("estimate_id")
-    .references(() => estimate.id, { onDelete: "cascade" })
+  positionId: integer("position_id")
+    .references(() => position.id, { onDelete: "cascade" })
+    .notNull(),
+  name: text("name").notNull(), // e.g., "Junior", "Senior", "Lead"
+  description: text("description"),
+  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
+  currency: text("currency").default("USD").notNull(),
+  createdById: text("created_by_id")
+    .references(() => member.id, { onDelete: "cascade" })
+    .notNull(),
+  updatedById: text("updated_by_id")
+    .references(() => member.id, { onDelete: "cascade" })
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const memberPosition = pgTable("member_position", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  organizationId: text("organization_id").notNull(),
+  memberId: text("member_id")
+    .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
   positionId: integer("position_id")
     .references(() => position.id, { onDelete: "cascade" })
     .notNull(),
-  duration: integer("duration").notNull(), // Duration in minutes
-  createdById: text("created_by_id")
-    .references(() => member.id, { onDelete: "cascade" })
-    .notNull(),
-  updatedById: text("updated_by_id")
-    .references(() => member.id, { onDelete: "cascade" })
-    .notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const assignment = pgTable("assignment", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  organizationId: text("organization_id").notNull(),
-  projectId: integer("project_id")
-    .references(() => project.id, { onDelete: "cascade" })
-    .notNull(),
-  memberId: text("member_id")
-    .references(() => member.id, { onDelete: "cascade" })
-    .notNull(),
-  estimateItemId: integer("estimate_item_id")
-    .references(() => estimateItem.id, { onDelete: "cascade" })
+  levelId: integer("level_id")
+    .references(() => positionLevel.id, { onDelete: "cascade" })
     .notNull(),
   createdById: text("created_by_id")
     .references(() => member.id, { onDelete: "cascade" })
@@ -68,11 +58,11 @@ export const assignment = pgTable("assignment", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export type Estimate = typeof estimate.$inferSelect;
-export type NewEstimate = typeof estimate.$inferInsert;
+export type Position = typeof position.$inferSelect;
+export type NewPosition = typeof position.$inferInsert;
 
-export type EstimateItem = typeof estimateItem.$inferSelect;
-export type NewEstimateItem = typeof estimateItem.$inferInsert;
+export type PositionLevel = typeof positionLevel.$inferSelect;
+export type NewPositionLevel = typeof positionLevel.$inferInsert;
 
-export type Assignment = typeof assignment.$inferSelect;
-export type NewAssignment = typeof assignment.$inferInsert;
+export type MemberPosition = typeof memberPosition.$inferSelect;
+export type NewMemberPosition = typeof memberPosition.$inferInsert;

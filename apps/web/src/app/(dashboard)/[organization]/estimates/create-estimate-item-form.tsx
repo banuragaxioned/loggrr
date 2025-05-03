@@ -29,17 +29,15 @@ interface CreateEstimateItemFormProps {
 export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimateId }: CreateEstimateItemFormProps) {
   const createMutation = useMutation(trpc.estimate.createItem.mutationOptions());
 
-  const { data: skills } = useQuery({
-    ...trpc.skill.getAll.queryOptions(),
+  const { data: positions } = useQuery({
+    ...trpc.position.getAll.queryOptions(),
     placeholderData: [],
   });
 
   const form = useForm({
     defaultValues: {
-      skillId: "",
+      positionId: "",
       duration: "",
-      rate: "",
-      currency: "USD",
     },
     onSubmit: async ({ value }) => {
       try {
@@ -51,10 +49,8 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
 
         await createMutation.mutateAsync({
           estimateId,
-          skillId: Number(value.skillId),
+          positionId: Number(value.positionId),
           duration: Number(value.duration),
-          rate: value.rate,
-          currency: value.currency,
           memberId: activeMember.data.id,
         });
 
@@ -84,29 +80,29 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
           </SheetHeader>
           <div className="p-4 space-y-4">
             <form.Field
-              name="skillId"
+              name="positionId"
               validators={{
                 onChange: ({ value }) => {
-                  if (!value) return "Skill is required";
+                  if (!value) return "Position is required";
                   return undefined;
                 },
               }}
             >
               {(field) => (
                 <div className="space-y-2">
-                  <label htmlFor="skill">Skill</label>
+                  <label htmlFor="position">Position</label>
                   <Select
                     value={field.state.value}
                     onValueChange={(value: string) => field.handleChange(value)}
                     disabled={createMutation.isPending}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a skill" />
+                      <SelectValue placeholder="Select a position" />
                     </SelectTrigger>
                     <SelectContent>
-                      {skills?.map((skill) => (
-                        <SelectItem key={skill.id} value={String(skill.id)}>
-                          {skill.name}
+                      {positions?.map((position) => (
+                        <SelectItem key={position.id} value={String(position.id)}>
+                          {position.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -139,67 +135,6 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
                     placeholder="Enter duration in minutes"
                     disabled={createMutation.isPending}
                   />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
-              )}
-            </form.Field>
-
-            <form.Field
-              name="rate"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Rate is required";
-                  if (isNaN(Number(value))) return "Rate must be a number";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="rate">Rate (per hour)</label>
-                  <Input
-                    id="rate"
-                    type="number"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter rate per hour"
-                    disabled={createMutation.isPending}
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
-              )}
-            </form.Field>
-
-            <form.Field
-              name="currency"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Currency is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="currency">Currency</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value: string) => field.handleChange(value)}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="GBP">GBP</SelectItem>
-                    </SelectContent>
-                  </Select>
                   {field.state.meta.errors ? (
                     <p className="text-sm text-destructive">{field.state.meta.errors}</p>
                   ) : null}

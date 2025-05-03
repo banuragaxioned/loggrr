@@ -239,8 +239,7 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                     <SelectContent>
                       {estimateItems.data?.map((item) => (
                         <SelectItem key={item.id} value={item.id.toString()}>
-                          {item.skillName} - {formatMinutesToHours(item.duration)}h @{" "}
-                          {formatCurrency(item.rate, item.currency)}
+                          {item.positionName} - {formatMinutesToHours(item.duration)}h
                         </SelectItem>
                       ))}
                     </SelectContent>

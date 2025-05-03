@@ -19,14 +19,14 @@ import { toast } from "sonner";
 import { trpc } from "@/utils/trpc";
 import { authClient } from "@/lib/auth-client";
 
-interface CreateSkillFormProps {
+interface CreatePositionFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
 }
 
-export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFormProps) {
-  const createMutation = useMutation(trpc.skill.create.mutationOptions());
+export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePositionFormProps) {
+  const createMutation = useMutation(trpc.position.create.mutationOptions());
 
   const form = useForm({
     defaultValues: {
@@ -37,7 +37,7 @@ export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFo
       try {
         const activeMember = await authClient.organization.getActiveMember();
         if (!activeMember?.data?.id) {
-          toast.error("You must be authenticated to create a skill");
+          toast.error("You must be authenticated to create a position");
           return;
         }
 
@@ -47,11 +47,11 @@ export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFo
           memberId: activeMember.data.id,
         });
 
-        toast.success("Skill created successfully");
+        toast.success("Position created successfully");
         onSuccess();
         form.reset();
       } catch (error) {
-        toast.error("Failed to create skill");
+        toast.error("Failed to create position");
       }
     },
   });
@@ -68,8 +68,8 @@ export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFo
           className="space-y-4"
         >
           <SheetHeader>
-            <SheetTitle>Create Skill</SheetTitle>
-            <SheetDescription>Add a new skill to your organization.</SheetDescription>
+            <SheetTitle>Create Position</SheetTitle>
+            <SheetDescription>Add a new position to your organization.</SheetDescription>
           </SheetHeader>
           <div className="p-4 space-y-4">
             <form.Field
@@ -88,7 +88,7 @@ export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFo
                     id="name"
                     value={field.state.value}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    placeholder="Enter skill name"
+                    placeholder="Enter position name"
                     disabled={createMutation.isPending}
                   />
                   {field.state.meta.errors ? (
@@ -113,7 +113,7 @@ export function CreateSkillForm({ open, onOpenChange, onSuccess }: CreateSkillFo
                     id="description"
                     value={field.state.value}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => field.handleChange(e.target.value)}
-                    placeholder="Enter skill description"
+                    placeholder="Enter position description"
                     disabled={createMutation.isPending}
                   />
                   {field.state.meta.errors ? (

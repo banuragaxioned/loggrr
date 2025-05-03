@@ -1,4 +1,4 @@
-import { client, project, timeLog, user, member, estimate, estimateItem, skill, assignment } from "../schema";
+import { client, project, timeLog, user, member, estimate, estimateItem, position, assignment } from "../schema";
 import { db } from "..";
 import { eq, and } from "drizzle-orm";
 
@@ -142,18 +142,16 @@ export const getEstimateItems = async (organizationId: string, estimateId: numbe
   return await db
     .select({
       id: estimateItem.id,
-      skillId: estimateItem.skillId,
-      skillName: skill.name,
+      positionId: estimateItem.positionId,
+      positionName: position.name,
       duration: estimateItem.duration,
-      rate: estimateItem.rate,
-      currency: estimateItem.currency,
       createdById: estimateItem.createdById,
       updatedById: estimateItem.updatedById,
       createdAt: estimateItem.createdAt,
       updatedAt: estimateItem.updatedAt,
     })
     .from(estimateItem)
-    .leftJoin(skill, eq(estimateItem.skillId, skill.id))
+    .leftJoin(position, eq(estimateItem.positionId, position.id))
     .where(and(eq(estimateItem.estimateId, estimateId), eq(estimateItem.organizationId, organizationId)));
 };
 
@@ -161,10 +159,8 @@ export const createEstimateItem = async (
   organizationId: string,
   data: {
     estimateId: number;
-    skillId: number;
+    positionId: number;
     duration: number;
-    rate: string;
-    currency: string;
     createdById: string;
     updatedById: string;
   },
@@ -184,10 +180,8 @@ export async function getAssignments(organizationId: string) {
       memberId: assignment.memberId,
       memberName: user.name,
       estimateItemId: assignment.estimateItemId,
-      skillName: skill.name,
+      positionName: position.name,
       duration: estimateItem.duration,
-      rate: estimateItem.rate,
-      currency: estimateItem.currency,
       organizationId: assignment.organizationId,
       createdById: assignment.createdById,
       updatedById: assignment.updatedById,
@@ -199,7 +193,7 @@ export async function getAssignments(organizationId: string) {
     .innerJoin(member, eq(assignment.memberId, member.id))
     .innerJoin(user, eq(member.userId, user.id))
     .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
-    .innerJoin(skill, eq(estimateItem.skillId, skill.id))
+    .innerJoin(position, eq(estimateItem.positionId, position.id))
     .where(eq(assignment.organizationId, organizationId));
 }
 
@@ -212,10 +206,8 @@ export async function getAssignmentsByProject(organizationId: string, projectId:
       memberId: assignment.memberId,
       memberName: user.name,
       estimateItemId: assignment.estimateItemId,
-      skillName: skill.name,
+      positionName: position.name,
       duration: estimateItem.duration,
-      rate: estimateItem.rate,
-      currency: estimateItem.currency,
       organizationId: assignment.organizationId,
       createdById: assignment.createdById,
       updatedById: assignment.updatedById,
@@ -227,7 +219,7 @@ export async function getAssignmentsByProject(organizationId: string, projectId:
     .innerJoin(member, eq(assignment.memberId, member.id))
     .innerJoin(user, eq(member.userId, user.id))
     .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
-    .innerJoin(skill, eq(estimateItem.skillId, skill.id))
+    .innerJoin(position, eq(estimateItem.positionId, position.id))
     .where(and(eq(assignment.organizationId, organizationId), eq(assignment.projectId, projectId)));
 }
 
