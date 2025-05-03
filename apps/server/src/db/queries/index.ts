@@ -1,4 +1,4 @@
-import { client, project, timeLog, user, member, estimate, category, estimateItem, skill } from "../schema";
+import { client, project, timeLog, user, member, estimate, estimateItem, skill, assignment } from "../schema";
 import { db } from "..";
 import { eq, and } from "drizzle-orm";
 
@@ -174,3 +174,79 @@ export const createEstimateItem = async (
     ...data,
   });
 };
+
+export async function getAssignments(organizationId: string) {
+  return await db
+    .select({
+      id: assignment.id,
+      projectId: assignment.projectId,
+      projectName: project.name,
+      memberId: assignment.memberId,
+      memberName: user.name,
+      estimateItemId: assignment.estimateItemId,
+      skillName: skill.name,
+      duration: estimateItem.duration,
+      rate: estimateItem.rate,
+      currency: estimateItem.currency,
+      organizationId: assignment.organizationId,
+      createdById: assignment.createdById,
+      updatedById: assignment.updatedById,
+      createdAt: assignment.createdAt,
+      updatedAt: assignment.updatedAt,
+    })
+    .from(assignment)
+    .innerJoin(project, eq(assignment.projectId, project.id))
+    .innerJoin(member, eq(assignment.memberId, member.id))
+    .innerJoin(user, eq(member.userId, user.id))
+    .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
+    .innerJoin(skill, eq(estimateItem.skillId, skill.id))
+    .where(eq(assignment.organizationId, organizationId));
+}
+
+export async function getAssignmentsByProject(organizationId: string, projectId: number) {
+  return await db
+    .select({
+      id: assignment.id,
+      projectId: assignment.projectId,
+      projectName: project.name,
+      memberId: assignment.memberId,
+      memberName: user.name,
+      estimateItemId: assignment.estimateItemId,
+      skillName: skill.name,
+      duration: estimateItem.duration,
+      rate: estimateItem.rate,
+      currency: estimateItem.currency,
+      organizationId: assignment.organizationId,
+      createdById: assignment.createdById,
+      updatedById: assignment.updatedById,
+      createdAt: assignment.createdAt,
+      updatedAt: assignment.updatedAt,
+    })
+    .from(assignment)
+    .innerJoin(project, eq(assignment.projectId, project.id))
+    .innerJoin(member, eq(assignment.memberId, member.id))
+    .innerJoin(user, eq(member.userId, user.id))
+    .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
+    .innerJoin(skill, eq(estimateItem.skillId, skill.id))
+    .where(and(eq(assignment.organizationId, organizationId), eq(assignment.projectId, projectId)));
+}
+
+export async function createAssignment(
+  organizationId: string,
+  projectId: number,
+  memberId: string,
+  estimateItemId: number,
+) {
+  return await db.insert(assignment).values({
+    organizationId,
+    projectId,
+    memberId,
+    estimateItemId,
+    createdById: memberId,
+    updatedById: memberId,
+  });
+}
+
+export async function deleteAssignment(organizationId: string, id: number) {
+  return await db.delete(assignment).where(and(eq(assignment.id, id), eq(assignment.organizationId, organizationId)));
+}
