@@ -11,6 +11,7 @@ import {
   Sparkles,
   User,
   Users,
+  File,
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -47,6 +48,21 @@ const data = {
       name: "Members",
       url: "members",
       icon: Users,
+    },
+    {
+      name: "Estimates",
+      url: "estimates",
+      icon: File,
+    },
+    {
+      name: "Assignments",
+      url: "assignments",
+      icon: File,
+    },
+    {
+      name: "Skills",
+      url: "skills",
+      icon: File,
     },
     {
       name: "Reports",
