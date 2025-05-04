@@ -13,20 +13,26 @@ import { useState, useMemo } from "react";
 import { DashboardHeader, DashboardShell } from "@/components/shell";
 import { parseAsString, useQueryState } from "nuqs";
 import { CreateEstimateItemForm } from "../create-estimate-item-form";
+import { formatCurrency } from "@/lib/currency";
+import { formatMinutesToHoursAndMinutes } from "@/lib/duration";
 
 interface EstimateItem {
   id: number;
   positionId: number;
   positionName: string | null;
+  rate: string | null;
+  currency: string | null;
   duration: number;
+  createdById: string;
+  updatedById: string;
   createdAt: string;
   updatedAt: string;
 }
 
 const columns: ColumnDef<EstimateItem>[] = [
   {
-    id: "skillName",
-    accessorKey: "skillName",
+    id: "positionName",
+    accessorKey: "positionName",
     header: ({ column }: { column: Column<EstimateItem, unknown> }) => (
       <DataTableColumnHeader column={column} title="Position" />
     ),
@@ -39,12 +45,36 @@ const columns: ColumnDef<EstimateItem>[] = [
     enableColumnFilter: true,
   },
   {
+    id: "rate",
+    accessorKey: "rate",
+    header: ({ column }: { column: Column<EstimateItem, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Rate" />
+    ),
+    cell: ({ row }) => {
+      const rate = row.original.rate;
+      const currency = row.original.currency;
+      return <div>{formatCurrency(rate || "0", currency || "USD")}/hr</div>;
+    },
+    meta: {
+      label: "Rate",
+      placeholder: "Search rates...",
+      variant: "text",
+    },
+    enableColumnFilter: false,
+  },
+  {
     id: "duration",
     accessorKey: "duration",
     header: ({ column }: { column: Column<EstimateItem, unknown> }) => (
       <DataTableColumnHeader column={column} title="Duration" />
     ),
-    cell: ({ cell }) => <div>{cell.getValue<EstimateItem["duration"]>()} minutes</div>,
+    cell: ({ row }) => <div>{formatMinutesToHoursAndMinutes(row.original.duration)}</div>,
+    meta: {
+      label: "Duration",
+      placeholder: "Search duration...",
+      variant: "text",
+    },
+    enableColumnFilter: false,
   },
 ];
 
