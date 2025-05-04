@@ -6,6 +6,8 @@ export const position = pgTable("position", {
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
+  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
+  currency: text("currency").default("USD").notNull(),
   createdById: text("created_by_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),
@@ -16,14 +18,12 @@ export const position = pgTable("position", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const positionLevel = pgTable("position_level", {
+export const rateCard = pgTable("rate_card", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   organizationId: text("organization_id").notNull(),
   positionId: integer("position_id")
     .references(() => position.id, { onDelete: "cascade" })
     .notNull(),
-  name: text("name").notNull(), // e.g., "Junior", "Senior", "Lead"
-  description: text("description"),
   rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
   currency: text("currency").default("USD").notNull(),
   createdById: text("created_by_id")
@@ -45,8 +45,8 @@ export const memberPosition = pgTable("member_position", {
   positionId: integer("position_id")
     .references(() => position.id, { onDelete: "cascade" })
     .notNull(),
-  levelId: integer("level_id")
-    .references(() => positionLevel.id, { onDelete: "cascade" })
+  rateCardId: integer("rate_card_id")
+    .references(() => rateCard.id, { onDelete: "cascade" })
     .notNull(),
   createdById: text("created_by_id")
     .references(() => member.id, { onDelete: "cascade" })
@@ -61,8 +61,8 @@ export const memberPosition = pgTable("member_position", {
 export type Position = typeof position.$inferSelect;
 export type NewPosition = typeof position.$inferInsert;
 
-export type PositionLevel = typeof positionLevel.$inferSelect;
-export type NewPositionLevel = typeof positionLevel.$inferInsert;
+export type RateCard = typeof rateCard.$inferSelect;
+export type NewRateCard = typeof rateCard.$inferInsert;
 
 export type MemberPosition = typeof memberPosition.$inferSelect;
 export type NewMemberPosition = typeof memberPosition.$inferInsert;
