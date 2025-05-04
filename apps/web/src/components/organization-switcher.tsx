@@ -1,6 +1,6 @@
 "use client";
 
-import { BriefcaseBusiness, ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
