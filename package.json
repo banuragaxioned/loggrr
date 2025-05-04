@@ -32,7 +32,7 @@
     "turbo": "^2.5.2",
     "web": "^0.1.0"
   },
-  "packageManager": "pnpm@10.8.1",
+  "packageManager": "pnpm@10.10.0",
   "engines": {
     "node": "22.x",
     "pnpm": ">=9.15.4"
