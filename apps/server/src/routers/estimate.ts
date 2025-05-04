@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../lib/trpc";
-import { createEstimate, createEstimateItem, getEstimateById, getEstimateItems, getEstimates } from "../db/queries";
+import { getEstimates, getEstimateById, getEstimateItems, createEstimate, createEstimateItem } from "../db/queries";
 
 export const estimateRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -28,7 +28,11 @@ export const estimateRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       return await createEstimate(ctx.session.activeOrganizationId!, {
-        ...input,
+        name: input.name,
+        description: input.description,
+        projectId: input.projectId,
+        startDate: input.startDate,
+        endDate: input.endDate,
         createdById: input.memberId,
         updatedById: input.memberId,
       });
@@ -44,8 +48,11 @@ export const estimateRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await createEstimateItem(ctx.session.activeOrganizationId!, {
-        ...input,
+      return await createEstimateItem({
+        estimateId: input.estimateId,
+        positionId: input.positionId,
+        duration: input.duration,
+        organizationId: ctx.session.activeOrganizationId!,
         createdById: input.memberId,
         updatedById: input.memberId,
       });

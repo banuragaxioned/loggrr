@@ -1,4 +1,15 @@
-import { client, project, timeLog, user, member, estimate, estimateItem, position, assignment } from "../schema";
+import {
+  client,
+  project,
+  timeLog,
+  user,
+  member,
+  estimate,
+  estimateItem,
+  position,
+  assignment,
+  rateCard,
+} from "../schema";
 import { db } from "..";
 import { eq, and } from "drizzle-orm";
 
@@ -144,6 +155,8 @@ export const getEstimateItems = async (organizationId: string, estimateId: numbe
       id: estimateItem.id,
       positionId: estimateItem.positionId,
       positionName: position.name,
+      rate: position.rate,
+      currency: position.currency,
       duration: estimateItem.duration,
       createdById: estimateItem.createdById,
       updatedById: estimateItem.updatedById,
@@ -155,20 +168,15 @@ export const getEstimateItems = async (organizationId: string, estimateId: numbe
     .where(and(eq(estimateItem.estimateId, estimateId), eq(estimateItem.organizationId, organizationId)));
 };
 
-export const createEstimateItem = async (
-  organizationId: string,
-  data: {
-    estimateId: number;
-    positionId: number;
-    duration: number;
-    createdById: string;
-    updatedById: string;
-  },
-) => {
-  return await db.insert(estimateItem).values({
-    organizationId,
-    ...data,
-  });
+export const createEstimateItem = async (data: {
+  estimateId: number;
+  positionId: number;
+  duration: number;
+  createdById: string;
+  updatedById: string;
+  organizationId: string;
+}) => {
+  return await db.insert(estimateItem).values(data).returning();
 };
 
 export async function getAssignments(organizationId: string) {
@@ -242,3 +250,22 @@ export async function createAssignment(
 export async function deleteAssignment(organizationId: string, id: number) {
   return await db.delete(assignment).where(and(eq(assignment.id, id), eq(assignment.organizationId, organizationId)));
 }
+
+export const getMembers = async (organizationId: string) => {
+  return await db
+    .select({
+      id: member.id,
+      organizationId: member.organizationId,
+      userId: member.userId,
+      role: member.role,
+      createdAt: member.createdAt,
+      user: {
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
+    })
+    .from(member)
+    .innerJoin(user, eq(member.userId, user.id))
+    .where(eq(member.organizationId, organizationId));
+};
