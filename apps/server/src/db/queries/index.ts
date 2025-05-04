@@ -1,4 +1,15 @@
-import { client, project, timeLog, user, member, estimate, category, estimateItem, skill } from "../schema";
+import {
+  client,
+  project,
+  timeLog,
+  user,
+  member,
+  estimate,
+  estimateItem,
+  position,
+  assignment,
+  rateCard,
+} from "../schema";
 import { db } from "..";
 import { eq, and } from "drizzle-orm";
 
@@ -142,35 +153,119 @@ export const getEstimateItems = async (organizationId: string, estimateId: numbe
   return await db
     .select({
       id: estimateItem.id,
-      skillId: estimateItem.skillId,
-      skillName: skill.name,
+      positionId: estimateItem.positionId,
+      positionName: position.name,
+      rate: position.rate,
+      currency: position.currency,
       duration: estimateItem.duration,
-      rate: estimateItem.rate,
-      currency: estimateItem.currency,
       createdById: estimateItem.createdById,
       updatedById: estimateItem.updatedById,
       createdAt: estimateItem.createdAt,
       updatedAt: estimateItem.updatedAt,
     })
     .from(estimateItem)
-    .leftJoin(skill, eq(estimateItem.skillId, skill.id))
+    .leftJoin(position, eq(estimateItem.positionId, position.id))
     .where(and(eq(estimateItem.estimateId, estimateId), eq(estimateItem.organizationId, organizationId)));
 };
 
-export const createEstimateItem = async (
+export const createEstimateItem = async (data: {
+  estimateId: number;
+  positionId: number;
+  duration: number;
+  createdById: string;
+  updatedById: string;
+  organizationId: string;
+}) => {
+  return await db.insert(estimateItem).values(data).returning();
+};
+
+export async function getAssignments(organizationId: string) {
+  return await db
+    .select({
+      id: assignment.id,
+      projectId: assignment.projectId,
+      projectName: project.name,
+      memberId: assignment.memberId,
+      memberName: user.name,
+      estimateItemId: assignment.estimateItemId,
+      positionName: position.name,
+      duration: estimateItem.duration,
+      organizationId: assignment.organizationId,
+      createdById: assignment.createdById,
+      updatedById: assignment.updatedById,
+      createdAt: assignment.createdAt,
+      updatedAt: assignment.updatedAt,
+    })
+    .from(assignment)
+    .innerJoin(project, eq(assignment.projectId, project.id))
+    .innerJoin(member, eq(assignment.memberId, member.id))
+    .innerJoin(user, eq(member.userId, user.id))
+    .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
+    .innerJoin(position, eq(estimateItem.positionId, position.id))
+    .where(eq(assignment.organizationId, organizationId));
+}
+
+export async function getAssignmentsByProject(organizationId: string, projectId: number) {
+  return await db
+    .select({
+      id: assignment.id,
+      projectId: assignment.projectId,
+      projectName: project.name,
+      memberId: assignment.memberId,
+      memberName: user.name,
+      estimateItemId: assignment.estimateItemId,
+      positionName: position.name,
+      duration: estimateItem.duration,
+      organizationId: assignment.organizationId,
+      createdById: assignment.createdById,
+      updatedById: assignment.updatedById,
+      createdAt: assignment.createdAt,
+      updatedAt: assignment.updatedAt,
+    })
+    .from(assignment)
+    .innerJoin(project, eq(assignment.projectId, project.id))
+    .innerJoin(member, eq(assignment.memberId, member.id))
+    .innerJoin(user, eq(member.userId, user.id))
+    .innerJoin(estimateItem, eq(assignment.estimateItemId, estimateItem.id))
+    .innerJoin(position, eq(estimateItem.positionId, position.id))
+    .where(and(eq(assignment.organizationId, organizationId), eq(assignment.projectId, projectId)));
+}
+
+export async function createAssignment(
   organizationId: string,
-  data: {
-    estimateId: number;
-    skillId: number;
-    duration: number;
-    rate: string;
-    currency: string;
-    createdById: string;
-    updatedById: string;
-  },
-) => {
-  return await db.insert(estimateItem).values({
+  projectId: number,
+  memberId: string,
+  estimateItemId: number,
+) {
+  return await db.insert(assignment).values({
     organizationId,
-    ...data,
+    projectId,
+    memberId,
+    estimateItemId,
+    createdById: memberId,
+    updatedById: memberId,
   });
+}
+
+export async function deleteAssignment(organizationId: string, id: number) {
+  return await db.delete(assignment).where(and(eq(assignment.id, id), eq(assignment.organizationId, organizationId)));
+}
+
+export const getMembers = async (organizationId: string) => {
+  return await db
+    .select({
+      id: member.id,
+      organizationId: member.organizationId,
+      userId: member.userId,
+      role: member.role,
+      createdAt: member.createdAt,
+      user: {
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
+    })
+    .from(member)
+    .innerJoin(user, eq(member.userId, user.id))
+    .where(eq(member.organizationId, organizationId));
 };
