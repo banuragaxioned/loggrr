@@ -11,7 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -37,7 +37,7 @@ export function CreateClientForm({ open, onOpenChange, onSuccess }: CreateClient
     }),
   );
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       name: "",
     },
@@ -77,19 +77,18 @@ export function CreateClientForm({ open, onOpenChange, onSuccess }: CreateClient
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="client-name">Client Name</label>
-                  <Input
-                    id="client-name"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter client name"
-                    disabled={createMutation.isPending}
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Client Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter client name"
+                      disabled={createMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
           </div>

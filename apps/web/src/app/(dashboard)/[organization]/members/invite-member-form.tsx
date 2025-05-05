@@ -12,7 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -44,7 +44,7 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
     },
   });
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       email: "",
       role: "member" as Role,
@@ -89,20 +89,19 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="member-email">Email</label>
-                  <Input
-                    id="member-email"
-                    type="email"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter member's email"
-                    disabled={createMutation.isPending}
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter member's email"
+                      disabled={createMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
             <form.Field
@@ -115,25 +114,25 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="role">Role</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value: Role) => field.handleChange(value)}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="member">Member</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value: Role) => field.handleChange(value)}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="member">Member</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
           </div>

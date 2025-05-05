@@ -13,7 +13,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { trpc } from "@/utils/trpc";
 import { useState, useEffect } from "react";
 import { z } from "zod";
@@ -75,7 +75,7 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
     }),
   );
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       positionId: 0,
       duration: 0,
@@ -113,37 +113,43 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
           <form.Field
             name="positionId"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Position</label>
-                <Select
-                  onValueChange={(value) => field.handleChange(Number(value))}
-                  defaultValue={field.state.value.toString()}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a position" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {positions.data?.map((position: Position) => (
-                      <SelectItem key={position.id} value={position.id.toString()}>
-                        {position.name} ({formatCurrency(position.rate, position.currency)}/hr)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <FormItem>
+                <FormLabel>Position</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => field.handleChange(Number(value))}
+                    defaultValue={field.state.value.toString()}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {positions.data?.map((position: Position) => (
+                        <SelectItem key={position.id} value={position.id.toString()}>
+                          {position.name} ({formatCurrency(position.rate, position.currency)}/hr)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <form.Field
             name="duration"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Duration (minutes)</label>
-                <Input
-                  type="number"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                />
-              </div>
+              <FormItem>
+                <FormLabel>Duration (minutes)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <SheetFooter>

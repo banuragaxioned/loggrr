@@ -15,7 +15,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -44,7 +44,7 @@ export function CreateEstimateForm({ open, onOpenChange, onSuccess, projects }: 
     }),
   );
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       name: "",
       description: "",
@@ -100,34 +100,35 @@ export function CreateEstimateForm({ open, onOpenChange, onSuccess, projects }: 
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimate-name">Name</label>
-                  <Input
-                    id="estimate-name"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter estimate name"
-                    disabled={createMutation.isPending}
-                  />
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter estimate name"
+                      disabled={createMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
             <form.Field name="description">
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimate-description">Description</label>
-                  <Input
-                    id="estimate-description"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter estimate description"
-                    disabled={createMutation.isPending}
-                  />
-                </div>
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Enter estimate description"
+                      disabled={createMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
@@ -141,28 +142,28 @@ export function CreateEstimateForm({ open, onOpenChange, onSuccess, projects }: 
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="project">Project</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value: string) => field.handleChange(value)}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {projects.map((project) => (
-                        <SelectItem key={project.id} value={String(project.id)}>
-                          {project.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Project</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value: string) => field.handleChange(value)}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={String(project.id)}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
@@ -176,66 +177,69 @@ export function CreateEstimateForm({ open, onOpenChange, onSuccess, projects }: 
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label>Start Date</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.state.value && "text-muted-foreground",
-                        )}
-                        disabled={createMutation.isPending}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.state.value ? format(field.state.value, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.state.value}
-                        onSelect={(date: Date | undefined) => date && field.handleChange(date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Start Date</FormLabel>
+                  <FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.state.value && "text-muted-foreground",
+                          )}
+                          disabled={createMutation.isPending}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.state.value ? format(field.state.value, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date: Date | undefined) => date && field.handleChange(date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
             <form.Field name="endDate">
               {(field) => (
-                <div className="space-y-2">
-                  <label>End Date (Optional)</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.state.value && "text-muted-foreground",
-                        )}
-                        disabled={createMutation.isPending}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.state.value ? format(field.state.value, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.state.value}
-                        onSelect={(date: Date | undefined) => date && field.handleChange(date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                <FormItem>
+                  <FormLabel>End Date (Optional)</FormLabel>
+                  <FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.state.value && "text-muted-foreground",
+                          )}
+                          disabled={createMutation.isPending}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.state.value ? format(field.state.value, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.state.value}
+                          onSelect={(date: Date | undefined) => date && field.handleChange(date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
           </div>

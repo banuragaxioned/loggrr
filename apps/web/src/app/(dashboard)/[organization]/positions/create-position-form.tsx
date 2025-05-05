@@ -13,7 +13,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { trpc } from "@/utils/trpc";
 import { useState, useEffect } from "react";
 import { z } from "zod";
@@ -63,7 +63,7 @@ export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePosi
     }),
   );
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       name: "",
       description: "",
@@ -104,59 +104,71 @@ export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePosi
           <form.Field
             name="name"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Name</label>
-                <Input
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="e.g. Senior Developer"
-                />
-              </div>
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Senior Developer"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <form.Field
             name="description"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Description</label>
-                <Textarea
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="e.g. A senior developer with 5+ years of experience"
-                />
-              </div>
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. A senior developer with 5+ years of experience"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <form.Field
             name="rate"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Rate</label>
-                <Input
-                  type="number"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="e.g. 100"
-                />
-              </div>
+              <FormItem>
+                <FormLabel>Rate</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. 100"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <form.Field
             name="currency"
             children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Currency</label>
-                <Select onValueChange={(value) => field.handleChange(value)} defaultValue={field.state.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USD">USD</SelectItem>
-                    <SelectItem value="EUR">EUR</SelectItem>
-                    <SelectItem value="GBP">GBP</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <FormItem>
+                <FormLabel>Currency</FormLabel>
+                <FormControl>
+                  <Select onValueChange={(value) => field.handleChange(value)} defaultValue={field.state.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USD">USD</SelectItem>
+                      <SelectItem value="EUR">EUR</SelectItem>
+                      <SelectItem value="GBP">GBP</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
           />
           <SheetFooter>

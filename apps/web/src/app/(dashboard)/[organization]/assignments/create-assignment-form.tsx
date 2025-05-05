@@ -11,7 +11,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { trpc } from "@/utils/trpc";
@@ -20,7 +20,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { formatMinutesToHours } from "@/lib/duration";
-import { formatCurrency } from "@/lib/currency";
 
 interface Member {
   id: string;
@@ -62,7 +61,7 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
     placeholderData: [],
   });
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       projectId: "",
       memberId: "",
@@ -118,28 +117,28 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="projectId">Project</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {projects.data?.map((project) => (
-                        <SelectItem key={project.id} value={project.id.toString()}>
-                          {project.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Project</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.data?.map((project) => (
+                          <SelectItem key={project.id} value={project.id.toString()}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
@@ -153,28 +152,28 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="memberId">Member</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a member" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {members.data?.map((member: Member) => (
-                        <SelectItem key={member.id} value={member.id}>
-                          {member.user.name ?? "Unnamed User"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Member</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a member" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {members.data?.map((member: Member) => (
+                          <SelectItem key={member.id} value={member.id}>
+                            {member.user.name ?? "Unnamed User"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
@@ -188,31 +187,31 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimateId">Estimate</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) => {
-                      field.handleChange(value);
-                      setSelectedEstimateId(value);
-                    }}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an estimate" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {estimates.data?.map((estimate) => (
-                        <SelectItem key={estimate.id} value={estimate.id.toString()}>
-                          {estimate.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Estimate</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value) => {
+                        field.handleChange(value);
+                        setSelectedEstimateId(value);
+                      }}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an estimate" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {estimates.data?.map((estimate) => (
+                          <SelectItem key={estimate.id} value={estimate.id.toString()}>
+                            {estimate.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
 
@@ -226,28 +225,28 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
               }}
             >
               {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimateItemId">Estimate Item</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending || !selectedEstimateId}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an estimate item" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {estimateItems.data?.map((item) => (
-                        <SelectItem key={item.id} value={item.id.toString()}>
-                          {item.positionName} - {formatMinutesToHours(item.duration)}h
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+                <FormItem>
+                  <FormLabel>Estimate Item</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending || !selectedEstimateId}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an estimate item" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {estimateItems.data?.map((item) => (
+                          <SelectItem key={item.id} value={item.id.toString()}>
+                            {item.positionName} - {formatMinutesToHours(item.duration)}h
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             </form.Field>
           </div>
