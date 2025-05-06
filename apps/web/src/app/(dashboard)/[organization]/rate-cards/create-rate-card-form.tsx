@@ -12,17 +12,19 @@ import {
   SheetFooter,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { Loader2, CreditCard } from "lucide-react";
+import { useAppForm } from "@/components/ui/form";
 import { trpc } from "@/utils/trpc";
-import { useState } from "react";
 import { z } from "zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useCallback } from "react";
+import { CURRENCIES, CURRENCY_OPTIONS, type Currency } from "@/constants";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   positionId: z.number(),
-  rate: z.string().min(1),
-  currency: z.string().default("USD"),
+  rate: z.string().min(1, "Rate is required"),
+  currency: z.enum(CURRENCIES),
 });
 
 interface Position {
@@ -50,25 +52,43 @@ export function CreateRateCardForm({ open, onOpenChange, onSuccess, memberId }: 
         form.reset();
         onSuccess();
         onOpenChange(false);
+        toast.success("Rate card created successfully");
+      },
+      onError: () => {
+        toast.error("Failed to create rate card");
       },
     }),
   );
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       positionId: 0,
       rate: "",
-      currency: "USD",
+      currency: "USD" as Currency,
     },
+    validators: { onChange: formSchema },
     onSubmit: async ({ value }) => {
-      createRateCard.mutate({
-        positionId: value.positionId,
-        rate: value.rate,
-        currency: value.currency,
-        memberId,
-      });
+      try {
+        await createRateCard.mutateAsync({
+          positionId: value.positionId,
+          rate: value.rate,
+          currency: value.currency,
+          memberId,
+        });
+      } catch (error) {
+        // Error is handled by mutation
+      }
     },
   });
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      form.handleSubmit();
+    },
+    [form],
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -77,78 +97,99 @@ export function CreateRateCardForm({ open, onOpenChange, onSuccess, memberId }: 
           <SheetTitle>Create Rate Card</SheetTitle>
           <SheetDescription>Add a new rate card for a position.</SheetDescription>
         </SheetHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <form.Field
-            name="positionId"
-            children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Position</label>
-                <Select
-                  onValueChange={(value) => field.handleChange(Number(value))}
-                  defaultValue={field.state.value.toString()}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a position" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {positions.data?.map((position: Position) => (
-                      <SelectItem key={position.id} value={position.id.toString()}>
-                        {position.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          />
-          <form.Field
-            name="rate"
-            children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Rate</label>
-                <Input
-                  type="number"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="e.g. 100"
-                />
-              </div>
-            )}
-          />
-          <form.Field
-            name="currency"
-            children={(field) => (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Currency</label>
-                <Select onValueChange={(value) => field.handleChange(value)} defaultValue={field.state.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USD">USD</SelectItem>
-                    <SelectItem value="EUR">EUR</SelectItem>
-                    <SelectItem value="GBP">GBP</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          />
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </SheetClose>
-            <Button type="submit" disabled={createRateCard.isPending}>
-              {createRateCard.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create
-            </Button>
-          </SheetFooter>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <form.AppForm>
+            <form.AppField
+              name="positionId"
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Position</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value.toString()}
+                      onValueChange={(value) => field.handleChange(Number(value))}
+                      disabled={createRateCard.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a position" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {positions.data?.map((position: Position) => (
+                          <SelectItem key={position.id} value={position.id.toString()}>
+                            {position.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+
+            <form.AppField
+              name="rate"
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Rate</field.FormLabel>
+                  <field.FormControl>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="e.g. 100"
+                      disabled={createRateCard.isPending}
+                    />
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+
+            <form.AppField
+              name="currency"
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Currency</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value: Currency) => field.handleChange(value)}
+                      disabled={createRateCard.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CURRENCY_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
+              )}
+            />
+
+            <SheetFooter>
+              <Button type="submit" className="w-full" disabled={createRateCard.isPending}>
+                {createRateCard.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <CreditCard className="mr-2 h-4 w-4" />
+                )}
+                Create Rate Card
+              </Button>
+              <SheetClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancel
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </form.AppForm>
         </form>
       </SheetContent>
     </Sheet>

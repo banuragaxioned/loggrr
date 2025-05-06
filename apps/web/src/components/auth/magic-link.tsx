@@ -2,18 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth-client";
-import { useForm } from "@tanstack/react-form";
+import { useAppForm } from "@/components/ui/form";
+import { useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { MailIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const emailSchema = z.object({
+const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
 export function MagicLinkForm() {
-  const form = useForm({
+  const form = useAppForm({
+    validators: { onChange: formSchema },
     defaultValues: {
       email: "",
     },
@@ -29,46 +31,44 @@ export function MagicLinkForm() {
     },
   });
 
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        void form.handleSubmit();
-      }}
-      className="space-y-4"
-    >
-      <form.Field
-        name="email"
-        validators={{
-          onChange: ({ value }) => {
-            const result = emailSchema.safeParse({ email: value });
-            return result.success ? undefined : result.error.issues[0].message;
-          },
-        }}
-      >
-        {(field) => (
-          <div className="space-y-2">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              className="w-full"
-            />
-            {field.state.meta.errors ? <p className="text-sm text-destructive">{field.state.meta.errors}</p> : null}
-          </div>
-        )}
-      </form.Field>
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      form.handleSubmit();
+    },
+    [form],
+  );
 
-      <Button type="submit" variant="outline" className="w-full" disabled={form.state.isSubmitting}>
-        {form.state.isSubmitting ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <MailIcon className="mr-2 h-4 w-4" />
-        )}
-        Send Magic Link
-      </Button>
-    </form>
+  return (
+    <form.AppForm>
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <form.AppField
+          name="email"
+          children={(field) => (
+            <field.FormItem>
+              <field.FormControl>
+                <Input
+                  placeholder="Enter your email"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                />
+              </field.FormControl>
+              <field.FormMessage />
+            </field.FormItem>
+          )}
+        />
+
+        <Button type="submit" variant="outline" className="w-full" disabled={form.state.isSubmitting}>
+          {form.state.isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <MailIcon className="mr-2 h-4 w-4" />
+          )}
+          Send Magic Link
+        </Button>
+      </form>
+    </form.AppForm>
   );
 }

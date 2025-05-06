@@ -10,17 +10,24 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
+import { Loader2, UserPlus } from "lucide-react";
+import { useAppForm } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { trpc } from "@/utils/trpc";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { formatMinutesToHours } from "@/lib/duration";
-import { formatCurrency } from "@/lib/currency";
+import { z } from "zod";
+
+const formSchema = z.object({
+  projectId: z.string().min(1, "Project is required"),
+  memberId: z.string().min(1, "Member is required"),
+  estimateId: z.string().min(1, "Estimate is required"),
+  estimateItemId: z.string().min(1, "Estimate item is required"),
+});
 
 interface Member {
   id: string;
@@ -62,13 +69,14 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
     placeholderData: [],
   });
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       projectId: "",
       memberId: "",
       estimateId: "",
       estimateItemId: "",
     },
+    validators: { onChange: formSchema },
     onSubmit: async ({ value }) => {
       try {
         const activeMember = await authClient.organization.getActiveMember();
@@ -92,174 +100,155 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
     },
   });
 
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      form.handleSubmit();
+    },
+    [form],
+  );
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right">
-        <form
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <SheetHeader>
-            <SheetTitle>Create Assignment</SheetTitle>
-            <SheetDescription>Assign a member to an estimate item for a project.</SheetDescription>
-          </SheetHeader>
-          <div className="p-4 space-y-4">
-            <form.Field
+        <SheetHeader>
+          <SheetTitle>Create Assignment</SheetTitle>
+          <SheetDescription>Assign a member to an estimate item for a project.</SheetDescription>
+        </SheetHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <form.AppForm>
+            <form.AppField
               name="projectId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Project is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="projectId">Project</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {projects.data?.map((project) => (
-                        <SelectItem key={project.id} value={project.id.toString()}>
-                          {project.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Project</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.data?.map((project) => (
+                          <SelectItem key={project.id} value={project.id.toString()}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="memberId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Member is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="memberId">Member</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a member" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {members.data?.map((member: Member) => (
-                        <SelectItem key={member.id} value={member.id}>
-                          {member.user.name ?? "Unnamed User"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Member</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a member" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {members.data?.map((member: Member) => (
+                          <SelectItem key={member.id} value={member.id}>
+                            {member.user.name ?? "Unnamed User"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="estimateId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Estimate is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimateId">Estimate</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) => {
-                      field.handleChange(value);
-                      setSelectedEstimateId(value);
-                    }}
-                    disabled={createMutation.isPending}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an estimate" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {estimates.data?.map((estimate) => (
-                        <SelectItem key={estimate.id} value={estimate.id.toString()}>
-                          {estimate.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Estimate</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value) => {
+                        field.handleChange(value);
+                        setSelectedEstimateId(value);
+                      }}
+                      disabled={createMutation.isPending}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select an estimate" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {estimates.data?.map((estimate) => (
+                          <SelectItem key={estimate.id} value={estimate.id.toString()}>
+                            {estimate.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="estimateItemId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Estimate item is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <div className="space-y-2">
-                  <label htmlFor="estimateItemId">Estimate Item</label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={createMutation.isPending || !selectedEstimateId}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an estimate item" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {estimateItems.data?.map((item) => (
-                        <SelectItem key={item.id} value={item.id.toString()}>
-                          {item.positionName} - {formatMinutesToHours(item.duration)}h
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors ? (
-                    <p className="text-sm text-destructive">{field.state.meta.errors}</p>
-                  ) : null}
-                </div>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Estimate Item</field.FormLabel>
+                  <field.FormControl>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={createMutation.isPending || !selectedEstimateId}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select an estimate item" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {estimateItems.data?.map((item) => (
+                          <SelectItem key={item.id} value={item.id.toString()}>
+                            {item.positionName} - {formatMinutesToHours(item.duration)}h
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
-          </div>
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </SheetClose>
-            <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create
-            </Button>
-          </SheetFooter>
+            />
+
+            <SheetFooter>
+              <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                {createMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <UserPlus className="mr-2 h-4 w-4" />
+                )}
+                Create Assignment
+              </Button>
+              <SheetClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancel
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </form.AppForm>
         </form>
       </SheetContent>
     </Sheet>
