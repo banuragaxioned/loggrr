@@ -12,19 +12,26 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { useCallback } from "react";
+import { z } from "zod";
+
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  role: z.enum(["member", "admin"]),
+});
+
+type Role = "member" | "admin";
 
 interface InviteMemberFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
 }
-
-type Role = "member" | "admin" | "owner";
 
 export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMemberFormProps) {
   const createMutation = useMutation({
@@ -49,6 +56,7 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
       email: "",
       role: "member" as Role,
     },
+    validators: { onChange: formSchema },
     onSubmit: async ({ value }) => {
       try {
         await createMutation.mutateAsync({
@@ -62,36 +70,30 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
     },
   });
 
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      form.handleSubmit();
+    },
+    [form],
+  );
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <SheetHeader>
-            <SheetTitle>Invite New Member</SheetTitle>
-            <SheetDescription>Invite a new member to your organization.</SheetDescription>
-          </SheetHeader>
-          <div className="p-4 space-y-4">
-            <form.Field
+        <SheetHeader>
+          <SheetTitle>Invite New Member</SheetTitle>
+          <SheetDescription>Invite a new member to your organization.</SheetDescription>
+        </SheetHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <form.AppForm>
+            <form.AppField
               name="email"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value.trim()) return "Email is required";
-                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Invalid email format";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Email</field.FormLabel>
+                  <field.FormControl>
                     <Input
                       type="email"
                       value={field.state.value}
@@ -99,24 +101,18 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
                       placeholder="Enter member's email"
                       disabled={createMutation.isPending}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
-            <form.Field
+            />
+
+            <form.AppField
               name="role"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Role is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Role</field.FormLabel>
+                  <field.FormControl>
                     <Select
                       value={field.state.value}
                       onValueChange={(value: Role) => field.handleChange(value)}
@@ -130,23 +126,28 @@ export function InviteMemberForm({ open, onOpenChange, onSuccess }: InviteMember
                         <SelectItem value="member">Member</SelectItem>
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
-          </div>
+            />
 
-          <SheetFooter>
-            <Button type="submit" className="w-full" disabled={createMutation.isPending}>
-              {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send Invitation"}
-            </Button>
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Cancel
+            <SheetFooter>
+              <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                {createMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <UserPlus className="mr-2 h-4 w-4" />
+                )}
+                Send Invitation
               </Button>
-            </SheetClose>
-          </SheetFooter>
+              <SheetClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancel
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </form.AppForm>
         </form>
       </SheetContent>
     </Sheet>
