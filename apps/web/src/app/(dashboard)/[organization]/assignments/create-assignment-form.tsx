@@ -10,16 +10,24 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Loader2 } from "lucide-react";
-import { useAppForm, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Loader2, UserPlus } from "lucide-react";
+import { useAppForm } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { trpc } from "@/utils/trpc";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { formatMinutesToHours } from "@/lib/duration";
+import { z } from "zod";
+
+const formSchema = z.object({
+  projectId: z.string().min(1, "Project is required"),
+  memberId: z.string().min(1, "Member is required"),
+  estimateId: z.string().min(1, "Estimate is required"),
+  estimateItemId: z.string().min(1, "Estimate item is required"),
+});
 
 interface Member {
   id: string;
@@ -68,6 +76,7 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
       estimateId: "",
       estimateItemId: "",
     },
+    validators: { onChange: formSchema },
     onSubmit: async ({ value }) => {
       try {
         const activeMember = await authClient.organization.getActiveMember();
@@ -91,41 +100,36 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
     },
   });
 
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      form.handleSubmit();
+    },
+    [form],
+  );
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right">
-        <form
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <SheetHeader>
-            <SheetTitle>Create Assignment</SheetTitle>
-            <SheetDescription>Assign a member to an estimate item for a project.</SheetDescription>
-          </SheetHeader>
-          <div className="p-4 space-y-4">
-            <form.Field
+        <SheetHeader>
+          <SheetTitle>Create Assignment</SheetTitle>
+          <SheetDescription>Assign a member to an estimate item for a project.</SheetDescription>
+        </SheetHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <form.AppForm>
+            <form.AppField
               name="projectId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Project is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Project</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Project</field.FormLabel>
+                  <field.FormControl>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                       disabled={createMutation.isPending}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a project" />
                       </SelectTrigger>
                       <SelectContent>
@@ -136,31 +140,24 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                         ))}
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="memberId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Member is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Member</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Member</field.FormLabel>
+                  <field.FormControl>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                       disabled={createMutation.isPending}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a member" />
                       </SelectTrigger>
                       <SelectContent>
@@ -171,25 +168,18 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                         ))}
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="estimateId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Estimate is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Estimate</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Estimate</field.FormLabel>
+                  <field.FormControl>
                     <Select
                       value={field.state.value}
                       onValueChange={(value) => {
@@ -198,7 +188,7 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                       }}
                       disabled={createMutation.isPending}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select an estimate" />
                       </SelectTrigger>
                       <SelectContent>
@@ -209,31 +199,24 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                         ))}
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
+            />
 
-            <form.Field
+            <form.AppField
               name="estimateItemId"
-              validators={{
-                onChange: ({ value }) => {
-                  if (!value) return "Estimate item is required";
-                  return undefined;
-                },
-              }}
-            >
-              {(field) => (
-                <FormItem>
-                  <FormLabel>Estimate Item</FormLabel>
-                  <FormControl>
+              children={(field) => (
+                <field.FormItem className="px-4">
+                  <field.FormLabel>Estimate Item</field.FormLabel>
+                  <field.FormControl>
                     <Select
                       value={field.state.value}
                       onValueChange={field.handleChange}
                       disabled={createMutation.isPending || !selectedEstimateId}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select an estimate item" />
                       </SelectTrigger>
                       <SelectContent>
@@ -244,21 +227,28 @@ export function CreateAssignmentForm({ open, onOpenChange, onSuccess }: CreateAs
                         ))}
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </field.FormControl>
+                  <field.FormMessage />
+                </field.FormItem>
               )}
-            </form.Field>
-          </div>
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </SheetClose>
-            <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create
-            </Button>
-          </SheetFooter>
+            />
+
+            <SheetFooter>
+              <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                {createMutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <UserPlus className="mr-2 h-4 w-4" />
+                )}
+                Create Assignment
+              </Button>
+              <SheetClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancel
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </form.AppForm>
         </form>
       </SheetContent>
     </Sheet>
