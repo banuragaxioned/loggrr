@@ -9,13 +9,13 @@ import { z } from "zod";
 import { MailIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const emailSchema = z.object({
+const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
 export function MagicLinkForm() {
   const form = useAppForm({
-    validators: { onChange: emailSchema },
+    validators: { onChange: formSchema },
     defaultValues: {
       email: "",
     },
