@@ -1,13 +1,14 @@
 import "dotenv/config";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import { stream } from "hono/streaming";
 import { appRouter } from "./routers/index";
 import { auth } from "./lib/auth";
+import { authMiddleware } from "./middleware/auth";
+import { corsMiddleware } from "./middleware/cors";
 
 const app = new Hono<{
   Variables: {
@@ -18,30 +19,8 @@ const app = new Hono<{
 
 app.use(logger());
 
-app.use("/*", async (c, next) => {
-  return cors({
-    origin: process.env.CORS_ORIGIN!,
-    allowMethods: ["GET", "POST", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
-    exposeHeaders: ["Content-Length"],
-    maxAge: 600,
-    credentials: true,
-  })(c, next);
-});
-
-app.use("*", async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-
-  if (!session) {
-    c.set("user", null);
-    c.set("session", null);
-    return next();
-  }
-
-  c.set("user", session.user);
-  c.set("session", session.session);
-  return next();
-});
+app.use("/*", corsMiddleware);
+app.use("*", authMiddleware);
 
 app.on(["POST", "GET"], "/api/auth/**", async (c) => {
   const authHandler = auth.handler;
