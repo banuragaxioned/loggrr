@@ -3,7 +3,8 @@
   "main": "src/index.ts",
   "type": "module",
   "exports": {
-    "./trpc": "./src/routers/index.ts"
+    "./trpc": "./src/routers/index.ts",
+    "./schema": "./src/db/schema/index.ts"
   },
   "scripts": {
     "auth:gen": "pnpx @better-auth/cli generate --config ./src/lib/auth.ts --output ../server/src/db/schema/auth.ts",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession, authClient } from "@/lib/auth-client";
-import { type Session } from "../../../../../server/src/db/schema/auth";
+import type { Session } from "@loggrr/server/schema";
 import { getDeviceName } from "@/utils/ua-parser";
 
 function SessionItem({ session, isCurrent }: { session: Session; isCurrent: boolean }) {
