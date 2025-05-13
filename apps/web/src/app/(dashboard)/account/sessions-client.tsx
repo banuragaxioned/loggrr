@@ -30,21 +30,21 @@ export function SessionsList() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!session) return;
+    if (!session?.data?.session) {
+      return;
+    }
+
+    // Set current session ID from the session we already have
+    setCurrentSessionId(session.data.session.id);
 
     async function fetchSessions() {
       try {
         setLoading(true);
-
-        // Get current session
-        const currentSession = authClient.useSession();
-        setCurrentSessionId(currentSession?.data?.session?.id || null);
-
-        // Get all sessions
         const result = await authClient.listSessions();
 
         // Map the result to ensure it matches the Session type
         const sessionsData = Array.isArray(result) ? result : result?.data || [];
+
         const mappedSessions = sessionsData.map((s) => ({
           ...s,
           impersonatedBy: s.impersonatedBy ?? null,
@@ -55,6 +55,7 @@ export function SessionsList() {
 
         setSessions(mappedSessions);
       } catch (error) {
+        console.error("Error fetching sessions:", error);
         setSessions([]);
       } finally {
         setLoading(false);
