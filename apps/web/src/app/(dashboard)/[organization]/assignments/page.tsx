@@ -14,7 +14,6 @@ import { DashboardHeader, DashboardShell } from "@/components/shell";
 import { parseAsString, useQueryState } from "nuqs";
 import { CreateAssignmentForm } from "./create-assignment-form";
 import { formatMinutesToHours } from "@/lib/duration";
-import { formatCurrency } from "@/lib/currency";
 
 interface Assignment {
   id: number;
@@ -23,13 +22,9 @@ interface Assignment {
   memberId: string;
   memberName: string;
   estimateItemId: number;
+  positionId: number;
   positionName: string;
   duration: number;
-  organizationId: string;
-  createdById: string;
-  updatedById: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 const columns: ColumnDef<Assignment>[] = [
@@ -62,8 +57,8 @@ const columns: ColumnDef<Assignment>[] = [
     enableColumnFilter: true,
   },
   {
-    id: "skillName",
-    accessorKey: "skillName",
+    id: "positionName",
+    accessorKey: "positionName",
     header: ({ column }: { column: Column<Assignment, unknown> }) => (
       <DataTableColumnHeader column={column} title="Position" />
     ),
@@ -93,6 +88,8 @@ export default function AssignmentsPage() {
     ...trpc.assignment.getAll.queryOptions(),
     placeholderData: [],
   });
+
+  console.log(assignments.data);
 
   const filteredData = useMemo(() => {
     if (!name) return assignments.data || [];

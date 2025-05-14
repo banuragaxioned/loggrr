@@ -11,7 +11,10 @@ import {
   Sparkles,
   User,
   Users,
-  File,
+  CalendarPlus,
+  CalendarClock,
+  IdCard,
+  Banknote,
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -52,17 +55,22 @@ const data = {
     {
       name: "Estimates",
       url: "estimates",
-      icon: File,
+      icon: CalendarClock,
     },
     {
       name: "Assignments",
       url: "assignments",
-      icon: File,
+      icon: CalendarPlus,
     },
     {
       name: "Positions",
       url: "positions",
-      icon: File,
+      icon: IdCard,
+    },
+    {
+      name: "Rate Cards",
+      url: "rate-cards",
+      icon: Banknote,
     },
     {
       name: "Reports",

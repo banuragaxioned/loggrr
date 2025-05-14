@@ -20,14 +20,10 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CURRENCIES, CURRENCY_OPTIONS, type Currency } from "@/constants";
 
 const formSchema = z.object({
   name: z.string().min(2, "Position name must be at least 2 characters long"),
   description: z.string(),
-  rate: z.string().min(1, "Rate is required"),
-  currency: z.enum(CURRENCIES),
 });
 
 interface CreatePositionFormProps {
@@ -72,8 +68,6 @@ export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePosi
     defaultValues: {
       name: "",
       description: "",
-      rate: "",
-      currency: "USD" as Currency,
     },
     validators: { onChange: formSchema },
     onSubmit: async ({ value }) => {
@@ -86,8 +80,6 @@ export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePosi
         await createPosition.mutateAsync({
           name: value.name,
           description: value.description,
-          rate: value.rate,
-          currency: value.currency,
           memberId: activeMemberId,
         });
       } catch (error) {
@@ -144,53 +136,6 @@ export function CreatePositionForm({ open, onOpenChange, onSuccess }: CreatePosi
                       placeholder="e.g. A senior developer with 5+ years of experience"
                       disabled={createPosition.isPending}
                     />
-                  </field.FormControl>
-                  <field.FormMessage />
-                </field.FormItem>
-              )}
-            />
-
-            <form.AppField
-              name="rate"
-              children={(field) => (
-                <field.FormItem className="px-4">
-                  <field.FormLabel>Rate</field.FormLabel>
-                  <field.FormControl>
-                    <Input
-                      type="number"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="e.g. 100"
-                      disabled={createPosition.isPending}
-                    />
-                  </field.FormControl>
-                  <field.FormMessage />
-                </field.FormItem>
-              )}
-            />
-
-            <form.AppField
-              name="currency"
-              children={(field) => (
-                <field.FormItem className="px-4">
-                  <field.FormLabel>Currency</field.FormLabel>
-                  <field.FormControl>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={(value: Currency) => field.handleChange(value)}
-                      disabled={createPosition.isPending}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CURRENCY_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
                   </field.FormControl>
                   <field.FormMessage />
                 </field.FormItem>

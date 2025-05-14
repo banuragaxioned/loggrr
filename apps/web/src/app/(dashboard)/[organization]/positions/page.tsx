@@ -47,7 +47,6 @@ const columns: ColumnDef<Position>[] = [
       placeholder: "Search descriptions...",
       variant: "text",
     },
-    enableColumnFilter: true,
   },
 ];
 

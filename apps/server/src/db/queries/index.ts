@@ -155,13 +155,7 @@ export const getEstimateItems = async (organizationId: string, estimateId: numbe
       id: estimateItem.id,
       positionId: estimateItem.positionId,
       positionName: position.name,
-      rate: position.rate,
-      currency: position.currency,
       duration: estimateItem.duration,
-      createdById: estimateItem.createdById,
-      updatedById: estimateItem.updatedById,
-      createdAt: estimateItem.createdAt,
-      updatedAt: estimateItem.updatedAt,
     })
     .from(estimateItem)
     .leftJoin(position, eq(estimateItem.positionId, position.id))
@@ -188,13 +182,9 @@ export async function getAssignments(organizationId: string) {
       memberId: assignment.memberId,
       memberName: user.name,
       estimateItemId: assignment.estimateItemId,
+      positionId: estimateItem.positionId,
       positionName: position.name,
       duration: estimateItem.duration,
-      organizationId: assignment.organizationId,
-      createdById: assignment.createdById,
-      updatedById: assignment.updatedById,
-      createdAt: assignment.createdAt,
-      updatedAt: assignment.updatedAt,
     })
     .from(assignment)
     .innerJoin(project, eq(assignment.projectId, project.id))

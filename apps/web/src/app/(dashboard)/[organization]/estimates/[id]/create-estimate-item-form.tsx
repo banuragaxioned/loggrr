@@ -30,9 +30,6 @@ const formSchema = z.object({
 interface Position {
   id: number;
   name: string;
-  description: string | null;
-  rate: string;
-  currency: string;
 }
 
 interface CreateEstimateItemFormProps {
@@ -139,7 +136,7 @@ export function CreateEstimateItemForm({ open, onOpenChange, onSuccess, estimate
                       <SelectContent>
                         {positions.data?.map((position: Position) => (
                           <SelectItem key={position.id} value={position.id.toString()}>
-                            {position.name} ({formatCurrency(position.rate, position.currency)}/hr)
+                            {position.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

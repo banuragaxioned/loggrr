@@ -6,8 +6,6 @@ export const position = pgTable("position", {
   organizationId: text("organization_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  rate: decimal("rate", { precision: 10, scale: 2 }).notNull(), // Rate per 60 minutes
-  currency: text("currency").default("USD").notNull(),
   createdById: text("created_by_id")
     .references(() => member.id, { onDelete: "cascade" })
     .notNull(),

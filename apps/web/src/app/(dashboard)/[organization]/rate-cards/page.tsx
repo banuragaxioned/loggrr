@@ -21,8 +21,6 @@ interface RateCard {
   positionName: string;
   rate: string;
   currency: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 interface Member {
@@ -82,7 +80,7 @@ export default function RateCardsPage() {
   const [member, setMember] = useState<Member | null>(null);
 
   const rateCards = useQuery({
-    ...trpc.position.getRateCards.queryOptions({ positionId: 0 }),
+    ...trpc.position.getRateCards.queryOptions(),
     placeholderData: [],
   });
 
