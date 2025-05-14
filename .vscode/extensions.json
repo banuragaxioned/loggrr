@@ -5,7 +5,6 @@
     "naumovs.color-highlight",
     "wix.vscode-import-cost",
     "bradlc.vscode-tailwindcss",
-    "esbenp.prettier-vscode",
-    "prisma.prisma"
+    "esbenp.prettier-vscode"
   ]
 }

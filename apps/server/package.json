@@ -1,0 +1,55 @@
+{
+  "name": "@loggrr/server",
+  "main": "src/index.ts",
+  "type": "module",
+  "exports": {
+    "./trpc": "./src/routers/index.ts",
+    "./schema": "./src/db/schema/index.ts"
+  },
+  "scripts": {
+    "auth:gen": "pnpx @better-auth/cli generate --config ./src/lib/auth.ts --output ../server/src/db/schema/auth.ts",
+    "build": "tsc && tsc-alias",
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf node_modules && rm -rf .turbo && rm -rf .wrangler && rm -rf dist",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "email:dev": "email dev --dir ./src/emails/ --port 3005",
+    "email:build": "email build --dir ./src/emails/ ",
+    "email:export": "email export --dir ./src/emails/ --outDir ./src/emails/dist",
+    "node-dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^1.2.18",
+    "@hono/node-server": "^1.14.1",
+    "@hono/trpc-server": "^0.3.4",
+    "@neondatabase/serverless": "^1.0.0",
+    "@react-email/components": "^0.0.41",
+    "@react-email/render": "^1.1.2",
+    "@trpc/client": "^11.1.2",
+    "@trpc/server": "^11.1.2",
+    "ai": "^4.3.15",
+    "better-auth": "^1.2.7",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
+    "hono": "^4.7.9",
+    "nodemailer": "^7.0.3",
+    "pg": "^8.16.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.15.0",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "drizzle-kit": "^0.31.1",
+    "react-email": "4.0.13",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.19.4",
+    "typescript": "^5"
+  }
+}

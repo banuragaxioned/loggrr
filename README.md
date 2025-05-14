@@ -2,49 +2,57 @@
 
 Clean and simple time logging solution for teams that embrace transparency and want to focus on what really matters.
 
-## Tech stack
+## Features
 
-- [Next 14](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [React Hook Form](https://react-hook-form.com)
-- [Vercel](https://vercel.com)
+- **TypeScript** - For type safety and improved developer experience
+- **Next.js** - Full-stack React framework
+- **TailwindCSS** - Utility-first CSS for rapid UI development
+- **shadcn/ui** - Reusable UI components
+- **Hono** - Lightweight, performant server framework
+- **tRPC** - End-to-end type-safe APIs
+- **Node.js** - Runtime environment
+- **Drizzle** - TypeScript-first ORM
+- **PostgreSQL** - Database engine
+- **Authentication** - Email & password authentication with Better Auth
+- **Husky** - Git hooks for code quality
+- **Biome** - Linting and formatting
 
 ## Getting Started
 
-### Prerequisites
-
-- [nvm](https://github.com/nvm-sh/nvm), [fnm](https://github.com/Schniz/fnm) or [Node.js](https://nodejs.org/en/)
-- [pnpm](https://pnpm.io/)
-- [Docker](https://docs.docker.com/get-docker/) (for local development)
-
-### Installation
+First, install the dependencies:
 
 ```bash
+pnpm install
+```
 
-# Setup environment variables
-cp .env.example env
+## Database Setup
 
-# Install dependencies
-p install
+This project uses PostgreSQL with Drizzle ORM.
 
-# Start the database
-docker compose up
+1. Make sure you have a PostgreSQL database set up.
+2. Update your `apps/server/.env` file with your PostgreSQL connection details.
 
-# Push db changes
-p push
+3. Apply the schema to your database:
 
-# Seed the database
-p seed
+```bash
+pnpm db:push
+```
 
-# Start the development server
-p dev
+Then, run the development server:
 
-# Build for production
-p build
+```bash
+pnpm dev
+```
 
-# Start the production server
-p start
+Open [http://localhost:8787](http://localhost:8787) in your browser to see the web application.
+
+The API is running at [http://localhost:8787](http://localhost:8787).
+
+## Project Structure
+
+```
+my-better-t-app/
+├── apps/
+│   ├── web/         # Frontend application (Next.js)
+│   └── server/      # Backend API (Hono, tRPC)
 ```
