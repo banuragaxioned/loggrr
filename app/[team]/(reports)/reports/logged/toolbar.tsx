@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -51,8 +51,8 @@ export function DataTableToolbar<TData>({
   const [selectedRange, setSelectedRange] = useQueryState("range");
   const [selectedBilling, setSelectedBilling] = useQueryState("billable");
   const [selectedProject, setSelectedProject] = useQueryState("project");
-  const [selectedClients] = useQueryState("clients");
-  const [selectedMembers] = useQueryState("members");
+  const [selectedClients, setSelectedClients] = useQueryState("clients");
+  const [selectedMembers, setSelectedMembers] = useQueryState("members");
 
   const clientFilter = {
     title: "Clients",
@@ -147,6 +147,8 @@ export function DataTableToolbar<TData>({
     setSelectedRange(null);
     setSelectedBilling(null);
     setSelectedProject(null);
+    setSelectedClients(null);
+    setSelectedMembers(null);
   };
 
   return (
