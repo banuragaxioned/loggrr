@@ -13,7 +13,7 @@ interface InlineDateProps extends GetSetDateProps {
 }
 
 export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProps) => {
-  const isNextDateNotSelectable = isAfter(addDays(date, 0), startOfToday());
+  const isNextClickable = isAfter(startOfToday(), date);
 
   const goToDate = (goTo: number) => {
     const selectedDate = addDays(date, goTo);
@@ -70,11 +70,11 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
           variant="outline"
           size="icon"
           onClick={() => {
-            if (!isNextDateNotSelectable) {
+            if (isNextClickable) {
               goToDate(1);
             }
           }}
-          disabled={isNextDateNotSelectable}
+          disabled={!isNextClickable}
           title="Next"
         >
           <ChevronRight size={20} />
