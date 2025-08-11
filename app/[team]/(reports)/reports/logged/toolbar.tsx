@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import Link from "next/link";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -47,16 +46,13 @@ export function DataTableToolbar<TData>({
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const { team: slug } = useParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const locale = useLocale();
 
   const [selectedRange, setSelectedRange] = useQueryState("range");
   const [selectedBilling, setSelectedBilling] = useQueryState("billable");
   const [selectedProject, setSelectedProject] = useQueryState("project");
-  const [selectedClients] = useQueryState("clients");
-  const [selectedMembers] = useQueryState("members");
+  const [selectedClients, setSelectedClients] = useQueryState("clients");
+  const [selectedMembers, setSelectedMembers] = useQueryState("members");
 
   const clientFilter = {
     title: "Clients",
@@ -90,9 +86,9 @@ export function DataTableToolbar<TData>({
           slug,
           selectedRange,
           selectedBilling,
-          selectedProject,
-          selectedClients,
-          selectedMembers,
+          selectedProject: Array.isArray(selectedProject) ? selectedProject.join(",") : selectedProject,
+          selectedClients: Array.isArray(selectedClients) ? selectedClients.join(",") : selectedClients,
+          selectedMembers: Array.isArray(selectedMembers) ? selectedMembers.join(",") : selectedMembers,
         }),
       });
 
@@ -118,20 +114,6 @@ export function DataTableToolbar<TData>({
       setIsExportLoading(false);
     }
   };
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   const updateDateRange = (range: string) => {
     setSelectedRange(range || null);
@@ -165,6 +147,8 @@ export function DataTableToolbar<TData>({
     setSelectedRange(null);
     setSelectedBilling(null);
     setSelectedProject(null);
+    setSelectedClients(null);
+    setSelectedMembers(null);
   };
 
   return (

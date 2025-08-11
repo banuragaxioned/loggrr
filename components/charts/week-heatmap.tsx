@@ -124,6 +124,12 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
               name: "hours",
               color: "#027B55",
             },
+            {
+              from: 7.5,
+              to: Infinity, // Shows even shades for more than 7.5 hours
+              name: "hours",
+              color: "#027B55",
+            },
           ],
           min: 0,
           max: 7.5,

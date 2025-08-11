@@ -7,8 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableToolbarProps } from "@/types";
-
-import MultiSelectFilter from "../(reports)/reports/logged/multiselect-filters";
+import MultiSelectFilter from "./multiselect-filters";
 
 export function DataTableToolbar<TData extends { clientName: string; clientId: number }>({
   table,
