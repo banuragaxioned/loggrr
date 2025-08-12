@@ -1,10 +1,24 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Circle, Minus, Plus } from "lucide-react";
+import { Circle, Minus, Pencil, Plus, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
+import { toast } from "sonner";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogClose,
+  DialogTitle,
+  DialogHeader,
+  DialogContent,
+  DialogTrigger,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useSession } from "next-auth/react";
+import { checkAccess, getUserRole } from "@/lib/helper";
 
 export interface Logged {
   id: number;
@@ -74,17 +88,78 @@ export const columns: ColumnDef<Logged>[] = [
     accessorKey: "hours",
     header: () => <span className="inline-block w-20 text-right">Hours</span>,
     cell: ({ row }) => {
-      const { depth, original } = row;
-      const formatted = `${row.getValue("hours") ?? 0} h`;
-
-      return (
-        <span className={`relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
-          <span className={`${depth > 0 ? "opacity-50" : ""} mr-1`}>{formatted}</span>
-          {original.billable && (
-            <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
-          )}
-        </span>
-      );
+      return <TimeEntryCell row={row} />;
     },
   },
 ];
+
+function TimeEntryCell({ row }: { row: any }) {
+  const { depth, original } = row;
+  const params = useParams();
+  const router = useRouter();
+  const team = params.team as string;
+  const formatted = `${row.getValue("hours") ?? 0} h`;
+
+  const { data: session } = useSession();
+  const user = session?.user;
+  const workspaceRole = getUserRole(user?.workspaces, team);
+  const hasFullAccess = checkAccess(workspaceRole, ["USER", "GUEST", "INACTIVE"]);
+  console.log(hasFullAccess, "hasFullAccess");
+
+  const deleteTimeEntry = async (id: number) => {
+    try {
+      const response = await fetch(`/api/team/time-entry?team=${team}&id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
+
+      toast("Time entry deleted!");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error("Error deleting time entry", error);
+    }
+  };
+
+  return (
+    <>
+      <span className={`group relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
+        <span className={`${depth > 0 ? "opacity-50" : ""} mr-1`}>{formatted}</span>
+        {original.billable && (
+          <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
+        )}
+      </span>
+      {depth > 0 && (
+        <div className="absolute bottom-0 right-20 top-0 mr-4 hidden items-center justify-center gap-2 group-hover:flex">
+          <Button variant="ghost" className="h-6 w-6 p-0">
+            <Pencil size={12} />
+          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="h-6 w-6 p-0 text-destructive">
+                <Trash size={12} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete your time entry.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button type="button" variant="outline" size="sm" asChild>
+                  <DialogClose>Cancel</DialogClose>
+                </Button>
+                <Button type="button" size="sm" onClick={() => deleteTimeEntry(original.id)} asChild>
+                  <DialogClose>Delete</DialogClose>
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
+    </>
+  );
+}

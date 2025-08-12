@@ -147,6 +147,7 @@ export const getMemberEntriesGroupedByName = async (
       }),
     },
     select: {
+      id: true,
       date: true,
       time: true,
       userId: true,
@@ -192,6 +193,7 @@ export const getMemberEntriesGroupedByName = async (
     }
 
     acc[userId].subRows.push({
+      id: entry.id,
       name: entry.date.toLocaleDateString("en-US", {
         weekday: "short",
         day: "2-digit",

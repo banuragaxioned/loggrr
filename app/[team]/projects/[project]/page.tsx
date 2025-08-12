@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }: pageProps) {
     <>
       <DataTableToolbar isBillable={isBillable} allMembers={allMembers} />
       <TimeChart timeEntries={timeEntries} totalDays={totalDays} />
-      <UserDetails userData={memberEntries} />
+      <UserDetails userData={memberEntries} team={team} />
     </>
   );
 }
