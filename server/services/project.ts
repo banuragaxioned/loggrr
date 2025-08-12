@@ -160,11 +160,13 @@ export const getMemberEntriesGroupedByName = async (
       comments: true,
       task: {
         select: {
+          id: true,
           name: true,
         },
       },
       milestone: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -205,6 +207,7 @@ export const getMemberEntriesGroupedByName = async (
       task: entry.task,
       milestone: entry.milestone,
       billable: entry.billable,
+      date: entry.date,
     });
 
     return acc;

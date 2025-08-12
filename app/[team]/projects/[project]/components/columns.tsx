@@ -18,7 +18,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useSession } from "next-auth/react";
-import { checkAccess, getUserRole } from "@/lib/helper";
+import { checkAccess, getUserRole, hoursToDecimal } from "@/lib/helper";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
+import { format } from "date-fns";
 
 export interface Logged {
   id: number;
@@ -98,13 +104,62 @@ function TimeEntryCell({ row }: { row: any }) {
   const params = useParams();
   const router = useRouter();
   const team = params.team as string;
+  const project = params.project as string;
+  const [comments, setComments] = useState(original.comments);
+  const [time, setTime] = useState(String(original.hours));
+  const [billable, setBillable] = useState(original.billable);
   const formatted = `${row.getValue("hours") ?? 0} h`;
 
-  const { data: session } = useSession();
-  const user = session?.user;
-  const workspaceRole = getUserRole(user?.workspaces, team);
-  const hasFullAccess = checkAccess(workspaceRole, ["USER", "GUEST", "INACTIVE"]);
-  console.log(hasFullAccess, "hasFullAccess");
+  // const { data: session } = useSession();
+  // const user = session?.user;
+  // const workspaceRole = getUserRole(user?.workspaces, team);
+  // const hasFullAccess = checkAccess(workspaceRole, ["USER", "GUEST", "INACTIVE"]);
+  // console.log(hasFullAccess, "hasFullAccess");
+
+  const submitTimeEntry = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const dateToStoreInDB = format(original.date, "yyyy-MM-dd"); // Extracts only the date
+    const timeToStoreInDB = +hoursToDecimal(time ?? "0") * 60;
+
+    // Add validation for time
+    if (timeToStoreInDB <= 0) {
+      toast.error("Time cannot be 0 or negative");
+      return;
+    }
+
+    // Add validation for comments
+    if (comments?.trim() === "") {
+      toast.error("Comments cannot be empty");
+      return;
+    }
+
+    const dataToSend = {
+      team,
+      project: +project,
+      milestone: original.milestone?.id || null,
+      time: timeToStoreInDB,
+      comments: comments?.trim(),
+      billable: billable,
+      task: original.task?.id || null,
+      date: dateToStoreInDB,
+    };
+
+    try {
+      const response = await fetch("/api/team/time-entry", {
+        method: "PUT",
+        body: JSON.stringify({ ...dataToSend, id: original.id }),
+      });
+
+      if (response.ok) {
+        toast.success(`Time entry updated for ${original.name}`);
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error("Error submitting form!", error);
+    }
+  };
 
   const deleteTimeEntry = async (id: number) => {
     try {
@@ -132,9 +187,55 @@ function TimeEntryCell({ row }: { row: any }) {
       </span>
       {depth > 0 && (
         <div className="absolute bottom-0 right-20 top-0 mr-4 hidden items-center justify-center gap-2 group-hover:flex">
-          <Button variant="ghost" className="h-6 w-6 p-0">
-            <Pencil size={12} />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="h-6 w-6 p-0">
+                <Pencil size={12} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit time entry</DialogTitle>
+                <DialogDescription>{original.name}</DialogDescription>
+              </DialogHeader>
+              <form onSubmit={submitTimeEntry}>
+                <div className="flex flex-row items-center gap-4">
+                  <div className="flex w-full flex-col gap-2">
+                    <Label>Comments</Label>
+                    <Input
+                      placeholder="Enter comment"
+                      type="text"
+                      value={comments}
+                      onChange={(e) => setComments(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label>Time</Label>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="2.30"
+                      className="w-[60px]"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Billable</Label>
+                  <Switch checked={billable} onCheckedChange={setBillable} />
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <DialogClose>Cancel</DialogClose>
+                  </Button>
+                  <Button type="submit" size="sm" asChild>
+                    <DialogClose>Save</DialogClose>
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost" className="h-6 w-6 p-0 text-destructive">
