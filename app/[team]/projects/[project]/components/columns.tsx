@@ -110,12 +110,6 @@ function TimeEntryCell({ row }: { row: any }) {
   const [billable, setBillable] = useState(original.billable);
   const formatted = `${row.getValue("hours") ?? 0} h`;
 
-  // const { data: session } = useSession();
-  // const user = session?.user;
-  // const workspaceRole = getUserRole(user?.workspaces, team);
-  // const hasFullAccess = checkAccess(workspaceRole, ["USER", "GUEST", "INACTIVE"]);
-  // console.log(hasFullAccess, "hasFullAccess");
-
   const submitTimeEntry = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -152,6 +146,11 @@ function TimeEntryCell({ row }: { row: any }) {
       if (response.ok) {
         toast.success(`Time entry updated for ${original.name}`);
         router.refresh();
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        toast.error(data.error);
       }
     } catch (error) {
       toast.error("Something went wrong!");
