@@ -119,7 +119,6 @@ function TimeEntryCell({ row }: { row: any }) {
   const submitTimeEntry = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const dateToStoreInDB = format(original.date, "yyyy-MM-dd"); // Extracts only the date
     const timeToStoreInDB = +hoursToDecimal(time ?? "0") * 60;
 
     // Add validation for time
@@ -142,7 +141,6 @@ function TimeEntryCell({ row }: { row: any }) {
       comments: comments?.trim(),
       billable: billable,
       task: original.task?.id || null,
-      date: dateToStoreInDB,
     };
 
     try {
@@ -198,7 +196,7 @@ function TimeEntryCell({ row }: { row: any }) {
                 <DialogTitle>Edit time entry</DialogTitle>
                 <DialogDescription>{original.name}</DialogDescription>
               </DialogHeader>
-              <form onSubmit={submitTimeEntry}>
+              <form onSubmit={submitTimeEntry} className="flex flex-col gap-4">
                 <div className="flex flex-row items-center gap-4">
                   <div className="flex w-full flex-col gap-2">
                     <Label>Comments</Label>
@@ -223,7 +221,11 @@ function TimeEntryCell({ row }: { row: any }) {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label>Billable</Label>
-                  <Switch checked={billable} onCheckedChange={setBillable} />
+                  <Switch
+                    className="data-[state=checked]:bg-success"
+                    checked={billable}
+                    onCheckedChange={setBillable}
+                  />
                 </div>
                 <DialogFooter>
                   <Button type="button" variant="outline" size="sm" asChild>

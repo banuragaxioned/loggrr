@@ -115,6 +115,59 @@ export const getMembersTimeEntries = async (
 };
 
 // Get all members time entries grouped by name
+const formatEntryDate = (date: Date): string => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+interface TimeEntry {
+  id: number;
+  date: Date;
+  time: number;
+  userId: number;
+  user: {
+    name: string | null;
+    image: string | null;
+  };
+  comments: string;
+  task: {
+    id: number;
+    name: string;
+  } | null;
+  milestone: {
+    id: number;
+    name: string;
+  } | null;
+  billable: boolean;
+  createdAt: Date;
+}
+
+interface GroupedUser {
+  id: number;
+  name: string;
+  image: string | null;
+  hours: number;
+  subRows: Array<{
+    id: number;
+    name: string;
+    hours: number;
+    comments: string | null;
+    task: TimeEntry["task"];
+    milestone: TimeEntry["milestone"];
+    billable: boolean;
+    date: Date;
+    createdAt: Date;
+  }>;
+}
+
+interface GroupedUsers {
+  [key: string]: GroupedUser;
+}
+
 export const getMemberEntriesGroupedByName = async (
   slug: string,
   projectId: number,
@@ -127,87 +180,100 @@ export const getMemberEntriesGroupedByName = async (
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
 
-  const userEntries = await db.timeEntry.findMany({
-    where: {
-      workspace: {
-        slug,
+  // Optimize query by pre-aggregating user totals
+  const [userEntries, userTotals] = await Promise.all([
+    db.timeEntry.findMany({
+      where: {
+        workspace: { slug },
+        projectId,
+        date: { gte: start, lte: end },
+        ...(isBillable !== null && { billable: { equals: isBillable } }),
+        ...(members && {
+          userId: { in: members.split(",").map(Number) },
+        }),
       },
-      projectId,
-      date: {
-        gte: start,
-        lte: end,
-      },
-      billable: {
-        ...(isBillable !== null && { equals: isBillable }),
-      },
-      ...(members && {
-        userId: {
-          in: members.split(",").map((member) => +member),
+      select: {
+        id: true,
+        date: true,
+        time: true,
+        userId: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
         },
-      }),
-    },
-    select: {
-      id: true,
-      date: true,
-      time: true,
-      userId: true,
-      user: {
-        select: {
-          name: true,
-          image: true,
+        comments: true,
+        task: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
-      },
-      comments: true,
-      task: {
-        select: {
-          id: true,
-          name: true,
+        milestone: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
+        billable: true,
+        createdAt: true,
       },
-      milestone: {
-        select: {
-          id: true,
-          name: true,
-        },
+      orderBy: [{ date: "desc" }, { createdAt: "asc" }],
+    }),
+    db.timeEntry.groupBy({
+      by: ["userId"],
+      where: {
+        workspace: { slug },
+        projectId,
+        date: { gte: start, lte: end },
+        ...(isBillable !== null && { billable: { equals: isBillable } }),
+        ...(members && {
+          userId: { in: members.split(",").map(Number) },
+        }),
       },
-      billable: true,
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
+      _sum: {
+        time: true,
+      },
+    }),
+  ]);
 
-  // Group the time entries by user
-  const groupedByUsers = userEntries.reduce((acc: any, entry: any) => {
+  // Convert user totals to a Map for O(1) lookup
+  const userTotalHours = new Map(userTotals.map((total) => [total.userId, total._sum.time || 0]));
+
+  // Group the time entries by user with pre-calculated totals
+  const groupedByUsers = userEntries.reduce<GroupedUsers>((acc, entry) => {
     const userId = `${entry.userId}`;
-    if (!acc[userId]) {
-      const userHours = userEntries
-        .filter((userEntry) => userEntry.userId === entry.userId)
-        .reduce((prev, current) => prev + current.time, 0);
 
+    if (!acc[userId]) {
       acc[userId] = {
-        id: +userId,
-        name: entry.user.name,
+        id: entry.userId,
+        name: entry.user.name || "Unknown User",
         image: entry.user.image,
-        hours: getTimeInHours(userHours),
+        hours: getTimeInHours(userTotalHours.get(entry.userId) || 0),
         subRows: [],
       };
     }
 
     acc[userId].subRows.push({
       id: entry.id,
-      name: entry.date.toLocaleDateString("en-US", {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
+      name: formatEntryDate(entry.date),
       hours: getTimeInHours(entry.time),
       comments: entry.comments,
       task: entry.task,
       milestone: entry.milestone,
       billable: entry.billable,
       date: entry.date,
+      createdAt: entry.createdAt,
+    });
+
+    // Sort subRows by date (desc) and createdAt (asc)
+    acc[userId].subRows.sort((a, b) => {
+      const dateCompare = b.date.getTime() - a.date.getTime();
+      if (dateCompare === 0) {
+        return a.createdAt.getTime() - b.createdAt.getTime();
+      }
+      return dateCompare;
     });
 
     return acc;

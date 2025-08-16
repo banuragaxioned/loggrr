@@ -14,7 +14,7 @@ const commonValidationObj = {
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
-  date: z.string(),
+  date: z.string().optional(),
   task: z.number().or(z.null()),
 };
 
@@ -170,6 +170,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
+    if (!body.date) {
+      return NextResponse.json({ error: "Date is required" }, { status: 403 });
+    }
+
     const timeEntry = await db.timeEntry.create({
       data: {
         time: body.time,
@@ -210,6 +214,8 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
+    const date = body.date ? new Date(body.date) : undefined;
+
     const query = await db.timeEntry.update({
       where: {
         id: body.id,
@@ -225,7 +231,7 @@ export async function PUT(req: NextRequest) {
         projectId: body.project,
         taskId: body.task,
         updatedAt: new Date(),
-        date: new Date(body.date),
+        ...(date && { date }),
       },
     });
 
