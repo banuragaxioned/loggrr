@@ -164,10 +164,16 @@ function TimeEntryCell({ row }: { row: any }) {
         method: "DELETE",
       });
 
-      if (!response.ok) throw new Error(`Failed to delete. Server responded with ${response.status}`);
+      if (response.ok) {
+        toast.success(`Time entry deleted!`);
+        router.refresh();
+      }
 
-      toast("Time entry deleted!");
-      router.refresh();
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data, "data");
+        toast.error(data.error);
+      }
     } catch (error) {
       toast.error("Something went wrong!");
       console.error("Error deleting time entry", error);
