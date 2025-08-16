@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Archive, ArchiveRestore, MoreVertical } from "lucide-react";
+import { Archive, ArchiveRestore, Edit, MoreVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -41,15 +41,29 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
           <MoreVertical height={16} width={16} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto overflow-hidden p-0 text-sm" align="end">
+      <PopoverContent className="flex w-auto flex-col items-start overflow-hidden p-0 text-sm" align="end">
         <PopoverClose asChild>
-          <Button size="sm" variant="ghost" onClick={() => updateProjectStatus(id, status)}>
-            {status === "PUBLISHED" ? (
-              <Archive size={16} className="mr-2" />
-            ) : (
-              <ArchiveRestore size={16} className="mr-2" />
-            )}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => updateProjectStatus(id, status)}
+            className="w-full justify-start"
+          >
+            {status === "PUBLISHED" ? <Archive size={16} /> : <ArchiveRestore size={16} />}
             {status === "PUBLISHED" ? "Archive" : "Unarchive"}
+          </Button>
+        </PopoverClose>
+        <PopoverClose asChild>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => {
+              router.push(`?edit_id=${id}`);
+            }}
+          >
+            <Edit size={16} />
+            Edit
           </Button>
         </PopoverClose>
       </PopoverContent>

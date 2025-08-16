@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { Activity, Plus, User } from "lucide-react";
+import { Activity, Loader2, Plus, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -22,7 +22,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ComboBox } from "../ui/combobox";
-import { CalendarDateRangePicker } from "@/components/date-picker";
+
 import { ProjectInterval } from "@prisma/client";
 import { Client, AllUsersWithAllocation } from "@/types";
 
@@ -43,11 +43,16 @@ interface NewProjectFormProps {
 
 export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit_id");
 
   const [open, setOpen] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState<any>(null);
   const [selectedOwner, setSelectedOwner] = useState<any>(null);
   const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [billable, setBillable] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,9 +68,10 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
   const intervalList = Object.values(ProjectInterval).map((value, i) => ({ id: i, name: value }));
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("/api/team/project/add", {
-      method: "POST",
+    const response = await fetch("/api/team/project", {
+      method: editId ? "PUT" : "POST",
       body: JSON.stringify({
+        id: editId,
         budget: Number(values.budget),
         team: team,
         name: values.project,
@@ -77,14 +83,23 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     });
 
     if (!response?.ok) {
-      return toast.error("Unable to create project. Please try again later.");
+      return toast.error(`Unable to ${editId ? "update" : "create"} project. Please try again later.`);
     }
 
-    toast.success(`${values.project} created successfully!`);
-    form.reset();
+    toast.success(`${values.project} ${editId ? "updated" : "created"} successfully!`);
+    resetForm();
     setOpen(false);
+    router.push("?");
     router.refresh();
   }
+
+  const resetForm = () => {
+    form.reset();
+    setSelectedClient(null);
+    setSelectedOwner(null);
+    setSelectedInterval(null);
+    setBillable(false);
+  };
 
   const handleClients = (selected: string) => {
     const clientValue = clients.find((client) => client.id === +selected);
@@ -104,18 +119,58 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     form.setValue("interval", intervalValue?.id ?? 0);
   };
 
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (editId) {
+        setLoading(true);
+        const response = await fetch(`/api/team/project?id=${editId}&team=${team}`);
+        const data = await response.json();
+        setSelectedClient(clients.find((client) => client.id === data.clientId));
+        setSelectedOwner(users.find((user) => user.id === data.ownerId));
+        setSelectedInterval(intervalList.find((interval) => interval.name === data.interval));
+        setBillable(data.billable);
+        form.setValue("project", data.name);
+        form.setValue("client", data.clientId);
+        form.setValue("owner", data.ownerId);
+        form.setValue("interval", intervalList.find((interval) => interval.name === data.interval)?.id ?? 0);
+        form.setValue("billable", data.billable);
+        form.setValue("budget", data.budget);
+        setLoading(false);
+      }
+    };
+    if (editId) {
+      fetchProject();
+      setOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId, team]);
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) {
+          resetForm();
+          router.push("?");
+        }
+        setOpen(open);
+      }}
+    >
       <SheetTrigger asChild>
         <Button className="flex gap-2" size="sm">
           Create
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
+        {loading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70">
+            <Loader2 className="h-10 w-10 animate-spin" />
+          </div>
+        )}
         <Form {...form}>
           <SheetHeader>
-            <SheetTitle>Create a new Project</SheetTitle>
-            <SheetDescription>Make it unique and identifiale for your team.</SheetDescription>
+            <SheetTitle>{editId ? "Edit" : "Create a new"} Project</SheetTitle>
+            {!editId && <SheetDescription>Make it unique and identifiable for your team.</SheetDescription>}
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1" autoComplete="off">
             <FormField
@@ -221,6 +276,11 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
                       type="checkbox"
                       id="billable"
                       className="mt-2 h-4 w-4 p-0 accent-current"
+                      checked={billable}
+                      onChange={(e) => {
+                        setBillable(e.target.checked);
+                        form.setValue("billable", e.target.checked);
+                      }}
                     />
                   </FormControl>
                   <FormLabel htmlFor="billable" className="mt-0 cursor-pointer">
