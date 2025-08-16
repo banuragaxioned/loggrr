@@ -17,14 +17,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useSession } from "next-auth/react";
-import { checkAccess, getUserRole, hoursToDecimal } from "@/lib/helper";
+import { hoursToDecimal } from "@/lib/helper";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
-import { format } from "date-fns";
 
 export interface Logged {
   id: number;
