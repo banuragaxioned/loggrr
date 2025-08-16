@@ -2,8 +2,8 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { ProjectInterval } from "@prisma/client";
-import { NextRequest } from "next/server";
+import { ProjectInterval, Role } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 const projectCreateSchema = z.object({
   budget: z.number().optional(),
@@ -150,13 +150,16 @@ export async function PUT(req: Request) {
     const body = projectUpdateSchema.parse(json);
 
     if (!body.id) {
-      return new Response("Unable to update project. Please try again later.", { status: 400 });
+      return NextResponse.json({ error: "Unable to update project. Please try again later." }, { status: 400 });
     }
+
+    const workspaceFound = user.workspaces.find((workspace) => workspace.slug === body.team);
+    const isAdmin = workspaceFound?.role === Role.OWNER || workspaceFound?.role === Role.MANAGER;
 
     // check if the user has permission to the current team/workspace id if not return 403
     // user session has an object (name, id, slug, etc) of all workspaces the user has access to. i want to match slug.
-    if (user.workspaces.filter((workspace) => workspace.slug === body.team).length === 0) {
-      return new Response("Unauthorized", { status: 403 });
+    if (!workspaceFound || !isAdmin) {
+      return NextResponse.json({ error: "Unauthorized. You are not allowed to update this project." }, { status: 403 });
     }
 
     const project = await db.project.update({

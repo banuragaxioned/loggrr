@@ -83,14 +83,17 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
     });
 
     if (!response?.ok) {
-      return toast.error(`Unable to ${editId ? "update" : "create"} project. Please try again later.`);
+      const error = await response.json();
+      return toast.error(error.error || `Unable to ${editId ? "update" : "create"} project. Please try again later.`);
     }
 
-    toast.success(`${values.project} ${editId ? "updated" : "created"} successfully!`);
-    resetForm();
-    setOpen(false);
-    router.push("?");
-    router.refresh();
+    if (response.ok) {
+      toast.success(`${values.project} ${editId ? "updated" : "created"} successfully!`);
+      resetForm();
+      setOpen(false);
+      router.push("?");
+      router.refresh();
+    }
   }
 
   const resetForm = () => {
