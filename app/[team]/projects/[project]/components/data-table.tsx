@@ -24,7 +24,6 @@ export interface ClientAndUserInterface {
 interface DataTableProps<TData, TValue> {
   columns: any;
   data: TData[];
-  team: string;
 }
 
 const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
@@ -32,7 +31,7 @@ const expandingRowFilter = (row: Row<Assignment>, filterValue: string) => {
   return regex.test(row.original.name);
 };
 
-export function DataTable<TData, TValue>({ columns, data, team }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [isPrintMode, setIsPrintMode] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
@@ -97,12 +96,7 @@ export function DataTable<TData, TValue>({ columns, data, team }: DataTableProps
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
               return (
-                <TableRow
-                  data-team={team}
-                  className="group relative"
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow className="group relative" key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
