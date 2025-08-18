@@ -1,7 +1,7 @@
 import { endOfDay, startOfDay, subDays } from "date-fns";
 
 import { db } from "@/server/db";
-import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { formatEntryDate, getTimeInHours, stringToBoolean } from "@/lib/helper";
 
 // Get project details by project id
 export const getProjectDetailsById = async (slug: string, projectId: number) => {
@@ -112,16 +112,6 @@ export const getMembersTimeEntries = async (
   }));
 
   return { timeEntries: formattedEntries };
-};
-
-// Get all members time entries grouped by name
-const formatEntryDate = (date: Date): string => {
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
 };
 
 interface TimeEntry {

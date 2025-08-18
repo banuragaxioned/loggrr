@@ -121,3 +121,13 @@ export const getUserRole = (teamData?: { slug: string; role: string }[], slug?: 
 export const checkAccess = (role: string, denyAccess = ["GUEST"]) => {
   return !denyAccess.includes(role);
 };
+
+// Get all members time entries grouped by name
+export const formatEntryDate = (date: Date): string => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
