@@ -6,10 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { useSession } from "next-auth/react";
+import { checkAccess } from "@/lib/helper";
 
 const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+  const userRole = session?.user?.workspaces?.find((workspace) => workspace.slug === params.team)?.role;
+  const isAdmin = !checkAccess(userRole ?? "GUEST", ["MANAGER", "OWNER"]);
 
   const updateProjectStatus = async (id: number, status: string) => {
     try {
@@ -53,19 +58,21 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
             {status === "PUBLISHED" ? "Archive" : "Unarchive"}
           </Button>
         </PopoverClose>
-        <PopoverClose asChild>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => {
-              router.push(`?edit_id=${id}`);
-            }}
-          >
-            <Edit size={16} />
-            Edit
-          </Button>
-        </PopoverClose>
+        {isAdmin && (
+          <PopoverClose asChild>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => {
+                router.push(`?edit_id=${id}`);
+              }}
+            >
+              <Edit size={16} />
+              Edit
+            </Button>
+          </PopoverClose>
+        )}
       </PopoverContent>
     </Popover>
   );
