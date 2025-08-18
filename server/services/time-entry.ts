@@ -2,7 +2,7 @@ import { db } from "@/server/db";
 import { endOfDay, startOfDay, subDays } from "date-fns";
 import { getServerSession } from "next-auth";
 
-import { getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { formatEntryDate, getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { authOptions } from "../auth";
 
 export const getTimelogLastWeek = async (slug: string, userId: number) => {
@@ -317,12 +317,7 @@ export const getLogged = async (
                 +`${timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0).toFixed(2)}`,
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
                 const inputDate = new Date(timeEntry.date);
-                const formattedDate = inputDate.toLocaleDateString("en-US", {
-                  weekday: "short",
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                });
+                const formattedDate = formatEntryDate(inputDate);
 
                 return {
                   formattedDate,

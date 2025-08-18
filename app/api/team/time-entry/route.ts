@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
+import { Role } from "@prisma/client";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -14,7 +15,7 @@ const commonValidationObj = {
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
-  date: z.string(),
+  date: z.string().optional(),
   task: z.number().or(z.null()),
 };
 
@@ -170,6 +171,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
+    if (!body.date) {
+      return NextResponse.json({ error: "Date is required" }, { status: 403 });
+    }
+
     const timeEntry = await db.timeEntry.create({
       data: {
         time: body.time,
@@ -210,6 +215,36 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
     }
 
+    // Check if user is admin
+    const isAdmin = foundWorkspace.role === Role.MANAGER || foundWorkspace.role === Role.OWNER;
+
+    // Get the time entry to check ownership
+    const timeEntry = await db.timeEntry.findUnique({
+      where: {
+        id: body.id,
+        workspace: {
+          slug: body.team,
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    if (!timeEntry) {
+      return NextResponse.json({ error: "Time entry not found." }, { status: 404 });
+    }
+
+    // Allow update if user is manager or owner or owns the time entry
+    if (user.id !== timeEntry.userId && !isAdmin) {
+      return NextResponse.json(
+        { error: "Unauthorized! You can only update your own time entries unless you are a manager or owner." },
+        { status: 403 },
+      );
+    }
+
+    const date = body.date ? new Date(body.date) : undefined;
+
     const query = await db.timeEntry.update({
       where: {
         id: body.id,
@@ -225,7 +260,7 @@ export async function PUT(req: NextRequest) {
         projectId: body.project,
         taskId: body.task,
         updatedAt: new Date(),
-        date: new Date(body.date),
+        ...(date && { date }),
       },
     });
 
@@ -254,13 +289,39 @@ export async function DELETE(req: NextRequest) {
     const foundWorkspace = user.workspaces.find((workspace) => workspace.slug === team);
 
     // check if the user has permission to the current team/workspace id if not return 403
-    if (!foundWorkspace) {
+    if (!foundWorkspace || !team) {
       return NextResponse.json({ error: "Unauthorized! Workspace not found." }, { status: 403 });
+    }
+
+    const isAdmin = foundWorkspace.role === Role.MANAGER || foundWorkspace.role === Role.OWNER;
+
+    // Get the time entry to check ownership
+    const timeEntry = await db.timeEntry.findUnique({
+      where: {
+        id: +id,
+        workspace: {
+          slug: team,
+        },
+      },
+    });
+
+    if (!timeEntry) {
+      return NextResponse.json({ error: "Time entry not found." }, { status: 404 });
+    }
+
+    if (user.id !== timeEntry.userId && !isAdmin) {
+      return NextResponse.json(
+        { error: "Unauthorized! You can only delete your own time entries unless you are a manager or owner." },
+        { status: 403 },
+      );
     }
 
     const query = await db.timeEntry.delete({
       where: {
         id: +id,
+        workspace: {
+          slug: team,
+        },
       },
     });
 
