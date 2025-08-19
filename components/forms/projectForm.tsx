@@ -91,7 +91,10 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
       toast.success(`${values.project} ${editId ? "updated" : "created"} successfully!`);
       resetForm();
       setOpen(false);
-      router.push("?");
+      // Preserve all query params except edit_id
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("edit_id");
+      router.push(params.toString() ? `?${params.toString()}` : "?");
       router.refresh();
     }
   }
@@ -154,7 +157,10 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
       onOpenChange={(open) => {
         if (!open) {
           resetForm();
-          router.push("?");
+          // Preserve all query params except edit_id
+          const params = new URLSearchParams(searchParams.toString());
+          params.delete("edit_id");
+          router.push(params.toString() ? `?${params.toString()}` : "?");
         }
         setOpen(open);
       }}

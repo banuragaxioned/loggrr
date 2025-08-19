@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Archive, ArchiveRestore, Edit, MoreVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { checkAccess } from "@/lib/helper";
 const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const userRole = session?.user?.workspaces?.find((workspace) => workspace.slug === params.team)?.role;
   const isAdmin = !checkAccess(userRole ?? "GUEST", ["MANAGER", "OWNER"]);
@@ -65,7 +66,9 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                router.push(`?edit_id=${id}`);
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("edit_id", id.toString());
+                router.push(`?${params.toString()}`);
               }}
             >
               <Edit size={16} />
