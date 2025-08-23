@@ -68,7 +68,7 @@ const StatusDropdown = ({ id, status }: { id: number; status: string }) => {
               onClick={() => {
                 const params = new URLSearchParams(searchParams.toString());
                 params.set("edit_id", id.toString());
-                router.push(`?${params.toString()}`);
+                router.replace(`?${params.toString()}`);
               }}
             >
               <Edit size={16} />

@@ -94,7 +94,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
       // Preserve all query params except edit_id
       const params = new URLSearchParams(searchParams.toString());
       params.delete("edit_id");
-      router.push(params.toString() ? `?${params.toString()}` : "?");
+      router.replace(params.toString() ? `?${params.toString()}` : "?");
       router.refresh();
     }
   }
@@ -160,7 +160,7 @@ export function NewProjectForm({ team, clients, users }: NewProjectFormProps) {
           // Preserve all query params except edit_id
           const params = new URLSearchParams(searchParams.toString());
           params.delete("edit_id");
-          router.push(params.toString() ? `?${params.toString()}` : "?");
+          router.replace(params.toString() ? `?${params.toString()}` : "?");
         }
         setOpen(open);
       }}
