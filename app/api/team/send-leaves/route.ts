@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/server/auth";
 import { sendEmail } from "@/lib/email";
-import LeavesEmail from "@/email/leaves-email";
+import LeavesEmail from "@/emails/leaves-email";
 
 export interface LeavesData {
   name: string;
