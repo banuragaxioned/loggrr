@@ -2,9 +2,8 @@
 
 import { FileInput, FileUploaderItem, FileUploader, FileUploaderContent } from "@/components/file-uploader";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Check, CloudUpload, FileSpreadsheet, Loader2, Mail, Paperclip, Sheet, User, X } from "lucide-react";
+import { Check, CloudUpload, FileSpreadsheet, Loader2, Mail, Sheet, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DropzoneOptions } from "react-dropzone";
@@ -30,6 +29,8 @@ export default function Upload() {
   const [sheetData, setSheetData] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [unsentEmails, setUnsentEmails] = useState<any[]>([]);
+  const [sentEmails, setSentEmails] = useState<any[]>([]);
 
   const dropZoneConfig = {
     maxFiles: 1,
@@ -67,6 +68,11 @@ export default function Upload() {
       const file = files[0];
       parseXlsx(file);
     }
+
+    setSuccess(false);
+    setUnsentEmails([]);
+    setSentEmails([]);
+    setUploading(false);
   }, [files]);
 
   const title = sheetData?.[0]?.[0];
@@ -94,6 +100,8 @@ export default function Upload() {
       });
 
       const data = await response.json();
+      setSentEmails(data.sentEmails);
+      setUnsentEmails(data.unsentEmails);
 
       if (!response.ok) {
         toast.error("Failed to send leaves", { description: data.error });
@@ -159,25 +167,69 @@ export default function Upload() {
             </p>
           )}
           <div className="mt-4">
-            <p className="mt-2 text-base text-muted-foreground">
-              <span className="font-semibold">All Users</span>
-            </p>
-            <ul className="mt-2 flex w-full flex-col gap-1">
-              {users?.length > 0 &&
-                users.map((user, index) => {
-                  const name = user[0];
-                  const email = user[1];
+            {!success && (
+              <div>
+                <p className="mt-2 text-base text-muted-foreground">
+                  <span className="font-semibold">All Users</span>
+                </p>
+                <ul className="mt-2 flex w-full flex-col gap-1">
+                  {users?.length > 0 &&
+                    users.map((user, index) => {
+                      const name = user[0];
+                      const email = user[1];
 
-                  return (
-                    <li key={index} className="flex items-start text-sm">
-                      <p className="mr-2 min-w-8 text-right">{index + 1}.</p>
-                      <p>
-                        {name} <span className="text-muted-foreground">({email})</span>
-                      </p>
-                    </li>
-                  );
-                })}
-            </ul>
+                      return (
+                        <li key={index} className="flex items-start text-sm">
+                          <p className="mr-2 min-w-8 text-right">{index + 1}.</p>
+                          <p>
+                            {name} <span className="text-muted-foreground">({email})</span>
+                          </p>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
+            )}
+            {sentEmails.length > 0 && (
+              <div>
+                <p className="mt-2 flex items-center text-sm text-muted-foreground">
+                  <Check className="mr-2 h-4 w-4 stroke-green-700" />
+                  <span className="font-semibold">Sent Emails</span>
+                </p>
+                <ul className="mt-2 flex w-full flex-col gap-1">
+                  {sentEmails.map((user, index) => {
+                    return (
+                      <li key={index} className="flex items-start text-sm">
+                        <p className="mr-2 min-w-8 text-right">{index + 1}.</p>
+                        <p>
+                          {user.name} <span className="text-muted-foreground">({user.email})</span>
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {unsentEmails.length > 0 && (
+              <div>
+                <p className="mt-2 flex items-center text-sm text-muted-foreground">
+                  <X className="mr-2 h-4 w-4 stroke-red-700" />
+                  <span className="font-semibold">Unsent Emails</span>
+                </p>
+                <ul className="mt-2 flex w-full flex-col gap-1">
+                  {unsentEmails.map((user, index) => {
+                    return (
+                      <li key={index} className="flex items-start text-sm">
+                        <p className="mr-2 min-w-8 text-right">{index + 1}.</p>
+                        <p>
+                          {user.name} <span className="text-muted-foreground">({user.email})</span>
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       )}

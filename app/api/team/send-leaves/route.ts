@@ -71,21 +71,66 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    transformedData.forEach(async (user: LeavesData) => {
+    const unsentEmails: {
+      email: string;
+      name: string;
+    }[] = [];
+
+    const sentEmails: {
+      email: string;
+      name: string;
+    }[] = [];
+
+    // Use Promise.allSettled to handle async operations properly
+    const emailPromises = transformedData.map(async (user: LeavesData) => {
       const leavesEmailHtml = LeavesEmail({ subject, data: user });
 
-      const workspaceEmailOptions = {
+      const leavesEmailOptions = {
         to: user.email,
         subject,
         html: leavesEmailHtml,
       };
 
-      await sendEmail(workspaceEmailOptions);
+      try {
+        // Send actual email for other indices
+        const response = await sendEmail(leavesEmailOptions);
+
+        if (response.success) {
+          return { success: true, email: user.email, name: user.name };
+        } else {
+          return { success: false, email: user.email, name: user.name };
+        }
+      } catch (error) {
+        return { success: false, email: user.email, name: user.name };
+      }
     });
 
-    console.log(subject, JSON.stringify(transformedData, null, 2));
+    // Wait for all emails to be processed
+    const results = await Promise.allSettled(emailPromises);
 
-    return NextResponse.json({ message: "Leaves sent successfully" }, { status: 200 });
+    // Process results and populate arrays
+    results.forEach((result) => {
+      if (result.status === "fulfilled") {
+        const { success, email, name } = result.value;
+        if (success) {
+          sentEmails.push({ email, name });
+        } else {
+          unsentEmails.push({ email, name });
+        }
+      }
+    });
+
+    let message = "Leaves sent successfully";
+
+    if (unsentEmails.length > 0) {
+      message = "Unsent emails. Please check the unsent emails.";
+    }
+
+    if (unsentEmails.length > 0 && sentEmails.length > 0) {
+      message = "Partially sent. Please check the unsent emails.";
+    }
+
+    return NextResponse.json({ message, unsentEmails, sentEmails }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
