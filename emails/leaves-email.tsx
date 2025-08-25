@@ -29,95 +29,99 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
 
   const leaveTypes = Object.keys(emailData.leaves) as (keyof LeavesData["leaves"])[];
   const leaveTypeNames = {
-    unplanned: "Unplanned",
-    planned: "Planned",
+    unplanned: "Unplanned Leave",
+    planned: "Planned Leave",
     compoff: "Comp Off",
   };
 
-  const headerRow = (
-    <Row className="bg-gray-300">
-      <Column align="left" className="w-1/4 px-4 py-2 text-sm font-bold uppercase tracking-wide text-gray-800">
-        Leave Type
-      </Column>
-      <Column align="center" className="w-1/4 py-2 text-sm font-bold uppercase tracking-wide text-gray-800">
-        Eligible
-      </Column>
-      <Column align="center" className="w-1/4 py-2 text-sm font-bold uppercase tracking-wide text-gray-800">
-        Taken
-      </Column>
-      <Column align="center" className="w-1/4 py-2 text-sm font-bold uppercase tracking-wide text-gray-800">
-        Remaining
-      </Column>
-    </Row>
-  );
+  const totalLeavesTaken =
+    +emailData.leaves.unplanned.taken + +emailData.leaves.planned.taken + +emailData.leaves.compoff.taken;
+  const totalLeavesRemaining =
+    +emailData.leaves.unplanned.remaining + +emailData.leaves.planned.remaining + +emailData.leaves.compoff.remaining;
 
-  const leaveTypeRows = leaveTypes.map((leaveType, index) => {
-    const isEvenRow = index % 2 === 0;
+  const leaveTypeRows = leaveTypes.map((leaveType) => {
+    const eligible = (
+      <span>
+        Eligible:
+        <span className="ml-1 text-base font-semibold text-[#201547]">{emailData.leaves[leaveType].eligible}</span>
+      </span>
+    );
+
+    const taken = (
+      <span>
+        Taken:
+        <span className="ml-1 text-base font-semibold text-[#201547]">{emailData.leaves[leaveType].taken}</span>
+      </span>
+    );
+
+    const remaining = (
+      <span>
+        Remaining:
+        <span className="ml-1 text-base font-semibold text-[#e31c79]">{emailData.leaves[leaveType].remaining}</span>
+      </span>
+    );
 
     return (
-      <Row key={leaveType} className={`${isEvenRow ? "bg-white" : "bg-gray-50"}`}>
-        <Column align="left" className="w-1/4 px-4 py-2 text-sm text-gray-800">
-          {leaveTypeNames[leaveType]}
-        </Column>
-        <Column align="center" className="w-1/4 py-2 text-sm text-gray-600">
-          {emailData.leaves[leaveType].eligible}
-        </Column>
-        <Column align="center" className="w-1/4 py-2 text-sm text-gray-600">
-          {emailData.leaves[leaveType].taken}
-        </Column>
-        <Column align="center" className="w-1/4 py-2 text-sm text-gray-600">
-          {emailData.leaves[leaveType].remaining}
+      <Row key={leaveType} className="mb-4 flex">
+        <Column align="left">
+          <Row>
+            <Text className="m-0 text-left text-lg font-semibold text-black">{leaveTypeNames[leaveType]}</Text>
+          </Row>
+          <Row>
+            <Text className="m-0 ml-2 text-left text-sm text-black/80">
+              - {eligible} ︱ {taken} ︱ {remaining}
+            </Text>
+          </Row>
         </Column>
       </Row>
     );
   });
 
   return (
-    <>
+    <div>
       <Preview>Please Find {emailSubject}</Preview>
       <Tailwind>
-        <div key="email-body" className="bg-white p-4 font-sans">
-          <div className="mx-auto rounded border border-solid border-[#eaeaea]">
-            <Section className="px-4">
-              <Heading className="text-center text-[24px] font-normal text-black">{emailSubject}</Heading>
-              <Hr />
-              <Section className="mt-6">
-                <Text className="text-[16px] leading-[24px] text-black">Hi {emailData.name},</Text>
-                <Text className="text-[14px] leading-[24px] text-black">
-                  Please find the summary of your leaves below
-                </Text>
-              </Section>
-            </Section>
-            <Section className="my-6">
-              {headerRow}
-              {leaveTypeRows}
-            </Section>
-            <Section className="px-4 text-right">
-              <span className="text-lg text-gray-600">Total Leaves</span>
-            </Section>
-            <Section className="px-4 text-right">
-              <span className="text-sm text-gray-600">
-                Taken -{" "}
-                {+emailData.leaves.unplanned.taken + +emailData.leaves.planned.taken + +emailData.leaves.compoff.taken}
-              </span>
-            </Section>
-            <Section className="px-4 text-right">
-              <span className="text-sm text-gray-600">
-                Remaining -{" "}
-                {+emailData.leaves.unplanned.remaining +
-                  +emailData.leaves.planned.remaining +
-                  +emailData.leaves.compoff.remaining}
-              </span>
-            </Section>
-            <Hr />
-            <Text className="px-4 text-center text-[12px] leading-[24px] text-[#666666]">
-              This message was intended for <span className="text-black">{emailData.name}</span> at{" "}
-              <span className="text-black">Axioned</span>. If you were not expecting this mail, you can ignore this.
+        <div key="email-body" className="bg-white font-sans">
+          {/* Heading */}
+          <Section className="bg-[#201547] px-4 py-2">
+            <Heading className="text-center text-[20px] font-normal text-white">{emailSubject}</Heading>
+          </Section>
+          <Section className="my-2 px-4">
+            <Text className="text-base text-black">
+              Hi <span className="font-bold">{emailData.name}</span>,
             </Text>
-          </div>
+            <Text className="text-sm text-black">Please find the summary of your leaves below.</Text>
+          </Section>
+          {/* Total Leaves Summary */}
+          <Section className="px-2">
+            <Section className="bg-gray-100 p-4">
+              <Text className="text-center text-lg font-semibold text-black">Total Leaves Summary</Text>
+              <Row className="mb-4">
+                <Column className="w-1/2 text-center">
+                  <Text className="m-0 text-center text-[22px] font-bold text-[#201547]">{totalLeavesTaken}</Text>
+                  <Text className="m-0 text-center text-base font-semibold uppercase text-black/80">Taken</Text>
+                  <Text className="m-0 -mt-0.5 text-center text-xs text-black/50">(Total leaves used)</Text>
+                </Column>
+                <Column className="w-1/2 text-center">
+                  <Text className="m-0 text-center text-[22px] font-bold text-[#e31c79]">{totalLeavesRemaining}</Text>
+                  <Text className="m-0 text-center text-base font-semibold uppercase text-black/80">Remaining</Text>
+                  <Text className="m-0 -mt-0.5 text-center text-xs text-black/50">(Available balance)</Text>
+                </Column>
+              </Row>
+            </Section>
+          </Section>
+          {/* Leave Type Summary */}
+          <Section className="my-6 px-4">{leaveTypeRows}</Section>
+          {/* Footer */}
+          <Hr />
+          <Text className="px-4 text-center text-xs text-[#666666]">
+            This message was intended for <span className="text-black">{emailData.name}</span> at{" "}
+            <span className="text-black">Axioned</span>. If you were not expecting this mail, you can ignore this.
+          </Text>
+          <Hr />
         </div>
       </Tailwind>
-    </>
+    </div>
   );
 };
 
