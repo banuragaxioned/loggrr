@@ -12,7 +12,7 @@ interface LeavesEmailProps {
 const DummyData = {
   subject: "Your Leaves Status till 18th July 2025",
   data: {
-    name: "John",
+    name: "JOHN",
     email: "zishana@axioned.com",
     leaves: {
       unplanned: { eligible: "10", taken: "5", remaining: "5" },
@@ -88,7 +88,7 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
           </Section>
           <Section className="my-2 px-4">
             <Text className="text-base text-black">
-              Hi <span className="font-bold">{emailData.name}</span>,
+              Hi <span className="font-bold capitalize">{emailData.name.toLowerCase()}</span>,
             </Text>
             <Text className="text-sm text-black">Please find the summary of your leaves below.</Text>
           </Section>
