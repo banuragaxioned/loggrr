@@ -81,7 +81,7 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
     <div>
       <Preview>Please Find {emailSubject}</Preview>
       <Tailwind>
-        <div key="email-body" className="bg-white font-sans">
+        <div key="email-body" className="font-sans">
           {/* Heading */}
           <Section className="bg-[#201547] px-4 py-2">
             <Heading className="text-center text-[20px] font-normal text-white">{emailSubject}</Heading>
