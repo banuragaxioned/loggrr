@@ -68,8 +68,8 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
             <Text className="m-0 text-left text-lg font-semibold text-black">{leaveTypeNames[leaveType]}</Text>
           </Row>
           <Row>
-            <Text className="m-0 ml-2 text-left text-sm text-black/80">
-              - {eligible} ︱ {taken} ︱ {remaining}
+            <Text className="m-0 text-left text-sm text-black/80">
+              {eligible} ︱ {taken} ︱ {remaining}
             </Text>
           </Row>
         </Column>
@@ -99,12 +99,12 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
               <Row className="mb-4">
                 <Column className="w-1/2 text-center">
                   <Text className="m-0 text-center text-[22px] font-bold text-[#201547]">{totalLeavesTaken}</Text>
-                  <Text className="m-0 text-center text-base font-semibold uppercase text-black/80">Taken</Text>
+                  <Text className="m-0 text-center text-sm font-semibold uppercase text-black/80">Taken</Text>
                   <Text className="m-0 -mt-0.5 text-center text-xs text-black/50">(Total leaves used)</Text>
                 </Column>
                 <Column className="w-1/2 text-center">
                   <Text className="m-0 text-center text-[22px] font-bold text-[#e31c79]">{totalLeavesRemaining}</Text>
-                  <Text className="m-0 text-center text-base font-semibold uppercase text-black/80">Remaining</Text>
+                  <Text className="m-0 text-center text-sm font-semibold uppercase text-black/80">Remaining</Text>
                   <Text className="m-0 -mt-0.5 text-center text-xs text-black/50">(Available balance)</Text>
                 </Column>
               </Row>
@@ -114,9 +114,9 @@ const LeavesEmail = ({ subject, data }: LeavesEmailProps) => {
           <Section className="my-6 px-4">{leaveTypeRows}</Section>
           {/* Footer */}
           <Hr />
-          <Text className="px-4 text-center text-xs text-[#666666]">
-            This message was intended for <span className="text-black">{emailData.name}</span> at{" "}
-            <span className="text-black">Axioned</span>. If you were not expecting this mail, you can ignore this.
+          <Text className="px-4 text-center text-xs text-black/60">
+            The email was intended for <span className="capitalize text-black">{emailData.name.toLowerCase()}</span> at{" "}
+            <span className="text-black">Axioned</span>. If you were not expecting the email, please ignore this.
           </Text>
           <Hr />
         </div>
