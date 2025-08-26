@@ -2,6 +2,16 @@
 
 import { FileInput, FileUploaderItem, FileUploader, FileUploaderContent } from "@/components/file-uploader";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogDescription,
+  DialogTitle,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Check, CloudUpload, FileSpreadsheet, Loader2, Mail, Sheet, X } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -153,12 +163,33 @@ export default function Upload() {
               <Sheet className="mr-2 h-6 w-6 stroke-green-700" />
               Sheet Data
             </h2>
-            <Button variant="outline" onClick={handleUpload} disabled={uploading || success}>
-              Send Leaves
-              {!uploading && !success && <Mail className="ml-1 h-4 w-4 stroke-current" />}
-              {uploading && !success && <Loader2 className="ml-1 h-4 w-4 animate-spin stroke-current" />}
-              {!uploading && success && <Check className="ml-1 h-4 w-4 stroke-current" />}
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" disabled={uploading || success}>
+                  Send Leaves
+                  {!uploading && !success && <Mail className="ml-1 h-4 w-4 stroke-current" />}
+                  {uploading && !success && <Loader2 className="ml-1 h-4 w-4 animate-spin stroke-current" />}
+                  {!uploading && success && <Check className="ml-1 h-4 w-4 stroke-current" />}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Verify and Confirm</DialogTitle>
+                  <DialogDescription>
+                    Are you sure you want to send the leaves? This action cannot be undone and leaves will be sent to
+                    all users listed.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <DialogClose>Cancel</DialogClose>
+                  </Button>
+                  <Button type="button" size="sm" onClick={handleUpload} asChild>
+                    <DialogClose>Send</DialogClose>
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
           <Separator className="my-2" />
           {title && (
