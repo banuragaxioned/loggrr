@@ -118,8 +118,12 @@ export const getUserRole = (teamData?: { slug: string; role: string }[], slug?: 
 };
 
 // Check if user has access to the page
-export const checkAccess = (role: string, denyAccess = ["GUEST"]) => {
-  return !denyAccess.includes(role);
+export const checkAccess = (
+  currentUserRole: string,
+  rolesToCheck: string[] = ["GUEST"],
+  type: "deny" | "allow" = "deny",
+): boolean => {
+  return type === "deny" ? !rolesToCheck.includes(currentUserRole) : rolesToCheck.includes(currentUserRole);
 };
 
 // Get all members time entries grouped by name
