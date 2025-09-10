@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ComboBox } from "@/components/ui/combobox";
 import { Loader2, Plus, User } from "lucide-react";
@@ -82,8 +82,45 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
   const editId = searchParams.get("edit_id");
 
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+  useEffect(() => {
+    const fetchLeaveRecord = async () => {
+      if (editId) {
+        setLoading(true);
+        try {
+          const response = await fetch(`/api/team/leaves?id=${editId}&team=${team}`);
+          const data = await response.json();
+
+          setSelectedMember(data.user);
+          form.setValue("userId", data.user.id);
+          form.setValue("planned", {
+            eligible: data.leaves.planned.eligible,
+            taken: data.leaves.planned.taken,
+          });
+          form.setValue("unplanned", {
+            eligible: data.leaves.unplanned.eligible,
+            taken: data.leaves.unplanned.taken,
+          });
+          form.setValue("compoff", {
+            eligible: data.leaves.compoff.eligible,
+            taken: data.leaves.compoff.taken,
+          });
+          setOpen(true);
+        } catch (error) {
+          toast.error("Failed to fetch leave record");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (editId) {
+      fetchLeaveRecord();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId, team]);
 
   // Filter out users who already have leave records
   const usersWithoutLeaves = users.filter((user) => !leaves.some((leave) => leave.user.id === user.id));
@@ -111,16 +148,21 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
   };
 
   async function onSubmit(data: LeaveFormValues) {
-    setIsLoading(true);
+    setLoading(true);
 
     try {
-      const response = await fetch(`/api/team/leaves/create`, {
-        method: "POST",
+      const url = editId ? `/api/team/leaves` : `/api/team/leaves/create`;
+      const method = editId ? "PUT" : "POST";
+      const successMessage = editId ? "updated" : "created";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           team,
+          id: editId ? parseInt(editId) : undefined,
           userId: data.userId,
           leaves: {
             planned: data.planned,
@@ -132,17 +174,27 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create leave record");
+        throw new Error(errorData.error || `Failed to ${editId ? "update" : "create"} leave record`);
       }
 
-      toast.success("Leave record has been created successfully.");
-      router.refresh();
-      setOpen(false);
-      resetForm();
+      if (response.ok) {
+        toast.success(`${editId ? "Updated" : "Created"} leave record successfully!`);
+        resetForm();
+        setOpen(false);
+        // Preserve all query params except edit_id
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("edit_id");
+        router.replace(params.toString() ? `?${params.toString()}` : "?");
+        router.refresh();
+      }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create leave record. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : `Failed to ${editId ? "update" : "create"} leave record. Please try again.`,
+      );
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -172,7 +224,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
-        {isLoading && (
+        {loading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70">
             <Loader2 className="h-10 w-10 animate-spin" />
           </div>
@@ -266,8 +318,8 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
                   Cancel
                 </Button>
               </SheetClose>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Submit"}
+              <Button type="submit" disabled={loading}>
+                {loading ? "Creating..." : "Submit"}
               </Button>
             </SheetFooter>
           </form>

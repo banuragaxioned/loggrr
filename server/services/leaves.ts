@@ -10,6 +10,8 @@ export const getLeaves = async (team: string) => {
         select: {
           id: true,
           name: true,
+          email: true,
+          image: true,
         },
       },
     },

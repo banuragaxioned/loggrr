@@ -10,6 +10,8 @@ import { notFound } from "next/navigation";
 import { getLeaves } from "@/server/services/leaves";
 import { getMembers } from "@/server/services/members";
 import { LeaveForm } from "@/components/forms/leaveForm";
+import { columns, LeaveRecord } from "./columns";
+import { DataTable } from "./table";
 
 export const metadata: Metadata = {
   title: `Leave Status`,
@@ -20,7 +22,7 @@ export default async function Page({ params }: pageProps) {
   const workspaceRole = getUserRole(user?.workspaces, params.team);
   const grantAccess = ["HR", "OWNER"];
   const hasAccess = checkAccess(workspaceRole, grantAccess, "allow");
-  const leaves = await getLeaves(params.team);
+  const leaves = (await getLeaves(params.team)) as LeaveRecord[];
   const users = await getMembers(params.team);
 
   if (!user || !hasAccess) {
@@ -32,7 +34,7 @@ export default async function Page({ params }: pageProps) {
       <DashboardHeader heading="Leave Status" text="View your leave status for the current year.">
         <LeaveForm team={params.team} users={users} leaves={leaves} />
       </DashboardHeader>
-      <pre>{JSON.stringify(leaves, null, 2)}</pre>
+      <DataTable columns={columns} data={leaves} />
     </DashboardShell>
   );
 }
