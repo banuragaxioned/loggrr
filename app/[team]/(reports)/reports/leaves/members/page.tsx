@@ -10,8 +10,9 @@ import { notFound } from "next/navigation";
 import { getLeaves } from "@/server/services/leaves";
 import { getMembers } from "@/server/services/members";
 import { LeaveForm } from "@/components/forms/leaveForm";
-import { columns, LeaveRecord } from "./columns";
-import { DataTable } from "./table";
+import { LeaveRecord } from "./columns";
+
+import { Table } from "./table";
 
 export const metadata: Metadata = {
   title: `Leave Status`,
@@ -34,7 +35,7 @@ export default async function Page({ params }: pageProps) {
       <DashboardHeader heading="Leave Status" text="View your leave status for the current year.">
         <LeaveForm team={params.team} users={users} leaves={leaves} />
       </DashboardHeader>
-      <DataTable columns={columns} data={leaves} />
+      <Table data={leaves} />
     </DashboardShell>
   );
 }
