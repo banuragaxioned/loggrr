@@ -5,8 +5,8 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export type LeaveRecord = {
   id: number;
@@ -52,6 +52,23 @@ const EditButton = ({ id }: { id: number }) => {
   );
 };
 
+const LeaveCell = ({ title, value }: { title: string; value: number }) => {
+  return (
+    <div className="flex items-center gap-1 text-sm">
+      <span className="inline-block w-20 text-xs font-medium uppercase tracking-wider text-black/70">{title}</span>
+      <span
+        className={cn(
+          "inline-block w-10 text-right",
+          value < 0 && title === "Remaining" && "text-red-500",
+          title === "Remaining" && value > 0 && "text-green-500",
+        )}
+      >
+        {value}
+      </span>
+    </div>
+  );
+};
+
 export const getColumn = () => {
   const columns: ColumnDef<LeaveRecord>[] = [
     {
@@ -70,9 +87,9 @@ export const getColumn = () => {
                 name: user.name ? user.name : "",
                 image: user.image ? user.image : "",
               }}
-              className="z-10 mr-2 inline-block h-6 w-6 bg-slate-300"
+              className="z-10 mr-2 inline-block h-8 w-8 bg-slate-300"
             />
-            <span>{user.name}</span>
+            <span className="min-w-[150px]">{user.name}</span>
           </div>
         );
       },
@@ -88,15 +105,9 @@ export const getColumn = () => {
         const leaves = row.original.leaves;
         return (
           <div className="flex flex-col gap-1">
-            <div className="text-sm">
-              <span className="font-medium">Eligible:</span> {leaves.planned.eligible}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Taken:</span> {leaves.planned.taken}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Remaining:</span> {leaves.planned.eligible - leaves.planned.taken}
-            </div>
+            <LeaveCell title="Eligible" value={leaves.planned.eligible} />
+            <LeaveCell title="Taken" value={leaves.planned.taken} />
+            <LeaveCell title="Remaining" value={leaves.planned.eligible - leaves.planned.taken} />
           </div>
         );
       },
@@ -109,15 +120,9 @@ export const getColumn = () => {
         const leaves = row.original.leaves;
         return (
           <div className="flex flex-col gap-1">
-            <div className="text-sm">
-              <span className="font-medium">Eligible:</span> {leaves.unplanned.eligible}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Taken:</span> {leaves.unplanned.taken}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Remaining:</span> {leaves.unplanned.eligible - leaves.unplanned.taken}
-            </div>
+            <LeaveCell title="Eligible" value={leaves.unplanned.eligible} />
+            <LeaveCell title="Taken" value={leaves.unplanned.taken} />
+            <LeaveCell title="Remaining" value={leaves.unplanned.eligible - leaves.unplanned.taken} />
           </div>
         );
       },
@@ -130,15 +135,9 @@ export const getColumn = () => {
         const leaves = row.original.leaves;
         return (
           <div className="flex flex-col gap-1">
-            <div className="text-sm">
-              <span className="font-medium">Eligible:</span> {leaves.compoff.eligible}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Taken:</span> {leaves.compoff.taken}
-            </div>
-            <div className="text-sm">
-              <span className="font-medium">Remaining:</span> {leaves.compoff.eligible - leaves.compoff.taken}
-            </div>
+            <LeaveCell title="Eligible" value={leaves.compoff.eligible} />
+            <LeaveCell title="Taken" value={leaves.compoff.taken} />
+            <LeaveCell title="Remaining" value={leaves.compoff.eligible - leaves.compoff.taken} />
           </div>
         );
       },
