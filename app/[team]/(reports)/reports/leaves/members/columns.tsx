@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +48,21 @@ const EditButton = ({ id }: { id: number }) => {
       }}
     >
       <Edit size={16} />
+    </Button>
+  );
+};
+
+const DeleteButton = ({ id }: { id: number }) => {
+  return (
+    <Button
+      size="icon"
+      variant="outline"
+      className="text-destructive"
+      onClick={() => {
+        console.log(id);
+      }}
+    >
+      <Trash size={16} />
     </Button>
   );
 };
@@ -148,8 +163,9 @@ export const getColumn = () => {
         const record = row.original;
 
         return (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-2">
             <EditButton id={record.id} />
+            <DeleteButton id={record.id} />
           </div>
         );
       },

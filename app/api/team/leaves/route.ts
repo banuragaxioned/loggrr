@@ -126,3 +126,39 @@ export async function PUT(request: Request) {
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const body = await request.json();
+    const { team, id, userId } = body;
+
+    const workspaceRole = getUserRole(user.workspaces, team);
+    const grantAccess = ["HR", "OWNER"];
+    const hasAccess = checkAccess(workspaceRole, grantAccess, "allow");
+
+    if (!hasAccess) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const leaveRecord = await db.userLeaves.delete({
+      where: { id, workspace: { slug: team } },
+      include: {
+        user: true,
+      },
+    });
+
+    if (leaveRecord.user.id !== userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    return NextResponse.json(leaveRecord);
+  } catch (error) {
+    console.error("[LEAVES_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
