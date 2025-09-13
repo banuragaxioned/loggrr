@@ -86,26 +86,27 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   useEffect(() => {
-    const fetchLeaveRecord = async () => {
+    const fetchLeaveRecord = () => {
       if (editId) {
         setLoading(true);
         try {
-          const response = await fetch(`/api/team/leaves?id=${editId}&team=${team}`);
-          const data = await response.json();
+          const editData = leaves.find((leave) => leave.id === Number(editId));
 
-          setSelectedMember(data.user);
-          form.setValue("userId", data.user.id);
+          if (!editData) return;
+
+          setSelectedMember(editData.user as Member);
+          form.setValue("userId", editData.user.id);
           form.setValue("planned", {
-            eligible: data.leaves.planned.eligible,
-            taken: data.leaves.planned.taken,
+            eligible: editData.leaves.planned.eligible,
+            taken: editData.leaves.planned.taken,
           });
           form.setValue("unplanned", {
-            eligible: data.leaves.unplanned.eligible,
-            taken: data.leaves.unplanned.taken,
+            eligible: editData.leaves.unplanned.eligible,
+            taken: editData.leaves.unplanned.taken,
           });
           form.setValue("compoff", {
-            eligible: data.leaves.compoff.eligible,
-            taken: data.leaves.compoff.taken,
+            eligible: editData.leaves.compoff.eligible,
+            taken: editData.leaves.compoff.taken,
           });
           setOpen(true);
         } catch (error) {
@@ -232,7 +233,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
         <Form {...form}>
           <SheetHeader>
             <SheetTitle>{editId ? "Edit" : "Create"} Leave Record</SheetTitle>
-            {!editId && <SheetDescription>Add leave record for a team member.</SheetDescription>}
+            <SheetDescription>{editId ? "Edit" : "Add"} leave record for a team member.</SheetDescription>
           </SheetHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1" autoComplete="off">
             <FormField
@@ -255,6 +256,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
                       handleSelect={(selected) => handleMemberSelect(selected)}
                       {...field}
                       className="w-full max-w-full"
+                      disabled={!!editId}
                     />
                   </FormControl>
                   <FormMessage />

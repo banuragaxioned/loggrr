@@ -76,6 +76,9 @@ export const getColumn = () => {
           </div>
         );
       },
+      meta: {
+        className: "w-[30%]",
+      },
     },
     {
       accessorKey: "leaves.planned",
