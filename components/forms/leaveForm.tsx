@@ -152,9 +152,8 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     setLoading(true);
 
     try {
-      const url = editId ? `/api/team/leaves` : `/api/team/leaves/create`;
+      const url = "/api/team/leaves";
       const method = editId ? "PUT" : "POST";
-      const successMessage = editId ? "updated" : "created";
 
       const response = await fetch(url, {
         method,

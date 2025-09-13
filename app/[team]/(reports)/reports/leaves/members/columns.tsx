@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, FilterFn } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
