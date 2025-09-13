@@ -218,7 +218,7 @@ export const getColumn = () => {
         );
       },
       meta: {
-        className: "w-[20px]",
+        className: "w-[120px]",
       },
     },
   ];

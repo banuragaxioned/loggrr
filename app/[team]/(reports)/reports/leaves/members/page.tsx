@@ -10,12 +10,11 @@ import { notFound } from "next/navigation";
 import { getLeaves } from "@/server/services/leaves";
 import { getMembers } from "@/server/services/members";
 import { LeaveForm } from "@/components/forms/leaveForm";
-import { LeaveRecord } from "./columns";
 
 import { Table } from "./table";
 
 export const metadata: Metadata = {
-  title: `Leave Status`,
+  title: `All Members`,
 };
 
 export default async function Page({ params }: pageProps) {
@@ -23,7 +22,7 @@ export default async function Page({ params }: pageProps) {
   const workspaceRole = getUserRole(user?.workspaces, params.team);
   const grantAccess = ["HR", "OWNER"];
   const hasAccess = checkAccess(workspaceRole, grantAccess, "allow");
-  const leaves = (await getLeaves(params.team)) as LeaveRecord[];
+  const leaves = await getLeaves(params.team);
   const users = await getMembers(params.team);
 
   if (!user || !hasAccess) {
@@ -32,7 +31,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Leave Status" text="View your leave status for the current year.">
+      <DashboardHeader heading="All Members" text="View and manage all members leave status for the current year.">
         <LeaveForm team={params.team} users={users} leaves={leaves} />
       </DashboardHeader>
       <Table data={leaves} />

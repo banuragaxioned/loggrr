@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ComboBox } from "@/components/ui/combobox";
-import { Loader2, Plus, User } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -219,8 +219,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     >
       <SheetTrigger asChild>
         <Button className="flex gap-2" size="sm">
-          <Plus className="h-4 w-4" />
-          Add Leave Record
+          Create
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">
