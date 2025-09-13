@@ -15,6 +15,11 @@ export const getLeaves = async (team: string) => {
         },
       },
     },
+    orderBy: {
+      user: {
+        name: "asc",
+      },
+    },
   });
 
   return data;
