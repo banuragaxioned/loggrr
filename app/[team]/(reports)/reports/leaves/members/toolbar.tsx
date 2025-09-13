@@ -7,7 +7,6 @@ import { DataTableToolbarProps } from "@/types";
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  console.log(table.getState().columnFilters);
 
   return (
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">

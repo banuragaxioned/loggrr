@@ -22,8 +22,6 @@ export default async function Page({ params, searchParams }: pageProps) {
   const rolesToDeny = ["GUEST"];
   const grantAccess = checkAccess(workspaceRole, rolesToDeny, "deny");
 
-  console.log(grantAccess, "grantAccess");
-
   if (!user || !grantAccess) {
     return notFound();
   }
