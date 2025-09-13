@@ -178,7 +178,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
       }
 
       if (response.ok) {
-        toast.success(`${editId ? "Updated" : "Created"} leave record successfully!`);
+        toast.success(`Leave record ${editId ? "updated" : "created"} successfully!`);
         resetForm();
         setOpen(false);
         // Preserve all query params except edit_id

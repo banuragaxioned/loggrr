@@ -5,8 +5,19 @@ import { UserAvatar } from "@/components/user-avatar";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export type LeaveRecord = {
   id: number;
@@ -53,17 +64,54 @@ const EditButton = ({ id }: { id: number }) => {
 };
 
 const DeleteButton = ({ id }: { id: number }) => {
+  const searchParams = useParams();
+  const router = useRouter();
+  const { team } = searchParams;
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/team/leaves`, {
+        method: "DELETE",
+        body: JSON.stringify({ id, team }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Failed to delete leave record");
+      }
+
+      toast.success(`Leave record deleted successfully for ${data.user.name}`);
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <Button
-      size="icon"
-      variant="outline"
-      className="text-destructive"
-      onClick={() => {
-        console.log(id);
-      }}
-    >
-      <Trash size={16} />
-    </Button>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="outline" className="text-destructive">
+          <Trash size={16} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Are you sure to delete this leave record?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete the leave record.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button type="button" variant="outline" size="sm" asChild>
+            <DialogClose>Cancel</DialogClose>
+          </Button>
+          <Button type="button" size="sm" onClick={handleDelete} asChild>
+            <DialogClose>Delete</DialogClose>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

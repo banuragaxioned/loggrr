@@ -135,7 +135,7 @@ export async function DELETE(request: Request) {
     }
 
     const body = await request.json();
-    const { team, id, userId } = body;
+    const { team, id } = body;
 
     const workspaceRole = getUserRole(user.workspaces, team);
     const grantAccess = ["HR", "OWNER"];
@@ -151,10 +151,6 @@ export async function DELETE(request: Request) {
         user: true,
       },
     });
-
-    if (leaveRecord.user.id !== userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     return NextResponse.json(leaveRecord);
   } catch (error) {
