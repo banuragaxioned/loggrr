@@ -319,7 +319,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
                 </Button>
               </SheetClose>
               <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Submit"}
+                {loading ? "Submitting..." : "Submit"}
               </Button>
             </SheetFooter>
           </form>

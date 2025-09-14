@@ -8,8 +8,10 @@ import { getCurrentUser } from "@/server/session";
 import { checkAccess, getUserRole } from "@/lib/helper";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { getLeave } from "@/server/services/leaves";
+import LeaveDetails from "./leave-details";
 
 export const metadata: Metadata = {
   title: `Leave Status`,
@@ -27,6 +29,9 @@ export default async function Page({ params, searchParams }: pageProps) {
     return notFound();
   }
 
+  const leave = await getLeave(params.team, user.id);
+  console.log(leave, "leave");
+
   return (
     <DashboardShell>
       <div className="flex items-center justify-between">
@@ -39,6 +44,7 @@ export default async function Page({ params, searchParams }: pageProps) {
           </Button>
         )}
       </div>
+      <LeaveDetails leave={leave} />
     </DashboardShell>
   );
 }
