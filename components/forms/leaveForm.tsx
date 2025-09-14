@@ -219,7 +219,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     >
       <SheetTrigger asChild>
         <Button className="flex gap-2" size="sm">
-          Create
+          Add Leave
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="h-full overflow-y-auto">

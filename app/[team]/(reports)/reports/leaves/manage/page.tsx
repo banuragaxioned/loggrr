@@ -14,7 +14,7 @@ import { LeaveForm } from "@/components/forms/leaveForm";
 import { Table } from "./table";
 
 export const metadata: Metadata = {
-  title: `All Members`,
+  title: `Manage Leaves`,
 };
 
 export default async function Page({ params }: pageProps) {
@@ -31,7 +31,7 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="All Members" text="View and manage all members leave status for the current year.">
+      <DashboardHeader heading="Manage Leaves" text="View and manage all members leave status for the current year.">
         <LeaveForm team={params.team} users={users} leaves={leaves} />
       </DashboardHeader>
       <Table data={leaves} />
