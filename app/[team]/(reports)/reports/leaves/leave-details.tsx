@@ -2,7 +2,6 @@ import React from "react";
 import { LeaveDetails as LeaveDetailsType } from "@/server/services/leaves";
 import { CalendarOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { DonutChart } from "@tremor/react";
 
 const EmptyState = () => {
@@ -38,28 +37,28 @@ function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
   const totalRemaining = totalEligible - totalTaken;
 
   return (
-    <div className="space-y-8">
+    <div className="mt-4 space-y-4">
       {/* Total Summary */}
-      <Card>
-        <CardContent className="py-10">
-          <h2 className="mb-6 text-center text-xl font-semibold tracking-wide">Summary</h2>
-          <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
+      <Card className="shadow-none">
+        <CardContent className="pt-4">
+          <h2 className="mb-6 text-left text-xl font-semibold">Summary</h2>
+          <div className="mb-2 grid grid-cols-1 gap-8 text-center md:grid-cols-3">
             <div>
               <div className="text-2xl font-semibold text-primary">{totalEligible}</div>
-              <div className="text-lg font-medium">GRANTED</div>
-              <div className="-mt-1.5 text-sm text-muted-foreground">Total leaves granted</div>
+              <div className="text-lg font-medium uppercase">Granted</div>
+              <div className="text-xs uppercase text-muted-foreground">Total leaves eligible</div>
             </div>
             <div>
               <div className="text-2xl font-semibold text-primary">{totalTaken}</div>
-              <div className="text-lg font-medium">TAKEN</div>
-              <div className="-mt-1.5 text-sm text-muted-foreground">Total leaves used</div>
+              <div className="text-lg font-medium uppercase">Taken</div>
+              <div className="text-xs uppercase text-muted-foreground">Total leaves used</div>
             </div>
             <div>
-              <div className={`text-2xl font-semibold ${totalRemaining < 0 ? "text-destructive" : "text-emerald-500"}`}>
+              <div className={`text-2xl font-semibold ${totalRemaining < 0 ? "text-red-500" : "text-emerald-500"}`}>
                 {totalRemaining}
               </div>
-              <div className="text-lg font-medium">REMAINING</div>
-              <div className="-mt-1.5 text-sm text-muted-foreground">Available balance</div>
+              <div className="text-lg font-medium uppercase">Remaining</div>
+              <div className="text-xs uppercase text-muted-foreground">Available balance</div>
             </div>
           </div>
         </CardContent>
@@ -69,6 +68,7 @@ function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
         {leaveTypes.map((item) => {
           const remaining = item.data.eligible - item.data.taken;
           const isOverused = remaining < 0;
+          const noData = item.data.eligible === 0 && item.data.taken === 0;
 
           const chartData = [
             { name: "Taken", value: item.data.taken },
@@ -76,31 +76,41 @@ function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
           ];
 
           return (
-            <Card key={item.type}>
-              <CardHeader>
+            <Card className="shadow-none" key={item.type}>
+              <CardHeader className="py-4">
                 <CardTitle className="text-lg">{item.type}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col items-center gap-4">
-                  <div className="w-40">
-                    <DonutChart
-                      data={chartData}
-                      category="value"
-                      index="name"
-                      colors={isOverused ? ["rose", "slate"] : ["slate", "emerald"]}
-                      showAnimation
-                      variant="pie"
-                    />
+                {noData ? (
+                  <div className="my-4 flex h-40 flex-col items-center justify-center gap-2">
+                    <CalendarOff className="h-6 w-6 text-muted-foreground" />
+                    <span className="text-xs font-medium uppercase text-muted-foreground">Not granted</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm font-medium">
-                      {item.data.taken} of {item.data.eligible} used
+                ) : (
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-40">
+                      <DonutChart
+                        data={chartData}
+                        category="value"
+                        index="name"
+                        colors={isOverused ? ["rose", "slate"] : ["zinc", "emerald"]}
+                        showAnimation
+                        variant="pie"
+                      />
                     </div>
-                    <div className={`text-sm ${isOverused ? "font-medium text-destructive" : "text-muted-foreground"}`}>
-                      {isOverused ? `${Math.abs(remaining)} extra taken` : `${remaining} remaining`}
+                    <div className="text-center">
+                      <div className="text-sm font-medium">
+                        <span className="text-lg font-medium uppercase">{item.data.taken}</span> / {item.data.eligible}
+                        <span className="ml-1 text-xs font-medium">Used</span>
+                      </div>
+                      <div
+                        className={`text-xs font-medium uppercase ${isOverused ? "text-red-500" : "text-muted-foreground"}`}
+                      >
+                        {isOverused ? `${Math.abs(remaining)} extra taken` : `${remaining} remaining`}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           );
