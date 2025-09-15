@@ -118,7 +118,9 @@ const DeleteButton = ({ id }: { id: number }) => {
 const LeaveCell = ({ title, value }: { title: string; value: number }) => {
   return (
     <div className="flex items-center gap-1 text-sm">
-      <span className="inline-block w-20 text-xs font-medium uppercase tracking-wider text-black/70">{title}</span>
+      <span className="inline-block w-20 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {title}
+      </span>
       <span
         className={cn(
           "inline-block w-10 text-right",
