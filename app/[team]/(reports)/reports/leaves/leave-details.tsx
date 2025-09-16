@@ -3,10 +3,11 @@ import { LeaveDetails as LeaveDetailsType } from "@/server/services/leaves";
 import { CalendarOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DonutChart } from "@tremor/react";
+import { format } from "date-fns";
 
 const EmptyState = () => {
   return (
-    <Card className="flex flex-col items-center justify-center gap-6 py-16 text-center">
+    <Card className="mt-4 flex flex-col items-center justify-center gap-6 py-16 text-center shadow-none">
       <div className="rounded-full bg-muted p-4">
         <CalendarOff className="h-6 w-6 text-muted-foreground" />
       </div>
@@ -20,7 +21,7 @@ const EmptyState = () => {
   );
 };
 
-function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
+function LeaveDetails({ leave, updatedAt }: { leave: LeaveDetailsType; updatedAt?: Date }) {
   if (!leave) {
     return <EmptyState />;
   }
@@ -64,6 +65,7 @@ function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
         </CardContent>
       </Card>
 
+      {/* Leave types */}
       <div className="grid gap-4 md:grid-cols-3">
         {leaveTypes.map((item) => {
           const remaining = item.data.eligible - item.data.taken;
@@ -116,6 +118,13 @@ function LeaveDetails({ leave }: { leave: LeaveDetailsType }) {
           );
         })}
       </div>
+
+      {/* Last updated */}
+      {updatedAt && (
+        <div className="px-2 text-right text-sm text-muted-foreground">
+          Last updated at: <span className="font-medium text-primary">{format(updatedAt, "MMMM d, yyyy")}</span>
+        </div>
+      )}
     </div>
   );
 }

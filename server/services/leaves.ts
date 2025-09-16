@@ -25,13 +25,15 @@ export const getLeaves = async (team: string) => {
   return data;
 };
 
-export type LeaveDetails = {
-  planned: { eligible: number; taken: number };
-  unplanned: { eligible: number; taken: number };
-  compoff: { eligible: number; taken: number };
-} | null;
+export type LeaveDetails =
+  | {
+      planned: { eligible: number; taken: number };
+      unplanned: { eligible: number; taken: number };
+      compoff: { eligible: number; taken: number };
+    }
+  | undefined;
 
-export const getLeave = async (team: string, id: number): Promise<LeaveDetails> => {
+export const getLeave = async (team: string, id: number): Promise<{ leave: LeaveDetails; updatedAt: Date } | null> => {
   const data = await db.userLeaves.findFirst({
     where: {
       userId: id,
@@ -42,6 +44,7 @@ export const getLeave = async (team: string, id: number): Promise<LeaveDetails> 
     select: {
       id: true,
       leaves: true,
+      updatedAt: true,
     },
   });
 
@@ -49,5 +52,5 @@ export const getLeave = async (team: string, id: number): Promise<LeaveDetails> 
     return null;
   }
 
-  return data?.leaves as LeaveDetails;
+  return { leave: data?.leaves as LeaveDetails, updatedAt: data?.updatedAt };
 };

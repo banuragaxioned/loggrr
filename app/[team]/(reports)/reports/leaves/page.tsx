@@ -29,8 +29,9 @@ export default async function Page({ params, searchParams }: pageProps) {
     return notFound();
   }
 
-  const leave = await getLeave(params.team, user.id);
-  console.log(leave, "leave");
+  const leaveData = await getLeave(params.team, user.id);
+  const leave = leaveData?.leave;
+  const updatedAt = leaveData?.updatedAt;
 
   return (
     <DashboardShell>
@@ -44,7 +45,7 @@ export default async function Page({ params, searchParams }: pageProps) {
           </Button>
         )}
       </div>
-      <LeaveDetails leave={leave} />
+      <LeaveDetails leave={leave} updatedAt={updatedAt} />
     </DashboardShell>
   );
 }
