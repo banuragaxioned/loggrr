@@ -56,7 +56,28 @@ const NAV_ITEMS = [
       },
     ],
   },
-  { id: 3, title: "Reports", slug: "reports/logged", denyAccess: [""] },
+  {
+    id: 4,
+    title: "Reports",
+    subItems: [
+      {
+        id: 1,
+        title: "Logged",
+        description: "View the hours that are logged.",
+        slug: "reports/logged",
+        denyAccess: [""],
+      },
+      {
+        id: 2,
+        title: "Leaves",
+        description: "View your leave status for the current year.",
+        slug: "reports/leaves",
+        denyAccess: [""],
+      },
+    ],
+  },
+  // NOTE: Kept this for future use
+  // { id: 3, title: "Reports", slug: "reports/logged", denyAccess: [""] },
 ];
 
 export function NavMenu({ role }: { role: string }) {
@@ -93,11 +114,12 @@ export function NavMenu({ role }: { role: string }) {
                   </NavigationMenuContent>
                 </NavigationMenuTrigger>
               )}
-              {!isSubItemsPresent && item.slug && !item.denyAccess.includes(role) && (
+              {/* NOTE: Kept this for future use */}
+              {/* {!isSubItemsPresent && item.slug && !item.denyAccess.includes(role) && (
                 <Link href={`/${team}/${item.slug}`} legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>{item.title}</NavigationMenuLink>
                 </Link>
-              )}
+              )} */}
             </NavigationMenuItem>
           );
         })}

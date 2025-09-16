@@ -70,8 +70,15 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Logged",
-        description: "View how many hours have been logged.",
-        slug: `reports/logged`,
+        description: "View the hours that are logged.",
+        slug: "reports/logged",
+        denyAccess: [""],
+      },
+      {
+        id: 2,
+        title: "Leaves",
+        description: "View your leave status for the current year.",
+        slug: "reports/leaves",
         denyAccess: [""],
       },
     ],
