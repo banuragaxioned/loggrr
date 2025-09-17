@@ -79,7 +79,7 @@ const NAV_ITEMS = [
         title: "Leaves",
         description: "View your leave status for the current year.",
         slug: "reports/leaves",
-        denyAccess: [""],
+        denyAccess: ["GUEST"],
       },
     ],
   },

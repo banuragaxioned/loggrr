@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import {
@@ -72,7 +71,7 @@ const NAV_ITEMS = [
         title: "Leaves",
         description: "View your leave status for the current year.",
         slug: "reports/leaves",
-        denyAccess: [""],
+        denyAccess: ["GUEST"],
       },
     ],
   },
@@ -106,9 +105,9 @@ export function NavMenu({ role }: { role: string }) {
                       {item.subItems
                         .filter((subItem) => !subItem.denyAccess.includes(role))
                         .map((subItem) => (
-                          <Link key={subItem.id} href={`/${team}/${subItem.slug}`} legacyBehavior passHref>
-                            <ListItem title={subItem.title}>{subItem.description}</ListItem>
-                          </Link>
+                          <ListItem key={subItem.id} href={`/${team}/${subItem.slug}`} title={subItem.title}>
+                            {subItem.description}
+                          </ListItem>
                         ))}
                     </ul>
                   </NavigationMenuContent>
