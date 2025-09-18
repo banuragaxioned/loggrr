@@ -5,8 +5,8 @@ import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { Role } from "@prisma/client";
-import WorkspaceJoinedEmail from "@/email/workspace-joined";
-import RegisterEmail from "@/email/register";
+import WorkspaceJoinedEmail from "@/emails/workspace-joined";
+import RegisterEmail from "@/emails/register";
 import { siteConfig } from "@/config/site";
 import { sendEmail } from "@/lib/email";
 
