@@ -19,11 +19,6 @@ import { toast } from "sonner";
 const SendLeaves = ({ team, leaves }: { team: string; leaves: Leaves[] }) => {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [unsentEmails, setUnsentEmails] = useState<any[]>([]);
-  const [sentEmails, setSentEmails] = useState<any[]>([]);
-
-  console.log(sentEmails, "sentEmails");
-  console.log(unsentEmails, "unsentEmails");
 
   const handleUpload = async () => {
     setUploading(true);
@@ -38,8 +33,9 @@ const SendLeaves = ({ team, leaves }: { team: string; leaves: Leaves[] }) => {
       });
       const data = await response.json();
 
-      setSentEmails(data.sentEmails);
-      setUnsentEmails(data.unsentEmails);
+      if (data.unsentEmails.length > 0) {
+        console.log("Unsent emails", data.unsentEmails);
+      }
 
       if (!response.ok) {
         toast.error("Failed to send leaves", { description: data.error });
@@ -74,10 +70,10 @@ const SendLeaves = ({ team, leaves }: { team: string; leaves: Leaves[] }) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Confirm</DialogTitle>
+            <DialogTitle>Confirmation</DialogTitle>
             <DialogDescription>
-              Are you sure you want to send the leaves? This action cannot be undone and leaves will be sent to all
-              users listed.
+              Are you sure you want to send the leaves emails? This action cannot be undone and an email will be sent to
+              all users listed.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -85,7 +81,7 @@ const SendLeaves = ({ team, leaves }: { team: string; leaves: Leaves[] }) => {
               <DialogClose>Cancel</DialogClose>
             </Button>
             <Button type="button" size="sm" onClick={handleUpload} asChild>
-              <DialogClose>Send</DialogClose>
+              <DialogClose>Send Emails</DialogClose>
             </Button>
           </DialogFooter>
         </DialogContent>

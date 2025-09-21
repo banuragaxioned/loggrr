@@ -90,7 +90,6 @@ export async function POST(req: NextRequest) {
       };
 
       try {
-        // Send actual email for other indices
         const response = await sendEmail(leavesEmailOptions);
 
         if (response.success) {
@@ -121,11 +120,11 @@ export async function POST(req: NextRequest) {
     let message = "Leaves sent successfully";
 
     if (unsentEmails.length > 0) {
-      message = "Unsent emails. Please check the unsent emails.";
+      message = "Unsent emails. Please check the unsent emails in the console.";
     }
 
     if (unsentEmails.length > 0 && sentEmails.length > 0) {
-      message = "Partially sent. Please check the unsent emails.";
+      message = "Partially sent. Please check the unsent emails in the console.";
     }
 
     return NextResponse.json({ message, unsentEmails, sentEmails }, { status: 200 });
