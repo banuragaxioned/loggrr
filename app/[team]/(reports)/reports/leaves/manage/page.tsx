@@ -12,6 +12,7 @@ import { getMembers } from "@/server/services/members";
 import { LeaveForm } from "@/components/forms/leaveForm";
 
 import { Table } from "./table";
+import SendLeaves from "./send-leaves";
 
 export const metadata: Metadata = {
   title: `Manage Leaves`,
@@ -32,7 +33,10 @@ export default async function Page({ params }: pageProps) {
   return (
     <DashboardShell>
       <DashboardHeader heading="Manage Leaves" text="View and manage all members leave status for the current year.">
-        <LeaveForm team={params.team} users={users} leaves={leaves} />
+        <div className="flex items-center gap-2">
+          <SendLeaves team={params.team} leaves={leaves} />
+          <LeaveForm team={params.team} users={users} leaves={leaves} />
+        </div>
       </DashboardHeader>
       <Table data={leaves} />
     </DashboardShell>

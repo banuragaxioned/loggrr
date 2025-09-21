@@ -1,17 +1,8 @@
+import { LeavesData } from "@/app/api/team/leaves/send/route";
 import { Column, Heading, Hr, Preview, Row, Section, Text } from "@react-email/components";
 
 import { Tailwind } from "@react-email/tailwind";
 import * as React from "react";
-
-export interface LeavesData {
-  name: string;
-  email: string;
-  leaves: {
-    unplanned: { eligible: string; taken: string; remaining: string };
-    planned: { eligible: string; taken: string; remaining: string };
-    compoff: { eligible: string; taken: string; remaining: string };
-  };
-}
 
 interface LeavesEmailProps {
   subject: string;

@@ -63,17 +63,20 @@ const leaveFormSchema = z.object({
 
 type LeaveFormValues = z.infer<typeof leaveFormSchema>;
 
+export type Leaves = {
+  id: number;
+  leaves: any;
+  user: {
+    id: number;
+    name: string | null;
+    email: string;
+  };
+};
+
 interface LeaveFormProps {
   team: string;
   users: Member[];
-  leaves: {
-    id: number;
-    leaves: any;
-    user: {
-      id: number;
-      name: string | null;
-    };
-  }[];
+  leaves: Leaves[];
 }
 
 export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
