@@ -27,9 +27,9 @@ function LeaveDetails({ leave, updatedAt }: { leave: LeaveDetailsType; updatedAt
   }
 
   const leaveTypes = [
-    { type: "Planned", data: leave.planned, color: "bg-blue-100" },
-    { type: "Unplanned", data: leave.unplanned, color: "bg-amber-100" },
-    { type: "Comp-off", data: leave.compoff, color: "bg-green-100" },
+    { type: "Planned", data: leave.planned },
+    { type: "Unplanned", data: leave.unplanned },
+    { type: "Comp-off", data: leave.compoff },
   ];
 
   // Calculate total leaves
