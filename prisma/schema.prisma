@@ -32,6 +32,7 @@ model Workspace {
   users          UserWorkspace[]
   userOnGroup    UserOnGroup[]
   usersOnProject UsersOnProject[]
+  userLeaves     UserLeaves[]
 }
 
 model Client {
@@ -102,6 +103,7 @@ enum Role {
   USER
   GUEST
   INACTIVE
+  HR
 }
 
 model Milestone {
@@ -277,6 +279,7 @@ model User {
   workspaces     UserWorkspace[]
   userOnGroup    UserOnGroup[]
   usersOnProject UsersOnProject[]
+  userLeaves     UserLeaves[]
 }
 
 model Session {
@@ -314,5 +317,22 @@ model Account {
   session_state     String?
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model UserLeaves {
+  id            Int       @id @default(autoincrement())
+  workspaceId   Int
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaves        Json      @default("{\"planned\":{\"eligible\":0,\"taken\":0},\"unplanned\":{\"eligible\":0,\"taken\":0},\"compoff\":{\"eligible\":0,\"taken\":0}}")
+  status        Status    @default(PUBLISHED)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastUpdatedBy String
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
   @@index([userId])
 }

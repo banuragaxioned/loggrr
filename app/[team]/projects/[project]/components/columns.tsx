@@ -103,9 +103,9 @@ function TimeEntryCell({ row }: { row: any }) {
   const router = useRouter();
   const team = params.team as string;
   const project = params.project as string;
-  const [comments, setComments] = useState(original.comments);
-  const [time, setTime] = useState(String(original.hours));
-  const [billable, setBillable] = useState(original.billable);
+  const [comments, setComments] = useState("");
+  const [time, setTime] = useState("");
+  const [billable, setBillable] = useState(false);
   const formatted = `${row.getValue("hours") ?? 0} h`;
 
   const submitTimeEntry = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -169,7 +169,6 @@ function TimeEntryCell({ row }: { row: any }) {
 
       if (!response.ok) {
         const data = await response.json();
-        console.log(data, "data");
         toast.error(data.error);
       }
     } catch (error) {
@@ -190,7 +189,15 @@ function TimeEntryCell({ row }: { row: any }) {
         <div className="absolute bottom-0 right-20 top-0 mr-4 hidden items-center justify-center gap-2 group-hover:flex">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" className="h-6 w-6 p-0">
+              <Button
+                variant="ghost"
+                className="h-6 w-6 p-0"
+                onClick={() => {
+                  setComments(original.comments);
+                  setTime(String(original.hours));
+                  setBillable(original.billable);
+                }}
+              >
                 <Pencil size={12} />
               </Button>
             </DialogTrigger>

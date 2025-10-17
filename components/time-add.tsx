@@ -2,11 +2,9 @@
 
 import React, { useState } from "react";
 import { CalendarPlus, Folder, List, Milestone as CategoryIcon, Minus, Plus } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
-
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +28,7 @@ import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { hoursToDecimal } from "@/lib/helper";
+import { useQueryState } from "nuqs";
 
 export type SelectedData = {
   client?: Milestone;
@@ -74,16 +73,20 @@ const TIME_CHIPS = [
 ];
 
 export function TimeAdd({ projects }: { projects?: Project[] }) {
+  const searchParams = useSearchParams();
+  const initialDate = searchParams.get("date") ? new Date(searchParams.get("date") as string) : new Date();
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const date = useTimeEntryState((state) => state.date);
-  const setDate = useTimeEntryState((state) => state.setDate);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
-  const setUpdateTime = useTimeEntryState((state) => state.setUpdateTime); // does a data fetch when added through quick action
+  const [date, setDate] = useQueryState("date", {
+    parse: (value: string) => new Date(value),
+    serialize: (date: Date) => format(date, "yyyy-MM-dd"),
+    defaultValue: initialDate,
+  });
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
@@ -200,7 +203,6 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
       });
       if (response.ok) {
         toast.success(`Added time entry in ${project?.name}`);
-        setUpdateTime();
         router.refresh();
         handleClearForm();
       }

@@ -6,8 +6,6 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 
-import { useTimeEntryState } from "@/store/useTimeEntryStore";
-
 import { Milestone, Project, TimeEntryDataObj } from "@/types";
 import { TimeEntriesList } from "./time-entries-list";
 import { InlineDatePicker } from "./inline-date-picker";
@@ -62,8 +60,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     serialize: (date: Date) => format(date, "yyyy-MM-dd"),
     defaultValue: initialDate,
   });
-  const updateTime = useTimeEntryState((state) => state.updateTime);
-  const resetTimeEntryStates = useTimeEntryState((state) => state.resetTimeEntryStates);
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
@@ -74,11 +70,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   // This sets the AI input from the local storage
   useEffect(() => {
     setAiInput(localStorage?.getItem("notebook-input") || "");
-
-    return () => {
-      resetTimeEntryStates();
-    };
-  }, [resetTimeEntryStates]);
+  }, []);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     setRecent(null);
@@ -184,7 +176,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     if (!edit.isEditing) {
       getTimeEntries();
     }
-  }, [getTimeEntries, updateTime, edit.isEditing]);
+  }, [getTimeEntries, edit.isEditing]);
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
@@ -259,7 +251,13 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
         <div className="flex justify-between gap-2 border-b p-2">
-          <InlineDatePicker date={date} setDate={(newDate: Date) => setDate(newDate)} dayTotalTime={dayTotalTime} />
+          <InlineDatePicker
+            date={date}
+            setDate={(newDate: Date) => {
+              setDate(newDate);
+            }}
+            dayTotalTime={dayTotalTime}
+          />
         </div>
         <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
         {dayTotalTime && (
