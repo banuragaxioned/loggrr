@@ -35,7 +35,7 @@ export default async function Page({ params, searchParams }: pageProps) {
 
   return (
     <DashboardShell>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <DashboardHeader heading="Leave Status" text="View your leave status for the current year." />
         {hasAccess && (
           <Button asChild variant="outline">
