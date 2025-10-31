@@ -23,16 +23,14 @@ const MagicLinkEmail = ({
               <Heading className="mx-0 mb-0 mt-2 p-0 text-left text-3xl font-semibold text-black">
                 Sign in to {host}
               </Heading>
-              <Text className="text-base text-gray-700">Click on the button below to log in to your account.</Text>
+              <Text className="text-base text-gray-700">Click on the button below to sign in to your account.</Text>
               <Button
                 href={magicLink}
                 className="inline-block rounded-lg bg-black px-6 py-2 text-base text-white no-underline"
               >
                 Sign in
               </Button>
-              <Text className="text-sm text-gray-700">
-                The magic link will expire in {expireMinutes} minutes. You can use this link to sign in to your account.
-              </Text>
+              <Text className="text-sm text-gray-700">The magic link will expire in {expireMinutes} minutes.</Text>
             </Section>
 
             <Hr className="mx-0 my-1 w-full border border-solid border-gray-200" />
