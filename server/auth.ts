@@ -9,6 +9,7 @@ import WorkspaceJoinedEmail from "@/emails/workspace-joined";
 import RegisterEmail from "@/emails/register";
 import { siteConfig } from "@/config/site";
 import { sendEmail } from "@/lib/email";
+import MagicLinkEmail from "@/emails/magic-link";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -62,7 +63,34 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: env.EMAIL_FROM,
-      maxAge: 24 * 60 * 60,
+      maxAge: 10 * 60, // 10 minutes
+      sendVerificationRequest: async (params) => {
+        const { identifier, url } = params;
+        const host = "Loggrr";
+        const expireMinutes = 10; // 10 minutes
+
+        const maginLinkEmailHtml = MagicLinkEmail({
+          host: host,
+          magicLink: url,
+          expireMinutes: expireMinutes,
+        });
+
+        const maginLinkEmailOptions = {
+          to: identifier,
+          subject: `Sign in to ${host}`,
+          html: maginLinkEmailHtml,
+        };
+
+        try {
+          const result = await sendEmail(maginLinkEmailOptions);
+          if (!result?.success) {
+            throw new Error(result?.error || "Email could not be sent");
+          }
+        } catch (error) {
+          console.error("Error sending email:", error);
+          throw new Error("Email could not be sent");
+        }
+      },
     }),
     /**
      * ...add more providers here
