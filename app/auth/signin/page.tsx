@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Mail, Chrome, Loader2, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 function SignInForm() {
+  const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const isAuthenticated = status === "authenticated";
 
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -60,18 +62,21 @@ function SignInForm() {
     }
   }
 
+  if (isAuthenticated) {
+    redirect("/");
+  }
+
   return (
     <div className="container flex min-h-[calc(100vh-80px)] flex-col items-center justify-center py-10">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
         {/* Logo/Brand Section */}
         <div className="flex flex-col items-center space-y-2 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Welcome</h1>
-          <p className="text-base text-muted-foreground">Sign in to your Loggrr account</p>
+          <h1 className="text-4xl font-bold tracking-tight">Welcome to Loggrr</h1>
         </div>
 
         {/* Main Sign In Card */}
         <Card className="border-border/50 shadow-xl">
-          <CardHeader className="space-y-1">
+          <CardHeader className="space-y-2">
             <CardTitle className="text-2xl font-semibold">Sign in</CardTitle>
             <CardDescription>Choose your preferred sign in method</CardDescription>
           </CardHeader>

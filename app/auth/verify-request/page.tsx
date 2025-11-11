@@ -3,13 +3,22 @@ import { MailCheck, ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authOptions } from "@/server/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Check your email",
   description: "A sign in link has been sent to your email address.",
 };
 
-export default function VerifyRequest() {
+export default async function VerifyRequest() {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <div className="container flex min-h-[calc(100vh-80px)] flex-col items-center justify-center py-10">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
