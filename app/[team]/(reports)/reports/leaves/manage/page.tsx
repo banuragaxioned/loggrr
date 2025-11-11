@@ -32,12 +32,16 @@ export default async function Page({ params }: pageProps) {
 
   return (
     <DashboardShell>
-      <DashboardHeader heading="Manage Leaves" text="View and manage all members leave status for the current year.">
+      <div className="flex items-center justify-between gap-4">
+        <DashboardHeader
+          heading="Manage Leaves"
+          text="View and manage all members leave status for the current year."
+        />
         <div className="flex items-center gap-2">
           <SendLeaves team={params.team} leaves={leaves} />
           <LeaveForm team={params.team} users={users} leaves={leaves} />
         </div>
-      </DashboardHeader>
+      </div>
       <Table data={leaves} />
     </DashboardShell>
   );

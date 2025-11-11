@@ -99,6 +99,12 @@ export default async function VerifyRequest() {
           </Link>
         </p>
       </div>
+
+      {/* Background decoration */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+      </div>
     </div>
   );
 }

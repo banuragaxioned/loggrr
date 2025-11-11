@@ -24,12 +24,13 @@ export default async function Page({ params, searchParams }: pageProps) {
   const rolesToAllow = ["HR", "OWNER"];
   const grantAccess = checkAccess(workspaceRole, rolesToDeny, "deny");
   const hasAccess = checkAccess(workspaceRole, rolesToAllow, "allow");
+  const memberId = searchParams.member;
 
   if (!user || !grantAccess) {
     return notFound();
   }
 
-  const leaveData = await getLeave(params.team, user.id);
+  const leaveData = await getLeave(params.team, memberId ? Number(memberId) : user.id);
   const leave = leaveData?.leave;
   const updatedAt = leaveData?.updatedAt;
 
