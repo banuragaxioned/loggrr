@@ -32,6 +32,9 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   posthog.identify(String(userId), { email, name });
 
   const isNavVisible = !excludedNavRoutes.includes(pathname);
+  const isAuthenticated = status === "authenticated";
+  const isLoading = status === "loading";
+  const isAuthPage = pathname.includes("/auth/");
 
   return (
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
@@ -41,37 +44,39 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
           <Clock />
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
-        {isNavVisible && <CommandMenu teams={teamData!} slug={slug} />}
+        {isNavVisible && isAuthenticated && <CommandMenu teams={teamData!} slug={slug} />}
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <nav>
-            {/* Desktop Navigation */}
-            <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
-              {isNavVisible && <NavMenu role={workspaceRole} />}
-              {teamData && <TeamSwitcher teams={teamData} />}
-              {status === "loading" && <Loader className="mr-1" />}
-              {status === "authenticated" && (
-                <UserAccountNav
-                  user={{
-                    name,
-                    image,
-                    email,
-                  }}
-                />
-              )}
-            </div>
-            {/* Mobile Menu */}
-            {isNavVisible && (
-              <div className="ml-auto flex space-x-2 md:hidden">
-                <>
-                  {filteredProjects && <TimeAdd projects={filteredProjects} />}
-                  {teamData && <TeamSwitcher teams={teamData} />}
-                  <MobileNavMenu userProps={{ status, name, image, email }} role={workspaceRole} />
-                </>
+          {isAuthenticated && (
+            <nav>
+              {/* Desktop Navigation */}
+              <div className={cn("hidden items-center space-x-3 md:flex", !isNavVisible && "flex")}>
+                {isNavVisible && <NavMenu role={workspaceRole} />}
+                {teamData && <TeamSwitcher teams={teamData} />}
+                {isAuthenticated && (
+                  <UserAccountNav
+                    user={{
+                      name,
+                      image,
+                      email,
+                    }}
+                  />
+                )}
               </div>
-            )}
-          </nav>
+              {/* Mobile Menu */}
+              {isNavVisible && (
+                <div className="ml-auto flex space-x-2 md:hidden">
+                  <>
+                    {filteredProjects && <TimeAdd projects={filteredProjects} />}
+                    {teamData && <TeamSwitcher teams={teamData} />}
+                    <MobileNavMenu userProps={{ status, name, image, email }} role={workspaceRole} />
+                  </>
+                </div>
+              )}
+            </nav>
+          )}
+          {isLoading && <Loader className="mr-1" />}
         </div>
-        {status !== "loading" && status !== "authenticated" && (
+        {!isAuthenticated && !isLoading && !isAuthPage && (
           <Button variant="default" size="sm" onClick={() => signIn()}>
             Sign in
           </Button>

@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export type LeaveRecord = {
   id: number;
@@ -42,6 +43,13 @@ export type LeaveRecord = {
     };
   };
 };
+
+interface User {
+  id: number;
+  name: string | null;
+  email: string;
+  image: string | null;
+}
 
 const EditButton = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -134,6 +142,17 @@ const LeaveCell = ({ title, value }: { title: string; value: number }) => {
   );
 };
 
+const UserCell = ({ user }: { user: User }) => {
+  const { team } = useParams();
+
+  return (
+    <Link href={`/${team}/reports/leaves?member=${user.id}`} className="flex items-center gap-x-2">
+      <UserAvatar user={user} className="z-10 mr-2 inline-block h-8 w-8 bg-slate-300" />
+      <span className="min-w-[150px]">{user.name}</span>
+    </Link>
+  );
+};
+
 export const getColumn = () => {
   const columns: ColumnDef<LeaveRecord>[] = [
     {
@@ -145,18 +164,7 @@ export const getColumn = () => {
       },
       cell: ({ row }) => {
         const user = row.original.user;
-        return (
-          <div className="flex items-center gap-x-2">
-            <UserAvatar
-              user={{
-                name: user.name ? user.name : "",
-                image: user.image ? user.image : "",
-              }}
-              className="z-10 mr-2 inline-block h-8 w-8 bg-slate-300"
-            />
-            <span className="min-w-[150px]">{user.name}</span>
-          </div>
-        );
+        return <UserCell user={user} />;
       },
       meta: {
         className: "w-[30%]",
