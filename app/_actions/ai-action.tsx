@@ -1,10 +1,13 @@
 "use server";
 
 import { createAI, getMutableAIState, streamUI } from "ai/rsc";
-import { openai } from "@ai-sdk/openai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { ReactNode } from "react";
 import { z } from "zod";
 import { generateId } from "ai";
+import { env } from "@/env.mjs";
+
+const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 import { ShowTimeEntries, ShowTimeEntriesSkeleton } from "@/components/ai/logged";
 import { getCurrentUser } from "@/server/session";
 
@@ -27,7 +30,7 @@ export async function continueConversation(input: string): Promise<ClientMessage
   const workspace = "axioned";
 
   const result = await streamUI({
-    model: openai("gpt-4o"),
+    model: openrouter.chat("moonshotai/kimi-k2.6"),
     system:
       `You help users understand their time entries for the workspace ${workspace}. ` +
       `For context, today's date is ${new Date()} and the current user is ${user?.name} and their userId is ${user?.id}.`,

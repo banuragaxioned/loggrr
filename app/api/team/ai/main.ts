@@ -41,7 +41,11 @@ async function readSchema() {
 
 const schema = await readSchema();
 
-const model = createOpenAILanguageModel(env.OPENAI_API_KEY, "gpt-4o");
+const model = createOpenAILanguageModel(
+  env.OPENROUTER_API_KEY,
+  "moonshotai/kimi-k2.6",
+  "https://openrouter.ai/api/v1/chat/completions",
+);
 const validator = createTypeScriptJsonValidator<TimeLog>(schema ?? "", "TimeLog");
 const translator = typechat.createJsonTranslator(model, validator);
 
