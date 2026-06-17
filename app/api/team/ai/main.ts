@@ -33,8 +33,7 @@ export async function loggr(input: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
     const { object } = await generateObject({
-      model: openrouter.chat("moonshotai/kimi-k2.6"),
-      mode: "json",
+      model: openrouter("moonshotai/kimi-k2.6"),
       schema: timeLogSchema,
       system:
         `You convert a user's natural-language description of their work into structured time entries. ` +

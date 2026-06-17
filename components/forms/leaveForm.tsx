@@ -135,7 +135,7 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     name: user.name || user.email,
   }));
 
-  const form = useForm<LeaveFormValues>({
+  const form = useForm<z.input<typeof leaveFormSchema>, any, LeaveFormValues>({
     resolver: zodResolver(leaveFormSchema),
     defaultValues: {
       userId: 0,

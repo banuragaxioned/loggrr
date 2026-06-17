@@ -56,7 +56,7 @@ export function AddSKill({
   const [selectedSkill, setSelectedSkill] = useState<any>(null);
 
   const SheetCloseButton = useRef<HTMLButtonElement>(null);
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.input<typeof formSchema>, any, z.output<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
