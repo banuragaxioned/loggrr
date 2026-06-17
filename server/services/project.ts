@@ -324,26 +324,30 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
   return result.map((item) => ({ id: item.user.id, name: item.user.name }));
 };
 
+// Active first, then archived — used to group the Category/Task filters.
+const isArchived = (status: string) => status === "ARCHIVED" || status === "DEACTIVATED";
+const byArchived = (a: { archived: boolean }, b: { archived: boolean }) => Number(a.archived) - Number(b.archived);
+
 // Milestones of a project — surfaced as the "Category" filter on the project page.
 export const getMilestonesInProject = async (slug: string, projectId: number) => {
   const result = await db.milestone.findMany({
     where: { workspace: { slug }, projectId },
-    select: { id: true, name: true },
+    select: { id: true, name: true, status: true },
     orderBy: { name: "asc" },
   });
 
-  return result;
+  return result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
 };
 
 // Tasks of a project — surfaced as the "Task" filter on the project page.
 export const getTasksInProject = async (slug: string, projectId: number) => {
   const result = await db.task.findMany({
     where: { workspace: { slug }, projectId },
-    select: { id: true, name: true },
+    select: { id: true, name: true, status: true },
     orderBy: { name: "asc" },
   });
 
-  return result;
+  return result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
 };
 
 export async function getProjects(slug: string, status: string = "", clients?: string) {
