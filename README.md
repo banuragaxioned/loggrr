@@ -17,7 +17,7 @@ Clean and simple time logging solution for teams that embrace transparency and w
 ### Prerequisites
 
 - [nvm](https://github.com/nvm-sh/nvm), [fnm](https://github.com/Schniz/fnm) or [Node.js](https://nodejs.org/en/)
-- [pnpm](https://pnpm.io/)
+- [Bun](https://bun.sh/)
 - [Docker](https://docs.docker.com/get-docker/) (for local development)
 
 ### Installation
@@ -28,23 +28,23 @@ Clean and simple time logging solution for teams that embrace transparency and w
 cp .env.example env
 
 # Install dependencies
-p install
+bun install
 
 # Start the database
 docker compose up
 
 # Push db changes
-p push
+bun run push
 
 # Seed the database
-p seed
+bun run seed
 
 # Start the development server
-p dev
+bun run dev
 
 # Build for production
-p build
+bun run build
 
 # Start the production server
-p start
+bun run start
 ```
