@@ -33,13 +33,7 @@ export async function loggr(input: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
     const { object } = await generateObject({
-      model: openrouter("deepseek/deepseek-v4-flash", {
-        // Non-OpenAI upstreams often reject strict json_schema; opt out so the
-        // response_format is accepted, and let OpenRouter's response-healing
-        // plugin repair any slightly-malformed JSON (non-streaming only).
-        structuredOutputs: { strict: false },
-        plugins: [{ id: "response-healing" }],
-      }),
+      model: openrouter("deepseek/deepseek-v4-flash"),
       schema: timeLogSchema,
       system:
         `You convert a user's natural-language description of their work into structured time entries. ` +
