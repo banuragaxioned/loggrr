@@ -131,15 +131,6 @@
     "bun": "1.3.14",
     "node": "24.x"
   },
-  "trustedDependencies": [
-    "@prisma/client",
-    "@prisma/engines",
-    "prisma",
-    "esbuild",
-    "core-js",
-    "protobufjs",
-    "sharp"
-  ],
   "overrides": {
     "apexcharts": "4.3.0"
   }
