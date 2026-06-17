@@ -68,13 +68,6 @@ const NAV_ITEMS = [
         denyAccess: [""],
       },
       {
-        id: 3,
-        title: "By Member",
-        description: "View logged hours grouped by team member.",
-        slug: "reports/by-member",
-        denyAccess: [""],
-      },
-      {
         id: 2,
         title: "Leaves",
         description: "View your leave status for the current year.",
