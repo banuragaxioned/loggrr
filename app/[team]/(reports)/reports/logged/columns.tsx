@@ -11,6 +11,7 @@ import { UserAvatar } from "@/components/user-avatar";
 export interface Logged {
   id: number;
   name: string;
+  type?: "client" | "project" | "category" | "member" | "entry";
   hours?: number;
   description?: string;
   image?: string;
@@ -29,14 +30,14 @@ export const columns: ColumnDef<Logged>[] = [
     header: "Name",
     cell: ({ row, getValue }) => {
       const { depth, original } = row;
+      const type = original.type;
       const canExpand = row.getCanExpand();
       const isExpanded = row.getIsExpanded();
       const value = getValue() as string;
-      const userImage = depth === 3 && row.original.image;
 
       return (
         <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
-          {depth !== 0 && depth !== 4 && canExpand && (
+          {canExpand && type !== "client" && type !== "entry" && (
             <Button
               {...{
                 onClick: row.getToggleExpandedHandler(),
@@ -47,33 +48,25 @@ export const columns: ColumnDef<Logged>[] = [
               {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
             </Button>
           )}
-          {depth === 1 && !canExpand && (
-            <span
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
-              style={{ backgroundColor: getRandomColor(row.original.id) }}
-            >
-              {value.charAt(0)}
-            </span>
-          )}
           <div
-            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 4 ? "" : "descendent"} relative flex items-center gap-2`}
+            className={`${type === "client" ? "font-medium" : ""} ${type === "entry" ? "descendent" : ""} relative flex items-center gap-2`}
           >
-            {depth === 0 && (
+            {type === "client" && (
               <span
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
-                style={{ backgroundColor: getRandomColor(row.original.id) }}
+                style={{ backgroundColor: getRandomColor(original.id) }}
               >
                 {value.charAt(0)}
               </span>
             )}
-            {depth === 3 && (
+            {type === "member" && (
               <UserAvatar
-                user={{ name: row.original.name ?? null, image: row.original.image ?? null }}
+                user={{ name: original.name ?? null, image: original.image ?? null }}
                 className="h-6 w-6 bg-slate-300"
               />
             )}
-            <span className={`${depth === 4 ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
-            {depth === 4 && (
+            <span className={`${type === "entry" ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            {type === "entry" && (
               <span className="hidden items-center gap-2 md:inline-flex">
                 {original.task && (
                   <Badge variant="secondary" className="shrink-0 font-normal">

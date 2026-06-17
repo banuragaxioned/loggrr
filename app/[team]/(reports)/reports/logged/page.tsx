@@ -6,7 +6,7 @@ import { getStartandEndDates } from "@/lib/months";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/shell";
 
-import { columns } from "./columns";
+import { columns, type Logged } from "./columns";
 import { DataTable } from "./data-table";
 import { getCurrentUser } from "@/server/session";
 import { checkAccess, getUserRole } from "@/lib/helper";
@@ -64,6 +64,7 @@ export default async function Page(props: pageProps) {
       const clientHoursMap = logged.projects.map((item: any) => item.users.map((user: any) => user.userHours));
       const clientHours = clientHoursMap.flat().reduce((sum: any, item: any) => (sum += item), 0);
       return {
+        type: "client",
         id: logged.clientId,
         name: logged.clientName,
         hours: +`${clientHours.toFixed(2)}`,
@@ -92,11 +93,12 @@ export default async function Page(props: pageProps) {
 
                 let member = category.members.get(user.userId);
                 if (!member) {
-                  member = { id: user.userId, name: user.userName, image: user.userImage, hours: 0, subRows: [] };
+                  member = { type: "member", id: user.userId, name: user.userName, image: user.userImage, hours: 0, subRows: [] };
                   category.members.set(user.userId, member);
                 }
                 member.hours += time.time;
                 member.subRows.push({
+                  type: "entry",
                   id: `${user.userId}-${time.date}-${member.subRows.length}`,
                   hours: time.time,
                   name: time.formattedDate,
@@ -107,21 +109,29 @@ export default async function Page(props: pageProps) {
               });
             });
 
+            const buildMembers = (members: Map<number, any>) =>
+              Array.from(members.values()).map((member: any) => ({ ...member, hours: +`${member.hours.toFixed(2)}` }));
+
+            // Only break entries down by category when the project actually has a
+            // real category; otherwise show members directly (no lone "No category").
+            const hasRealCategory = Array.from(categoryMap.keys()).some((key) => key !== "none");
+
+            const projectSubRows = hasRealCategory
+              ? Array.from(categoryMap.values()).map((category: any) => ({
+                  type: "category",
+                  id: category.id,
+                  name: category.name,
+                  hours: +`${category.hours.toFixed(2)}`,
+                  subRows: buildMembers(category.members),
+                }))
+              : buildMembers(categoryMap.get("none")?.members ?? new Map());
+
             return {
+              type: "project",
               id: project.projectId,
               name: project.projectName,
               hours: +`${projectHours.toFixed(2)}`,
-              // Categories (milestones)
-              subRows: Array.from(categoryMap.values()).map((category: any) => ({
-                id: category.id,
-                name: category.name,
-                hours: +`${category.hours.toFixed(2)}`,
-                // Members
-                subRows: Array.from(category.members.values()).map((member: any) => ({
-                  ...member,
-                  hours: +`${member.hours.toFixed(2)}`,
-                })),
-              })),
+              subRows: projectSubRows,
             };
           }),
       };
@@ -133,7 +143,7 @@ export default async function Page(props: pageProps) {
       <div className="mb-8">
         <DataTable
           columns={columns}
-          data={transformedData}
+          data={transformedData as Logged[]}
           allClients={allClients}
           allUsers={allUsers}
           hasFullAccess={hasFullAccess}
