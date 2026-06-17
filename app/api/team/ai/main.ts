@@ -44,6 +44,9 @@ export async function loggr(input: string) {
 
     return { message: "Success", result: object, status: 200 };
   } catch (error) {
-    return { message: "Error processing request", error, status: 500 };
+    // Surface the real cause in the server logs — a raw Error doesn't survive JSON.
+    console.error("[/api/team/ai] generateObject failed:", error);
+    const message = error instanceof Error ? error.message : "Error processing request";
+    return { message, status: 500 };
   }
 }

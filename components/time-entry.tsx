@@ -205,7 +205,12 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
         }),
       });
       const data = await response.json();
-      const updatedAiResponse = data.result.data?.map((response: any) => {
+      if (!response.ok || !data?.result?.data) {
+        console.error("Error fetching AI response", data?.message ?? data);
+        toast.error(data?.message || "Couldn't process that request. Please try again.");
+        return;
+      }
+      const updatedAiResponse = data.result.data.map((response: any) => {
         const updatedResponse = {
           ...response,
           uuid: generateId(),
