@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   title: `Explore`,
 };
 
-export default async function SkillsSummary({ params }: pageProps) {
+export default async function SkillsSummary(props: pageProps) {
+  const params = await props.params;
   const { team } = params;
   const skills = await getSkills(team);
 

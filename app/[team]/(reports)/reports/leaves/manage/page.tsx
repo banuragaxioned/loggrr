@@ -18,7 +18,8 @@ export const metadata: Metadata = {
   title: `Manage Leaves`,
 };
 
-export default async function Page({ params }: pageProps) {
+export default async function Page(props: pageProps) {
+  const params = await props.params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, params.team);
   const grantAccess = ["HR", "OWNER"];

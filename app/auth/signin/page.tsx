@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { Mail, Chrome, Loader2, Sparkles } from "lucide-react";
+import { Mail, Globe, Loader2, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -97,7 +97,7 @@ function SignInForm() {
                 </>
               ) : (
                 <>
-                  <Chrome className="h-5 w-5" />
+                  <Globe className="h-5 w-5" />
                   Continue with Google
                 </>
               )}

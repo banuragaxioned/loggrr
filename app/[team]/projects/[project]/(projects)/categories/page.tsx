@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   title: `Categories`,
 };
 
-export default async function Page({ params }: pageProps) {
+export default async function Page(props: pageProps) {
+  const params = await props.params;
   const { team, project } = params;
 
   const milestoneList = await getMilestones(project || 0, team);

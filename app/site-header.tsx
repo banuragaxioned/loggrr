@@ -44,7 +44,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
           <Clock />
           <span className="inline-block font-bold">{siteConfig.name}</span>
         </Link>
-        {isNavVisible && isAuthenticated && <CommandMenu teams={teamData!} slug={slug} />}
+        {isNavVisible && isAuthenticated && <CommandMenu teams={teamData!} slug={slug || ""} />}
         <div className="flex flex-1 items-center justify-end space-x-2">
           {isAuthenticated && (
             <nav>

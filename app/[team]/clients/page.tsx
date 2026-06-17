@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   title: `Clients`,
 };
 
-export default async function Clients({ params }: pageProps) {
+export default async function Clients(props: pageProps) {
+  const params = await props.params;
   const user = await getCurrentUser();
   const { team } = params;
   const workspaceRole = getUserRole(user?.workspaces, team);
