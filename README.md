@@ -4,7 +4,7 @@ Clean and simple time logging solution for teams that embrace transparency and w
 
 ## Tech stack
 
-- [Next 14](https://nextjs.org)
+- [Next 16](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
