@@ -1,6 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config '../tailwind.config.cjs';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 @layer base {
   :root {
@@ -71,42 +89,44 @@
   }
 }
 
-.descendent::before {
-  content: "";
-  width: 14px;
-  height: 42px;
-  top: -30px;
-  left: -20.5px;
-  @apply absolute border border-gray-200;
-  border-bottom-left-radius: 6px;
-  border-right: transparent;
-  border-top: transparent;
-}
+@layer utilities {
+  .descendent::before {
+    content: '';
+    width: 14px;
+    height: 42px;
+    top: -30px;
+    left: -20.5px;
+    @apply absolute border border-gray-200;
+    border-bottom-left-radius: 6px;
+    border-right: transparent;
+    border-top: transparent;
+  }
 
-.recharts-rectangle,
-.recharts-tooltip-cursor {
-  cursor: pointer;
-  pointer-events: all !important;
-}
+  .recharts-rectangle,
+  .recharts-tooltip-cursor {
+    cursor: pointer;
+    pointer-events: all !important;
+  }
 
-.w-full-combo {
-  @apply relative [&>div[data-radix-popper-content-wrapper]]:!absolute [&>div[data-radix-popper-content-wrapper]]:w-full [&>div[data-radix-popper-content-wrapper]]:max-w-full;
-}
+  .w-full-combo {
+    @apply relative [&>div[data-radix-popper-content-wrapper]]:absolute! [&>div[data-radix-popper-content-wrapper]]:w-full [&>div[data-radix-popper-content-wrapper]]:max-w-full;
+  }
 
-.recharts-tooltip-cursor {
-  @apply fill-muted !important;
-}
+  .recharts-tooltip-cursor {
+    @apply fill-muted!;
+  }
 
-.apexcharts-svg rect {
-  @apply cursor-pointer;
-}
+  .apexcharts-svg rect {
+    @apply cursor-pointer;
+  }
 
-.apexcharts-svg rect:hover {
-  @apply fill-muted-foreground;
-}
+  .apexcharts-svg rect:hover {
+    @apply fill-muted-foreground;
+  }
 
-.apexcharts-yaxis-texts-g text {
-  @apply fill-muted-foreground;
+  .apexcharts-yaxis-texts-g text {
+    @apply fill-muted-foreground;
+  }
 }
 
 @layer base {
@@ -137,7 +157,7 @@
     @apply invalid:focus:ring-destructive;
   }
   select {
-    @apply my-2 block w-full rounded border-border pl-3 pr-10 text-base shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm;
+    @apply my-2 block w-full rounded border-border pl-3 pr-10 text-base shadow-xs focus:border-primary focus:outline-hidden focus:ring-primary sm:text-sm;
   }
   .scrollbar {
     overflow-y: auto;

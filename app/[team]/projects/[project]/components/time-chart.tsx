@@ -19,7 +19,7 @@ type TimeChartProps = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-md border border-border bg-primary-foreground p-2 text-xs shadow-sm">
+      <div className="rounded-md border border-border bg-primary-foreground p-2 text-xs shadow-xs">
         <p className="label">{format(label, "EEE, dd MMM, yyyy")}</p>
         <p className="desc">Hours logged: {payload[0].value}h</p>
         {/* <p className="desc">Billable: {payload[1].value}h</p> */}

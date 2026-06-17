@@ -331,7 +331,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                     errors?.time
                       ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                       : "focus:border-primary focus:ring-primary",
-                    "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-none",
+                    "mx-3 h-20 w-full select-none rounded-md border-transparent bg-transparent py-1 text-center text-4xl leading-none transition-all duration-75 ease-out focus:outline-hidden",
                   )}
                   value={selectedData?.time}
                   onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}

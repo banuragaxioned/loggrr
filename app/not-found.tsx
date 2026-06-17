@@ -3,7 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 export default function Unavailable() {
   return (
-    <section className="mx-auto max-w-screen-xl p-2 text-center">
+    <section className="mx-auto max-w-(--breakpoint-xl) p-2 text-center">
       <h1 className="mb-4">Page unavailable</h1>
       <p className="mx-auto max-w-3xl">
         The link you are trying to reach is currently unavailable. Please check if you are using the correct link. If

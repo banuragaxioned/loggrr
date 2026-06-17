@@ -209,7 +209,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
           </Button>
         )}
       </div>
-      <div className="z-[3] mx-auto box-border w-full rounded-b-xl border bg-transparent">
+      <div className="z-3 mx-auto box-border w-full rounded-b-xl border bg-transparent">
         <form
           onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
           onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
@@ -265,7 +265,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
                   errors?.time
                     ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                     : "border-border focus:border-primary focus:ring-primary",
-                  "placeholder:text-disabled-light focus:outline-none` h-9 w-[66px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out",
+                  "placeholder:text-disabled-light focus:outline-hidden` h-9 w-[66px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out",
                 )}
                 value={selectedData?.time}
                 onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}

@@ -234,7 +234,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
             <Chart options={options} series={data} type="heatmap" height="100%" width="110%" />
           </div>
         ) : (
-          <div className="flex h-[100%] w-[100%] items-end justify-evenly">
+          <div className="flex h-full w-full items-end justify-evenly">
             {Array.from({ length: 7 }, (_, index) => (
               <Skeleton key={index} className="mb-4 h-[150px] w-7" />
             ))}

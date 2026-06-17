@@ -184,7 +184,7 @@ const NotepadCards = ({
                   errors?.time
                     ? "border-destructive px-4 ring-1 ring-destructive focus:border-destructive focus:ring-destructive"
                     : "border-border focus:border-primary focus:ring-primary",
-                  "placeholder:text-disabled-light h-9 w-[120px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-none",
+                  "placeholder:text-disabled-light h-9 w-[120px] select-none rounded-md border bg-transparent py-1 text-center text-sm leading-none transition-all duration-75 ease-out focus:outline-hidden",
                 )}
                 value={selectedData.time}
                 onChange={(e) => handleLoggedTimeInput(e.currentTarget.value)}
