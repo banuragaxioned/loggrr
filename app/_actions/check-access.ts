@@ -2,7 +2,7 @@
 
 import { db } from "@/server/db";
 import { getCurrentUser } from "@/server/session";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 
 export async function checkRole(team: string) {
   const user = await getCurrentUser();

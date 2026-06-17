@@ -14,7 +14,7 @@ import { User, Moon, SunMedium, Boxes, Folder, Building2, BarChart2, BarChart3, 
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 import { Button } from "./ui/button";
 
 interface CommandPropType {

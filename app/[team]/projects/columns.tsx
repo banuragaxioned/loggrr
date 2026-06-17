@@ -3,7 +3,7 @@
 import { Info } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
-import { Status } from "@prisma/client";
+import { Status } from "@/generated/prisma/browser";
 import { UserAvatar } from "@/components/user-avatar";
 import { getTimeInHours } from "@/lib/helper";
 import { CustomTooltip } from "@/components/custom/tooltip";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@/generated/prisma/browser";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SingleSelectDropdown } from "./ui/single-select-dropdown";

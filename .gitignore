@@ -51,3 +51,6 @@ yarn.lock
 .scannerwork/
 
 certificates
+
+# Prisma generated client
+/generated

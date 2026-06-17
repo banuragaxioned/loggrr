@@ -1,4 +1,4 @@
-import { Workspace, User } from "@prisma/client";
+import { Workspace, User } from "@/generated/prisma/browser";
 import { db } from "@/server/db";
 
 export async function getSkills(team: Workspace["slug"]) {

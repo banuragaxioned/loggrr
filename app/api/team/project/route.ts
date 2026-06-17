@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { ProjectInterval, Role } from "@prisma/client";
+import { ProjectInterval, Role } from "@/generated/prisma/browser";
 import { NextRequest, NextResponse } from "next/server";
 
 const projectCreateSchema = z.object({

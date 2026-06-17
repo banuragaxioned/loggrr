@@ -14,7 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./toolbar";
 import { getColumn } from "./columns";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 
 interface MemberTableProps<TData> {
   data: TData[];

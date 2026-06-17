@@ -5,7 +5,7 @@ import { Boxes, Check, ChevronRight, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 import { cn } from "@/lib/utils";
 
 import { Button, buttonVariants } from "@/components/ui/button";
