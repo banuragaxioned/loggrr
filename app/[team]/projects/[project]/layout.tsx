@@ -86,6 +86,8 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       },
       projectId: +projectId,
       date: {
+        // Server component — runs once per request; Date.now() is fine here.
+        // eslint-disable-next-line react-hooks/purity
         gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       },
     },
@@ -102,6 +104,8 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       },
       projectId: +projectId,
       date: {
+        // Server component — runs once per request; Date.now() is fine here.
+        // eslint-disable-next-line react-hooks/purity
         gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       },
       billable: true,
@@ -132,6 +136,8 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       },
       projectId: +projectId,
       date: {
+        // Server component — runs once per request; Date.now() is fine here.
+        // eslint-disable-next-line react-hooks/purity
         gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       },
     },

@@ -84,22 +84,6 @@ const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
     setData(finalData);
   }, [timeEntries, totalDays, end]);
 
-  // Suppress warning for defaultProps in Recharts component
-  if (process.env.NODE_ENV !== "production") {
-    const originalWarn = console.error;
-    console.error = (...args) => {
-      if (
-        args &&
-        args?.[0]?.includes(
-          "Support for defaultProps will be removed from function components in a future major release.",
-        )
-      ) {
-        return;
-      }
-      originalWarn(...args);
-    };
-  }
-
   return (
     <Card className="select-none p-0 shadow-none">
       <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
