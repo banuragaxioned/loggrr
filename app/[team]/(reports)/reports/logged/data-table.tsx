@@ -69,9 +69,15 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // Re-fetch server data when nuqs shallow filter updates change the query.
+  // Keyed on the stable query string — not the searchParams/router identities,
+  // which are recreated each render under the Next 16 router and would cause an
+  // infinite refresh loop.
+  const queryString = searchParams.toString();
   useEffect(() => {
     router.refresh();
-  }, [searchParams, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryString]);
 
   const handlePrintClick = () => {
     setIsPrintMode(true);
