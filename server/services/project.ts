@@ -76,6 +76,8 @@ export const getMembersTimeEntries = async (
   endDate: Date,
   billing?: string,
   members?: string,
+  category?: string,
+  task?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -99,6 +101,12 @@ export const getMembersTimeEntries = async (
         userId: {
           in: members.split(",").map((member) => +member),
         },
+      }),
+      ...(category && {
+        milestoneId: { in: category.split(",").map(Number) },
+      }),
+      ...(task && {
+        taskId: { in: task.split(",").map(Number) },
       }),
     },
     _sum: {
@@ -165,6 +173,8 @@ export const getMemberEntriesGroupedByName = async (
   endDate: Date,
   billing?: string,
   members?: string,
+  category?: string,
+  task?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -180,6 +190,12 @@ export const getMemberEntriesGroupedByName = async (
         ...(isBillable !== null && { billable: { equals: isBillable } }),
         ...(members && {
           userId: { in: members.split(",").map(Number) },
+        }),
+        ...(category && {
+          milestoneId: { in: category.split(",").map(Number) },
+        }),
+        ...(task && {
+          taskId: { in: task.split(",").map(Number) },
         }),
       },
       select: {
@@ -220,6 +236,12 @@ export const getMemberEntriesGroupedByName = async (
         ...(isBillable !== null && { billable: { equals: isBillable } }),
         ...(members && {
           userId: { in: members.split(",").map(Number) },
+        }),
+        ...(category && {
+          milestoneId: { in: category.split(",").map(Number) },
+        }),
+        ...(task && {
+          taskId: { in: task.split(",").map(Number) },
         }),
       },
       _sum: {
@@ -300,6 +322,28 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
   });
 
   return result.map((item) => ({ id: item.user.id, name: item.user.name }));
+};
+
+// Milestones of a project — surfaced as the "Category" filter on the project page.
+export const getMilestonesInProject = async (slug: string, projectId: number) => {
+  const result = await db.milestone.findMany({
+    where: { workspace: { slug }, projectId },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
+  return result;
+};
+
+// Tasks of a project — surfaced as the "Task" filter on the project page.
+export const getTasksInProject = async (slug: string, projectId: number) => {
+  const result = await db.task.findMany({
+    where: { workspace: { slug }, projectId },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
+
+  return result;
 };
 
 export async function getProjects(slug: string, status: string = "", clients?: string) {

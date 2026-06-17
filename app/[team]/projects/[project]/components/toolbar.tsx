@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { format, startOfDay, startOfToday, subDays } from "date-fns";
-import { CircleDollarSign, Download, ListRestart, Loader2, Users } from "lucide-react";
+import { CircleDollarSign, Download, Layers, ListChecks, ListRestart, Loader2, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
@@ -19,9 +19,13 @@ import MultiSelectFilter from "./multiselect-filters";
 export function DataTableToolbar({
   isBillable,
   allMembers,
+  allCategories,
+  allTasks,
 }: {
   isBillable: boolean;
   allMembers: ClientAndUserInterface[];
+  allCategories: ClientAndUserInterface[];
+  allTasks: ClientAndUserInterface[];
 }) {
   const [isExportLoading, setIsExportLoading] = useState(false);
 
@@ -34,6 +38,8 @@ export function DataTableToolbar({
   const selectedRange = searchParams.get("range");
   const selectedBilling = searchParams.get("billable");
   const selectedMembers = searchParams.get("members");
+  const selectedCategory = searchParams.get("category");
+  const selectedTask = searchParams.get("task");
   const defaultDay = selectedRange ? undefined : 30;
   const selectedProject = pathname.includes("projects") ? pathname.split("/")[3] : null;
 
@@ -44,7 +50,21 @@ export function DataTableToolbar({
     options: allMembers,
   };
 
-  const isResetButtonVisibile = selectedRange || selectedBilling || selectedMembers;
+  const categoryFilter = {
+    title: "Category",
+    searchable: true,
+    icon: <Layers size={16} />,
+    options: allCategories,
+  };
+
+  const taskFilter = {
+    title: "Task",
+    searchable: true,
+    icon: <ListChecks size={16} />,
+    options: allTasks,
+  };
+
+  const isResetButtonVisibile = selectedRange || selectedBilling || selectedMembers || selectedCategory || selectedTask;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -116,6 +136,8 @@ export function DataTableToolbar({
         href={`?${new URLSearchParams({
           range: selectedRange ?? "",
           members: selectedMembers ?? "",
+          category: selectedCategory ?? "",
+          task: selectedTask ?? "",
           billable: generateBillingQuery()?.nextValue ?? "",
         })}`}
       >
@@ -153,6 +175,12 @@ export function DataTableToolbar({
         </li>
         <li>
           <MultiSelectFilter values={peopleFilter} />
+        </li>
+        <li>
+          <MultiSelectFilter values={categoryFilter} />
+        </li>
+        <li>
+          <MultiSelectFilter values={taskFilter} />
         </li>
         {/* Billing Status */}
         {isBillable && <li>{billingStatusToggleButton}</li>}
