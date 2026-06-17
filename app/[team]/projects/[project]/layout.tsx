@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
+import { ClipboardCheck, Milestone as CategoryIcon, Table2, TextSearch, Users } from "lucide-react";
 
 import { db } from "@/server/db";
 import { getCurrentUser } from "@/server/session";
@@ -62,6 +62,11 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
       icon: <Users size={16} className="hidden sm:block" />,
+    },
+    {
+      title: "Report",
+      href: `/${slug}/projects/${projectId}/reports`,
+      icon: <Table2 size={16} className="hidden sm:block" />,
     },
   ];
 
