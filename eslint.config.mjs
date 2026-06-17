@@ -9,7 +9,7 @@ const reactHooks = findPlugin("react-hooks");
 const importPlugin = findPlugin("import");
 
 export default [
-  { ignores: [".next/**", "node_modules/**", "next-env.d.ts"] },
+  { ignores: [".next/**", "node_modules/**", "next-env.d.ts", "generated/**"] },
   ...nextCoreWebVitals,
   eslintConfigPrettier,
   {
