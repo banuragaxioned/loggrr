@@ -5,6 +5,7 @@ import { Circle, Minus, Plus } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
 
 export interface Logged {
@@ -14,6 +15,7 @@ export interface Logged {
   description?: string;
   image?: string;
   billable?: boolean;
+  task?: string | null;
   subRows?: {
     id: number;
     name: string;
@@ -30,11 +32,11 @@ export const columns: ColumnDef<Logged>[] = [
       const canExpand = row.getCanExpand();
       const isExpanded = row.getIsExpanded();
       const value = getValue() as string;
-      const userImage = depth === 2 && row.original.image;
+      const userImage = depth === 3 && row.original.image;
 
       return (
         <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
-          {depth !== 0 && depth !== 3 && canExpand && (
+          {depth !== 0 && depth !== 4 && canExpand && (
             <Button
               {...{
                 onClick: row.getToggleExpandedHandler(),
@@ -54,7 +56,7 @@ export const columns: ColumnDef<Logged>[] = [
             </span>
           )}
           <div
-            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 3 ? "" : "descendent"} relative flex items-center gap-2`}
+            className={`${depth === 0 ? "font-medium" : ""} ${canExpand || depth !== 4 ? "" : "descendent"} relative flex items-center gap-2`}
           >
             {depth === 0 && (
               <span
@@ -64,16 +66,21 @@ export const columns: ColumnDef<Logged>[] = [
                 {value.charAt(0)}
               </span>
             )}
-            {depth === 2 && (
+            {depth === 3 && (
               <UserAvatar
                 user={{ name: row.original.name ?? null, image: row.original.image ?? null }}
                 className="h-6 w-6 bg-slate-300"
               />
             )}
-            <span className={`${depth === 3 ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
-            {depth === 3 && (
-              <span className="hidden md:inline">
-                <span className="ml-2 line-clamp-1 opacity-50" title={original.description}>
+            <span className={`${depth === 4 ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            {depth === 4 && (
+              <span className="hidden items-center gap-2 md:inline-flex">
+                {original.task && (
+                  <Badge variant="secondary" className="shrink-0 font-normal">
+                    {original.task}
+                  </Badge>
+                )}
+                <span className="line-clamp-1 opacity-50" title={original.description ?? undefined}>
                   {original?.description ?? ""}
                 </span>
               </span>
