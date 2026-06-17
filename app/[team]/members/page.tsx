@@ -15,7 +15,8 @@ export const metadata: Metadata = {
   title: `Members`,
 };
 
-const ManageMembers = async ({ params }: pageProps) => {
+const ManageMembers = async (props: pageProps) => {
+  const params = await props.params;
   const { team } = params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, team);

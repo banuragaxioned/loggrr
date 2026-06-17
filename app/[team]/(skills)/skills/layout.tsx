@@ -9,10 +9,16 @@ import { checkAccess, getUserRole } from "@/lib/helper";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
-  params: { team: string };
+  params: Promise<{ team: string }>;
 }
 
-export default async function DashboardLayout({ children, params }: DashboardLayoutProps) {
+export default async function DashboardLayout(props: DashboardLayoutProps) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { team } = params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, team);

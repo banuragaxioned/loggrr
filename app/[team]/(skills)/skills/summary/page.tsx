@@ -22,7 +22,8 @@ type Scores = {
   skillId: number;
 }[];
 
-export default async function SkillsSummary({ params }: pageProps) {
+export default async function SkillsSummary(props0: pageProps) {
+  const params = await props0.params;
   const user = await getCurrentUser();
   const users = await getAllUsers(params.team);
   const skillsList = await getSkills(params.team);

@@ -1,5 +1,6 @@
 "use server";
 
+import type { ReactElement } from "react";
 import nodemailer from "nodemailer";
 import { env } from "@/env.mjs";
 import { render } from "@react-email/render";
@@ -7,7 +8,7 @@ import { render } from "@react-email/render";
 interface EmailPayload {
   to: string;
   subject: string;
-  html: JSX.Element;
+  html: ReactElement;
 }
 
 const transporter = nodemailer.createTransport({

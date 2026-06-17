@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   title: `Overview`,
 };
 
-export default async function Page({ params, searchParams }: pageProps) {
+export default async function Page(props: pageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const { team, project } = params;
   const projectDetails = await getProjectDetailsById(team, +project!);
   const selectedRange = searchParams.range;

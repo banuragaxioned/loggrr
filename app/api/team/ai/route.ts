@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: "Unauthorized! You are not logged in." }, { status: 403 });
 
     const body = await req.json();
-    const { message, result } = await loggr(JSON.stringify(body));
+    const { message, result, status } = await loggr(JSON.stringify(body));
 
-    return NextResponse.json({ message, result });
+    return NextResponse.json({ message, result }, { status });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }

@@ -4,7 +4,7 @@ Clean and simple time logging solution for teams that embrace transparency and w
 
 ## Tech stack
 
-- [Next 14](https://nextjs.org)
+- [Next 16](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
@@ -16,8 +16,7 @@ Clean and simple time logging solution for teams that embrace transparency and w
 
 ### Prerequisites
 
-- [nvm](https://github.com/nvm-sh/nvm), [fnm](https://github.com/Schniz/fnm) or [Node.js](https://nodejs.org/en/)
-- [Bun](https://bun.sh/)
+- [mise](https://mise.jdx.dev/) (reads `.tool-versions` to provision Node + Bun), or [Node.js](https://nodejs.org/en/) 24 + [Bun](https://bun.sh/) installed manually
 - [Docker](https://docs.docker.com/get-docker/) (for local development)
 
 ### Installation

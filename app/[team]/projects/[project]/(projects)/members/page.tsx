@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   title: `Members`,
 };
 
-export default async function Page({ params }: pageProps) {
+export default async function Page(props: pageProps) {
+  const params = await props.params;
   const { team, project } = params;
   const projectId = project || 0;
   const members = await getProjectMembers({ projectId, team });

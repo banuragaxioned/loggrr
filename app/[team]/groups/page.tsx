@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   title: `Groups`,
 };
 
-export default async function Groups({ params }: pageProps) {
+export default async function Groups(props: pageProps) {
+  const params = await props.params;
   const { team } = params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, team);

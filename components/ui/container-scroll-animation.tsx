@@ -36,8 +36,8 @@ export const ContainerScroll = ({
   const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
-    // h-[80rem] is the height of the container
-    <div className="relative flex h-[30rem] items-center justify-center p-20" ref={containerRef}>
+    // h-320 is the height of the container
+    <div className="relative flex h-120 items-center justify-center p-20" ref={containerRef}>
       <div
         className="relative w-full py-40"
         style={{
@@ -83,7 +83,7 @@ export const Card = ({
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
       }}
-      className="mx-auto -mt-12 h-[30rem] w-full max-w-5xl rounded-[30px] border-4 border-[#6C6C6C] bg-[#222222] p-6 shadow-2xl md:h-[40rem]"
+      className="mx-auto -mt-12 h-120 w-full max-w-5xl rounded-[30px] border-4 border-[#6C6C6C] bg-[#222222] p-6 shadow-2xl md:h-160"
     >
       <div className="h-full w-full overflow-hidden rounded-2xl bg-background p-4">
         <motion.div className="relative rounded-md" style={{ translateY: translate }}>

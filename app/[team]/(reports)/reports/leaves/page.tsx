@@ -17,7 +17,9 @@ export const metadata: Metadata = {
   title: `Leave Status`,
 };
 
-export default async function Page({ params, searchParams }: pageProps) {
+export default async function Page(props: pageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, params.team);
   const rolesToDeny = ["GUEST"];

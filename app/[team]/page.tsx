@@ -11,7 +11,9 @@ import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
 import WeekHeatmap from "@/components/charts/week-heatmap";
 
-export default async function Dashboard({ params, searchParams }: pageProps) {
+export default async function Dashboard(props: pageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const user = await getCurrentUser();
   const { team } = params;
 
