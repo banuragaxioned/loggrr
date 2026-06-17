@@ -33,7 +33,13 @@ export async function loggr(input: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
     const { object } = await generateObject({
-      model: openrouter("moonshotai/kimi-k2.6"),
+      model: openrouter("moonshotai/kimi-k2.6", {
+        // Non-OpenAI upstreams often reject strict json_schema; opt out so the
+        // response_format is accepted, and let OpenRouter's response-healing
+        // plugin repair any slightly-malformed JSON (non-streaming only).
+        structuredOutputs: { strict: false },
+        plugins: [{ id: "response-healing" }],
+      }),
       schema: timeLogSchema,
       system:
         `You convert a user's natural-language description of their work into structured time entries. ` +
