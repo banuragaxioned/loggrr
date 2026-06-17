@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Circle, Minus, Pencil, Plus, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
@@ -43,7 +44,8 @@ export interface Logged {
   }[];
 }
 
-export const columns: ColumnDef<Logged>[] = [
+// `showTask` is false when the page is already filtered by a task (badge would be redundant).
+export const getColumns = (showTask = true): ColumnDef<Logged>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -77,7 +79,12 @@ export const columns: ColumnDef<Logged>[] = [
             )}
             <span className={`${depth === 1 ? "w-[150px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
             {depth === 1 && (
-              <span className="md:inline">
+              <span className="flex items-center gap-2 md:inline-flex">
+                {showTask && row.original.task?.name && (
+                  <Badge variant="secondary" className="shrink-0 font-normal">
+                    {row.original.task.name}
+                  </Badge>
+                )}
                 <span className="ml-2 line-clamp-1 opacity-50" title={row.original.comments}>
                   {row.original?.comments ?? ""}
                 </span>
