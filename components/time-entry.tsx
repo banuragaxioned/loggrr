@@ -214,6 +214,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
         const updatedResponse = {
           ...response,
           uuid: generateId(),
+          // schema returns time as a number; the notepad input expects a string
+          time: response.time != null ? String(response.time) : "",
           project: projects
             .map((project) => ({ id: project.id, name: project.name, billable: project.billable }))
             .find((project) => project.id === response.id),

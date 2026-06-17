@@ -11,18 +11,26 @@ export const config = {
 const openrouter = createOpenRouter({ apiKey: env.OPENROUTER_API_KEY });
 
 const timeLogSchema = z.object({
-  data: z.array(
-    z.object({
-      id: z.number().describe("the matching project id from the provided projects list"),
-      name: z.string().describe("the project name"),
-      milestone: z.object({ id: z.number(), name: z.string() }).optional(),
-      task: z.object({ id: z.number(), name: z.string() }).optional(),
-      billable: z.boolean().optional().describe("defaults to true"),
-      time: z.string().describe("numeric value of hours, without any unit"),
-      comments: z.string(),
-      date: z.string().describe("the entry date in yyyy-MM-dd format"),
-    }),
-  ),
+  data: z
+    .array(
+      z.object({
+        id: z.number().int().describe("the id of the matching project from the provided projects list"),
+        name: z.string().describe("the exact name of the matching project from the provided projects list"),
+        milestone: z
+          .object({ id: z.number().int(), name: z.string() })
+          .nullable()
+          .describe("the matching milestone, or null if none is mentioned"),
+        task: z
+          .object({ id: z.number().int(), name: z.string() })
+          .nullable()
+          .describe("the matching task, or null if none is mentioned"),
+        billable: z.boolean().describe("whether the entry is billable; true unless the user clearly says otherwise"),
+        time: z.number().describe("hours worked as a decimal number with no unit, e.g. 3 or 1.5"),
+        comments: z.string().describe("a short description of the work done"),
+        date: z.string().describe("the entry date in yyyy-MM-dd format; today if the user does not specify one"),
+      }),
+    )
+    .describe("one entry per distinct piece of work the user describes"),
 });
 
 export type TimeLog = z.infer<typeof timeLogSchema>;
