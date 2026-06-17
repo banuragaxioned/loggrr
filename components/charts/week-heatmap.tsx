@@ -154,13 +154,13 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
       hover: {
         colors: undefined,
         filter: {
-          type: "none",
+          type: "none" as const,
           value: 0,
         },
       },
       active: {
         filter: {
-          type: "none",
+          type: "none" as const,
           value: 0,
         },
       },

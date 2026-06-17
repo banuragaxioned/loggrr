@@ -1,4 +1,4 @@
-const { fontFamily } = require("tailwindcss/defaultTheme");
+const { fontFamily } = /** @type {any} */ (require("tailwindcss/defaultTheme"));
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
