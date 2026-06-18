@@ -82,6 +82,7 @@ export const getMembersTimeEntries = async (
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
 
   const timeEntries = await db.timeEntry.groupBy({
     by: ["date"],
@@ -102,12 +103,7 @@ export const getMembersTimeEntries = async (
           in: members.split(",").map((member) => +member),
         },
       }),
-      ...(category && {
-        milestoneId: { in: category.split(",").map(Number) },
-      }),
-      ...(task && {
-        taskId: { in: task.split(",").map(Number) },
-      }),
+      ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
     },
     _sum: {
       time: true,
@@ -179,6 +175,7 @@ export const getMemberEntriesGroupedByName = async (
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
 
   // Optimize query by pre-aggregating user totals
   const [userEntries, userTotals] = await Promise.all([
@@ -191,12 +188,7 @@ export const getMemberEntriesGroupedByName = async (
         ...(members && {
           userId: { in: members.split(",").map(Number) },
         }),
-        ...(category && {
-          milestoneId: { in: category.split(",").map(Number) },
-        }),
-        ...(task && {
-          taskId: { in: task.split(",").map(Number) },
-        }),
+        ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
       },
       select: {
         id: true,
@@ -237,12 +229,7 @@ export const getMemberEntriesGroupedByName = async (
         ...(members && {
           userId: { in: members.split(",").map(Number) },
         }),
-        ...(category && {
-          milestoneId: { in: category.split(",").map(Number) },
-        }),
-        ...(task && {
-          taskId: { in: task.split(",").map(Number) },
-        }),
+        ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
       },
       _sum: {
         time: true,
@@ -328,7 +315,25 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
 const isArchived = (status: string) => status === "ARCHIVED" || status === "DEACTIVATED";
 const byArchived = (a: { archived: boolean }, b: { archived: boolean }) => Number(a.archived) - Number(b.archived);
 
+// Sentinel id used by the "No category" / "No task" filter options.
+const NONE_ID = 0;
+
+// Build a Prisma filter for a nullable FK from a comma-separated selection,
+// where "0" means "no value set" (uncategorised / no task).
+const buildFkFilter = (value: string | undefined, field: "milestoneId" | "taskId") => {
+  if (!value) return null;
+  const ids = value.split(",");
+  const realIds = ids.map(Number).filter((n) => n > 0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const conditions: any[] = [];
+  if (realIds.length) conditions.push({ [field]: { in: realIds } });
+  if (ids.includes(`${NONE_ID}`)) conditions.push({ [field]: null });
+  if (!conditions.length) return null;
+  return conditions.length === 1 ? conditions[0] : { OR: conditions };
+};
+
 // Milestones of a project — surfaced as the "Category" filter on the project page.
+// Appends a "No category" option (only when the project has real categories).
 export const getMilestonesInProject = async (slug: string, projectId: number) => {
   const result = await db.milestone.findMany({
     where: { workspace: { slug }, projectId },
@@ -336,10 +341,12 @@ export const getMilestonesInProject = async (slug: string, projectId: number) =>
     orderBy: { name: "asc" },
   });
 
-  return result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  const milestones = result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  return milestones.length ? [...milestones, { id: NONE_ID, name: "No category", archived: false }] : [];
 };
 
 // Tasks of a project — surfaced as the "Task" filter on the project page.
+// Appends a "No task" option (only when the project has real tasks).
 export const getTasksInProject = async (slug: string, projectId: number) => {
   const result = await db.task.findMany({
     where: { workspace: { slug }, projectId },
@@ -347,7 +354,8 @@ export const getTasksInProject = async (slug: string, projectId: number) => {
     orderBy: { name: "asc" },
   });
 
-  return result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  const tasks = result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  return tasks.length ? [...tasks, { id: NONE_ID, name: "No task", archived: false }] : [];
 };
 
 // Summary matrix for a project: category (milestone) > task rows, members who
