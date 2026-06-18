@@ -76,10 +76,13 @@ export const getMembersTimeEntries = async (
   endDate: Date,
   billing?: string,
   members?: string,
+  category?: string,
+  task?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
 
   const timeEntries = await db.timeEntry.groupBy({
     by: ["date"],
@@ -100,6 +103,7 @@ export const getMembersTimeEntries = async (
           in: members.split(",").map((member) => +member),
         },
       }),
+      ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
     },
     _sum: {
       time: true,
@@ -165,10 +169,13 @@ export const getMemberEntriesGroupedByName = async (
   endDate: Date,
   billing?: string,
   members?: string,
+  category?: string,
+  task?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
 
   // Optimize query by pre-aggregating user totals
   const [userEntries, userTotals] = await Promise.all([
@@ -181,6 +188,7 @@ export const getMemberEntriesGroupedByName = async (
         ...(members && {
           userId: { in: members.split(",").map(Number) },
         }),
+        ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
       },
       select: {
         id: true,
@@ -221,6 +229,7 @@ export const getMemberEntriesGroupedByName = async (
         ...(members && {
           userId: { in: members.split(",").map(Number) },
         }),
+        ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
       },
       _sum: {
         time: true,
@@ -289,6 +298,11 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
         select: {
           id: true,
           name: true,
+          // role in this workspace — INACTIVE members are grouped separately
+          workspaces: {
+            where: { workspace: { slug } },
+            select: { role: true },
+          },
         },
       },
     },
@@ -299,7 +313,155 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
     },
   });
 
-  return result.map((item) => ({ id: item.user.id, name: item.user.name }));
+  return result
+    .map((item) => ({
+      id: item.user.id,
+      name: item.user.name,
+      archived: item.user.workspaces[0]?.role === "INACTIVE",
+    }))
+    .sort(byArchived);
+};
+
+// Active first, then archived — used to group the Category/Task filters.
+const isArchived = (status: string) => status === "ARCHIVED" || status === "DEACTIVATED";
+const byArchived = (a: { archived: boolean }, b: { archived: boolean }) => Number(a.archived) - Number(b.archived);
+
+// Sentinel id used by the "No category" / "No task" filter options.
+const NONE_ID = 0;
+
+// Build a Prisma filter for a nullable FK from a comma-separated selection,
+// where "0" means "no value set" (uncategorised / no task).
+const buildFkFilter = (value: string | undefined, field: "milestoneId" | "taskId") => {
+  if (!value) return null;
+  const ids = value.split(",");
+  const realIds = ids.map(Number).filter((n) => n > 0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const conditions: any[] = [];
+  if (realIds.length) conditions.push({ [field]: { in: realIds } });
+  if (ids.includes(`${NONE_ID}`)) conditions.push({ [field]: null });
+  if (!conditions.length) return null;
+  return conditions.length === 1 ? conditions[0] : { OR: conditions };
+};
+
+// Milestones of a project — surfaced as the "Category" filter on the project page.
+// Appends a "No category" option (only when the project has real categories).
+export const getMilestonesInProject = async (slug: string, projectId: number) => {
+  const result = await db.milestone.findMany({
+    where: { workspace: { slug }, projectId },
+    select: { id: true, name: true, status: true },
+    orderBy: { name: "asc" },
+  });
+
+  const milestones = result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  return milestones.length ? [...milestones, { id: NONE_ID, name: "No category", archived: false }] : [];
+};
+
+// Tasks of a project — surfaced as the "Task" filter on the project page.
+// Appends a "No task" option (only when the project has real tasks).
+export const getTasksInProject = async (slug: string, projectId: number) => {
+  const result = await db.task.findMany({
+    where: { workspace: { slug }, projectId },
+    select: { id: true, name: true, status: true },
+    orderBy: { name: "asc" },
+  });
+
+  const tasks = result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  return tasks.length ? [...tasks, { id: NONE_ID, name: "No task", archived: false }] : [];
+};
+
+// Summary matrix for a project: category (milestone) > task rows, members who
+// logged in range as columns, with row / column / grand totals. Summary only.
+export const getProjectMatrix = async (
+  slug: string,
+  projectId: number,
+  startDate: Date,
+  endDate: Date,
+  billing?: string,
+  members?: string,
+  category?: string,
+  task?: string,
+) => {
+  const start = startOfDay(startDate);
+  const end = endOfDay(endDate);
+  const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
+
+  const grouped = await db.timeEntry.groupBy({
+    by: ["milestoneId", "taskId", "userId"],
+    where: {
+      workspace: { slug },
+      projectId,
+      date: { gte: start, lte: end },
+      ...(members && { userId: { in: members.split(",").map(Number) } }),
+      ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
+      ...(isBillable !== null && { billable: { equals: isBillable } }),
+    },
+    _sum: { time: true },
+  });
+
+  const userIds = Array.from(new Set(grouped.map((g) => g.userId)));
+  const [milestones, tasks, users] = await Promise.all([
+    db.milestone.findMany({ where: { workspace: { slug }, projectId }, select: { id: true, name: true } }),
+    db.task.findMany({ where: { workspace: { slug }, projectId }, select: { id: true, name: true } }),
+    db.user.findMany({ where: { id: { in: userIds } }, select: { id: true, name: true } }),
+  ]);
+
+  const milestoneName = new Map(milestones.map((m) => [m.id, m.name]));
+  const taskName = new Map(tasks.map((t) => [t.id, t.name]));
+  const userName = new Map(users.map((u) => [u.id, u.name ?? "Unknown"]));
+
+  type Cells = Map<number, number>;
+  type TaskRow = { id: string; name: string; cells: Cells; total: number };
+  type CategoryRow = { id: string; name: string; cells: Cells; total: number; tasks: Map<string, TaskRow> };
+
+  const categories = new Map<string, CategoryRow>();
+  const memberTotals: Cells = new Map();
+  let grandTotal = 0;
+  const add = (cells: Cells, userId: number, hours: number) =>
+    cells.set(userId, +((cells.get(userId) ?? 0) + hours).toFixed(2));
+
+  for (const g of grouped) {
+    const hours = getTimeInHours(g._sum.time ?? 0);
+    if (!hours) continue;
+
+    const cKey = g.milestoneId != null ? `m-${g.milestoneId}` : "none";
+    const cName = g.milestoneId != null ? (milestoneName.get(g.milestoneId) ?? "Unknown") : "Uncategorised";
+    let category = categories.get(cKey);
+    if (!category) {
+      category = { id: cKey, name: cName, cells: new Map(), total: 0, tasks: new Map() };
+      categories.set(cKey, category);
+    }
+    add(category.cells, g.userId, hours);
+    category.total = +(category.total + hours).toFixed(2);
+
+    const tKey = g.taskId != null ? `t-${g.taskId}` : "none";
+    const tName = g.taskId != null ? (taskName.get(g.taskId) ?? "Unknown") : "No task";
+    let task = category.tasks.get(tKey);
+    if (!task) {
+      task = { id: tKey, name: tName, cells: new Map(), total: 0 };
+      category.tasks.set(tKey, task);
+    }
+    add(task.cells, g.userId, hours);
+    task.total = +(task.total + hours).toFixed(2);
+
+    add(memberTotals, g.userId, hours);
+    grandTotal = +(grandTotal + hours).toFixed(2);
+  }
+
+  const cells = (c: Cells) => Object.fromEntries(c) as Record<number, number>;
+
+  return {
+    members: userIds.map((id) => ({ id, name: userName.get(id) ?? "Unknown" })).sort((a, b) => a.name.localeCompare(b.name)),
+    grandTotal,
+    memberTotals: cells(memberTotals),
+    categories: Array.from(categories.values()).map((c) => ({
+      id: c.id,
+      name: c.name,
+      total: c.total,
+      cells: cells(c.cells),
+      tasks: Array.from(c.tasks.values()).map((t) => ({ id: t.id, name: t.name, total: t.total, cells: cells(t.cells) })),
+    })),
+  };
 };
 
 export async function getProjects(slug: string, status: string = "", clients?: string) {

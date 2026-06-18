@@ -26,6 +26,7 @@ interface DropdownInterface {
   searchable: boolean;
   icon?: React.ReactNode;
   options: ClientAndUserInterface[];
+  archivedLabel?: string;
 }
 
 const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
@@ -78,6 +79,34 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
     }
   }, [selectedClients]);
 
+  // Group options into active / archived (active first) when any option carries
+  // an `archived` flag (Category + Task filters); otherwise render flat (Members).
+  const hasArchived = values.options.some((option) => option.archived);
+  const activeOptions = hasArchived ? values.options.filter((option) => !option.archived) : values.options;
+  const archivedOptions = hasArchived ? values.options.filter((option) => option.archived) : [];
+
+  const renderItem = (option: ClientAndUserInterface) => {
+    const isSelected = selectedOptions.includes(`${option.id}`);
+    return (
+      <CommandItem key={option.id} className="p-0">
+        <div
+          onClick={() => handleItemClick(option)}
+          className="flex w-full cursor-pointer items-center gap-2 px-3 py-1.5"
+        >
+          <div
+            className={cn(
+              "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+              isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible",
+            )}
+          >
+            <Check className="h-4 w-4" />
+          </div>
+          {option.name}
+        </div>
+      </CommandItem>
+    );
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className="w-min">
@@ -113,50 +142,29 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
         <Command>
           {values.searchable && <CommandInput placeholder="Search..." />}
           <CommandEmpty>No options found.</CommandEmpty>
-          <CommandGroup>
-            <CommandList>
-              {values.options.map((option) => {
-                const isSelected = selectedOptions.includes(`${option.id}`);
-                return (
-                  <CommandItem key={option.id} className="p-0">
-                    <div
-                      onClick={() => handleItemClick(option)}
-                      className="flex w-full cursor-pointer items-center gap-2 px-3 py-1.5"
-                    >
-                      <>
-                        <div
-                          className={cn(
-                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                            isSelected ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible",
-                          )}
-                        >
-                          <Check className={cn("h-4 w-4")} />
-                        </div>
-                        {option.name}
-                      </>
-                    </div>
+          <CommandList>
+            <CommandGroup heading={hasArchived ? "Active" : undefined}>{activeOptions.map(renderItem)}</CommandGroup>
+            {archivedOptions.length > 0 && (
+              <CommandGroup heading={values.archivedLabel ?? "Archived"}>{archivedOptions.map(renderItem)}</CommandGroup>
+            )}
+            {selectedOptions.length > 0 && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => {
+                      setSelectedOptions([]);
+                      setOpen(false);
+                      router.push(pathname + "?" + createQueryString(isFilterOf, ""));
+                    }}
+                    className="cursor-pointer justify-center text-center"
+                  >
+                    Clear filters
                   </CommandItem>
-                );
-              })}
-            </CommandList>
-          </CommandGroup>
-          {selectedOptions.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    setSelectedOptions([]);
-                    setOpen(false);
-                    router.push(pathname + "?" + createQueryString(isFilterOf, ""));
-                  }}
-                  className="cursor-pointer justify-center text-center"
-                >
-                  Clear filters
-                </CommandItem>
-              </CommandGroup>
-            </>
-          )}
+                </CommandGroup>
+              </>
+            )}
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
