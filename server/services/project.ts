@@ -366,10 +366,14 @@ export const getProjectMatrix = async (
   startDate: Date,
   endDate: Date,
   billing?: string,
+  members?: string,
+  category?: string,
+  task?: string,
 ) => {
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
   const isBillable = stringToBoolean(billing);
+  const categoryTaskFilter = [buildFkFilter(category, "milestoneId"), buildFkFilter(task, "taskId")].filter(Boolean);
 
   const grouped = await db.timeEntry.groupBy({
     by: ["milestoneId", "taskId", "userId"],
@@ -377,6 +381,8 @@ export const getProjectMatrix = async (
       workspace: { slug },
       projectId,
       date: { gte: start, lte: end },
+      ...(members && { userId: { in: members.split(",").map(Number) } }),
+      ...(categoryTaskFilter.length ? { AND: categoryTaskFilter } : {}),
       ...(isBillable !== null && { billable: { equals: isBillable } }),
     },
     _sum: { time: true },

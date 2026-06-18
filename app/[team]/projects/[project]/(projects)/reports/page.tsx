@@ -2,11 +2,17 @@ import { Fragment } from "react";
 import { Metadata } from "next";
 
 import { pageProps } from "@/types";
-import { getProjectMatrix } from "@/server/services/project";
+import {
+  getMembersNameInTimeEntries,
+  getMilestonesInProject,
+  getProjectDetailsById,
+  getProjectMatrix,
+  getTasksInProject,
+} from "@/server/services/project";
 import { getStartandEndDates } from "@/lib/months";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { MatrixToolbar } from "./matrix-toolbar";
+import { DataTableToolbar } from "../../components/toolbar";
 
 export const metadata: Metadata = {
   title: `Report`,
@@ -23,12 +29,35 @@ export default async function Page(props: pageProps) {
     return null;
   }
 
+  const projectId = +project;
   const { startDate, endDate } = getStartandEndDates(searchParams.range, 30);
-  const matrix = await getProjectMatrix(team, +project, startDate, endDate, searchParams.billable);
+
+  const [matrix, allMembers, allCategories, allTasks, projectDetails] = await Promise.all([
+    getProjectMatrix(
+      team,
+      projectId,
+      startDate,
+      endDate,
+      searchParams.billable,
+      searchParams.members,
+      searchParams.category,
+      searchParams.task,
+    ),
+    getMembersNameInTimeEntries(team, projectId),
+    getMilestonesInProject(team, projectId),
+    getTasksInProject(team, projectId),
+    getProjectDetailsById(team, projectId),
+  ]);
+  const isBillable = projectDetails?.billable ?? false;
 
   return (
     <div className="flex flex-col gap-4">
-      <MatrixToolbar />
+      <DataTableToolbar
+        isBillable={isBillable}
+        allMembers={allMembers}
+        allCategories={allCategories}
+        allTasks={allTasks}
+      />
 
       {matrix.members.length === 0 ? (
         <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
