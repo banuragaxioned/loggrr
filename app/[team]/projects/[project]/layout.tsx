@@ -151,7 +151,7 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
         <SecondaryNavigation items={tabList} />
       </div>
       <DashboardShell>
-        <div className="flex w-full flex-wrap items-start gap-4 lg:flex-nowrap">
+        <div className="flex w-full min-w-0 flex-wrap items-start gap-4 lg:flex-nowrap">
           <div className="w-full min-w-0 lg:w-[75%]">{children}</div>
           <div className="top-[70px] flex w-full flex-col gap-4 overflow-y-auto lg:sticky lg:max-h-[calc(100vh-80px)] lg:w-[25%]">
             <TimeLoggedCard timecardProp={timecardProp} />
