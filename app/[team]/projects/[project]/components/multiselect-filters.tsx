@@ -26,6 +26,7 @@ interface DropdownInterface {
   searchable: boolean;
   icon?: React.ReactNode;
   options: ClientAndUserInterface[];
+  archivedLabel?: string;
 }
 
 const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
@@ -144,7 +145,7 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
           <CommandList>
             <CommandGroup heading={hasArchived ? "Active" : undefined}>{activeOptions.map(renderItem)}</CommandGroup>
             {archivedOptions.length > 0 && (
-              <CommandGroup heading="Archived">{archivedOptions.map(renderItem)}</CommandGroup>
+              <CommandGroup heading={values.archivedLabel ?? "Archived"}>{archivedOptions.map(renderItem)}</CommandGroup>
             )}
             {selectedOptions.length > 0 && (
               <>

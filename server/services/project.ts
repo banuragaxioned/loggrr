@@ -298,6 +298,11 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
         select: {
           id: true,
           name: true,
+          // role in this workspace — INACTIVE members are grouped separately
+          workspaces: {
+            where: { workspace: { slug } },
+            select: { role: true },
+          },
         },
       },
     },
@@ -308,7 +313,13 @@ export const getMembersNameInTimeEntries = async (slug: string, projectId: numbe
     },
   });
 
-  return result.map((item) => ({ id: item.user.id, name: item.user.name }));
+  return result
+    .map((item) => ({
+      id: item.user.id,
+      name: item.user.name,
+      archived: item.user.workspaces[0]?.role === "INACTIVE",
+    }))
+    .sort(byArchived);
 };
 
 // Active first, then archived — used to group the Category/Task filters.

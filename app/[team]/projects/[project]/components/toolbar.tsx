@@ -48,6 +48,7 @@ export function DataTableToolbar({
     searchable: true,
     icon: <Users size={16} />,
     options: allMembers,
+    archivedLabel: "Inactive",
   };
 
   const categoryFilter = {
