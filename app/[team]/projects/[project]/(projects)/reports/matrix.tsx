@@ -27,8 +27,10 @@ export function ProjectMatrix({ data }: { data: MatrixData }) {
     if (!value) return "—";
     if (mode === "hours") return `${value} h`;
     if (!data.grandTotal) return "—";
-    return `${+((value / data.grandTotal) * 100).toFixed(1)}%`;
+    return `${Math.round((value / data.grandTotal) * 100)}%`;
   };
+
+  const firstName = (name: string | null) => name?.trim().split(/\s+/)[0] ?? "—";
 
   if (data.members.length === 0) {
     return (
@@ -65,8 +67,8 @@ export function ProjectMatrix({ data }: { data: MatrixData }) {
             <TableRow>
               <TableHead className="min-w-[220px]">Category / Task</TableHead>
               {data.members.map((member) => (
-                <TableHead key={member.id} className="text-right">
-                  {member.name}
+                <TableHead key={member.id} className="text-right" title={member.name ?? undefined}>
+                  {firstName(member.name)}
                 </TableHead>
               ))}
               <TableHead className="text-right font-semibold">Total</TableHead>
