@@ -68,18 +68,8 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             };
 
             const isEditing = edit.isEditing && edit.id === data.id;
-            const isEditable =
-              entryData.project.status !== "ARCHIVED" &&
-              data.milestone?.status !== "ARCHIVED" &&
-              data.task?.status !== "ARCHIVED";
-            let messageFor = "";
-            if (entryData.project.status === "ARCHIVED") {
-              messageFor = "Project";
-            } else if (data.milestone?.status === "ARCHIVED") {
-              messageFor = "Category";
-            } else if (data.task?.status === "ARCHIVED") {
-              messageFor = "Task";
-            }
+            const isEditable = entryData.project.status !== "ARCHIVED";
+            const messageFor = entryData.project.status === "ARCHIVED" ? "Project" : "";
 
             return (
               <Fragment key={i}>

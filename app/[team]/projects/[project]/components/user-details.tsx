@@ -4,11 +4,9 @@ import React from "react";
 
 import { DataTable } from "./data-table";
 import { getColumns } from "./columns";
+import { ProjectSelectOption } from "./project-edit-combobox";
 
-interface SelectOption {
-  id: number;
-  name: string;
-}
+interface SelectOption extends ProjectSelectOption {}
 
 const UserDetails = ({
   userData,

@@ -23,9 +23,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import { Switch } from "@/components/ui/switch";
-import { ComboBox } from "@/components/ui/combobox";
+import { ProjectEditComboBox, ProjectSelectOption } from "./project-edit-combobox";
 import { useState } from "react";
-import { Milestone } from "@/types";
 
 export interface Logged {
   id: number;
@@ -48,14 +47,11 @@ export interface Logged {
   }[];
 }
 
-interface SelectOption {
-  id: number;
-  name: string;
-}
+interface SelectOption extends ProjectSelectOption {}
 
 function toSelectable(item: SelectOption | null | undefined, options: SelectOption[]) {
-  if (item) return item;
-  return options.find((option) => option.id === 0) ?? null;
+  if (!item) return options.find((option) => option.id === 0) ?? null;
+  return options.find((option) => option.id === item.id) ?? item;
 }
 
 // `showTask` is false when the page is already filtered by a task (badge would be redundant).
@@ -139,11 +135,15 @@ function TimeEntryCell({
   const [comments, setComments] = useState("");
   const [time, setTime] = useState("");
   const [billable, setBillable] = useState(false);
-  const [milestone, setMilestone] = useState<Milestone | null>(null);
-  const [task, setTask] = useState<Milestone | null>(null);
+  const [milestone, setMilestone] = useState<SelectOption | null>(null);
+  const [task, setTask] = useState<SelectOption | null>(null);
   const formatted = `${row.getValue("hours") ?? 0} h`;
 
-  const dropdownSelectHandler = (selected: string, options: SelectOption[], callback: (item: Milestone) => void) => {
+  const dropdownSelectHandler = (
+    selected: string,
+    options: SelectOption[],
+    callback: (item: SelectOption) => void,
+  ) => {
     const found = options.find((option) => option.id === +selected);
     if (found) callback(found);
   };
@@ -252,8 +252,7 @@ function TimeEntryCell({
                 {categories.length > 0 && (
                   <div className="flex flex-col gap-2">
                     <Label>Category</Label>
-                    <ComboBox
-                      searchable
+                    <ProjectEditComboBox
                       icon={<CategoryIcon size={16} />}
                       options={categories}
                       label="Category"
@@ -266,8 +265,7 @@ function TimeEntryCell({
                 {tasks.length > 0 && (
                   <div className="flex flex-col gap-2">
                     <Label>Task</Label>
-                    <ComboBox
-                      searchable
+                    <ProjectEditComboBox
                       icon={<List size={16} />}
                       options={tasks}
                       label="Task"
