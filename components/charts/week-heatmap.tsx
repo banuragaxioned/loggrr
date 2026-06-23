@@ -207,7 +207,7 @@ const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntry
         const isNotClickable = isAfter(date, addDays(startOfToday(), 1));
 
         return `
-          <div class="p-2 text-xs flex flex-col bg-primary-foreground">
+          <div class="p-2 text-xs flex flex-col">
             ${date ? "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>" : ""}
             <span>
               Hours logged: ${time > 0 ? time.toFixed(2) : time}
