@@ -8,6 +8,7 @@ import { CircleDollarSign, Download, Layers, ListChecks, ListRestart, Loader2, U
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
+import { reportCsvHeaders } from "@/lib/report-csv-headers";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
@@ -96,14 +97,11 @@ export function DataTableToolbar({
       const currentTime = format(new Date(), "dd-MM-yyyy (hh﹕mm a)");
       const filename = `Project Report ${data[0]?.project} ${currentTime}.csv`;
 
-      const dataToConvert = {
+      csvDownload({
         data,
         filename,
-        delimiter: ",",
-        headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
-      };
-
-      csvDownload(dataToConvert);
+        headers: reportCsvHeaders,
+      });
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {

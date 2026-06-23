@@ -8,6 +8,7 @@ import { useQueryState } from "nuqs";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
+import { reportCsvHeaders } from "@/lib/report-csv-headers";
 import { Assignment, DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
@@ -100,14 +101,11 @@ export function DataTableToolbar<TData>({
       const currentTime = format(new Date(), "dd-MM-yyyy (hh﹕mm a)");
       const filename = `Logged Report ${currentTime}.csv`;
 
-      const dataToConvert = {
+      csvDownload({
         data,
         filename,
-        delimiter: ",",
-        headers: ["Client", "Project", "User", "Category", "Task", "Date", "Comment", "Time logged", "Billing type"],
-      };
-
-      csvDownload(dataToConvert);
+        headers: reportCsvHeaders,
+      });
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
