@@ -22,6 +22,10 @@ const commonValidationObj = {
 const TimeEntrySchema = z.object(commonValidationObj);
 const TimeEntryUpdateSchema = z.object({ ...commonValidationObj, id: z.number().min(1) });
 
+function normalizeFkId(id: number | null) {
+  return id === 0 ? null : id;
+}
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const team = searchParams.get("team");
@@ -179,12 +183,12 @@ export async function POST(req: NextRequest) {
       data: {
         time: body.time,
         comments: body.comments,
-        milestoneId: body.milestone,
+        milestoneId: normalizeFkId(body.milestone),
         billable: body.billable,
         userId: user.id,
         projectId: body.project,
         date: new Date(body.date),
-        taskId: body.task,
+        taskId: normalizeFkId(body.task),
         workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
     });
@@ -255,10 +259,10 @@ export async function PUT(req: NextRequest) {
       data: {
         time: body.time,
         comments: body.comments,
-        milestoneId: body.milestone,
+        milestoneId: normalizeFkId(body.milestone),
         billable: body.billable,
         projectId: body.project,
-        taskId: body.task,
+        taskId: normalizeFkId(body.task),
         updatedAt: new Date(),
         ...(date && { date }),
       },
