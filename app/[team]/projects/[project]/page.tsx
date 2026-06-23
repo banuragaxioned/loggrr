@@ -71,7 +71,12 @@ export default async function Page(props: pageProps) {
         allTasks={allTasks}
       />
       <TimeChart timeEntries={timeEntries} totalDays={totalDays} />
-      <UserDetails userData={memberEntries} showTask={!selectedTask} />
+      <UserDetails
+        userData={memberEntries}
+        showTask={!selectedTask}
+        categories={allCategories}
+        tasks={allTasks}
+      />
     </>
   );
 }

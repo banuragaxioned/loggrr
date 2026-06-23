@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Circle, Minus, Pencil, Plus, Trash } from "lucide-react";
+import { Circle, List, Milestone as CategoryIcon, Minus, Pencil, Plus, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import { Switch } from "@/components/ui/switch";
+import { ComboBox } from "@/components/ui/combobox";
 import { useState } from "react";
+import { Milestone } from "@/types";
 
 export interface Logged {
   id: number;
@@ -33,19 +35,35 @@ export interface Logged {
   comments: string;
   billable: boolean;
   milestone?: {
+    id: number;
     name: string;
-  };
+  } | null;
   task?: {
+    id: number;
     name: string;
-  };
+  } | null;
   subRows?: {
     name: string;
     hours: number;
   }[];
 }
 
+interface SelectOption {
+  id: number;
+  name: string;
+}
+
+function toSelectable(item: SelectOption | null | undefined, options: SelectOption[]) {
+  if (item) return item;
+  return options.find((option) => option.id === 0) ?? null;
+}
+
 // `showTask` is false when the page is already filtered by a task (badge would be redundant).
-export const getColumns = (showTask = true): ColumnDef<Logged>[] => [
+export const getColumns = (
+  showTask = true,
+  categories: SelectOption[] = [],
+  tasks: SelectOption[] = [],
+): ColumnDef<Logged>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -99,12 +117,20 @@ export const getColumns = (showTask = true): ColumnDef<Logged>[] => [
     accessorKey: "hours",
     header: () => <span className="inline-block w-20 text-right">Hours</span>,
     cell: ({ row }) => {
-      return <TimeEntryCell row={row} />;
+      return <TimeEntryCell row={row} categories={categories} tasks={tasks} />;
     },
   },
 ];
 
-function TimeEntryCell({ row }: { row: any }) {
+function TimeEntryCell({
+  row,
+  categories,
+  tasks,
+}: {
+  row: any;
+  categories: SelectOption[];
+  tasks: SelectOption[];
+}) {
   const { depth, original } = row;
   const params = useParams();
   const router = useRouter();
@@ -113,7 +139,14 @@ function TimeEntryCell({ row }: { row: any }) {
   const [comments, setComments] = useState("");
   const [time, setTime] = useState("");
   const [billable, setBillable] = useState(false);
+  const [milestone, setMilestone] = useState<Milestone | null>(null);
+  const [task, setTask] = useState<Milestone | null>(null);
   const formatted = `${row.getValue("hours") ?? 0} h`;
+
+  const dropdownSelectHandler = (selected: string, options: SelectOption[], callback: (item: Milestone) => void) => {
+    const found = options.find((option) => option.id === +selected);
+    if (found) callback(found);
+  };
 
   const submitTimeEntry = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -135,11 +168,11 @@ function TimeEntryCell({ row }: { row: any }) {
     const dataToSend = {
       team,
       project: +project,
-      milestone: original.milestone?.id || null,
+      milestone: milestone?.id || null,
       time: timeToStoreInDB,
       comments: comments?.trim(),
       billable: billable,
-      task: original.task?.id || null,
+      task: task?.id || null,
     };
 
     try {
@@ -203,17 +236,47 @@ function TimeEntryCell({ row }: { row: any }) {
                   setComments(original.comments);
                   setTime(String(original.hours));
                   setBillable(original.billable);
+                  setMilestone(toSelectable(original.milestone, categories));
+                  setTask(toSelectable(original.task, tasks));
                 }}
               >
                 <Pencil size={12} />
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>Edit time entry</DialogTitle>
                 <DialogDescription>{original.name}</DialogDescription>
               </DialogHeader>
               <form onSubmit={submitTimeEntry} className="flex flex-col gap-4">
+                {categories.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <Label>Category</Label>
+                    <ComboBox
+                      searchable
+                      icon={<CategoryIcon size={16} />}
+                      options={categories}
+                      label="Category"
+                      selectedItem={milestone}
+                      handleSelect={(selected) => dropdownSelectHandler(selected, categories, setMilestone)}
+                      className="w-full max-w-full"
+                    />
+                  </div>
+                )}
+                {tasks.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <Label>Task</Label>
+                    <ComboBox
+                      searchable
+                      icon={<List size={16} />}
+                      options={tasks}
+                      label="Task"
+                      selectedItem={task}
+                      handleSelect={(selected) => dropdownSelectHandler(selected, tasks, setTask)}
+                      className="w-full max-w-full"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-row items-center gap-4">
                   <div className="flex w-full flex-col gap-2">
                     <Label>Comments</Label>
