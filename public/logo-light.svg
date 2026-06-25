@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" fill="none" role="img" aria-label="loggrr.">
+  <svg x="0" y="0" width="80" height="80" viewBox="0 0 120 120" fill="none">
+    <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+    <rect x="20" y="56" width="54" height="14" rx="7" fill="#1A0A40"/>
+    <rect x="20" y="79" width="68" height="14" rx="7" fill="#1A0A40" opacity="0.4"/>
+  </svg>
+  <text
+    x="96"
+    y="56"
+    font-family="'IBM Plex Sans', system-ui, sans-serif"
+    font-size="52"
+    font-weight="700"
+    letter-spacing="-2"
+    fill="#1A0A40"
+  >loggrr<tspan fill="#F31C7E">.</tspan></text>
+</svg>

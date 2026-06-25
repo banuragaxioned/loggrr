@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loggrr Logo — Concept 01: Log Stack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    .wm { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.04em; }
+    .label { font-family: monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.4; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+    .panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px; padding: 64px 40px; }
+    .light { background: #ffffff; }
+    .dark  { background: #1A0A40; }
+    .logo-group { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .divider-light { width: 220px; border-top: 1px solid #ece8f5; }
+    .divider-dark  { width: 220px; border-top: 1px solid rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body>
+<div class="grid">
+
+  <!-- LIGHT -->
+  <div class="panel light">
+    <div class="label" style="color:#1A0A40">Light mode · Concept 01 — Log Stack</div>
+
+    <!-- Full logo large -->
+    <div class="logo-group">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <svg width="72" height="72" viewBox="0 0 120 120" fill="none">
+          <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+          <rect x="20" y="56" width="54" height="14" rx="7" fill="#1A0A40"/>
+          <rect x="20" y="79" width="68" height="14" rx="7" fill="#1A0A40" opacity="0.4"/>
+        </svg>
+        <span class="wm" style="font-size:56px;color:#1A0A40;line-height:1;">loggrr<span style="color:#F31C7E;">.</span></span>
+      </div>
+      <span class="label" style="color:#1A0A40">Full logo</span>
+    </div>
+
+    <hr class="divider-light"/>
+
+    <!-- Nav size -->
+    <div class="logo-group">
+      <div style="display:flex;align-items:center;gap:10px;background:#F7F5FC;padding:12px 20px;border-radius:8px;">
+        <svg width="36" height="36" viewBox="0 0 120 120" fill="none">
+          <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+          <rect x="20" y="56" width="54" height="14" rx="7" fill="#1A0A40"/>
+          <rect x="20" y="79" width="68" height="14" rx="7" fill="#1A0A40" opacity="0.4"/>
+        </svg>
+        <span class="wm" style="font-size:28px;color:#1A0A40;line-height:1;">loggrr<span style="color:#F31C7E;">.</span></span>
+      </div>
+      <span class="label" style="color:#1A0A40">Nav context</span>
+    </div>
+
+    <hr class="divider-light"/>
+
+    <!-- Mark only -->
+    <div class="logo-group">
+      <svg width="52" height="52" viewBox="0 0 120 120" fill="none">
+        <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+        <rect x="20" y="56" width="54" height="14" rx="7" fill="#1A0A40"/>
+        <rect x="20" y="79" width="68" height="14" rx="7" fill="#1A0A40" opacity="0.4"/>
+      </svg>
+      <span class="label" style="color:#1A0A40">Mark only</span>
+    </div>
+  </div>
+
+  <!-- DARK -->
+  <div class="panel dark">
+    <div class="label" style="color:#ffffff">Dark mode · Concept 01 — Log Stack</div>
+
+    <!-- Full logo large -->
+    <div class="logo-group">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <svg width="72" height="72" viewBox="0 0 120 120" fill="none">
+          <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+          <rect x="20" y="56" width="54" height="14" rx="7" fill="#ffffff"/>
+          <rect x="20" y="79" width="68" height="14" rx="7" fill="#ffffff" opacity="0.4"/>
+        </svg>
+        <span class="wm" style="font-size:56px;color:#ffffff;line-height:1;">loggrr<span style="color:#F31C7E;">.</span></span>
+      </div>
+      <span class="label" style="color:#ffffff">Full logo</span>
+    </div>
+
+    <hr class="divider-dark"/>
+
+    <!-- Nav size -->
+    <div class="logo-group">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);padding:12px 20px;border-radius:8px;">
+        <svg width="36" height="36" viewBox="0 0 120 120" fill="none">
+          <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+          <rect x="20" y="56" width="54" height="14" rx="7" fill="#ffffff"/>
+          <rect x="20" y="79" width="68" height="14" rx="7" fill="#ffffff" opacity="0.4"/>
+        </svg>
+        <span class="wm" style="font-size:28px;color:#ffffff;line-height:1;">loggrr<span style="color:#F31C7E;">.</span></span>
+      </div>
+      <span class="label" style="color:#ffffff">Nav context</span>
+    </div>
+
+    <hr class="divider-dark"/>
+
+    <!-- Mark only -->
+    <div class="logo-group">
+      <svg width="52" height="52" viewBox="0 0 120 120" fill="none">
+        <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+        <rect x="20" y="56" width="54" height="14" rx="7" fill="#ffffff"/>
+        <rect x="20" y="79" width="68" height="14" rx="7" fill="#ffffff" opacity="0.4"/>
+      </svg>
+      <span class="label" style="color:#ffffff">Mark only</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
