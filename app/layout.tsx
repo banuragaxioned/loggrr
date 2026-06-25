@@ -2,7 +2,6 @@ import "./globals.css";
 import { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
-import { IBM_Plex_Sans } from "next/font/google";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -18,13 +17,6 @@ const fontHeading = localFont({
   preload: true,
   display: "block",
   weight: "600",
-});
-
-const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["700"],
-  variable: "--font-ibm-plex-sans",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -73,7 +65,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           "min-h-screen items-center overscroll-y-none bg-background font-sans text-base antialiased",
           `${GeistSans.variable}`,
           fontHeading.variable,
-          ibmPlexSans.variable,
         )}
       >
         <ContextProvider>

@@ -16,10 +16,10 @@ function LogMark({ className }: { className?: string }) {
     >
       {/* Top bar — fuchsia, widest */}
       <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E" />
-      {/* Middle bar — eggplant / white in dark */}
-      <rect x="20" y="56" width="54" height="14" rx="7" className="fill-[#1A0A40] dark:fill-white" />
-      {/* Bottom bar — faded eggplant / white in dark */}
-      <rect x="20" y="79" width="68" height="14" rx="7" className="fill-[#1A0A40] dark:fill-white" opacity="0.4" />
+      {/* Middle bar — eggplant light / lilac dark */}
+      <rect x="20" y="56" width="54" height="14" rx="7" className="fill-[#1A0A40] dark:fill-[#EFEBF7]" />
+      {/* Bottom bar — faded */}
+      <rect x="20" y="79" width="68" height="14" rx="7" className="fill-[#1A0A40] dark:fill-[#EFEBF7]" opacity="0.4" />
     </svg>
   );
 }
@@ -37,10 +37,10 @@ export function Logo({ variant = "full", className }: LogoProps) {
     >
       <LogMark className="h-8 w-auto shrink-0" />
       <span
-        className="text-[#1A0A40] dark:text-white"
+        className="text-[#1A0A40] dark:text-[#EFEBF7]"
         style={{
-          fontFamily: "var(--font-ibm-plex-sans), 'IBM Plex Sans', system-ui, sans-serif",
-          fontWeight: 700,
+          fontFamily: "var(--font-heading), 'Cal Sans', system-ui, sans-serif",
+          fontWeight: 600,
           fontSize: "1.75rem",
           letterSpacing: "-0.04em",
           lineHeight: 1,
