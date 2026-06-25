@@ -13,6 +13,8 @@ export interface Logged {
   name: string;
   type?: "client" | "project" | "category" | "member" | "entry";
   hours?: number;
+  budget?: number | null;
+  interval?: "FIXED" | "MONTHLY";
   description?: string;
   image?: string;
   billable?: boolean;
@@ -22,6 +24,38 @@ export interface Logged {
     name: string;
     hours?: number;
   }[];
+}
+
+function BudgetCell({
+  budget,
+  hours,
+  showBudgetHours,
+}: {
+  budget?: number | null;
+  hours: number;
+  showBudgetHours: boolean;
+}) {
+  const hasBudget = typeof budget === "number" && budget > 0;
+
+  if (!hasBudget) {
+    return <span className="inline-block w-44 text-right opacity-50">—</span>;
+  }
+
+  const utilization = Math.round((hours / budget) * 100);
+  const isOver = utilization > 100;
+
+  return (
+    <span className="inline-block w-44 text-right">
+      {showBudgetHours && (
+        <span className="mr-1">
+          <span className="text-xs opacity-50">Total:</span> {budget} h
+        </span>
+      )}
+      <span className={`${isOver ? "text-destructive" : ""}`}>
+        <span className="text-xs opacity-50">Used:</span> {utilization}%
+      </span>
+    </span>
+  );
 }
 
 export const columns: ColumnDef<Logged>[] = [
@@ -65,7 +99,9 @@ export const columns: ColumnDef<Logged>[] = [
                 className="h-6 w-6 bg-slate-300"
               />
             )}
-            <span className={`${type === "entry" ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>
+            <span className={`${type === "entry" ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>
+              {value}
+            </span>
             {type === "entry" && (
               <span className="hidden items-center gap-2 md:inline-flex">
                 {original.task && (
@@ -94,10 +130,24 @@ export const columns: ColumnDef<Logged>[] = [
         <span className={`text-bold relative inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
           <span className={`${depth > 1 ? "opacity-50" : ""} mr-1 sm:mr-0`}>{formatted}</span>
           {original.billable && (
-            <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
+            <Circle className="fill-success absolute top-1/2 -right-3 h-2.5 w-2.5 -translate-y-1/2 stroke-none sm:-right-3.5 md:-right-4" />
           )}
         </span>
       );
+    },
+  },
+  {
+    accessorKey: "budget",
+    header: () => <span className="inline-block w-44 text-right">Budget</span>,
+    cell: ({ row }) => {
+      const { original } = row;
+      if (original.type !== "project" && original.type !== "member") {
+        return <span className="inline-block w-44" />;
+      }
+
+      const hours = (row.getValue("hours") as number) ?? 0;
+
+      return <BudgetCell budget={original.budget} hours={hours} showBudgetHours={original.type === "project"} />;
     },
   },
 ];

@@ -20,6 +20,8 @@ export const getProjectDetailsById = async (slug: string, projectId: number) => 
         },
       },
       billable: true,
+      interval: true,
+      createdAt: true,
     },
   });
 
@@ -352,7 +354,9 @@ export const getMilestonesInProject = async (slug: string, projectId: number) =>
     orderBy: { name: "asc" },
   });
 
-  const milestones = result.map(({ id, name, status }) => ({ id, name, archived: isArchived(status) })).sort(byArchived);
+  const milestones = result
+    .map(({ id, name, status }) => ({ id, name, archived: isArchived(status) }))
+    .sort(byArchived);
   return milestones.length ? [...milestones, { id: NONE_ID, name: "No category", archived: false }] : [];
 };
 
@@ -451,7 +455,9 @@ export const getProjectMatrix = async (
   const cells = (c: Cells) => Object.fromEntries(c) as Record<number, number>;
 
   return {
-    members: userIds.map((id) => ({ id, name: userName.get(id) ?? "Unknown" })).sort((a, b) => a.name.localeCompare(b.name)),
+    members: userIds
+      .map((id) => ({ id, name: userName.get(id) ?? "Unknown" }))
+      .sort((a, b) => a.name.localeCompare(b.name)),
     grandTotal,
     memberTotals: cells(memberTotals),
     categories: Array.from(categories.values()).map((c) => ({
@@ -459,7 +465,12 @@ export const getProjectMatrix = async (
       name: c.name,
       total: c.total,
       cells: cells(c.cells),
-      tasks: Array.from(c.tasks.values()).map((t) => ({ id: t.id, name: t.name, total: t.total, cells: cells(t.cells) })),
+      tasks: Array.from(c.tasks.values()).map((t) => ({
+        id: t.id,
+        name: t.name,
+        total: t.total,
+        cells: cells(t.cells),
+      })),
     })),
   };
 };

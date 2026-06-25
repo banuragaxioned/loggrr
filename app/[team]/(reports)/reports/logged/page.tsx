@@ -93,7 +93,14 @@ export default async function Page(props: pageProps) {
 
                 let member = category.members.get(user.userId);
                 if (!member) {
-                  member = { type: "member", id: user.userId, name: user.userName, image: user.userImage, hours: 0, subRows: [] };
+                  member = {
+                    type: "member",
+                    id: user.userId,
+                    name: user.userName,
+                    image: user.userImage,
+                    hours: 0,
+                    subRows: [],
+                  };
                   category.members.set(user.userId, member);
                 }
                 member.hours += time.time;
@@ -109,8 +116,14 @@ export default async function Page(props: pageProps) {
               });
             });
 
+            const projectBudget = project.projectBudget ?? null;
+
             const buildMembers = (members: Map<number, any>) =>
-              Array.from(members.values()).map((member: any) => ({ ...member, hours: +`${member.hours.toFixed(2)}` }));
+              Array.from(members.values()).map((member: any) => ({
+                ...member,
+                hours: +`${member.hours.toFixed(2)}`,
+                budget: projectBudget,
+              }));
 
             // Only break entries down by category when the project actually has a
             // real category; otherwise show members directly (no lone "No category").
@@ -131,6 +144,8 @@ export default async function Page(props: pageProps) {
               id: project.projectId,
               name: project.projectName,
               hours: +`${projectHours.toFixed(2)}`,
+              budget: project.projectBudget ?? null,
+              interval: project.projectInterval,
               subRows: projectSubRows,
             };
           }),

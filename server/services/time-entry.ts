@@ -219,6 +219,7 @@ export const getLogged = async (
           id: true,
           name: true,
           budget: true,
+          interval: true,
           status: true,
           billable: true,
           client: {
@@ -303,6 +304,7 @@ export const getLogged = async (
           projectName: project.name,
           projectBillable: project.billable,
           projectBudget: project.budget,
+          projectInterval: project.interval,
           projectStatus: project.status,
           users: project.usersOnProject.map((user) => {
             const timeEntryBasedOnProject = user.user.timeEntry.filter(
