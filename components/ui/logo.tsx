@@ -14,12 +14,12 @@ function LogMark({ className }: { className?: string }) {
       aria-hidden="true"
       className={className}
     >
-      {/* Top bar — fuchsia, widest */}
-      <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E" />
+      {/* Top bar — fuchsia, widest, same in both modes */}
+      <rect x="20" y="33" width="80" height="14" rx="7" className="fill-brand-fuchsia" />
       {/* Middle bar — eggplant light / lilac dark */}
-      <rect x="20" y="56" width="54" height="14" rx="7" className="fill-[#1A0A40] dark:fill-[#EFEBF7]" />
+      <rect x="20" y="56" width="54" height="14" rx="7" className="fill-brand-eggplant dark:fill-brand-lilac" />
       {/* Bottom bar — faded */}
-      <rect x="20" y="79" width="68" height="14" rx="7" className="fill-[#1A0A40] dark:fill-[#EFEBF7]" opacity="0.4" />
+      <rect x="20" y="79" width="68" height="14" rx="7" className="fill-brand-eggplant dark:fill-brand-lilac opacity-40" />
     </svg>
   );
 }
@@ -37,16 +37,16 @@ export function Logo({ variant = "full", className }: LogoProps) {
     >
       <LogMark className="h-8 w-auto shrink-0" />
       <span
-        className="text-[#1A0A40] dark:text-[#EFEBF7]"
+        className="text-brand-eggplant dark:text-brand-lilac"
         style={{
           fontFamily: "var(--font-heading), 'Cal Sans', system-ui, sans-serif",
           fontWeight: 600,
           fontSize: "1.75rem",
-          letterSpacing: "-0.04em",
+          letterSpacing: "-0.02em",
           lineHeight: 1,
         }}
       >
-        loggrr<span style={{ color: "#F31C7E" }}>.</span>
+        loggrr<span className="text-brand-fuchsia">.</span>
       </span>
     </span>
   );

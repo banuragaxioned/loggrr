@@ -64,6 +64,12 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        brand: {
+          eggplant: "hsl(258 73% 15%)",
+          fuchsia: "hsl(333 90% 53%)",
+          lilac: "hsl(259 43% 94%)",
+          citron: "hsl(63 75% 50%)",
+        },
         // Tremor package style config start
         tremor: {
           brand: {
