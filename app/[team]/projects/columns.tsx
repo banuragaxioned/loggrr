@@ -27,6 +27,15 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    filterFn: (row, _id, value) => {
+      const query = String(value).toLowerCase().trim();
+      if (!query) return true;
+
+      const projectName = (row.original.name ?? "").toLowerCase();
+      const clientName = row.original.clientName.toLowerCase();
+
+      return projectName.includes(query) || clientName.includes(query);
+    },
   },
   {
     accessorKey: "clientName",

@@ -52,21 +52,21 @@ export function DataTableToolbar<TData extends { clientName: string; clientId: n
     <div className="flex items-center justify-between gap-x-3 rounded-xl border border-dashed p-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter by project name"
+          placeholder="Filter by client or project name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
           className="w-40 lg:w-64"
         />
         <MultiSelectFilter values={clientFilter} />
-        <div className="flex select-none items-center space-x-2">
+        <div className="flex items-center space-x-2 select-none">
           <input
             type="checkbox"
             id="archived"
-            className="flex h-4 w-4 cursor-pointer rounded-md border border-input bg-background p-0 text-sm accent-current ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-4 w-4 cursor-pointer rounded-md border p-0 text-sm accent-current file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
             onChange={handleShowArchived}
             checked={status === "all"}
           />
-          <label htmlFor="archived" className="cursor-pointer text-sm font-medium leading-none">
+          <label htmlFor="archived" className="cursor-pointer text-sm leading-none font-medium">
             Show archived
           </label>
         </div>
