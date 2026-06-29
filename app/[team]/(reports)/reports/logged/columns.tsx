@@ -1,18 +1,20 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Circle, Minus, Plus } from "lucide-react";
+import { Circle, Info, Minus, Plus } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
+import { CustomTooltip } from "@/components/custom/tooltip";
 
 export interface Logged {
   id: number;
   name: string;
   type?: "client" | "project" | "category" | "member" | "entry";
   hours?: number;
+  billableHours?: number;
   budget?: number | null;
   interval?: "FIXED" | "MONTHLY";
   description?: string;
@@ -26,34 +28,68 @@ export interface Logged {
   }[];
 }
 
+function BudgetTooltipContent() {
+  return (
+    <div className="space-y-2.5 text-xs leading-relaxed">
+      <div>
+        <p className="font-medium">Monthly projects</p>
+        <p className="text-muted-foreground">
+          Billable hours are compared to a per-month budget (<span className="font-medium">h/m</span>). That cap is not
+          multiplied by the number of months in your range.
+        </p>
+      </div>
+      <div>
+        <p className="font-medium">Fixed projects</p>
+        <p className="text-muted-foreground">
+          Billable hours in your selected date range are compared to the project&apos;s total hour budget.
+        </p>
+      </div>
+      <p className="border-border text-muted-foreground border-t pt-2">
+        <span className="text-foreground font-medium">Tip:</span> For monthly projects, select a single calendar month
+        for the most accurate utilization.
+      </p>
+    </div>
+  );
+}
+
 function BudgetCell({
   budget,
-  hours,
+  billableHours,
   showBudgetHours,
+  interval,
 }: {
   budget?: number | null;
-  hours: number;
+  billableHours: number;
   showBudgetHours: boolean;
+  interval?: "FIXED" | "MONTHLY";
 }) {
   const hasBudget = typeof budget === "number" && budget > 0;
 
-  if (!hasBudget) {
+  if (!hasBudget || billableHours <= 0 || budget === null || budget === 0) {
     return <span className="inline-block w-44 text-right opacity-50">—</span>;
   }
 
-  const utilization = Math.round((hours / budget) * 100);
-  const isOver = utilization > 100;
+  const utilization = Math.round((billableHours / budget) * 100);
+  const budgetUnit = interval === "MONTHLY" ? "h/m" : "h";
+
+  if (showBudgetHours) {
+    const delta = utilization - 100;
+    const deltaLabel = delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : "0%";
+    const deltaClass = delta > 0 ? "text-destructive" : delta < 0 ? "opacity-50" : "opacity-50";
+
+    return (
+      <span className="inline-block w-44 text-right text-xs">
+        <span className="mr-1">
+          {budget} {budgetUnit}
+        </span>
+        (<span className={deltaClass}>{deltaLabel}</span>)
+      </span>
+    );
+  }
 
   return (
-    <span className="inline-block w-44 text-right">
-      {showBudgetHours && (
-        <span className="mr-1">
-          <span className="text-xs opacity-50">Total:</span> {budget} h
-        </span>
-      )}
-      <span className={`${isOver ? "text-destructive" : ""}`}>
-        <span className="text-xs opacity-50">Used:</span> {utilization}%
-      </span>
+    <span className="inline-block w-44 text-right text-xs">
+      <span className="opacity-50">{utilization}%</span>
     </span>
   );
 }
@@ -138,16 +174,33 @@ export const columns: ColumnDef<Logged>[] = [
   },
   {
     accessorKey: "budget",
-    header: () => <span className="inline-block w-44 text-right">Budget</span>,
+    header: () => (
+      <span className="inline-flex w-44 items-center justify-end gap-1">
+        Budget
+        <CustomTooltip
+          trigger={<Info size={14} className="text-muted-foreground" />}
+          content={<BudgetTooltipContent />}
+          contentClassName="max-w-[320px]"
+          sideOffset={4}
+        />
+      </span>
+    ),
     cell: ({ row }) => {
       const { original } = row;
       if (original.type !== "project" && original.type !== "member") {
         return <span className="inline-block w-44" />;
       }
 
-      const hours = (row.getValue("hours") as number) ?? 0;
+      const billableHours = original.billableHours ?? 0;
 
-      return <BudgetCell budget={original.budget} hours={hours} showBudgetHours={original.type === "project"} />;
+      return (
+        <BudgetCell
+          budget={original.budget}
+          billableHours={billableHours}
+          showBudgetHours={original.type === "project"}
+          interval={original.interval}
+        />
+      );
     },
   },
 ];

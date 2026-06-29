@@ -73,11 +73,16 @@ export default async function Page(props: pageProps) {
           .map((project: any) => {
             // Projects
             const projectHours = project.users.reduce((sum: any, user: any) => (sum += user.userHours), 0);
+            let projectBillableHours = 0;
 
             // Group the project's entries by category (milestone), then by member.
             const categoryMap = new Map<string, any>();
             project.users.forEach((user: any) => {
               user.userTimeEntry.forEach((time: any) => {
+                if (time.billable) {
+                  projectBillableHours += time.time;
+                }
+
                 const key = time.milestoneId != null ? `m-${time.milestoneId}` : "none";
                 let category = categoryMap.get(key);
                 if (!category) {
@@ -99,11 +104,15 @@ export default async function Page(props: pageProps) {
                     name: user.userName,
                     image: user.userImage,
                     hours: 0,
+                    billableHours: 0,
                     subRows: [],
                   };
                   category.members.set(user.userId, member);
                 }
                 member.hours += time.time;
+                if (time.billable) {
+                  member.billableHours += time.time;
+                }
                 member.subRows.push({
                   type: "entry",
                   id: `${user.userId}-${time.date}-${member.subRows.length}`,
@@ -122,6 +131,7 @@ export default async function Page(props: pageProps) {
               Array.from(members.values()).map((member: any) => ({
                 ...member,
                 hours: +`${member.hours.toFixed(2)}`,
+                billableHours: +`${member.billableHours.toFixed(2)}`,
                 budget: projectBudget,
               }));
 
@@ -144,6 +154,7 @@ export default async function Page(props: pageProps) {
               id: project.projectId,
               name: project.projectName,
               hours: +`${projectHours.toFixed(2)}`,
+              billableHours: +`${projectBillableHours.toFixed(2)}`,
               budget: project.projectBudget ?? null,
               interval: project.projectInterval,
               subRows: projectSubRows,
