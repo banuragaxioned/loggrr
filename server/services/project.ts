@@ -337,7 +337,7 @@ const buildFkFilter = (value: string | undefined, field: "milestoneId" | "taskId
   if (!value) return null;
   const ids = value.split(",");
   const realIds = ids.map(Number).filter((n) => n > 0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const conditions: any[] = [];
   if (realIds.length) conditions.push({ [field]: { in: realIds } });
   if (ids.includes(`${NONE_ID}`)) conditions.push({ [field]: null });
@@ -575,6 +575,9 @@ export async function getClients(slug: string) {
       status: true,
       project: {
         distinct: "id",
+        where: {
+          status: "PUBLISHED",
+        },
       },
     },
     orderBy: {
