@@ -22,7 +22,6 @@
     "taze:fix": "taze major --interactive --write --install",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
-    "sonar-scanner": "sonar-scanner -Dsonar.projectKey=loggrr -Dsonar.sources=. -Dsonar.host.url=https://sonarqube.axioned.com",
     "analyze": "ANALYZE=true bun run build",
     "email": "email dev"
   },
