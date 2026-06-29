@@ -7,7 +7,6 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "dev": "next dev",
-    "dev:https": "next dev --experimental-https",
     "turbo": "next dev --turbo",
     "build": "next build",
     "push": "bunx prisma db push",
@@ -20,7 +19,7 @@
     "lint": "eslint .",
     "taze": "taze major",
     "taze:fix": "taze major --interactive --write --install",
-    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "format": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "analyze": "ANALYZE=true bun run build",
     "email": "email dev"
