@@ -88,6 +88,16 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
   const [loading, setLoading] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
+  const form = useForm<z.input<typeof leaveFormSchema>, any, LeaveFormValues>({
+    resolver: zodResolver(leaveFormSchema),
+    defaultValues: {
+      userId: 0,
+      planned: { eligible: "", taken: "" },
+      unplanned: { eligible: "", taken: "" },
+      compoff: { eligible: "", taken: "" },
+    },
+  });
+
   useEffect(() => {
     const fetchLeaveRecord = () => {
       if (editId) {
@@ -134,16 +144,6 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     id: user.id,
     name: user.name || user.email,
   }));
-
-  const form = useForm<z.input<typeof leaveFormSchema>, any, LeaveFormValues>({
-    resolver: zodResolver(leaveFormSchema),
-    defaultValues: {
-      userId: 0,
-      planned: { eligible: "", taken: "" },
-      unplanned: { eligible: "", taken: "" },
-      compoff: { eligible: "", taken: "" },
-    },
-  });
 
   const handleMemberSelect = (selected: string) => {
     const memberValue = users.find((user) => user.id === +selected);

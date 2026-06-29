@@ -24,6 +24,8 @@ export function DataTableStructure<TData, TValue>({
   rowClickHandler,
   className,
 }: DataTableProps<TData, TValue>) {
+  // TanStack Table returns functions the React Compiler can't memoize; it safely skips this component.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
