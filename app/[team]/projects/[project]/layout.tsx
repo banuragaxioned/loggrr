@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClipboardCheck, Milestone as CategoryIcon, TextSearch, Users } from "lucide-react";
+import { ClipboardCheck, Milestone as CategoryIcon, Table2, TextSearch, Users } from "lucide-react";
 
 import { db } from "@/server/db";
 import { getCurrentUser } from "@/server/session";
@@ -62,6 +62,11 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       title: "Members",
       href: `/${slug}/projects/${projectId}/members`,
       icon: <Users size={16} className="hidden sm:block" />,
+    },
+    {
+      title: "Report",
+      href: `/${slug}/projects/${projectId}/reports`,
+      icon: <Table2 size={16} className="hidden sm:block" />,
     },
   ];
 
@@ -146,8 +151,8 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
         <SecondaryNavigation items={tabList} />
       </div>
       <DashboardShell>
-        <div className="flex w-full flex-wrap items-start gap-4 lg:flex-nowrap">
-          <div className="w-full lg:w-[75%]">{children}</div>
+        <div className="flex w-full min-w-0 flex-wrap items-start gap-4 lg:flex-nowrap">
+          <div className="w-full min-w-0 lg:w-[75%]">{children}</div>
           <div className="top-[70px] flex w-full flex-col gap-4 overflow-y-auto lg:sticky lg:max-h-[calc(100vh-80px)] lg:w-[25%]">
             <TimeLoggedCard timecardProp={timecardProp} />
             {isBillable && <BillableCard timecardProp={billableCardProp} />}

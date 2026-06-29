@@ -1,23 +1,13 @@
 import "./globals.css";
 import { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { GeistSans } from "geist/font/sans";
-
 import { siteConfig } from "@/config/site";
+import { fontVariables } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { ContextProvider } from "./context-provider";
 import { SiteHeader } from "./site-header";
 import { getAllProjects } from "@/server/services/project";
 import { getCurrentUser } from "@/server/session";
 import FacebookRedirect from "@/components/user-agent";
-
-const fontHeading = localFont({
-  src: "../assets/fonts/CalSans-SemiBold.woff2",
-  variable: "--font-heading",
-  preload: true,
-  display: "block",
-  weight: "600",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -63,8 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         className={cn(
           "min-h-screen items-center overscroll-y-none bg-background font-sans text-base antialiased",
-          `${GeistSans.variable}`,
-          fontHeading.variable,
+          fontVariables,
         )}
       >
         <ContextProvider>

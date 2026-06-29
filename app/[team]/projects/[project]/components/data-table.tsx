@@ -19,6 +19,7 @@ import { Assignment } from "@/types";
 export interface ClientAndUserInterface {
   id: number;
   name: string | null;
+  archived?: boolean;
 }
 
 interface DataTableProps<TData, TValue> {

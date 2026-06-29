@@ -4,7 +4,9 @@ import {
   getMemberEntriesGroupedByName,
   getMembersNameInTimeEntries,
   getMembersTimeEntries,
+  getMilestonesInProject,
   getProjectDetailsById,
+  getTasksInProject,
 } from "@/server/services/project";
 
 import { pageProps } from "@/types";
@@ -27,6 +29,8 @@ export default async function Page(props: pageProps) {
   const selectedRange = searchParams.range;
   const selectedBilling = searchParams.billable;
   const selectedMembers = searchParams.members;
+  const selectedCategory = searchParams.category;
+  const selectedTask = searchParams.task;
   const { startDate, endDate } = getStartandEndDates(selectedRange, 30);
 
   const { timeEntries } = await getMembersTimeEntries(
@@ -36,6 +40,8 @@ export default async function Page(props: pageProps) {
     endDate,
     selectedBilling,
     selectedMembers,
+    selectedCategory,
+    selectedTask,
   );
   const { memberEntries } = await getMemberEntriesGroupedByName(
     team,
@@ -44,17 +50,33 @@ export default async function Page(props: pageProps) {
     endDate,
     selectedBilling,
     selectedMembers,
+    selectedCategory,
+    selectedTask,
   );
-  const allMembers = await getMembersNameInTimeEntries(team, +project!);
+  const [allMembers, allCategories, allTasks] = await Promise.all([
+    getMembersNameInTimeEntries(team, +project!),
+    getMilestonesInProject(team, +project!),
+    getTasksInProject(team, +project!),
+  ]);
 
   const totalDays = differenceInDays(endDate, startDate) + 1;
   const isBillable = projectDetails?.billable ?? false;
 
   return (
     <>
-      <DataTableToolbar isBillable={isBillable} allMembers={allMembers} />
+      <DataTableToolbar
+        isBillable={isBillable}
+        allMembers={allMembers}
+        allCategories={allCategories}
+        allTasks={allTasks}
+      />
       <TimeChart timeEntries={timeEntries} totalDays={totalDays} />
-      <UserDetails userData={memberEntries} />
+      <UserDetails
+        userData={memberEntries}
+        showTask={!selectedTask}
+        categories={allCategories}
+        tasks={allTasks}
+      />
     </>
   );
 }
