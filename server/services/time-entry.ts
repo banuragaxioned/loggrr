@@ -1,19 +1,20 @@
 import { db } from "@/server/db";
-import { endOfDay, startOfDay, subDays } from "date-fns";
+import { endOfDay, endOfWeek, startOfDay, startOfWeek, subDays, subMonths } from "date-fns";
 import { getServerSession } from "next-auth";
 
 import { formatEntryDate, getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { authOptions } from "../auth";
 
-export const getTimelogLastWeek = async (slug: string, userId: number) => {
-  const today = new Date();
-  const sevenDaysAgo = subDays(today, 7);
+export const getTimelogLastWeek = async (slug: string, userId: number, date: Date) => {
+  const start = startOfWeek(date, { weekStartsOn: 0 });
+  const end = endOfWeek(date, { weekStartsOn: 0 });
 
   const response = await db.timeEntry.aggregate({
     where: {
       userId,
       date: {
-        gte: sevenDaysAgo,
+        gte: start,
+        lte: end,
       },
       workspace: {
         slug,
@@ -53,10 +54,10 @@ export const getWeekWiseEntries = async (slug: string, userId: number, weekCount
   return response;
 };
 
-// Gets last 7 days entries including today with unique project IDs
+// Gets last 30 days entries including today with unique project IDs
 export const getRecentEntries = async (slug: string, userId: number) => {
   const today = new Date();
-  const sevenDaysAgo = subDays(today, 8);
+  const oneMonthAgo = subMonths(today, 1);
 
   const response = await db.timeEntry.findMany({
     distinct: ["projectId"],
@@ -65,7 +66,7 @@ export const getRecentEntries = async (slug: string, userId: number) => {
         slug,
       },
       date: {
-        gte: sevenDaysAgo,
+        gte: oneMonthAgo,
       },
       userId,
       project: {
