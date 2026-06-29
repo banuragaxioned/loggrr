@@ -37,7 +37,7 @@ const items = [
   {
     title: "Effortless time tracking",
     description: "Track time and sync up with your team in a few clicks, and make time tracking a breeze.",
-    header: <Image src={timeTrack} alt="Effortless time tracking" className="dark:grayscale dark:invert" />,
+    header: <Image src={timeTrack} alt="Effortless time tracking" className="dark:grayscale dark:invert" priority />,
     className: "md:col-span-2",
     icon: <Timer className="h-4 w-4" />,
   },
