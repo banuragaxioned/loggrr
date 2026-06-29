@@ -1,18 +1,20 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-interface TooltipTrigger {
+interface TooltipProps {
   trigger: React.ReactNode;
-  content: string;
+  content: React.ReactNode;
   sideOffset?: number;
+  contentClassName?: string;
 }
 
-export function CustomTooltip({ trigger, content, sideOffset }: TooltipTrigger) {
+export function CustomTooltip({ trigger, content, sideOffset, contentClassName }: TooltipProps) {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-        <TooltipContent className="max-w-[300px]" sideOffset={sideOffset}>
-          <p>{content}</p>
+        <TooltipContent className={cn("max-w-[300px]", contentClassName)} sideOffset={sideOffset}>
+          {typeof content === "string" ? <p>{content}</p> : content}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

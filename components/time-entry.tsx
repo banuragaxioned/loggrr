@@ -261,7 +261,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
           <InlineDatePicker
             date={date}
             setDate={(newDate: Date) => {
-              setDate(newDate);
+              router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
             }}
             dayTotalTime={dayTotalTime}
           />

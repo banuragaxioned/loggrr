@@ -10,6 +10,7 @@ import { getTimeInHours } from "@/lib/helper";
 import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
 import WeekHeatmap from "@/components/charts/week-heatmap";
+import { endOfWeek, format, startOfDay, startOfWeek } from "date-fns";
 
 export default async function Dashboard(props: pageProps) {
   const searchParams = await props.searchParams;
@@ -22,13 +23,13 @@ export default async function Dashboard(props: pageProps) {
   }
 
   const date = searchParams.date ? new Date(searchParams.date) : new Date();
-
   const projects = await getAllProjects(user.id, team);
-  const loggedTime = await getTimelogLastWeek(team, user.id);
+  const loggedTime = await getTimelogLastWeek(team, user.id, date);
   const recentTimeEntries = await getRecentEntries(team, user.id);
   const sevenWeekTimeEntries = await getWeekWiseEntries(team, user.id, 7);
-
   const maxHourPerDay = 7.5;
+  const weekStart = startOfWeek(date, { weekStartsOn: 0 });
+  const weekEnd = endOfWeek(date, { weekStartsOn: 0 });
 
   return (
     <div className="col-span-12 mb-6 grid w-full grid-cols-12 items-start gap-4">
@@ -42,8 +43,8 @@ export default async function Dashboard(props: pageProps) {
       </main>
       <aside className="hidden space-y-4 lg:col-span-3 lg:block">
         <CategoryDataBar
-          title="Logged hours"
-          subtitle="Last 7 days"
+          title="Hours logged"
+          subtitle={`${format(weekStart, "MMM d")} - ${format(weekEnd, "MMM d")}`}
           markerValue={getTimeInHours(loggedTime)}
           maxValue={maxHourPerDay * 5}
           type="hours"
