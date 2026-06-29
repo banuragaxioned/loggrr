@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import posthog from "posthog-js";
-import { Clock, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
 import { excludedNavRoutes, siteConfig } from "@/config/site";
 
@@ -13,6 +13,7 @@ import TeamSwitcher from "./team-switcher";
 
 import { TimeAdd } from "@/components/time-add";
 import { UserAccountNav } from "@/components/user-account";
+import { Logo } from "@/components/ui/logo";
 import { MobileNavMenu } from "./mobile-menu";
 import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/command-action";
@@ -40,9 +41,8 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
     <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60 print:hidden">
       <div className="container flex h-14 items-center space-x-4">
         {/* Site Logo/Title */}
-        <Link href={slug ? `/${slug}` : "/"} className="flex items-center space-x-2">
-          <Clock />
-          <span className="inline-block font-bold">{siteConfig.name}</span>
+        <Link href={slug ? `/${slug}` : "/"} aria-label={siteConfig.name}>
+          <Logo />
         </Link>
         {isNavVisible && isAuthenticated && <CommandMenu teams={teamData!} slug={slug || ""} />}
         <div className="flex flex-1 items-center justify-end space-x-2">

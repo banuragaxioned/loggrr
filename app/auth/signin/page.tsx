@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/ui/logo";
 
 function SignInForm() {
   const { status } = useSession();
@@ -70,8 +71,9 @@ function SignInForm() {
     <div className="container flex min-h-[calc(100vh-80px)] flex-col items-center justify-center py-10">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
         {/* Logo/Brand Section */}
-        <div className="flex flex-col items-center space-y-2 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Welcome to Loggrr</h1>
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <Logo className="h-8" />
+          <p className="text-muted-foreground text-sm">Sign in to your workspace</p>
         </div>
 
         {/* Main Sign In Card */}

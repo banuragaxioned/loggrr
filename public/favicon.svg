@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"  class="w-6 h-6">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
   <style>
-    path {
-      fill: #000;
-    }
+    .bar-fg { fill: #1A0A40; }
+    .bar-fg-faded { fill: #1A0A40; }
     @media (prefers-color-scheme: dark) {
-      path {
-        fill: #fff;
-      }
+      .bar-fg { fill: #ffffff; }
+      .bar-fg-faded { fill: #ffffff; }
     }
   </style>
-  <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+  <rect x="20" y="33" width="80" height="14" rx="7" fill="#F31C7E"/>
+  <rect x="20" y="56" width="54" height="14" rx="7" class="bar-fg"/>
+  <rect x="20" y="79" width="68" height="14" rx="7" class="bar-fg-faded" opacity="0.4"/>
 </svg>

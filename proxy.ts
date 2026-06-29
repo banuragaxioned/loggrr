@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { parse } from "./lib/middleware/utils";
 
 export default withAuth(
-  function middleware(req) {
+  function proxy(req) {
     const { key } = parse(req);
   },
   {
