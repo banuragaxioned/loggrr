@@ -1,88 +1,116 @@
 "use client";
 
-import { format, startOfDay, subDays } from "date-fns";
+import { eachMonthOfInterval, endOfMonth, format, startOfDay, startOfMonth, subDays } from "date-fns";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
-import { useSearchParams } from "next/navigation";
 import { Info } from "lucide-react";
 
 import { CustomTooltip as CustomTooltipUI } from "@/components/custom/tooltip";
 
+const DAILY_CHART_MAX_DAYS = 31;
+
+interface ChartPoint {
+  date: string;
+  time: number;
+}
+
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
   totalDays: number;
+  startDate: string;
+  endDate: string;
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="rounded-md border border-border bg-primary-foreground p-2 text-xs shadow-xs">
-        <p className="label">{format(label, "EEE, dd MMM, yyyy")}</p>
-        <p className="desc">Hours logged: {payload[0].value}h</p>
-        {/* <p className="desc">Billable: {payload[1].value}h</p> */}
-      </div>
-    );
+function buildDailyChartData(
+  rangeEnd: Date,
+  totalDays: number,
+  timeEntries: { date: Date; time: number }[],
+): ChartPoint[] {
+  const byDay: Record<string, number> = {};
+
+  timeEntries.forEach((entry) => {
+    const key = format(new Date(entry.date), "yyyy-MM-dd");
+    byDay[key] = (byDay[key] ?? 0) + +getTimeInHours(entry.time);
+  });
+
+  const days: ChartPoint[] = [];
+  for (let i = 0; i < totalDays; i++) {
+    const currentDate = subDays(rangeEnd, totalDays - 1 - i);
+    const key = format(currentDate, "yyyy-MM-dd");
+    days.push({ date: key, time: byDay[key] ?? 0 });
   }
-};
 
-const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
-  const searchParams = useSearchParams();
-  const selectedRange = searchParams.get("range");
-  const [, end] = selectedRange?.split(",") || [];
+  return days;
+}
+
+function buildMonthlyChartData(
+  rangeStart: Date,
+  rangeEnd: Date,
+  timeEntries: { date: Date; time: number }[],
+): ChartPoint[] {
+  const byMonth: Record<string, number> = {};
+
+  timeEntries.forEach((entry) => {
+    const key = format(new Date(entry.date), "yyyy-MM");
+    byMonth[key] = (byMonth[key] ?? 0) + +getTimeInHours(entry.time);
+  });
+
+  const months = eachMonthOfInterval({
+    start: startOfMonth(rangeStart),
+    end: endOfMonth(rangeEnd),
+  });
+
+  return months.map((month) => {
+    const key = format(month, "yyyy-MM");
+    return { date: format(month, "yyyy-MM-dd"), time: byMonth[key] ?? 0 };
+  });
+}
+
+function ChartTooltip({
+  active,
+  payload,
+  label,
+  isMonthlyView,
+}: {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+  isMonthlyView: boolean;
+}) {
+  if (!active || !payload?.length || !label) return null;
+
+  const dateLabel = isMonthlyView ? format(new Date(label), "MMMM yyyy") : format(new Date(label), "EEE, dd MMM, yyyy");
+
+  return (
+    <div className="border-border bg-primary-foreground rounded-md border p-2 text-xs shadow-xs">
+      <p className="label">{dateLabel}</p>
+      <p className="desc">Hours logged: {payload[0].value}h</p>
+    </div>
+  );
+}
+
+const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProps) => {
   const totalTime = getTimeInHours(timeEntries.reduce((acc, curr) => acc + curr.time, 0));
+  const isMonthlyView = totalDays > DAILY_CHART_MAX_DAYS;
 
-  const formatXAxis = (tickItem: Date) => format(tickItem, "MMMdd");
+  const chartData = React.useMemo(() => {
+    const rangeStart = startOfDay(new Date(startDate));
+    const rangeEnd = startOfDay(new Date(endDate));
+
+    if (isMonthlyView) {
+      return buildMonthlyChartData(rangeStart, rangeEnd, timeEntries);
+    }
+
+    return buildDailyChartData(rangeEnd, totalDays, timeEntries);
+  }, [timeEntries, startDate, endDate, totalDays, isMonthlyView]);
+
+  const formatXAxis = (tickItem: string) =>
+    isMonthlyView ? format(new Date(tickItem), "MMM yy") : format(new Date(tickItem), "MMM dd");
+
   const formatYAxis = (tickItem: number) => `${tickItem}h`;
-
-  const [data, setData] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    const getAllDays = () => {
-      const endDate = startOfDay((end && new Date(end)) || new Date());
-      const daysArray = [];
-      for (let i = totalDays - 1; i >= 0; i--) {
-        const currentDate = subDays(endDate, i);
-        daysArray.push(format(currentDate, "yyyy-MM-dd"));
-      }
-
-      return daysArray;
-    };
-
-    const populatedDays = getAllDays();
-    const transformedData: any = {};
-
-    timeEntries.forEach((entry: any, i) => {
-      const date = format(new Date(entry.date), "yyyy-MM-dd");
-      transformedData[date] = { ...transformedData[date], time: +getTimeInHours(entry.time) };
-    });
-
-    // billableEntries.forEach((entry: any, i) => {
-    //   const date = format(new Date(entry.date), "yyyy-MM-dd");
-    //   transformedData[date] = { ...transformedData[date], billable: +getTimeInHours(entry.time) };
-    // });
-
-    // Fill in missing dates with time: 0
-    populatedDays.forEach((date) => {
-      if (!transformedData[date]?.time) {
-        transformedData[date] = { ...transformedData[date], time: 0 };
-      }
-      if (!transformedData[date]?.billable) {
-        transformedData[date] = { ...transformedData[date], billable: 0 };
-      }
-    });
-
-    // Convert transformed data back to an array and sort
-    const finalData = populatedDays.map((date) => ({
-      time: transformedData[date].time,
-      billable: transformedData[date].billable,
-      date,
-    }));
-
-    setData(finalData);
-  }, [timeEntries, totalDays, end]);
 
   // Suppress warning for defaultProps in Recharts component
   if (process.env.NODE_ENV !== "production") {
@@ -101,9 +129,9 @@ const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
   }
 
   return (
-    <Card className="select-none p-0 shadow-none">
+    <Card className="p-0 shadow-none select-none">
       <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
-        <p className="font-semibold">Day-wise distribution</p>
+        <p className="font-semibold">{isMonthlyView ? "Month-wise distribution" : "Day-wise distribution"}</p>
         <CustomTooltipUI
           content={`Total: ${totalTime} hours`}
           trigger={<Info size={16} className="text-muted-foreground" />}
@@ -112,16 +140,17 @@ const TimeChart = ({ timeEntries, totalDays }: TimeChartProps) => {
       </CardHeader>
       <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart width={500} height={300} data={data}>
+          <BarChart width={500} height={300} data={chartData}>
             <XAxis
               dataKey="date"
               tick={{ fontSize: 10 }}
               tickFormatter={formatXAxis}
               tickLine={false}
               axisLine={false}
+              interval={isMonthlyView ? 0 : "preserveStartEnd"}
             />
             <YAxis tick={{ fontSize: 12 }} tickFormatter={formatYAxis} tickLine={false} axisLine={false} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<ChartTooltip isMonthlyView={isMonthlyView} />} />
             <Bar dataKey="time" style={{ fill: "hsl(var(--primary))" }} />
           </BarChart>
         </ResponsiveContainer>
