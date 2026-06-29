@@ -15,7 +15,7 @@ import TimeChart from "./components/time-chart";
 import UserDetails from "./components/user-details";
 import { DataTableToolbar } from "./components/toolbar";
 import { getStartandEndDates } from "@/lib/months";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, startOfMonth } from "date-fns";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -31,7 +31,13 @@ export default async function Page(props: pageProps) {
   const selectedMembers = searchParams.members;
   const selectedCategory = searchParams.category;
   const selectedTask = searchParams.task;
-  const { startDate, endDate } = getStartandEndDates(selectedRange, 30);
+  const isFixed = projectDetails?.interval === "FIXED";
+
+  const { startDate, endDate } = selectedRange
+    ? getStartandEndDates(selectedRange)
+    : isFixed
+      ? { startDate: projectDetails?.createdAt ?? startOfMonth(new Date()), endDate: new Date() }
+      : getStartandEndDates("");
 
   const { timeEntries } = await getMembersTimeEntries(
     team,
@@ -69,14 +75,16 @@ export default async function Page(props: pageProps) {
         allMembers={allMembers}
         allCategories={allCategories}
         allTasks={allTasks}
+        interval={projectDetails?.interval}
+        projectCreatedAt={projectDetails?.createdAt?.toISOString()}
       />
-      <TimeChart timeEntries={timeEntries} totalDays={totalDays} />
-      <UserDetails
-        userData={memberEntries}
-        showTask={!selectedTask}
-        categories={allCategories}
-        tasks={allTasks}
+      <TimeChart
+        timeEntries={timeEntries}
+        totalDays={totalDays}
+        startDate={startDate.toISOString()}
+        endDate={endDate.toISOString()}
       />
+      <UserDetails userData={memberEntries} showTask={!selectedTask} categories={allCategories} tasks={allTasks} />
     </>
   );
 }
