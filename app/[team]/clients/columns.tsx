@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Building2, ChevronRight, Edit, FolderKanban, Save, X } from "lucide-react";
-import { Status } from "@prisma/client";
+import { Status } from "@/generated/prisma/browser";
 import { Dispatch, RefObject } from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
