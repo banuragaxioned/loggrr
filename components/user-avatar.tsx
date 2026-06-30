@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "@/generated/prisma/browser";
 import { AvatarProps } from "@radix-ui/react-avatar";
 
 import { User as UserIcon } from "lucide-react";

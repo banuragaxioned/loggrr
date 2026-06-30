@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { Status } from "@prisma/client";
+import { Status } from "@/generated/prisma/browser";
 
 export async function updateMilestoneStatus(team: string, project: number, id: number, status: Status) {
   const milestones = await db.milestone.update({

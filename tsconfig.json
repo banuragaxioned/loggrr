@@ -3,7 +3,6 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
     "target": "es2022",
     "allowJs": true,
     "checkJs": true,
@@ -13,11 +12,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     /* Bundled projects */
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -26,9 +21,7 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "plugins": [
       {
@@ -45,9 +38,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "eslint.config.mjs"
-  ]
+  "exclude": ["node_modules", ".next", "eslint.config.mjs"]
 }

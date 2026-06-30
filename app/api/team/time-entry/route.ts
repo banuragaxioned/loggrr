@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 
 const commonValidationObj = {
   team: z.string().min(1),

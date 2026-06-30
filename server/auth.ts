@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 import WorkspaceJoinedEmail from "@/emails/workspace-joined";
 import RegisterEmail from "@/emails/register";
 import { siteConfig } from "@/config/site";

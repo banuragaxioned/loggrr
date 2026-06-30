@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 
 const addUserSchema = z.object({
   team: z.string().min(1),

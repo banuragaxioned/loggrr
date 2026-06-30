@@ -1,4 +1,4 @@
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@/generated/prisma/browser";
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
 import { authOptions } from "@/server/auth";

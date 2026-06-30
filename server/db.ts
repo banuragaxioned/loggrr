@@ -1,13 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+import { PrismaClient } from "@/generated/prisma/client";
 import { env } from "@/env.mjs";
+import { normalizeDatabaseUrl } from "@/lib/database-url.mjs";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const adapter = new PrismaPg({ connectionString: normalizeDatabaseUrl(env.DATABASE_URL) });
+
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
+    adapter,
     log: env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 

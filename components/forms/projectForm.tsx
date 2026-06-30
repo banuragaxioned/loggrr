@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sheet";
 import { ComboBox } from "../ui/combobox";
 
-import { ProjectInterval } from "@prisma/client";
+import { ProjectInterval } from "@/generated/prisma/browser";
 import { Client, AllUsersWithAllocation } from "@/types";
 
 const formSchema = z.object({

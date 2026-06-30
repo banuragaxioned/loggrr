@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Briefcase } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
-import { Status } from "@prisma/client";
+import { Status } from "@/generated/prisma/browser";
 import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 

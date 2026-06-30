@@ -9,7 +9,7 @@ import { Table } from "./table";
 import { getCurrentUser } from "@/server/session";
 import { checkAccess, getUserRole } from "@/lib/helper";
 import { notFound } from "next/navigation";
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/browser";
 
 export const metadata: Metadata = {
   title: `Members`,

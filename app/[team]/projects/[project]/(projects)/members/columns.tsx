@@ -2,7 +2,7 @@
 
 import { Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Status } from "@prisma/client";
+import { Status } from "@/generated/prisma/browser";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";

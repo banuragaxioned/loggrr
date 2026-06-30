@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { User, Workspace } from "@prisma/client";
+import { User, Workspace } from "@/generated/prisma/browser";
 
 export async function addToWorkspace(slug: Workspace["slug"], user: User) {
   try {

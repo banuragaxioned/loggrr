@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { LucideIcon } from "lucide-react";
-import { Workspace, Role, Status } from "@prisma/client";
+import { Workspace, Role, Status } from "@/generated/prisma/browser";
 import { ColumnDef, Table } from "@tanstack/react-table";
 
 export type UserProfile = {
