@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfDay, startOfToday, subDays } from "date-fns";
+import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
 import { CircleDollarSign, Download, Layers, ListChecks, ListRestart, Loader2, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
@@ -22,11 +22,15 @@ export function DataTableToolbar({
   allMembers,
   allCategories,
   allTasks,
+  interval,
+  projectCreatedAt,
 }: {
   isBillable: boolean;
   allMembers: ClientAndUserInterface[];
   allCategories: ClientAndUserInterface[];
   allTasks: ClientAndUserInterface[];
+  interval?: "FIXED" | "MONTHLY";
+  projectCreatedAt?: string;
 }) {
   const [isExportLoading, setIsExportLoading] = useState(false);
 
@@ -124,8 +128,11 @@ export function DataTableToolbar({
     router.push(pathname + "?" + createQueryString("range", range));
   };
 
+  const isFixed = interval === "FIXED";
   const [start, end] = selectedRange?.split(",") || [];
-  const startFrom = (start && startOfDay(new Date(start))) || subDays(startOfToday(), 30);
+  const monthStart = startOfMonth(startOfToday());
+  const fixedStart = projectCreatedAt ? startOfDay(new Date(projectCreatedAt)) : monthStart;
+  const startFrom = (start && startOfDay(new Date(start))) || (isFixed ? fixedStart : monthStart);
   const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
   // Billing status toggle button

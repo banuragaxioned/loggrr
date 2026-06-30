@@ -4,7 +4,6 @@ import * as React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
-  ColumnDef,
   ColumnFiltersState,
   Row,
   SortingState,
@@ -13,9 +12,9 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 
-import { DataTableStructure } from "@/components/data-table/structure";
 import { DataTableToolbar } from "./toolbar";
 import { Client } from "@/types";
+import { ClientsDataTable } from "./data-table";
 
 export interface TableProps<TData, TValue> {
   clientName: Function;
@@ -23,18 +22,17 @@ export interface TableProps<TData, TValue> {
   team: string;
 }
 
-export function Table<TData, TValue>({ clientName, data, team }: TableProps<Client, TValue>) {
+export function Table<TData, TValue>({ clientName: getColumns, data, team }: TableProps<Client, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [isEditing, setIsEditing] = React.useState<number>(0);
 
   const router = useRouter();
-
-  const refButton = React.useRef<HTMLButtonElement>(null);
+  const refInput = React.useRef<HTMLInputElement>(null);
 
   const noActiveProject = (row: Row<Client>) => {
     if (row.original.project === 0) {
-      toast("No Projects found in this client");
+      toast("No projects found for this client");
     }
   };
 
@@ -45,7 +43,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
     const response = await fetch("/api/team/client/edit", {
       method: "POST",
       body: JSON.stringify({
-        id: id,
+        id,
         name: value,
         team,
       }),
@@ -59,7 +57,7 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
 
   const tableConfig = {
     data,
-    columns: clientName(editClientNames, isEditing, setIsEditing, refButton),
+    columns: getColumns(editClientNames, isEditing, setIsEditing, refInput),
     state: {
       sorting,
       columnFilters,
@@ -72,11 +70,6 @@ export function Table<TData, TValue>({ clientName, data, team }: TableProps<Clie
   };
 
   return (
-    <DataTableStructure
-      tableConfig={tableConfig}
-      DataTableToolbar={DataTableToolbar}
-      rowClickHandler={rowClickHandler}
-      rowProps={{ className: "cursor-pointer group hover:bg-accent" }}
-    />
+    <ClientsDataTable tableConfig={tableConfig} DataTableToolbar={DataTableToolbar} rowClickHandler={rowClickHandler} />
   );
 }

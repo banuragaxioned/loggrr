@@ -21,16 +21,15 @@ export default function CategoryDataBar(input: CategoryBarProps) {
       <Flex className="items-center font-semibold">
         <Text>{title}</Text>
         <Text className="flex items-center text-xs">
-          <Info className="mx-1" size={16} />
+          <Info className="mx-1" size={14} />
           {subtitle}
         </Text>
       </Flex>
       <Flex>
         <Text className="flex items-baseline gap-0.5">
-          <span className="relative top-0.5 text-3xl font-semibold normal-nums text-primary">{markerValue}</span>/
+          <span className="text-primary relative top-0.5 text-3xl font-semibold normal-nums">{markerValue}</span>/
           <span className="normal-nums">
-            {maxValue}
-            {type === "hours" ? "h" : ""}
+            {maxValue} {type === "hours" ? "h" : ""}
           </span>
         </Text>
       </Flex>
@@ -38,8 +37,6 @@ export default function CategoryDataBar(input: CategoryBarProps) {
         values={values ? values : [25, 25, 25, 25]}
         colors={["rose", "orange", "yellow", "emerald"]}
         markerValue={percent}
-        className="text-sm"
-        tooltip={`${Math.round(percent)}%`}
         showAnimation
       />
     </Card>

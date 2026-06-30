@@ -4,6 +4,8 @@ import path from "node:path";
 
 import { defineConfig, env } from "prisma/config";
 
+import { normalizeDatabaseUrl } from "./lib/database-url.mjs";
+
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
   migrations: {
@@ -12,6 +14,6 @@ export default defineConfig({
   // Prisma 7 moved the connection URL out of the schema. It's used by the CLI
   // (generate/migrate/db push). Bun loads .env natively for the bunx scripts.
   datasource: {
-    url: env("DATABASE_URL"),
+    url: normalizeDatabaseUrl(env("DATABASE_URL")),
   },
 });
