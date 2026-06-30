@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, Save, Trash, X } from "lucide-react";
-import { Dispatch, RefObject } from "react";
+import { createElement, Dispatch, RefObject } from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getGroupIcon } from "@/config/group-icons";
 import { cn } from "@/lib/utils";
 import type { GroupRow } from "./data-table";
+
+function GroupIcon({ name }: { name: string }) {
+  return createElement(getGroupIcon(name), {
+    className: "text-muted-foreground h-4 w-4 shrink-0",
+    "aria-hidden": true,
+  });
+}
 
 function MemberCountBadge({ count }: { count: number }) {
   const hasMembers = count > 0;
@@ -81,7 +89,12 @@ export function getColumns({
           );
         }
 
-        return <span className="group-hover:text-primary truncate font-medium transition-colors">{row.original.name}</span>;
+        return (
+          <div className="flex min-w-0 items-center gap-2.5">
+            <GroupIcon name={row.original.name} />
+            <span className="group-hover:text-primary truncate font-medium transition-colors">{row.original.name}</span>
+          </div>
+        );
       },
       meta: {
         className: "min-w-[220px]",
