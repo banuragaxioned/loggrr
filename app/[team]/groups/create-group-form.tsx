@@ -16,7 +16,7 @@ import { createGroup } from "@/app/_actions/create-group-action";
 
 const FormSchema = z.object({
   groupName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Group name must be at least 2 characters.",
   }),
 });
 
@@ -36,7 +36,7 @@ export function CreateGroupForm({ team }: { team: string }) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const result = await createGroup(team, data.groupName);
     if (result.success) {
-      toast.success("A new Client was created");
+      toast.success("Group created");
       formRef.current?.reset();
       router.refresh();
       form.reset();

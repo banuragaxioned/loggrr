@@ -17,16 +17,20 @@ export const metadata: Metadata = {
 
 const ManageMembers = async (props: pageProps) => {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const { team } = params;
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, team);
   const hasAccess = checkAccess(workspaceRole);
+  const groupParam = searchParams.group;
+  const parsedGroupId = groupParam ? Number.parseInt(groupParam, 10) : undefined;
+  const groupId = parsedGroupId !== undefined && !Number.isNaN(parsedGroupId) ? parsedGroupId : undefined;
 
   if (!hasAccess) {
     return notFound();
   }
 
-  const data = await getMembers(team);
+  const data = await getMembers(team, groupId);
   const userGroup = await getGroups(team);
 
   return (
