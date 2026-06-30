@@ -160,42 +160,55 @@ export function getColumns({
                 >
                   <Edit className="h-3.5 w-3.5" />
                 </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      title="Delete"
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive invisible h-7 w-7 group-hover:visible"
-                    >
-                      <Trash className="h-3.5 w-3.5" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Delete {row.original.name}?</DialogTitle>
-                      <DialogDescription>
-                        {row.original.memberCount > 0
-                          ? `This group has ${row.original.memberCount} member${row.original.memberCount === 1 ? "" : "s"}. They will be removed from the group but not from the workspace.`
-                          : "This action cannot be undone. This will permanently delete the group."}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <DialogClose>Cancel</DialogClose>
-                      </Button>
+                {row.original.memberCount > 0 ? (
+                  <Button
+                    title="Delete"
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive invisible h-7 w-7 group-hover:visible"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      deleteGroup(row.original.id, row.original.memberCount);
+                    }}
+                  >
+                    <Trash className="h-3.5 w-3.5" />
+                  </Button>
+                ) : (
+                  <Dialog>
+                    <DialogTrigger asChild>
                       <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => deleteGroup(row.original.id, row.original.memberCount)}
-                        asChild
+                        title="Delete"
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive invisible h-7 w-7 group-hover:visible"
                       >
-                        <DialogClose>Delete</DialogClose>
+                        <Trash className="h-3.5 w-3.5" />
                       </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Delete {row.original.name}?</DialogTitle>
+                        <DialogDescription>
+                          This action cannot be undone. This will permanently delete the group.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button type="button" variant="outline" size="sm" asChild>
+                          <DialogClose>Cancel</DialogClose>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteGroup(row.original.id, row.original.memberCount)}
+                          asChild
+                        >
+                          <DialogClose>Delete</DialogClose>
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </>
             )}
           </div>

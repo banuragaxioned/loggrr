@@ -59,6 +59,30 @@ export async function deleteGroup(team: string, id: number) {
     return { success: false };
   }
 
+  const group = await db.group.findFirst({
+    where: {
+      id,
+      workspace: {
+        slug: team,
+      },
+    },
+    select: {
+      _count: {
+        select: {
+          userOnGroup: true,
+        },
+      },
+    },
+  });
+
+  if (!group) {
+    return { success: false };
+  }
+
+  if (group._count.userOnGroup > 0) {
+    return { success: false, hasMembers: true };
+  }
+
   await db.group.delete({
     where: {
       id,

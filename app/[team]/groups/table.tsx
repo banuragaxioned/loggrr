@@ -60,10 +60,20 @@ export function Table({ data, team, canManage }: GroupsTableProps) {
       return;
     }
 
+    if (memberCount > 0) {
+      toast.error("You must move members to a different group before deleting.");
+      return;
+    }
+
     const result = await deleteGroup(team, id);
     if (result.success) {
-      toast.success(memberCount > 0 ? "Group deleted and members unassigned" : "Group deleted");
+      toast.success("Group deleted");
       router.refresh();
+      return;
+    }
+
+    if ("hasMembers" in result && result.hasMembers) {
+      toast.error("You must move members to a different group before deleting.");
       return;
     }
 
