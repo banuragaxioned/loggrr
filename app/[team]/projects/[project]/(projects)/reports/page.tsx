@@ -48,7 +48,7 @@ export default async function Page(props: pageProps) {
   const isBillable = projectDetails?.billable ?? false;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       <DataTableToolbar
         isBillable={isBillable}
         allMembers={allMembers}
