@@ -95,11 +95,16 @@ export const getColumns = (
             {depth === 1 && (
               <span className="flex items-center gap-2 md:inline-flex">
                 {showTask && row.original.task?.name && (
-                  <Badge variant="secondary" className="shrink-0 font-normal">
+                  <Badge
+                    variant="secondary"
+                    className="inline-flex shrink-0 items-center font-normal"
+                    title={`Task: ${row.original.task.name}`}
+                  >
+                    <List size={12} className="mr-1 shrink-0" />
                     {row.original.task.name}
                   </Badge>
                 )}
-                <span className="ml-2 line-clamp-1 opacity-50" title={row.original.comments}>
+                <span className="line-clamp-1 opacity-50" title={row.original.comments}>
                   {row.original?.comments ?? ""}
                 </span>
               </span>
@@ -118,15 +123,7 @@ export const getColumns = (
   },
 ];
 
-function TimeEntryCell({
-  row,
-  categories,
-  tasks,
-}: {
-  row: any;
-  categories: SelectOption[];
-  tasks: SelectOption[];
-}) {
+function TimeEntryCell({ row, categories, tasks }: { row: any; categories: SelectOption[]; tasks: SelectOption[] }) {
   const { depth, original } = row;
   const params = useParams();
   const router = useRouter();
@@ -139,11 +136,7 @@ function TimeEntryCell({
   const [task, setTask] = useState<SelectOption | null>(null);
   const formatted = `${row.getValue("hours") ?? 0} h`;
 
-  const dropdownSelectHandler = (
-    selected: string,
-    options: SelectOption[],
-    callback: (item: SelectOption) => void,
-  ) => {
+  const dropdownSelectHandler = (selected: string, options: SelectOption[], callback: (item: SelectOption) => void) => {
     const found = options.find((option) => option.id === +selected);
     if (found) callback(found);
   };
@@ -222,11 +215,11 @@ function TimeEntryCell({
       <span className={`group relative mr-4 inline-block w-20 text-right ${depth === 0 ? "font-semibold" : ""}`}>
         <span className={`${depth > 0 ? "opacity-50" : ""} mr-1`}>{formatted}</span>
         {original.billable && (
-          <Circle className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 fill-success stroke-none sm:-right-3.5 md:-right-4" />
+          <Circle className="fill-success absolute top-1/2 -right-3 h-2.5 w-2.5 -translate-y-1/2 stroke-none sm:-right-3.5 md:-right-4" />
         )}
       </span>
       {depth > 0 && (
-        <div className="absolute bottom-0 right-20 top-0 mr-4 hidden items-center justify-center gap-2 group-hover:flex">
+        <div className="absolute top-0 right-20 bottom-0 mr-4 hidden items-center justify-center gap-2 group-hover:flex">
           <Dialog>
             <DialogTrigger asChild>
               <Button
@@ -318,7 +311,7 @@ function TimeEntryCell({
           </Dialog>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" className="h-6 w-6 p-0 text-destructive">
+              <Button variant="ghost" className="text-destructive h-6 w-6 p-0">
                 <Trash size={12} />
               </Button>
             </DialogTrigger>

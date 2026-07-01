@@ -35,11 +35,13 @@ export default async function Page(props: pageProps) {
   const selectedProject = searchParams.project;
   const selectedClients = searchParams.clients;
   const selectedMembers = searchParams.members;
+  const selectedGroups = searchParams.groups;
   const { startDate, endDate } = getStartandEndDates(selectedRange);
   const {
     data: loggedData,
     allClients,
     allUsers,
+    allGroups,
   } = await getLogged(
     params.team,
     startDate,
@@ -48,6 +50,7 @@ export default async function Page(props: pageProps) {
     selectedProject,
     selectedClients,
     selectedMembers,
+    selectedGroups,
     hasFullAccess,
   );
 
@@ -103,6 +106,7 @@ export default async function Page(props: pageProps) {
                     id: user.userId,
                     name: user.userName,
                     image: user.userImage,
+                    groups: user.userGroups,
                     hours: 0,
                     billableHours: 0,
                     subRows: [],
@@ -172,6 +176,7 @@ export default async function Page(props: pageProps) {
           data={transformedData as Logged[]}
           allClients={allClients}
           allUsers={allUsers}
+          allGroups={allGroups}
           hasFullAccess={hasFullAccess}
         />
       </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import { DataTable } from "./data-table";
 import { getColumns } from "./columns";
 import { ProjectSelectOption } from "./project-edit-combobox";

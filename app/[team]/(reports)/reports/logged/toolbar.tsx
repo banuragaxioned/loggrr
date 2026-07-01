@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
-import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Users } from "lucide-react";
+import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Tags, Users } from "lucide-react";
 import { useQueryState } from "nuqs";
 import csvDownload from "json-to-csv-export";
 
@@ -21,6 +21,7 @@ import { DateRangePicker } from "@/components/custom/date-range-picker";
 interface DataTableToolbarExtendedProps<Assignment> extends DataTableToolbarProps<Assignment> {
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
+  allGroups: ClientAndUserInterface[];
   handlePrintClick: () => void;
   hasFullAccess?: boolean;
 }
@@ -41,6 +42,7 @@ export function DataTableToolbar<TData>({
   table,
   allClients,
   allUsers,
+  allGroups,
   handlePrintClick,
   hasFullAccess,
 }: DataTableToolbarExtendedProps<Assignment>) {
@@ -54,6 +56,7 @@ export function DataTableToolbar<TData>({
   const [selectedProject, setSelectedProject] = useQueryState("project");
   const [selectedClients, setSelectedClients] = useQueryState("clients");
   const [selectedMembers, setSelectedMembers] = useQueryState("members");
+  const [selectedGroups, setSelectedGroups] = useQueryState("groups");
 
   const clientFilter = {
     title: "Clients",
@@ -69,8 +72,15 @@ export function DataTableToolbar<TData>({
     options: allUsers,
   };
 
+  const groupFilter = {
+    title: "Groups",
+    searchable: true,
+    icon: <Tags size={16} />,
+    options: allGroups,
+  };
+
   const isResetButtonVisibile =
-    selectedRange || selectedBilling || selectedProject || selectedClients || selectedMembers;
+    selectedRange || selectedBilling || selectedProject || selectedClients || selectedMembers || selectedGroups;
 
   const generateBillingQuery = () => {
     if (!selectedBilling) return { text: "Hours", nextValue: "true" };
@@ -90,6 +100,7 @@ export function DataTableToolbar<TData>({
           selectedProject: Array.isArray(selectedProject) ? selectedProject.join(",") : selectedProject,
           selectedClients: Array.isArray(selectedClients) ? selectedClients.join(",") : selectedClients,
           selectedMembers: Array.isArray(selectedMembers) ? selectedMembers.join(",") : selectedMembers,
+          selectedGroups: Array.isArray(selectedGroups) ? selectedGroups.join(",") : selectedGroups,
         }),
       });
 
@@ -147,6 +158,7 @@ export function DataTableToolbar<TData>({
     setSelectedProject(null);
     setSelectedClients(null);
     setSelectedMembers(null);
+    setSelectedGroups(null);
   };
 
   return (
@@ -179,6 +191,9 @@ export function DataTableToolbar<TData>({
             </li>
             <li>
               <MultiSelectFilter values={peopleFilter} />
+            </li>
+            <li>
+              <MultiSelectFilter values={groupFilter} />
             </li>
           </>
         )}

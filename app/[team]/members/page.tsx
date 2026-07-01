@@ -22,15 +22,16 @@ const ManageMembers = async (props: pageProps) => {
   const user = await getCurrentUser();
   const workspaceRole = getUserRole(user?.workspaces, team);
   const hasAccess = checkAccess(workspaceRole);
-  const groupParam = searchParams.group;
+  const { group: groupParam, status } = searchParams;
   const parsedGroupId = groupParam ? Number.parseInt(groupParam, 10) : undefined;
   const groupId = parsedGroupId !== undefined && !Number.isNaN(parsedGroupId) ? parsedGroupId : undefined;
+  const includeInactive = status === "all";
 
   if (!hasAccess) {
     return notFound();
   }
 
-  const data = await getMembers(team, groupId);
+  const data = await getMembers(team, groupId, includeInactive);
   const userGroup = await getGroups(team);
 
   return (

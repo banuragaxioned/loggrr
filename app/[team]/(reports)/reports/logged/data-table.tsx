@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   allClients: ClientAndUserInterface[];
   allUsers: ClientAndUserInterface[];
+  allGroups: ClientAndUserInterface[];
   hasFullAccess?: boolean;
 }
 
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   data,
   allClients,
   allUsers,
+  allGroups,
   hasFullAccess,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
@@ -109,6 +111,7 @@ export function DataTable<TData, TValue>({
         table={table}
         allClients={allClients}
         allUsers={allUsers}
+        allGroups={allGroups}
         handlePrintClick={handlePrintClick}
         hasFullAccess={hasFullAccess}
       />
@@ -136,7 +139,9 @@ export function DataTable<TData, TValue>({
               return (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id} className={cell.column.id === "name" ? "max-w-0" : undefined}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               );

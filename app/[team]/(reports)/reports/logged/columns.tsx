@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Circle, Info, Minus, Plus } from "lucide-react";
+import { Circle, Info, List, Minus, Plus } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ export interface Logged {
   image?: string;
   billable?: boolean;
   task?: string | null;
+  groups?: { id: number; name: string }[];
   subRows?: {
     id: number;
     name: string;
@@ -94,6 +95,50 @@ function BudgetCell({
   );
 }
 
+function MemberGroups({ groups }: { groups: { id: number; name: string }[] }) {
+  if (groups.length === 0) {
+    return null;
+  }
+
+  const [firstGroup, ...remainingGroups] = groups;
+  const hasMoreGroups = remainingGroups.length > 0;
+
+  const groupLabel = (
+    <Badge
+      variant="outline"
+      className="inline-flex max-w-[10rem] border-sky-200 bg-sky-50 font-normal text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-300"
+      title={groups.map((group) => group.name).join(", ")}
+    >
+      <span className="truncate">{firstGroup.name}</span>
+      {hasMoreGroups && (
+        <>
+          <span className="mx-1 shrink-0 opacity-40">|</span>
+          <span className="shrink-0">+{remainingGroups.length}</span>
+        </>
+      )}
+    </Badge>
+  );
+
+  if (!hasMoreGroups) {
+    return groupLabel;
+  }
+
+  return (
+    <CustomTooltip
+      trigger={groupLabel}
+      content={
+        <div className="flex flex-col gap-1 text-xs">
+          {groups.map((group) => (
+            <span key={group.id}>{group.name}</span>
+          ))}
+        </div>
+      }
+      contentClassName="max-w-[200px]"
+      sideOffset={4}
+    />
+  );
+}
+
 export const columns: ColumnDef<Logged>[] = [
   {
     accessorKey: "name",
@@ -106,7 +151,7 @@ export const columns: ColumnDef<Logged>[] = [
       const value = getValue() as string;
 
       return (
-        <div className="ml-8 flex items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
+        <div className="ml-8 flex min-w-0 items-center gap-2" style={{ marginLeft: `${depth * 32}px` }}>
           {canExpand && type !== "client" && type !== "entry" && (
             <Button
               {...{
@@ -118,39 +163,49 @@ export const columns: ColumnDef<Logged>[] = [
               {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
             </Button>
           )}
-          <div
-            className={`${type === "client" ? "font-medium" : ""} ${type === "entry" ? "descendent" : ""} relative flex items-center gap-2`}
-          >
-            {type === "client" && (
-              <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
-                style={{ backgroundColor: getRandomColor(original.id) }}
-              >
-                {value.charAt(0)}
-              </span>
-            )}
-            {type === "member" && (
+          {type === "member" ? (
+            <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
               <UserAvatar
                 user={{ name: original.name ?? null, image: original.image ?? null }}
-                className="h-6 w-6 bg-slate-300"
+                className="h-6 w-6 shrink-0 bg-slate-300"
               />
-            )}
-            <span className={`${type === "entry" ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>
-              {value}
-            </span>
-            {type === "entry" && (
-              <span className="hidden items-center gap-2 md:inline-flex">
-                {original.task && (
-                  <Badge variant="secondary" className="shrink-0 font-normal">
-                    {original.task}
-                  </Badge>
-                )}
-                <span className="line-clamp-1 opacity-50" title={original.description ?? undefined}>
-                  {original?.description ?? ""}
+              <span className="min-w-0 flex-1 truncate">{value}</span>
+              <MemberGroups groups={original.groups ?? []} />
+            </div>
+          ) : (
+            <div
+              className={`${type === "client" ? "font-medium" : ""} ${type === "entry" ? "descendent" : ""} relative flex items-center gap-2`}
+            >
+              {type === "client" && (
+                <span
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
+                  style={{ backgroundColor: getRandomColor(original.id) }}
+                >
+                  {value.charAt(0)}
                 </span>
+              )}
+              <span className={`${type === "entry" ? "w-full md:w-[200px]" : "w-full"} line-clamp-1 shrink-0`}>
+                {value}
               </span>
-            )}
-          </div>
+              {type === "entry" && (
+                <span className="hidden items-center gap-2 md:inline-flex">
+                  {original.task && (
+                    <Badge
+                      variant="secondary"
+                      className="inline-flex shrink-0 items-center font-normal"
+                      title={`Task: ${original.task}`}
+                    >
+                      <List size={12} className="mr-1 shrink-0" />
+                      {original.task}
+                    </Badge>
+                  )}
+                  <span className="line-clamp-1 opacity-50" title={original.description ?? undefined}>
+                    {original?.description ?? ""}
+                  </span>
+                </span>
+              )}
+            </div>
+          )}
         </div>
       );
     },
