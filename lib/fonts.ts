@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const fontSans = Geist({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-sans",
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });

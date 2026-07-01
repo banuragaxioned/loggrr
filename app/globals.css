@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* next-themes uses a .dark class — required for Tailwind v4 dark variants */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -48,8 +50,8 @@
 
 @theme inline {
   /* Fonts — reference Next.js CSS vars injected at runtime */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
 
   /* Border radius — reference the --radius CSS var */
   --radius-lg: var(--radius);
@@ -115,6 +117,23 @@
   --color-dark-tremor-content-emphasis: hsl(var(--foreground));
   --color-dark-tremor-content-strong: hsl(var(--foreground));
   --color-dark-tremor-content-inverted: hsl(var(--background));
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* Container: centered, padded, capped at 8xl (1400px) */
@@ -125,63 +144,129 @@
 }
 
 @keyframes accordion-down {
-  from { height: 0; }
-  to { height: var(--radix-accordion-content-height); }
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
 }
 
 @keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); }
-  to { height: 0; }
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 @keyframes hide {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes slideDownAndFade {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideLeftAndFade {
-  from { opacity: 0; transform: translateX(6px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideUpAndFade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideRightAndFade {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Scan Tremor package for static utility classes */
-@source '../node_modules/@tremor/react/dist';
+@source "../node_modules/@tremor/react/dist";
 
 /*
   Tremor builds chart color utilities dynamically at runtime.
   Tailwind v4 replaces the old safelist with @source inline().
   https://npm.tremor.so/docs/getting-started/installation
 */
-@source inline('bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{hover:,data-[selected]:,}bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{hover:,data-[selected]:,}text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{hover:,data-[selected]:,}border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('ring-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}ring-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('stroke-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}stroke-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('fill-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
-@source inline('{dark:,}fill-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}');
+@source inline(
+  "bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{hover:,data-[selected]:,}bg-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{hover:,data-[selected]:,}text-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{hover:,data-[selected]:,}border-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "ring-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}ring-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "stroke-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}stroke-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "fill-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
+@source inline(
+  "{dark:,}fill-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{50,100,200,300,400,500,600,700,800,900,950}"
+);
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -198,6 +283,15 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
@@ -235,6 +329,21 @@
     --ring: 240 10% 3.9%;
 
     --radius: 0.5rem;
+
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
   }
 
   .dark {
@@ -267,12 +376,27 @@
     --ring: 240 4.9% 83.9%;
 
     --radius: 0.5rem;
+
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
   }
 }
 
 @layer utilities {
   .descendent::before {
-    content: '';
+    content: "";
     width: 14px;
     height: 42px;
     top: -30px;
@@ -318,27 +442,27 @@
     @apply bg-background text-foreground;
   }
   h1 {
-    @apply scroll-m-20 font-heading text-3xl font-extrabold tracking-tight;
+    @apply font-heading scroll-m-20 text-3xl font-extrabold tracking-tight;
   }
   h2 {
-    @apply scroll-m-20 border-border font-heading text-2xl font-semibold tracking-tight transition-colors;
+    @apply border-border font-heading scroll-m-20 text-2xl font-semibold tracking-tight transition-colors;
   }
   h3 {
-    @apply scroll-m-20 font-heading text-xl font-semibold tracking-tight;
+    @apply font-heading scroll-m-20 text-xl font-semibold tracking-tight;
   }
   h4 {
-    @apply scroll-m-20 font-heading text-lg font-semibold tracking-tight;
+    @apply font-heading scroll-m-20 text-lg font-semibold tracking-tight;
   }
   :disabled,
   disabled,
   .disabled {
-    @apply cursor-not-allowed select-none opacity-50;
+    @apply cursor-not-allowed opacity-50 select-none;
   }
   :invalid {
     @apply invalid:focus:ring-destructive;
   }
   select {
-    @apply my-2 block w-full rounded border-border pl-3 pr-10 text-base shadow-xs focus:border-primary focus:outline-hidden focus:ring-primary sm:text-sm;
+    @apply border-border focus:border-primary focus:ring-primary my-2 block w-full rounded pr-10 pl-3 text-base shadow-xs focus:outline-hidden sm:text-sm;
   }
   .scrollbar {
     overflow-y: auto;
@@ -351,20 +475,22 @@
     @apply w-[14px];
   }
   .scrollbar::-webkit-scrollbar-track {
-    @apply rounded-br-[4px] rounded-tr-[4px] bg-popover;
+    @apply bg-popover rounded-tr-[4px] rounded-br-[4px];
   }
   .scrollbar::-webkit-scrollbar-thumb {
-    @apply rounded-[14px] border-4 border-solid border-popover bg-popover-foreground;
+    @apply border-popover bg-popover-foreground rounded-[14px] border-4 border-solid;
   }
 }
 
 .side-bar [role="tooltip"] {
-  @apply rounded-md border bg-background text-foreground;
+  @apply bg-background text-foreground rounded-md border;
 }
 
 @media print {
-  *, *::before, *::after {
-    border-color: #E4E4E7 !important;
+  *,
+  *::before,
+  *::after {
+    border-color: #e4e4e7 !important;
   }
   body {
     color: #000 !important;
@@ -381,3 +507,4 @@
     margin: 0 -10px;
   }
 }
+
