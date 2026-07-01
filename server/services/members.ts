@@ -1,9 +1,12 @@
 import { db } from "@/server/db";
 
-export const getMembers = async (team: string, groupId?: number) => {
+export const getMembers = async (team: string, groupId?: number, includeInactive: boolean = true) => {
   const membersList = await db.userWorkspace.findMany({
     where: {
       workspace: { slug: team },
+      ...(!includeInactive && {
+        role: { not: "INACTIVE" },
+      }),
       ...(groupId && {
         user: {
           userOnGroup: {

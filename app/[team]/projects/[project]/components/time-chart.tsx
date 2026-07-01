@@ -4,11 +4,10 @@ import { eachMonthOfInterval, endOfMonth, format, startOfDay, startOfMonth, subD
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
+import { Clock } from "lucide-react";
+
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
-import { Info } from "lucide-react";
-
-import { CustomTooltip as CustomTooltipUI } from "@/components/custom/tooltip";
 
 const DAILY_CHART_MAX_DAYS = 31;
 
@@ -132,11 +131,13 @@ const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProp
     <Card className="p-0 shadow-none select-none">
       <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
         <p className="font-semibold">{isMonthlyView ? "Month-wise distribution" : "Day-wise distribution"}</p>
-        <CustomTooltipUI
-          content={`Total: ${totalTime} hours`}
-          trigger={<Info size={16} className="text-muted-foreground" />}
-          sideOffset={10}
-        />
+        <p className="flex items-center gap-1.5 text-base leading-none font-semibold tabular-nums">
+          <Clock size={16} className="shrink-0" />
+          <span>
+            {totalTime}
+            <span className="text-sm font-normal">h</span>
+          </span>
+        </p>
       </CardHeader>
       <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
         <ResponsiveContainer width="100%" height="100%">

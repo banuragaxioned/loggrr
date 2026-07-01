@@ -126,6 +126,7 @@ export const getLogged = async (
   project?: string,
   clients?: string,
   members?: string,
+  groups?: string,
   hasFullAccess?: boolean,
 ) => {
   const session = await getServerSession(authOptions);
@@ -172,6 +173,42 @@ export const getLogged = async (
       })
     : [];
 
+  const allGroups = hasFullAccess
+    ? await db.group.findMany({
+        where: {
+          workspace: {
+            slug: slug,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      })
+    : [];
+
+  const selectedGroupIds = groups?.split(",").map((id) => +id) ?? [];
+  const groupUserFilter =
+    selectedGroupIds.length > 0
+      ? {
+          user: {
+            userOnGroup: {
+              some: {
+                groupId: {
+                  in: selectedGroupIds,
+                },
+                workspace: {
+                  slug: slug,
+                },
+              },
+            },
+          },
+        }
+      : {};
+
   const query = await db.client.findMany({
     where: {
       workspace: {
@@ -182,14 +219,17 @@ export const getLogged = async (
           in: clients.split(",").map((id) => +id),
         },
       }),
-      ...(members && {
+      ...((members || selectedGroupIds.length > 0) && {
         project: {
           some: {
             usersOnProject: {
               some: {
-                userId: {
-                  in: members?.split(",").map((id) => +id),
-                },
+                ...(members && {
+                  userId: {
+                    in: members.split(",").map((id) => +id),
+                  },
+                }),
+                ...groupUserFilter,
               },
             },
           },
@@ -236,6 +276,7 @@ export const getLogged = async (
                   in: members?.split(",").map((id) => +id),
                 },
               }),
+              ...(selectedGroupIds.length > 0 && groupUserFilter),
               ...(!hasFullAccess &&
                 loggedUserId && {
                   userId: {
@@ -249,6 +290,21 @@ export const getLogged = async (
                   id: true,
                   name: true,
                   image: true,
+                  userOnGroup: {
+                    where: {
+                      workspace: {
+                        slug: slug,
+                      },
+                    },
+                    select: {
+                      group: {
+                        select: {
+                          id: true,
+                          name: true,
+                        },
+                      },
+                    },
+                  },
                   timeEntry: {
                     where: {
                       date: {
@@ -316,6 +372,7 @@ export const getLogged = async (
               userId: user.user.id,
               userName: user.user.name,
               userImage: user.user.image,
+              userGroups: user.user.userOnGroup.map((userGroup) => userGroup.group),
               userHours:
                 +`${timeEntryBasedOnProject.reduce((sum, entry) => (sum += getTimeInHours(entry.time)), 0).toFixed(2)}`,
               userTimeEntry: timeEntryBasedOnProject.map((timeEntry) => {
@@ -341,5 +398,5 @@ export const getLogged = async (
     };
   });
 
-  return { data: response, allClients, allUsers };
+  return { data: response, allClients, allUsers, allGroups };
 };

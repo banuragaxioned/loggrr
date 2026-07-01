@@ -11,7 +11,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
@@ -67,9 +66,9 @@ export function DataTableFacetedFilter<TData, TValue>({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        <Command>
+        <Command className="overflow-hidden">
           <CommandInput placeholder={title} />
-          <CommandList>
+          <CommandList className="max-h-[250px]">
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
@@ -106,20 +105,17 @@ export function DataTableFacetedFilter<TData, TValue>({
                 );
               })}
             </CommandGroup>
-            {selectedValues.size > 0 && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
-                    className="justify-center text-center"
-                  >
-                    Clear filters
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
           </CommandList>
+          {selectedValues.size > 0 && (
+            <div className="border-t bg-popover p-1">
+              <CommandItem
+                onSelect={() => column?.setFilterValue(undefined)}
+                className="justify-center text-center"
+              >
+                Clear filters
+              </CommandItem>
+            </div>
+          )}
         </Command>
       </PopoverContent>
     </Popover>

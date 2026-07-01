@@ -14,10 +14,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ClientAndUserInterface } from "./data-table";
 
@@ -54,7 +52,9 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
           {values.title}
           {selectedOptions.length > 0 && (
             <>
-              <Separator orientation="vertical" className="h-4" />
+              <span className="flex self-stretch items-center" aria-hidden="true">
+                <span className="bg-border h-4 w-px shrink-0" />
+              </span>
               <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
                 {selectedOptions.length}
               </Badge>
@@ -78,11 +78,11 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        <Command>
+        <Command className="overflow-hidden">
           {values.searchable && <CommandInput placeholder="Search..." />}
-          <CommandEmpty>No options found.</CommandEmpty>
-          <CommandGroup>
-            <CommandList>
+          <CommandList className="max-h-[250px]">
+            <CommandEmpty>No options found.</CommandEmpty>
+            <CommandGroup>
               {values.options.map((option) => {
                 const isSelected = selectedOptions.includes(`${option.id}`);
                 return (
@@ -106,23 +106,20 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
                   </CommandItem>
                 );
               })}
-            </CommandList>
-          </CommandGroup>
+            </CommandGroup>
+          </CommandList>
           {selectedOptions.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    setSelectedParams(null);
-                    setOpen(false);
-                  }}
-                  className="cursor-pointer justify-center text-center"
-                >
-                  Clear filters
-                </CommandItem>
-              </CommandGroup>
-            </>
+            <div className="border-t bg-popover p-1">
+              <CommandItem
+                onSelect={() => {
+                  setSelectedParams(null);
+                  setOpen(false);
+                }}
+                className="cursor-pointer justify-center text-center"
+              >
+                Clear filters
+              </CommandItem>
+            </div>
           )}
         </Command>
       </PopoverContent>

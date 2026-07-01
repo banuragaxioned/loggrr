@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
 
-    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedProject, defaultDay } =
+    const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedGroups, selectedProject, defaultDay } =
       data;
     const { startDate, endDate } = getStartandEndDates(selectedRange, defaultDay);
     const isBillable = stringToBoolean(selectedBilling);
@@ -62,6 +62,20 @@ export async function POST(req: NextRequest) {
         ...(selectedMembers && {
           userId: {
             in: selectedMembers.split(",").map((id: number) => +id),
+          },
+        }),
+        ...(selectedGroups && {
+          user: {
+            userOnGroup: {
+              some: {
+                groupId: {
+                  in: selectedGroups.split(",").map((id: number) => +id),
+                },
+                workspace: {
+                  slug,
+                },
+              },
+            },
           },
         }),
         ...(!hasFullAccess &&

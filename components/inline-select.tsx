@@ -10,7 +10,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
@@ -80,9 +79,9 @@ export function InlineSelect<TData, TValue>({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        <Command>
+        <Command className="overflow-hidden">
           <CommandInput placeholder={`Search ${title}`} />
-          <CommandList>
+          <CommandList className="max-h-[250px]">
             <CommandEmpty>No {title} found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
@@ -102,17 +101,14 @@ export function InlineSelect<TData, TValue>({
                 );
               })}
             </CommandGroup>
-            {isValueUpdated && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>
-                    Update
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
           </CommandList>
+          {isValueUpdated && (
+            <div className="border-t bg-popover p-1">
+              <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>
+                Update
+              </CommandItem>
+            </div>
+          )}
         </Command>
       </PopoverContent>
     </Popover>

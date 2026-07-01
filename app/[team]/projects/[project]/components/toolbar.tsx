@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
-import { CircleDollarSign, Download, Layers, ListChecks, ListRestart, Loader2, Users } from "lucide-react";
+import { CircleDollarSign, Download, List, ListRestart, Loader2, Milestone, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
 import { cn } from "@/lib/utils";
@@ -59,14 +59,14 @@ export function DataTableToolbar({
   const categoryFilter = {
     title: "Category",
     searchable: true,
-    icon: <Layers size={16} />,
+    icon: <Milestone size={16} />,
     options: allCategories,
   };
 
   const taskFilter = {
     title: "Task",
     searchable: true,
-    icon: <ListChecks size={16} />,
+    icon: <List size={16} />,
     options: allTasks,
   };
 
