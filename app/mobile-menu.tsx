@@ -28,14 +28,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Projects",
-        description: "Manage and view your projects.",
+        description: "Track project status, budgets, and ownership.",
         slug: `projects`,
         denyAccess: ["GUEST"], // Deny access to GUEST role, Add more if needed
       },
       {
         id: 2,
         title: "Clients",
-        description: "View clients associated with your projects.",
+        description: "Manage client profiles linked to your projects.",
         slug: `clients`,
         denyAccess: ["GUEST"],
       },
@@ -48,14 +48,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Manage Members",
-        description: "Manage members and their permissions.",
+        description: "Manage workspace members, roles, and permissions.",
         slug: `members`,
         denyAccess: ["GUEST"],
       },
       {
         id: 2,
         title: "Groups",
-        description: "View various groups of members in the project.",
+        description: "Organize members into groups for filtering and reporting.",
         slug: `groups`,
         denyAccess: ["GUEST"],
       },
@@ -70,14 +70,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Logged",
-        description: "View the hours that are logged.",
+        description: "Analyze logged hours by member, group, and project.",
         slug: "reports/logged",
         denyAccess: [""],
       },
       {
         id: 2,
         title: "Leaves",
-        description: "View your leave status for the current year.",
+        description: "Review your yearly leave status.",
         slug: "reports/leaves",
         denyAccess: ["GUEST"],
       },
@@ -119,16 +119,20 @@ export function MobileNavMenu({ userProps, role }: { userProps: UserPropsInterfa
                     <AccordionTrigger className="py-2 font-normal hover:no-underline">
                       <span className="text-base">{item.title}</span>
                     </AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionContent className="pb-1 [&_a]:no-underline [&_a]:underline-offset-0 [&_a]:hover:no-underline">
                       {item.subItems
                         .filter((subItem) => !subItem.denyAccess.includes(role))
                         .map((subItem) => (
-                          <Link href={`/${team}/${subItem.slug}`} key={subItem.id}>
-                            <SheetClose className="flex w-full space-y-1 py-2">
-                              <ChevronRight size={16} className="mr-[4px] mt-[4px] opacity-50" />
+                          <Link
+                            href={`/${team}/${subItem.slug}`}
+                            key={subItem.id}
+                            className="block no-underline hover:no-underline focus:no-underline"
+                          >
+                            <SheetClose className="flex w-full items-start gap-2 py-1.5">
+                              <ChevronRight size={16} className="mt-[2px] shrink-0 opacity-50" />
                               <div className="w-full text-left">
-                                <p className="text-sm font-medium leading-none">{subItem.title}</p>
-                                <span className="line-clamp-2 text-left text-sm leading-snug text-muted-foreground">
+                                <p className="mb-1! text-sm leading-none font-medium">{subItem.title}</p>
+                                <span className="text-muted-foreground line-clamp-2 text-left text-sm leading-snug">
                                   {subItem.description}
                                 </span>
                               </div>

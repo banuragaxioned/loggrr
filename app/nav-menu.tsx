@@ -23,14 +23,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Projects",
-        description: "Manage and view your projects.",
+        description: "Track project status, budgets, and ownership.",
         slug: "projects",
         denyAccess: ["GUEST"], // Deny access to GUEST role, Add more if needed
       },
       {
         id: 2,
         title: "Clients",
-        description: "View clients associated with your projects.",
+        description: "Manage client profiles linked to your projects.",
         slug: "clients",
         denyAccess: ["GUEST"],
       },
@@ -43,14 +43,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Manage Members",
-        description: "Manage members and their permissions.",
+        description: "Manage workspace members, roles, and permissions.",
         slug: "members",
         denyAccess: ["GUEST"],
       },
       {
         id: 2,
         title: "Groups",
-        description: "View various groups of members in the project.",
+        description: "Organize members into groups for filtering and reporting.",
         slug: "groups",
         denyAccess: ["GUEST"],
       },
@@ -63,14 +63,14 @@ const NAV_ITEMS = [
       {
         id: 1,
         title: "Logged",
-        description: "View the hours that are logged.",
+        description: "Analyze logged hours by member, group, and project.",
         slug: "reports/logged",
         denyAccess: [""],
       },
       {
         id: 2,
         title: "Leaves",
-        description: "View your leave status for the current year.",
+        description: "Review your yearly leave status.",
         slug: "reports/leaves",
         denyAccess: ["GUEST"],
       },
@@ -136,13 +136,13 @@ const ListItem = React.forwardRef<React.ElementRef<typeof Link>, React.Component
           <Link
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-hidden transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline outline-hidden transition-colors select-none",
               className,
             )}
             {...props}
           >
-            <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
+            <div className="text-sm leading-none font-medium">{title}</div>
+            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
           </Link>
         </NavigationMenuLink>
       </li>
