@@ -2,16 +2,25 @@
 
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { FolderPlus, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SheetClose, SheetFooter } from "@/components/ui/sheet";
-import { SheetWrapper } from "@/components/ui/sheet-wrapper";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { createGroup } from "@/app/_actions/create-group-action";
 
 const FormSchema = z.object({
@@ -21,8 +30,9 @@ const FormSchema = z.object({
 });
 
 export function CreateGroupForm({ team }: { team: string }) {
-  const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -31,48 +41,77 @@ export function CreateGroupForm({ team }: { team: string }) {
     },
   });
 
-  const SheetCloseButton = useRef<HTMLButtonElement>(null);
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setSubmitting(true);
     const result = await createGroup(team, data.groupName);
     if (result.success) {
       toast.success("Group created");
-      formRef.current?.reset();
       router.refresh();
       form.reset();
-      SheetCloseButton.current?.click();
+      setOpen(false);
     } else {
       toast.error("Something went wrong");
     }
+    setSubmitting(false);
   }
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      form.reset();
+    }
+  };
+
   return (
-    <SheetWrapper button="Create" title="Create a new group" description="Create a new group to add members to.">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" autoComplete="off">
-          <FormField
-            control={form.control}
-            name="groupName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Group name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Astronauts" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <SheetFooter className="mt-2 justify-start space-x-3">
-            <SheetClose asChild>
-              <Button type="button" variant="outline" ref={SheetCloseButton}>
-                Cancel
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetTrigger asChild>
+        <Button size="sm">Create</Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="flex h-full flex-col gap-0 px-0">
+        <Form {...form}>
+          <SheetHeader className="shrink-0 border-b px-6 pb-4">
+            <SheetTitle className="text-xl tracking-normal">Create group</SheetTitle>
+            <SheetDescription className="text-xs tracking-normal">
+              Organize workspace members using groups.
+            </SheetDescription>
+          </SheetHeader>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col" autoComplete="off">
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              <section className="space-y-4">
+                <div>
+                  <p className="text-muted-foreground text-xs tracking-normal">
+                    Choose a clear name so members can find and manage groups quickly.
+                  </p>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="groupName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Group name</FormLabel>
+                      <FormControl className="mt-1.5">
+                        <Input placeholder="e.g. Engineering, Marketing, etc." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </section>
+            </div>
+            <SheetFooter className="bg-background shrink-0 border-t px-6 py-4">
+              <SheetClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </SheetClose>
+              <Button type="submit" className="gap-2" disabled={submitting}>
+                {submitting ? <Loader2 size={16} className="animate-spin" /> : <FolderPlus size={16} />}
+                Create group
               </Button>
-            </SheetClose>
-            <Button type="submit">Submit</Button>
-          </SheetFooter>
-        </form>
-      </Form>
-    </SheetWrapper>
+            </SheetFooter>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 }
