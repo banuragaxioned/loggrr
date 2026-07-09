@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
-import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Tags, Users } from "lucide-react";
+import { Briefcase, CircleDollarSign, Download, FolderCog, Info, ListRestart, Loader2, Printer, Tags, Users } from "lucide-react";
 import { useQueryState } from "nuqs";
 import csvDownload from "json-to-csv-export";
 
@@ -13,6 +13,7 @@ import { Assignment, DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
@@ -57,6 +58,9 @@ export function DataTableToolbar<TData>({
   const [selectedClients, setSelectedClients] = useQueryState("clients");
   const [selectedMembers, setSelectedMembers] = useQueryState("members");
   const [selectedGroups, setSelectedGroups] = useQueryState("groups");
+  const [selectedView, setSelectedView] = useQueryState("view");
+
+  const view = selectedView === "groups" ? "groups" : "members";
 
   const clientFilter = {
     title: "Clients",
@@ -199,6 +203,29 @@ export function DataTableToolbar<TData>({
         )}
         {/* Billing Status */}
         <li>{billingStatusToggleButton}</li>
+        <li className="flex items-center gap-1.5">
+          <Tabs value={view} onValueChange={(value) => setSelectedView(value === "groups" ? "groups" : null)}>
+            <TabsList className="h-8">
+              <TabsTrigger value="members" className="px-2.5 text-xs">
+                Members
+              </TabsTrigger>
+              <TabsTrigger value="groups" className="px-2.5 text-xs">
+                Groups
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <CustomTooltip
+            trigger={<Info size={14} className="text-muted-foreground" />}
+            content={
+              <p className="text-xs leading-relaxed">
+                Switch how hours are grouped under each project. In Groups view, members in multiple groups are counted
+                in each group. Project totals stay unique.
+              </p>
+            }
+            contentClassName="max-w-[260px]"
+            sideOffset={4}
+          />
+        </li>
         <li className="print:hidden">
           {isResetButtonVisibile && (
             <Button variant="ghost" size="sm" className="flex gap-1.5" onClick={handleReset}>

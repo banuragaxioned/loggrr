@@ -1,18 +1,20 @@
 "use client";
 
+import { createElement } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { Circle, Info, List, Minus, Plus } from "lucide-react";
+import { Circle, Info, List, Minus, Plus, Users } from "lucide-react";
 
 import { getRandomColor } from "@/lib/random-colors";
+import { getGroupIcon } from "@/config/group-icons";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
 import { CustomTooltip } from "@/components/custom/tooltip";
 
 export interface Logged {
-  id: number;
+  id: number | string;
   name: string;
-  type?: "client" | "project" | "category" | "member" | "entry";
+  type?: "client" | "project" | "category" | "member" | "group" | "entry";
   hours?: number;
   billableHours?: number;
   budgetHours?: number;
@@ -22,12 +24,24 @@ export interface Logged {
   image?: string;
   billable?: boolean;
   task?: string | null;
+  memberName?: string | null;
   groups?: { id: number; name: string }[];
   subRows?: {
-    id: number;
+    id: number | string;
     name: string;
     hours?: number;
   }[];
+}
+
+function GroupIcon({ name }: { name: string }) {
+  if (name === "Ungrouped") {
+    return <Users className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden />;
+  }
+
+  return createElement(getGroupIcon(name), {
+    className: "text-muted-foreground h-4 w-4 shrink-0",
+    "aria-hidden": true,
+  });
 }
 
 function BudgetTooltipContent() {
@@ -173,6 +187,11 @@ export const columns: ColumnDef<Logged>[] = [
               <span className="min-w-0 flex-1 truncate">{value}</span>
               <MemberGroups groups={original.groups ?? []} />
             </div>
+          ) : type === "group" ? (
+            <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
+              <GroupIcon name={original.name} />
+              <span className="min-w-0 flex-1 truncate font-medium">{value}</span>
+            </div>
           ) : (
             <div
               className={`${type === "client" ? "font-medium" : ""} ${type === "entry" ? "descendent" : ""} relative flex items-center gap-2`}
@@ -180,7 +199,7 @@ export const columns: ColumnDef<Logged>[] = [
               {type === "client" && (
                 <span
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-white"
-                  style={{ backgroundColor: getRandomColor(original.id) }}
+                  style={{ backgroundColor: getRandomColor(original.id as number) }}
                 >
                   {value.charAt(0)}
                 </span>
@@ -190,6 +209,11 @@ export const columns: ColumnDef<Logged>[] = [
               </span>
               {type === "entry" && (
                 <span className="hidden items-center gap-2 md:inline-flex">
+                  {original.memberName && (
+                    <Badge variant="outline" className="inline-flex shrink-0 items-center font-normal">
+                      {original.memberName}
+                    </Badge>
+                  )}
                   {original.task && (
                     <Badge
                       variant="secondary"
