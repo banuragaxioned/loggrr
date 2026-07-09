@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { Check } from "lucide-react";
 
 interface Options {
@@ -36,7 +35,6 @@ export function InlineSelect<TData, TValue>({
   onSelect,
 }: InlineSelectProps<TData, TValue>) {
   const [selected, setSelected] = useState<Options[]>(selectedValues);
-  const [isValueUpdated, setValueUpdated] = useState(false);
 
   const handleSelect = (isSelected: boolean, option: Options) => {
     isSelected
@@ -44,15 +42,12 @@ export function InlineSelect<TData, TValue>({
       : setSelected((prev) => [...prev, option]);
   };
 
-  useEffect(() => {
-    let valueUpdated = false;
+  const isValueUpdated = useMemo(() => {
+    if (selected.length !== selectedValues.length) return true;
 
-    if (selected.length !== selectedValues.length) {
-      valueUpdated = true;
-    } else {
-      selected.map((value) => (valueUpdated = selectedValues.some((prevVal) => value.id !== prevVal.id)));
-    }
-    setValueUpdated(valueUpdated);
+    const selectedIds = new Set(selected.map((value) => value.id));
+    const selectedValueIds = new Set(selectedValues.map((value) => value.id));
+    return !(selectedIds.size === selectedValueIds.size && [...selectedIds].every((id) => selectedValueIds.has(id)));
   }, [selected, selectedValues]);
 
   return (
@@ -64,7 +59,9 @@ export function InlineSelect<TData, TValue>({
               {selectedValues[0].name}
               {selectedValues?.length > 1 && (
                 <>
-                  <Separator orientation="vertical" className="mx-2 h-4" />
+                  <span className="mx-2 flex self-stretch items-center" aria-hidden="true">
+                    <span className="bg-border h-4 w-px shrink-0" />
+                  </span>
                   <div className="hidden space-x-1 lg:flex">
                     <Badge variant="secondary" className="rounded-sm px-1 font-normal">
                       +{selectedValues.length - 1}
@@ -102,14 +99,14 @@ export function InlineSelect<TData, TValue>({
               })}
             </CommandGroup>
           </CommandList>
-          {isValueUpdated && (
-            <div className="border-t bg-popover p-1">
-              <CommandItem className="justify-center text-center" onSelect={() => onSelect(selected)}>
-                Update
-              </CommandItem>
-            </div>
-          )}
         </Command>
+        {isValueUpdated && (
+          <div className="border-t bg-popover p-1">
+            <Button size="sm" className="h-8 w-full text-xs" onClick={() => onSelect(selected)}>
+              Update
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

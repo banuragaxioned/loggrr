@@ -37,6 +37,12 @@ export default async function Page(props: pageProps) {
   const selectedClients = searchParams.clients;
   const selectedMembers = searchParams.members;
   const selectedGroups = searchParams.groups;
+  const selectedGroupIds = selectedGroups
+    ? selectedGroups
+        .split(",")
+        .map((id) => Number(id))
+        .filter((id) => !Number.isNaN(id))
+    : [];
   const view = searchParams.view === "groups" ? "groups" : "members";
   const { startDate, endDate } = getStartandEndDates(selectedRange);
   const shouldUseBillableBudgetHours = selectedBilling === "true";
@@ -57,7 +63,7 @@ export default async function Page(props: pageProps) {
     hasFullAccess,
   );
 
-  const transformOptions = { shouldUseBillableBudgetHours };
+  const transformOptions = { shouldUseBillableBudgetHours, selectedGroupIds };
   const transformedData =
     view === "groups"
       ? buildLoggedTreeByGroup(loggedData, transformOptions)
