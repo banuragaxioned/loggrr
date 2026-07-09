@@ -108,20 +108,22 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
               })}
             </CommandGroup>
           </CommandList>
-          {selectedOptions.length > 0 && (
-            <div className="border-t bg-popover p-1">
-              <CommandItem
-                onSelect={() => {
-                  setSelectedParams(null);
-                  setOpen(false);
-                }}
-                className="cursor-pointer justify-center text-center"
-              >
-                Clear filters
-              </CommandItem>
-            </div>
-          )}
         </Command>
+        {selectedOptions.length > 0 && (
+          <div className="border-t bg-popover p-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-full text-xs"
+              onClick={() => {
+                setSelectedParams(null);
+                setOpen(false);
+              }}
+            >
+              Clear filters
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

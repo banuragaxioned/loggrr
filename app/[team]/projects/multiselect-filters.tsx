@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check } from "lucide-react";
 
@@ -37,14 +37,13 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
   const isFilterOf = values.title.toLowerCase();
   const selectedClients = searchParams.get(isFilterOf);
   const [open, setOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<[string] | string[]>(
-    selectedClients ? (selectedClients.split(",") as string[]) : [],
-  );
+  const selectedOptions = selectedClients ? (selectedClients.split(",") as string[]) : [];
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+      if (value) params.set(name, value);
+      else params.delete(name);
 
       return params.toString();
     },
@@ -59,26 +58,13 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
     if (selectedOptions.includes(optionId)) {
       // Remove the optionId from selectedOptions
       updatedOptions = selectedOptions.filter((id: string) => id !== optionId);
-      setSelectedOptions(updatedOptions);
     } else {
       // Add the optionId to selectedOptions
       updatedOptions = [...selectedOptions, optionId];
-      setSelectedOptions(updatedOptions);
     }
-
-    // Update the URL with the new selectedOptions
     const query = updatedOptions.join(",");
     router.push(pathname + "?" + createQueryString(isFilterOf, query));
   };
-
-  useEffect(() => {
-    if (selectedClients) {
-      const options = selectedClients.split(",") as string[];
-      setSelectedOptions(options);
-    } else {
-      setSelectedOptions([]);
-    }
-  }, [selectedClients]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -144,21 +130,23 @@ const MultiSelectFilter = ({ values }: { values: DropdownInterface }) => {
               })}
             </CommandGroup>
           </CommandList>
-          {selectedOptions.length > 0 && (
-            <div className="border-t bg-popover p-1">
-              <CommandItem
-                onSelect={() => {
-                  setSelectedOptions([]);
-                  setOpen(false);
-                  router.push(pathname + "?" + createQueryString(isFilterOf, ""));
-                }}
-                className="cursor-pointer justify-center text-center"
-              >
-                Clear filters
-              </CommandItem>
-            </div>
-          )}
         </Command>
+        {selectedOptions.length > 0 && (
+          <div className="border-t bg-popover p-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-full text-xs"
+              onClick={() => {
+                setOpen(false);
+                const query = createQueryString(isFilterOf, "");
+                router.push(query ? `${pathname}?${query}` : pathname);
+              }}
+            >
+              Clear filters
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

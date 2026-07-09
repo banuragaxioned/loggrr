@@ -106,17 +106,19 @@ export function DataTableFacetedFilter<TData, TValue>({
               })}
             </CommandGroup>
           </CommandList>
-          {selectedValues.size > 0 && (
-            <div className="border-t bg-popover p-1">
-              <CommandItem
-                onSelect={() => column?.setFilterValue(undefined)}
-                className="justify-center text-center"
-              >
-                Clear filters
-              </CommandItem>
-            </div>
-          )}
         </Command>
+        {selectedValues.size > 0 && (
+          <div className="border-t bg-popover p-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-full text-xs"
+              onClick={() => column?.setFilterValue(undefined)}
+            >
+              Clear filters
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

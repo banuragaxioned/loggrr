@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
-import { Briefcase, CircleDollarSign, Download, FolderCog, ListRestart, Loader2, Printer, Tags, Users } from "lucide-react";
+import {
+  Briefcase,
+  CircleDollarSign,
+  Download,
+  FolderCog,
+  ListRestart,
+  Loader2,
+  Printer,
+  Tags,
+  Users,
+} from "lucide-react";
 import { useQueryState } from "nuqs";
 import csvDownload from "json-to-csv-export";
 
@@ -13,6 +23,7 @@ import { Assignment, DataTableToolbarProps } from "@/types";
 import useLocale from "@/hooks/useLocale";
 
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MultiSelectFilter from "./multiselect-filters";
 import { ClientAndUserInterface } from "./data-table";
 import { CustomTooltip } from "@/components/custom/tooltip";
@@ -57,6 +68,9 @@ export function DataTableToolbar<TData>({
   const [selectedClients, setSelectedClients] = useQueryState("clients");
   const [selectedMembers, setSelectedMembers] = useQueryState("members");
   const [selectedGroups, setSelectedGroups] = useQueryState("groups");
+  const [selectedView, setSelectedView] = useQueryState("view");
+
+  const view = selectedView === "groups" ? "groups" : "members";
 
   const clientFilter = {
     title: "Clients",
@@ -188,6 +202,18 @@ export function DataTableToolbar<TData>({
           <>
             <li>
               <MultiSelectFilter values={clientFilter} />
+            </li>
+            <li className="flex items-center gap-1.5">
+              <Tabs value={view} onValueChange={(value) => setSelectedView(value === "groups" ? "groups" : null)}>
+                <TabsList className="h-8">
+                  <TabsTrigger value="members" className="px-2.5 text-xs">
+                    Members
+                  </TabsTrigger>
+                  <TabsTrigger value="groups" className="px-2.5 text-xs">
+                    Groups
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </li>
             <li>
               <MultiSelectFilter values={peopleFilter} />

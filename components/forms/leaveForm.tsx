@@ -88,6 +88,16 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
   const [loading, setLoading] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
+  const form = useForm<z.input<typeof leaveFormSchema>, any, LeaveFormValues>({
+    resolver: zodResolver(leaveFormSchema),
+    defaultValues: {
+      userId: 0,
+      planned: { eligible: "", taken: "" },
+      unplanned: { eligible: "", taken: "" },
+      compoff: { eligible: "", taken: "" },
+    },
+  });
+
   useEffect(() => {
     const fetchLeaveRecord = () => {
       if (editId) {
@@ -134,16 +144,6 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
     id: user.id,
     name: user.name || user.email,
   }));
-
-  const form = useForm<z.input<typeof leaveFormSchema>, any, LeaveFormValues>({
-    resolver: zodResolver(leaveFormSchema),
-    defaultValues: {
-      userId: 0,
-      planned: { eligible: "", taken: "" },
-      unplanned: { eligible: "", taken: "" },
-      compoff: { eligible: "", taken: "" },
-    },
-  });
 
   const handleMemberSelect = (selected: string) => {
     const memberValue = users.find((user) => user.id === +selected);
@@ -225,104 +225,124 @@ export function LeaveForm({ team, users, leaves }: LeaveFormProps) {
           Add Leave
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="h-full overflow-y-auto">
+      <SheetContent side="right" className="flex h-full flex-col gap-0 px-0">
         {loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70">
+          <div className="bg-background/70 absolute inset-0 z-10 flex items-center justify-center">
             <Loader2 className="h-10 w-10 animate-spin" />
           </div>
         )}
         <Form {...form}>
-          <SheetHeader>
-            <SheetTitle>{editId ? "Edit" : "Create"} Leave Record</SheetTitle>
-            <SheetDescription>{editId ? "Edit" : "Add"} leave record for a team member.</SheetDescription>
+          <SheetHeader className="shrink-0 border-b px-6 pb-4">
+            <SheetTitle className="text-xl tracking-normal">
+              {editId ? "Edit leave record" : "Create leave record"}
+            </SheetTitle>
+            <SheetDescription className="text-xs tracking-normal">
+              {editId ? "Update" : "Add"} leave balances for a team member.
+            </SheetDescription>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="my-2 flex flex-col gap-y-1" autoComplete="off">
-            <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem className="w-full-combo">
-                  <FormLabel>Member</FormLabel>
-                  <FormControl>
-                    <ComboBox
-                      searchable
-                      icon={<User size={16} />}
-                      options={formattedUsers}
-                      label="Member"
-                      selectedItem={
-                        selectedMember
-                          ? { id: selectedMember.id, name: selectedMember.name || selectedMember.email }
-                          : null
-                      }
-                      handleSelect={(selected) => handleMemberSelect(selected)}
-                      {...field}
-                      className="w-full max-w-full"
-                      disabled={!!editId}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {Object.entries({
-              planned: "Planned Leave",
-              unplanned: "Unplanned Leave",
-              compoff: "Comp Off",
-            }).map(([key, label]) => (
-              <div key={key} className="mt-4">
-                <h3 className="text-base font-medium">{label}</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name={`${key}.eligible` as any}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Eligible</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            {...field}
-                            placeholder="Days"
-                            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`${key}.taken` as any}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Taken</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            {...field}
-                            placeholder="Days"
-                            className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col" autoComplete="off">
+            <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
+              <section className="space-y-4">
+                <div>
+                  <p className="text-muted-foreground text-xs tracking-normal">
+                    Select the member whose leave balances you want to manage.
+                  </p>
                 </div>
-              </div>
-            ))}
-            <SheetFooter className="mt-4">
+                <FormField
+                  control={form.control}
+                  name="userId"
+                  render={({ field }) => (
+                    <FormItem className="w-full-combo">
+                      <FormLabel>Member</FormLabel>
+                      <FormControl>
+                        <ComboBox
+                          searchable
+                          icon={<User size={16} />}
+                          options={formattedUsers}
+                          label="Member"
+                          selectedItem={
+                            selectedMember
+                              ? { id: selectedMember.id, name: selectedMember.name || selectedMember.email }
+                              : null
+                          }
+                          handleSelect={(selected) => handleMemberSelect(selected)}
+                          {...field}
+                          className="w-full max-w-full"
+                          disabled={!!editId}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </section>
+
+              <section className="space-y-5 border-t pt-5">
+                <div>
+                  <h3 className="text-sm font-semibold tracking-normal">Leave Balances</h3>
+                  <p className="text-muted-foreground text-xs tracking-normal">Set balances in 0.5 day increments.</p>
+                </div>
+                {Object.entries({
+                  planned: "Planned Leave",
+                  unplanned: "Unplanned Leave",
+                  compoff: "Comp Off",
+                }).map(([key, label]) => (
+                  <div key={key} className="space-y-3 rounded-md border p-3">
+                    <h4 className="text-sm font-medium tracking-normal">{label}</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <FormField
+                        control={form.control}
+                        name={`${key}.eligible` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-medium">Eligible</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.5"
+                                {...field}
+                                placeholder="Days"
+                                className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`${key}.taken` as any}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-medium">Taken</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.5"
+                                {...field}
+                                placeholder="Days"
+                                className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </section>
+            </div>
+            <SheetFooter className="bg-background shrink-0 border-t px-6 py-4">
               <SheetClose asChild>
                 <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </SheetClose>
               <Button type="submit" disabled={loading}>
-                {loading ? "Submitting..." : "Submit"}
+                {loading ? "Saving..." : editId ? "Save changes" : "Create record"}
               </Button>
             </SheetFooter>
           </form>
