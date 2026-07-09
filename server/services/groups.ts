@@ -9,7 +9,18 @@ export async function getGroups(team: string) {
       createdAt: true,
       _count: {
         select: {
-          userOnGroup: true,
+          userOnGroup: {
+            where: {
+              user: {
+                workspaces: {
+                  some: {
+                    workspace: { slug: team },
+                    role: { not: "INACTIVE" },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

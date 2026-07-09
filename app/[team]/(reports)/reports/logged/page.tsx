@@ -37,6 +37,7 @@ export default async function Page(props: pageProps) {
   const selectedMembers = searchParams.members;
   const selectedGroups = searchParams.groups;
   const { startDate, endDate } = getStartandEndDates(selectedRange);
+  const shouldUseBillableBudgetHours = selectedBilling === "true";
   const {
     data: loggedData,
     allClients,
@@ -109,6 +110,7 @@ export default async function Page(props: pageProps) {
                     groups: user.userGroups,
                     hours: 0,
                     billableHours: 0,
+                    budgetHours: 0,
                     subRows: [],
                   };
                   category.members.set(user.userId, member);
@@ -136,6 +138,7 @@ export default async function Page(props: pageProps) {
                 ...member,
                 hours: +`${member.hours.toFixed(2)}`,
                 billableHours: +`${member.billableHours.toFixed(2)}`,
+                budgetHours: +`${(shouldUseBillableBudgetHours ? member.billableHours : member.hours).toFixed(2)}`,
                 budget: projectBudget,
               }));
 
@@ -159,6 +162,7 @@ export default async function Page(props: pageProps) {
               name: project.projectName,
               hours: +`${projectHours.toFixed(2)}`,
               billableHours: +`${projectBillableHours.toFixed(2)}`,
+              budgetHours: +`${(shouldUseBillableBudgetHours ? projectBillableHours : projectHours).toFixed(2)}`,
               budget: project.projectBudget ?? null,
               interval: project.projectInterval,
               subRows: projectSubRows,

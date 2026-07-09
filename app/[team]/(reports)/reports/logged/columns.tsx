@@ -15,6 +15,7 @@ export interface Logged {
   type?: "client" | "project" | "category" | "member" | "entry";
   hours?: number;
   billableHours?: number;
+  budgetHours?: number;
   budget?: number | null;
   interval?: "FIXED" | "MONTHLY";
   description?: string;
@@ -106,7 +107,7 @@ function MemberGroups({ groups }: { groups: { id: number; name: string }[] }) {
   const groupLabel = (
     <Badge
       variant="outline"
-      className="inline-flex max-w-[10rem] border-sky-200 bg-sky-50 font-normal text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-300"
+      className="inline-flex max-w-40 border-sky-200 bg-sky-50 font-normal text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-300"
       title={groups.map((group) => group.name).join(", ")}
     >
       <span className="truncate">{firstGroup.name}</span>
@@ -246,12 +247,12 @@ export const columns: ColumnDef<Logged>[] = [
         return <span className="inline-block w-44" />;
       }
 
-      const billableHours = original.billableHours ?? 0;
+      const budgetHours = original.budgetHours ?? original.billableHours ?? 0;
 
       return (
         <BudgetCell
           budget={original.budget}
-          billableHours={billableHours}
+          billableHours={budgetHours}
           showBudgetHours={original.type === "project"}
           interval={original.interval}
         />
