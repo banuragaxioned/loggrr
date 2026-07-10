@@ -24,6 +24,15 @@ import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
 
+// Shared config for the Classic/Board view switcher (rendered as mobile pills + desktop rail)
+const VIEW_TOGGLE_ACTIVE = "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50";
+const VIEW_TOGGLE_INACTIVE = "text-muted-foreground hover:bg-muted";
+
+const LOGGER_VIEWS = [
+  { board: false, label: "Classic Timesheet", Icon: Rows3, isNew: false },
+  { board: true, label: "New Timesheet", Icon: LayoutGrid, isNew: true },
+] as const;
+
 export interface RecentEntryProps {
   id: number;
   project?: Project;
@@ -275,34 +284,27 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
         {/* Mobile: labeled pill toggle above the card */}
         <div className="mb-2 flex sm:hidden" role="group" aria-label="Logger view">
           <div className="flex w-full items-center gap-1 rounded-md border bg-background p-0.5">
-            <button
-              type="button"
-              onClick={() => setLogBoardView(false)}
-              aria-pressed={!showBoard}
-              className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors",
-                !showBoard ? "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50" : "text-muted-foreground hover:bg-muted",
-              )}
-            >
-              <Rows3 size={14} />
-              Classic Timesheet
-            </button>
-            <button
-              type="button"
-              onClick={() => setLogBoardView(true)}
-              aria-pressed={showBoard}
-              className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors",
-                showBoard ? "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50" : "text-muted-foreground hover:bg-muted",
-              )}
-            >
-              <LayoutGrid size={14} />
-              New Timesheet
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white">
-                <Sparkles size={9} />
-                New
-              </span>
-            </button>
+            {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setLogBoardView(board)}
+                aria-pressed={showBoard === board}
+                className={cn(
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors",
+                  showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
+                )}
+              >
+                <Icon size={14} />
+                {label}
+                {isNew && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white">
+                    <Sparkles size={9} />
+                    New
+                  </span>
+                )}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -312,44 +314,31 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
           role="group"
           aria-label="Logger view"
         >
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => setLogBoardView(false)}
-                aria-label="Classic Timesheet"
-                aria-pressed={!showBoard}
-                className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-sm transition-colors",
-                  !showBoard ? "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50" : "text-muted-foreground hover:bg-muted",
-                )}
-              >
-                <Rows3 size={16} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Classic Timesheet</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => setLogBoardView(true)}
-                aria-label="New Timesheet"
-                aria-pressed={showBoard}
-                className={cn(
-                  "relative flex h-8 w-8 items-center justify-center rounded-sm transition-colors",
-                  showBoard ? "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50" : "text-muted-foreground hover:bg-muted",
-                )}
-              >
-                <LayoutGrid size={16} />
-                {/* magenta "New" flair */}
-                <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-brand-fuchsia text-white">
-                  <Sparkles size={8} />
-                </span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">New Timesheet</TooltipContent>
-          </Tooltip>
+          {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
+            <Tooltip key={label}>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setLogBoardView(board)}
+                  aria-label={label}
+                  aria-pressed={showBoard === board}
+                  className={cn(
+                    "relative flex h-8 w-8 items-center justify-center rounded-sm transition-colors",
+                    showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
+                  )}
+                >
+                  <Icon size={16} />
+                  {isNew && (
+                    /* magenta "New" flair */
+                    <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-brand-fuchsia text-white">
+                      <Sparkles size={8} />
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{label}</TooltipContent>
+            </Tooltip>
+          ))}
         </div>
         <Card className="overflow-hidden shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
