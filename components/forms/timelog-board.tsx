@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   CircleDollarSign,
@@ -31,6 +31,8 @@ interface TimelogBoardProps {
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
   recent: any;
+  draft?: SelectedData;
+  onDraftChange?: (draft: SelectedData) => void;
 }
 
 type ErrorsObj = {
@@ -59,7 +61,7 @@ const TIME_CHIPS = [
   { id: 3, title: "+1h", incrementBy: 1 },
 ];
 
-export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogBoardProps) => {
+export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onDraftChange }: TimelogBoardProps) => {
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
@@ -169,22 +171,36 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogB
 
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
-  // Keep the board in sync with edit / recent quick-fill flows (mirrors TimeLogForm)
+  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists
+  const seedState = (data?: SelectedData | null) => {
+    const found = projects.find((project) => project.id === data?.project?.id);
+    setSelectedData(data && Object.keys(data).length ? data : initialDataState);
+    setProjectMilestones(found?.milestone ?? []);
+    setprojectTasks(found?.task ?? []);
+    setErrors({});
+  };
+
+  // Latest shared draft, read on mount/switch without re-running the effect on every keystroke
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+
+  // Keep the board in sync with edit / recent quick-fill; otherwise seed from the shared draft
   useEffect(() => {
     if (edit.isEditing) {
-      const foundProject = projects.find((project) => project.id === edit.obj.project?.id);
-      setSelectedData(edit.obj);
-      setProjectMilestones(foundProject?.milestone ?? []);
-      setprojectTasks(foundProject?.task ?? []);
+      seedState(edit.obj);
     } else if (recent) {
-      const foundProject = projects.find((project) => project.id === recent.project?.id);
-      setSelectedData(recent);
-      setProjectMilestones(foundProject?.milestone ?? []);
-      setprojectTasks(foundProject?.task ?? []);
+      seedState(recent);
     } else {
-      handleClearForm();
+      seedState(draftRef.current);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edit, projects, recent]);
+
+  // Report the live draft up so the other view can pick it up (skip while editing/quick-fill)
+  useEffect(() => {
+    if (!edit.isEditing && !recent) onDraftChange?.(selectedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedData, edit.isEditing, recent]);
 
   // Group projects by client, then filter by the search box (mirrors ComboBox grouping)
   const groupedProjects = useMemo<ClientGroup[]>(() => {
@@ -234,13 +250,12 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogB
             <SearchableHeader
               icon={<Folder size={14} className="shrink-0" />}
               label="Project"
-              count={projects.length}
               query={projectQuery}
               setQuery={setProjectQuery}
               open={projectSearchOpen}
               setOpen={setProjectSearchOpen}
             />
-            <ScrollArea className="h-[288px]">
+            <ScrollArea className="max-h-[240px] sm:h-[240px]">
               <div className="p-1.5">
                 {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
                 {groupedProjects.map((group) => (
@@ -267,14 +282,13 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogB
             <SearchableHeader
               icon={<CategoryIcon size={14} className="shrink-0" />}
               label="Category"
-              count={projectMilestones.length}
               query={categoryQuery}
               setQuery={setCategoryQuery}
               open={categorySearchOpen}
               setOpen={setCategorySearchOpen}
               disabled={!isProjectSelected || projectMilestones.length === 0}
             />
-            <ScrollArea className="h-[288px]">
+            <ScrollArea className="max-h-[240px] sm:h-[240px]">
               <div className="p-1.5">
                 {!isProjectSelected ? (
                   <EmptyState text="Pick a project first" />
@@ -301,14 +315,13 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogB
             <SearchableHeader
               icon={<List size={14} className="shrink-0" />}
               label="Task"
-              count={projectTasks.length}
               query={taskQuery}
               setQuery={setTaskQuery}
               open={taskSearchOpen}
               setOpen={setTaskSearchOpen}
               disabled={!isProjectSelected || projectTasks.length === 0}
             />
-            <ScrollArea className="h-[288px]">
+            <ScrollArea className="max-h-[240px] sm:h-[240px]">
               <div className="p-1.5">
                 {!isProjectSelected ? (
                   <EmptyState text="Pick a project first" />
@@ -469,7 +482,6 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent }: TimelogB
 type SearchableHeaderProps = {
   icon: React.ReactNode;
   label: string;
-  count: number;
   query: string;
   setQuery: (value: string) => void;
   open: boolean;
@@ -480,7 +492,6 @@ type SearchableHeaderProps = {
 const SearchableHeader = ({
   icon,
   label,
-  count,
   query,
   setQuery,
   open,
@@ -519,7 +530,6 @@ const SearchableHeader = ({
       ) : (
         <>
           <span>{label}</span>
-          {count > 0 && <span className="text-[10px] tabular-nums">{count}</span>}
           {canSearch && (
             <button
               type="button"
@@ -541,12 +551,12 @@ const BoardItem = ({ label, active, onClick }: { label: string; active: boolean;
     type="button"
     onClick={onClick}
     className={cn(
-      "flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
-      active ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+      "flex w-full items-start justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+      active ? "bg-accent font-medium text-accent-foreground" : "hover:bg-muted",
     )}
   >
-    <span className="min-w-0 flex-1 truncate">{label}</span>
-    {active && <Check className="h-3.5 w-3.5 shrink-0" />}
+    <span className="min-w-0 flex-1 break-words">{label}</span>
+    <Check className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", !active && "invisible")} />
   </button>
 );
 

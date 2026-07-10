@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import {
   CircleDollarSign,
   Folder,
@@ -32,6 +32,8 @@ interface TimelogProps {
   edit: EditReferenceObj;
   submitHandler: (e: FormEvent, clearForm: Function, selectedData?: SelectedData) => void;
   recent: any;
+  draft?: SelectedData;
+  onDraftChange?: (draft: SelectedData) => void;
 }
 
 type ErrorsObj = {
@@ -48,7 +50,7 @@ const initialDataState = {
   billable: false,
 };
 
-export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogProps) => {
+export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDraftChange }: TimelogProps) => {
   const [onCommentFocus, setOnCommentFocus] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
@@ -126,33 +128,35 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent }: TimelogPr
    */
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
+  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists
+  const seedState = (data?: SelectedData | null) => {
+    const found = projects.find((project) => project.id === data?.project?.id);
+    setSelectedData(data && Object.keys(data).length ? data : initialDataState);
+    setProjectMilestones(found?.milestone ?? []);
+    setprojectTasks(found?.task ?? []);
+    setErrors({});
+  };
+
+  // Latest shared draft, read on mount/switch without re-running the effect on every keystroke
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+
   useEffect(() => {
     if (edit.isEditing) {
-      const foundProject = projects.find((project) => project.id === edit.obj.project?.id);
-      setSelectedData(edit.obj);
-      setProjectMilestones(() => {
-        const milestone = foundProject?.milestone;
-        return milestone ? milestone : [];
-      });
-      setprojectTasks(() => {
-        const task = foundProject?.task;
-        return task ? task : [];
-      });
+      seedState(edit.obj);
     } else if (recent) {
-      const foundProject = projects.find((project) => project.id === recent.project?.id);
-      setSelectedData(recent);
-      setProjectMilestones(() => {
-        const milestone = foundProject?.milestone;
-        return milestone ? milestone : [];
-      });
-      setprojectTasks(() => {
-        const task = foundProject?.task;
-        return task ? task : [];
-      });
+      seedState(recent);
     } else {
-      handleClearForm();
+      seedState(draftRef.current);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edit, projects, recent]);
+
+  // Report the live draft up so the other view can pick it up (skip while editing/quick-fill)
+  useEffect(() => {
+    if (!edit.isEditing && !recent) onDraftChange?.(selectedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedData, edit.isEditing, recent]);
 
   const renderFormText = () => {
     if (!selectedData.project?.id) return "Select a project first...";
