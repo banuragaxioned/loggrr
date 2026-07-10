@@ -281,38 +281,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <div className="relative col-span-12 md:col-span-8">
-        {/* Mobile: labeled pill toggle above the card */}
-        <div className="mb-2 flex sm:hidden" role="group" aria-label="Logger view">
-          <div className="flex w-full items-center gap-1 rounded-md border bg-background p-0.5">
-            {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setLogBoardView(board)}
-                aria-pressed={showBoard === board}
-                className={cn(
-                  "flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors",
-                  showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
-                )}
-              >
-                <Icon size={14} />
-                {label}
-                {isNew && (
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white">
-                    <Sparkles size={9} />
-                    New
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Desktop: floating vertical icon rail in the left gutter (no card space) */}
+        {/* View switcher — mobile: pill bar above card; desktop: floating icon rail in the left gutter */}
         <div
-          className="absolute left-0 top-2 z-10 hidden flex-col items-center gap-1 rounded-md border bg-background p-0.5 shadow-sm sm:flex sm:-translate-x-[calc(100%+0.5rem)]"
           role="group"
           aria-label="Logger view"
+          className="mb-2 flex w-full items-center gap-1 rounded-md border bg-background p-0.5 sm:absolute sm:left-0 sm:top-2 sm:z-10 sm:mb-0 sm:w-auto sm:-translate-x-[calc(100%+0.5rem)] sm:flex-col sm:shadow-sm"
         >
           {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
             <Tooltip key={label}>
@@ -323,20 +296,23 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
                   aria-label={label}
                   aria-pressed={showBoard === board}
                   className={cn(
-                    "relative flex h-8 w-8 items-center justify-center rounded-sm transition-colors",
+                    "relative flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors sm:h-8 sm:w-8 sm:flex-none sm:p-0",
                     showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
                   )}
                 >
-                  <Icon size={16} />
+                  <Icon size={14} className="sm:size-4" />
+                  <span className="sm:hidden">{label}</span>
                   {isNew && (
-                    /* magenta "New" flair */
-                    <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-brand-fuchsia text-white">
-                      <Sparkles size={8} />
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white sm:absolute sm:-right-0.5 sm:-top-0.5 sm:h-3 sm:w-3 sm:justify-center sm:gap-0 sm:p-0">
+                      <Sparkles size={9} className="sm:size-2" />
+                      <span className="sm:hidden">New</span>
                     </span>
                   )}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">{label}</TooltipContent>
+              <TooltipContent side="right" className="hidden sm:block">
+                {label}
+              </TooltipContent>
             </Tooltip>
           ))}
         </div>
