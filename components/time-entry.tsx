@@ -13,7 +13,11 @@ import { InlineDatePicker } from "./inline-date-picker";
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
+import { TimeLogBoard } from "./forms/timelog-board";
 import RecentEntries from "./recent-entries";
+import { useGlobalState } from "@/store/useGlobalStore";
+import { LayoutGrid, Rows3, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 import AINotepad from "./ai/notepad";
 import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
@@ -66,11 +70,19 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   const [aiInput, setAiInput] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<Project[]>([]);
+  const logBoardView = useGlobalState((state) => state.logBoardView);
+  const setLogBoardView = useGlobalState((state) => state.setLogBoardView);
 
   // This sets the AI input from the local storage
   useEffect(() => {
     setAiInput(localStorage?.getItem("notebook-input") || "");
   }, []);
+
+  // Guard against hydration mismatch: the view preference is rehydrated from
+  // localStorage only on the client, so render the default (classic) until mounted.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const showBoard = mounted && logBoardView;
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     setRecent(null);
@@ -256,7 +268,47 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
+      <div className="col-span-12 flex flex-col gap-2 md:col-span-8">
+        {/* View switcher — sits outside the card so it doesn't consume card height */}
+        <div className="flex justify-start">
+          <div
+            className="flex shrink-0 items-center overflow-hidden rounded-md border bg-background"
+            role="group"
+            aria-label="Logger view"
+          >
+            <button
+              type="button"
+              onClick={() => setLogBoardView(false)}
+              title="Classic Timesheet"
+              aria-pressed={!showBoard}
+              className={cn(
+                "flex items-center gap-1.5 rounded-sm px-2 py-1 text-xs transition-colors",
+                !showBoard ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted",
+              )}
+            >
+              <Rows3 size={14} />
+              <span className="hidden sm:inline">Classic Timesheet</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setLogBoardView(true)}
+              title="New Timesheet"
+              aria-pressed={showBoard}
+              className={cn(
+                "flex items-center gap-1.5 rounded-sm px-2 py-1 text-xs transition-colors",
+                showBoard ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted",
+              )}
+            >
+              <LayoutGrid size={14} />
+              <span className="hidden sm:inline">New Timesheet</span>
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white">
+                <Sparkles size={9} />
+                New
+              </span>
+            </button>
+          </div>
+        </div>
+        <Card className="overflow-hidden shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker
             date={date}
@@ -266,7 +318,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
             dayTotalTime={dayTotalTime}
           />
         </div>
-        <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
+        {showBoard ? (
+          <TimeLogBoard projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
+        ) : (
+          <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
+        )}
         {dayTotalTime && (
           <p className="mb-2 flex items-center justify-between px-5 font-medium">
             Total time logged for the day
@@ -280,7 +336,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
           editEntryHandler={editEntryHandler}
           edit={edit}
         />
-      </Card>
+        </Card>
+      </div>
       <div className="col-span-12 flex flex-col gap-4 md:col-span-4">
         <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
         <AINotepad
