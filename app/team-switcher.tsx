@@ -3,13 +3,13 @@
 import * as React from "react";
 import { Boxes, Check, ChevronRight, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { Role } from "@/generated/prisma/browser";
 import { cn } from "@/lib/utils";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Command, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { Command, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -28,29 +28,29 @@ interface Teams {
 }
 
 export default function TeamSwitcher({ teams, className }: Teams & TeamSwitcherProps) {
-  const router = useRouter();
   const params = useParams();
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>();
+  const switcherTeams = React.useMemo(() => teams, [teams]);
 
   React.useEffect(() => {
-    if (teams.length === 1) {
-      setSelectedTeam(teams[0]);
+    if (switcherTeams.length === 1) {
+      setSelectedTeam(switcherTeams[0]);
     }
-  }, [teams]);
+  }, [switcherTeams]);
 
   if (params?.team && selectedTeam?.slug !== params.team) {
-    const team = teams.find((item) => item.slug === params.team);
+    const team = switcherTeams.find((item) => item.slug === params.team);
     if (team) {
       setSelectedTeam(team);
     }
   }
 
-  if (teams.length === 1 && !params.team) {
+  if (switcherTeams.length === 1 && !params.team) {
     return (
       <Link
         className={cn(buttonVariants({ variant: "outline", size: "sm" }), "flex gap-2")}
-        href={`/${teams[0].slug}`}
+        href={`/${switcherTeams[0].slug}`}
       >
         Dashboard
         <ChevronRight size={16} />
@@ -58,7 +58,7 @@ export default function TeamSwitcher({ teams, className }: Teams & TeamSwitcherP
     );
   }
 
-  if (teams.length <= 1) {
+  if (switcherTeams.length <= 1) {
     return null;
   }
 
@@ -73,33 +73,26 @@ export default function TeamSwitcher({ teams, className }: Teams & TeamSwitcherP
           aria-label="Select a team"
           className={cn("min-w-44 justify-between", className)}
         >
-          {selectedTeam?.name && <Boxes className="mr-2 h-5 w-5 shrink-0" />}
-          {selectedTeam?.name ?? "Select Workspace"}
-          <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          {selectedTeam?.name && <Boxes className="mr-2 size-4 shrink-0" />}
+          <span className="truncate">{selectedTeam?.name ?? "Select Workspace"}</span>
+          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="-ml-2 w-52 p-0 md:-ml-3" align="start">
+      <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start" sideOffset={4}>
         <Command>
           <CommandList>
-            {teams.map((item) => (
-              <CommandItem
-                key={item.slug}
-                onSelect={() => {
-                  setOpen(false);
-                }}
-                className="p-0"
-              >
-                <Link href={`/${item.slug}`} className="flex w-full items-center justify-between px-2 py-1.5">
-                  <Boxes className="mr-2 h-5 w-5" />
-                  {item.name}
+            {switcherTeams.map((item) => (
+              <CommandItem key={item.slug} value={item.name} onSelect={() => setOpen(false)} className="p-0">
+                <Link href={`/${item.slug}`} className="flex w-full min-w-0 items-center gap-2 px-2 py-1.5">
+                  <Boxes className="size-4 shrink-0" />
+                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
                   <Check
-                    className={cn("ml-auto h-4 w-4", selectedTeam?.slug === item.slug ? "opacity-100" : "opacity-0")}
+                    className={cn("size-4 shrink-0", selectedTeam?.slug === item.slug ? "opacity-100" : "opacity-0")}
                   />
                 </Link>
               </CommandItem>
             ))}
           </CommandList>
-          <CommandSeparator />
         </Command>
       </PopoverContent>
     </Popover>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { SiteHeader } from "@/app/site-header";
+import { Logo } from "@/components/ui/logo";
 
 export function HeroSection() {
   return (
@@ -22,8 +22,8 @@ export function HeroSection() {
 
 export function ScreenContent() {
   return (
-    <>
-      <SiteHeader />
-    </>
+    <div className="flex h-14 items-center border-b px-4">
+      <Logo />
+    </div>
   );
 }

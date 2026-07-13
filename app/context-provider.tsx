@@ -5,6 +5,7 @@ import NextTopLoader from "nextjs-toploader";
 import { TailwindIndicator } from "./tailwind-indicator";
 import { ThemeProvider } from "./theme-provider";
 import { SessionProvider } from "next-auth/react";
+import type { Session } from "next-auth";
 import { Toaster } from "@/components/ui/sonner";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -26,7 +27,13 @@ const TopLoader = () => {
   );
 };
 
-export function ContextProvider({ children }: { children: React.ReactNode }) {
+export function ContextProvider({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session: Session | null;
+}) {
   return (
     <>
       <PHProvider>
@@ -34,7 +41,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
           <NuqsAdapter>
             <TopLoader />
             <TooltipProvider>
-              <SessionProvider>{children}</SessionProvider>
+              <SessionProvider session={session}>{children}</SessionProvider>
             </TooltipProvider>
             <Toaster richColors />
           </NuqsAdapter>

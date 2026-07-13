@@ -5,11 +5,17 @@ interface LogoProps {
   className?: string;
 }
 
-function LogMark({ className }: { className?: string }) {
+function LogMark({
+  className,
+  tight = false,
+}: {
+  className?: string;
+  tight?: boolean;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 120 120"
+      viewBox={tight ? "18 30 84 66" : "0 0 120 120"}
       fill="none"
       aria-hidden="true"
       className={className}
@@ -26,7 +32,7 @@ function LogMark({ className }: { className?: string }) {
 
 export function Logo({ variant = "full", className }: LogoProps) {
   if (variant === "mark") {
-    return <LogMark className={cn("h-8 w-auto", className)} />;
+    return <LogMark tight className={cn("size-8", className)} />;
   }
 
   return (

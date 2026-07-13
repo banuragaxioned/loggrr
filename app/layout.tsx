@@ -1,12 +1,13 @@
 import "./globals.css";
 import { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { siteConfig } from "@/config/site";
 import { fontVariables } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { ContextProvider } from "./context-provider";
-import { SiteHeader } from "./site-header";
+import { AppShell } from "@/components/app-shell";
 import { getAllProjects } from "@/server/services/project";
-import { getCurrentUser } from "@/server/session";
+import { getCurrentSession } from "@/server/session";
 import FacebookRedirect from "@/components/user-agent";
 
 export const metadata: Metadata = {
@@ -41,9 +42,10 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
-
-  const projects = await getAllProjects(user?.id);
+  const session = await getCurrentSession();
+  const projects = await getAllProjects(session?.user?.id);
+  const cookieStore = await cookies();
+  const defaultSidebarOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -56,9 +58,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           fontVariables,
         )}
       >
-        <ContextProvider>
-          <SiteHeader projects={projects} />
-          {children}
+        <ContextProvider session={session}>
+          <AppShell projects={projects} defaultSidebarOpen={defaultSidebarOpen}>
+            {children}
+          </AppShell>
         </ContextProvider>
         <FacebookRedirect />
       </body>

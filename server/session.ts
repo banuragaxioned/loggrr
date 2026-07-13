@@ -11,3 +11,7 @@ export async function getCurrentUser() {
 
   return session.user;
 }
+
+export async function getCurrentSession() {
+  return getServerSession(authOptions);
+}
