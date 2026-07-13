@@ -114,7 +114,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
                             getCellTone(cell.hours),
                             isFuture && "cursor-not-allowed opacity-30",
                             !isFuture && "hover:opacity-75",
-                            isSelected && "ring-foreground ring-offset-card ring-2 ring-offset-1",
+                            isSelected && "ring-foreground ring-offset-card ring-1 ring-offset-1",
                           )}
                         />
                       </TooltipTrigger>
