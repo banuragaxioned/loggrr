@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import posthog from "posthog-js";
-import { ChevronRight, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
 import { excludedNavRoutes, siteConfig } from "@/config/site";
 import { getUserRole } from "@/lib/helper";
@@ -18,20 +18,22 @@ import { Logo } from "@/components/ui/logo";
 import { SidebarInset, SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import TeamSwitcher from "@/app/team-switcher";
 
-function MobileSidebarTab() {
-  const { toggleSidebar, openMobile, isMobile } = useSidebar();
+function MobileMenuButton() {
+  const { setOpenMobile, openMobile, isMobile } = useSidebar();
 
   if (!isMobile || openMobile) return null;
 
   return (
-    <button
+    <Button
       type="button"
-      aria-label="Open sidebar"
-      onClick={toggleSidebar}
-      className="bg-background text-muted-foreground fixed top-2.5 left-0 z-40 flex size-6 items-center justify-center rounded-full border shadow-sm md:hidden print:hidden"
+      variant="outline"
+      size="icon"
+      aria-label="Open menu"
+      onClick={() => setOpenMobile(true)}
+      className="fixed top-3 left-3 z-40 size-10 rounded-full border bg-background/95 backdrop-blur-sm md:hidden print:hidden"
     >
-      <ChevronRight className="size-3.5" />
-    </button>
+      <Logo variant="mark" className="size-5" />
+    </Button>
   );
 }
 
@@ -63,7 +65,7 @@ export function AppShell({
   if (!showSidebar) {
     return (
       <>
-        <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 mb-4 w-full border-b backdrop-blur-sm print:hidden">
+        <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60 print:hidden">
           <div className="container flex h-14 items-center space-x-4">
             <Link href={slug ? `/${slug}` : "/"} aria-label={siteConfig.name}>
               <Logo />
@@ -95,8 +97,8 @@ export function AppShell({
     <SidebarProvider defaultOpen={defaultSidebarOpen}>
       <AppSidebar role={workspaceRole} user={{ name, image, email }} teams={teamData} isLoading={isLoading} />
       <SidebarInset>
-        <MobileSidebarTab />
-        <div className="flex flex-1 flex-col pt-4 md:pt-6">{children}</div>
+        <MobileMenuButton />
+        <div className="flex flex-1 flex-col pt-14 md:pt-6">{children}</div>
 
         {filteredProjects && (
           <div className="fixed right-4 bottom-4 z-40 md:hidden print:hidden">

@@ -25,6 +25,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import TeamSwitcher from "@/app/team-switcher";
 
@@ -43,7 +45,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ role, user, teams, isLoading, className, ...props }: AppSidebarProps) {
   const params = useParams();
   const pathname = usePathname();
+  const { setOpenMobile, isMobile } = useSidebar();
   const team = params?.team ? decodeURIComponent(params.team as string) : undefined;
+
+  function handleNavigate() {
+    if (isMobile) setOpenMobile(false);
+  }
 
   const navItems = NAV_ITEMS.map((item) => {
     const items = item.items
@@ -68,24 +75,32 @@ export function AppSidebar({ role, user, teams, isLoading, className, ...props }
   return (
     <Sidebar collapsible="icon" className={cn(className)} {...props}>
       <SidebarHeader className="gap-1">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip={siteConfig.name}
-              className="h-auto py-1.5 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-2!"
-            >
-              <Link href={team ? `/${team}` : "/"} aria-label={siteConfig.name}>
-                <span className="origin-left scale-[0.8] group-data-[collapsible=icon]:hidden!">
-                  <Logo className="gap-2" />
-                </span>
-                <span className="hidden size-5 shrink-0 group-data-[collapsible=icon]:block!">
-                  <Logo variant="mark" className="size-5" />
-                </span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center justify-between gap-1 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center">
+          <SidebarMenu className="min-w-0 flex-1 group-data-[collapsible=icon]:flex-none">
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={siteConfig.name}
+                className="h-auto py-1.5 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:p-2!"
+              >
+                <Link href={team ? `/${team}` : "/"} aria-label={siteConfig.name} onClick={handleNavigate}>
+                  <span className="origin-left scale-[0.8] group-data-[collapsible=icon]:hidden!">
+                    <Logo className="gap-2" />
+                  </span>
+                  <span className="hidden size-5 shrink-0 group-data-[collapsible=icon]:block!">
+                    <Logo variant="mark" className="size-5" />
+                  </span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <SidebarTrigger
+            className={cn(
+              "size-7 shrink-0 rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+              "group-data-[collapsible=icon]:size-8",
+            )}
+          />
+        </div>
         {teams && teams.length > 0 && (
           <div className="px-2 pb-1 group-data-[collapsible=icon]:hidden">
             <TeamSwitcher teams={teams} className="w-full min-w-0" />
