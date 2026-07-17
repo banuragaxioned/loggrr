@@ -13,11 +13,25 @@ import { InlineDatePicker } from "./inline-date-picker";
 import { SelectedData } from "./forms/timelogForm";
 import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
+import { TimeLogBoard } from "./forms/timelog-board";
 import RecentEntries from "./recent-entries";
+import { useGlobalState } from "@/store/useGlobalStore";
+import { LayoutGrid, Rows3, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import AINotepad from "./ai/notepad";
 import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
+
+// Shared config for the Classic/Board view switcher (rendered as mobile pills + desktop rail)
+const VIEW_TOGGLE_ACTIVE = "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50";
+const VIEW_TOGGLE_INACTIVE = "text-muted-foreground hover:bg-muted";
+
+const LOGGER_VIEWS = [
+  { board: false, label: "Classic Timesheet", Icon: Rows3, isNew: false },
+  { board: true, label: "New Timesheet", Icon: LayoutGrid, isNew: true },
+] as const;
 
 export interface RecentEntryProps {
   id: number;
@@ -63,14 +77,24 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState(null);
+  // Shared in-progress draft so values persist when switching Classic <-> Board views
+  const [draft, setDraft] = useState<SelectedData>({});
   const [aiInput, setAiInput] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponses, setAiResponses] = useState<Project[]>([]);
+  const logBoardView = useGlobalState((state) => state.logBoardView);
+  const setLogBoardView = useGlobalState((state) => state.setLogBoardView);
 
   // This sets the AI input from the local storage
   useEffect(() => {
     setAiInput(localStorage?.getItem("notebook-input") || "");
   }, []);
+
+  // Guard against hydration mismatch: the view preference is rehydrated from
+  // localStorage only on the client, so render the default (classic) until mounted.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const showBoard = mounted && logBoardView;
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     setRecent(null);
@@ -256,7 +280,43 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <Card className="col-span-12 overflow-hidden shadow-none md:col-span-8">
+      <div className="relative col-span-12 md:col-span-8">
+        {/* View switcher — mobile: pill bar above card; desktop: floating icon rail in the left gutter */}
+        <div
+          role="group"
+          aria-label="Logger view"
+          className="mb-2 flex w-full items-center gap-1 rounded-md border bg-background p-0.5 sm:absolute sm:left-0 sm:top-2 sm:z-10 sm:mb-0 sm:w-auto sm:-translate-x-[calc(100%+0.5rem)] sm:flex-col sm:shadow-sm"
+        >
+          {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
+            <Tooltip key={label}>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setLogBoardView(board)}
+                  aria-label={label}
+                  aria-pressed={showBoard === board}
+                  className={cn(
+                    "relative flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors sm:h-8 sm:w-8 sm:flex-none sm:p-0",
+                    showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
+                  )}
+                >
+                  <Icon size={14} className="sm:size-4" />
+                  <span className="sm:hidden">{label}</span>
+                  {isNew && (
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white sm:absolute sm:-right-0.5 sm:-top-0.5 sm:h-3 sm:w-3 sm:justify-center sm:gap-0 sm:p-0">
+                      <Sparkles size={9} className="sm:size-2" />
+                      <span className="sm:hidden">New</span>
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="hidden sm:block">
+                {label}
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+        <Card className="overflow-hidden shadow-none">
         <div className="flex justify-between gap-2 border-b p-2">
           <InlineDatePicker
             date={date}
@@ -266,7 +326,25 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
             dayTotalTime={dayTotalTime}
           />
         </div>
-        <TimeLogForm projects={projects} edit={edit} recent={recent} submitHandler={submitTimeEntry} />
+        {showBoard ? (
+          <TimeLogBoard
+            projects={projects}
+            edit={edit}
+            recent={recent}
+            submitHandler={submitTimeEntry}
+            draft={draft}
+            onDraftChange={setDraft}
+          />
+        ) : (
+          <TimeLogForm
+            projects={projects}
+            edit={edit}
+            recent={recent}
+            submitHandler={submitTimeEntry}
+            draft={draft}
+            onDraftChange={setDraft}
+          />
+        )}
         {dayTotalTime && (
           <p className="mb-2 flex items-center justify-between px-5 font-medium">
             Total time logged for the day
@@ -280,7 +358,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
           editEntryHandler={editEntryHandler}
           edit={edit}
         />
-      </Card>
+        </Card>
+      </div>
       <div className="col-span-12 flex flex-col gap-4 md:col-span-4">
         <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
         <AINotepad
