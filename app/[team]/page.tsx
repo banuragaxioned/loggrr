@@ -10,7 +10,7 @@ import { getTimeInHours } from "@/lib/helper";
 import { TimeEntry } from "@/components/time-entry";
 import CategoryDataBar from "@/components/charts/category-bar";
 import WeekHeatmap from "@/components/charts/week-heatmap";
-import { endOfWeek, format, startOfDay, startOfWeek } from "date-fns";
+import { endOfWeek, format, parse, startOfWeek } from "date-fns";
 
 export default async function Dashboard(props: pageProps) {
   const searchParams = await props.searchParams;
@@ -22,7 +22,8 @@ export default async function Dashboard(props: pageProps) {
     return notFound();
   }
 
-  const date = searchParams.date ? new Date(searchParams.date) : new Date();
+  const dateParam = typeof searchParams.date === "string" ? searchParams.date : undefined;
+  const date = dateParam ? parse(dateParam, "yyyy-MM-dd", new Date()) : new Date();
   const projects = await getAllProjects(user.id, team);
   const loggedTime = await getTimelogLastWeek(team, user.id, date);
   const recentTimeEntries = await getRecentEntries(team, user.id);
@@ -49,7 +50,7 @@ export default async function Dashboard(props: pageProps) {
           maxValue={maxHourPerDay * 5}
           type="hours"
         />
-        <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} />
+        <WeekHeatmap sevenWeekTimeEntries={sevenWeekTimeEntries} selectedDate={date} />
       </aside>
     </div>
   );

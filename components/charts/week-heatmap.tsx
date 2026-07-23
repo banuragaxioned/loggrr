@@ -42,7 +42,8 @@ function getCellTone(hours: number) {
 
 export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: WeekHeatmapProps) {
   const router = useRouter();
-  const activeDate = selectedDate ?? startOfToday();
+  const today = startOfToday();
+  const activeDate = selectedDate ? startOfDay(selectedDate) : today;
 
   const { cells, weekLabels } = useMemo(() => {
     const hoursByDate = new Map(
@@ -71,7 +72,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
   }, [sevenWeekTimeEntries]);
 
   function handleSelect(date: Date) {
-    if (isAfter(date, startOfToday())) return;
+    if (isAfter(date, today)) return;
     router.push(`?date=${format(date, "yyyy-MM-dd")}`);
   }
 
@@ -97,7 +98,8 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
               <span className="text-muted-foreground text-[10px]">{label}</span>
               <div className="grid grid-cols-7 gap-1">
                 {cells.slice(dayIndex * 7, dayIndex * 7 + 7).map((cell) => {
-                  const isFuture = isAfter(cell.date, startOfToday());
+                  const isFuture = isAfter(cell.date, today);
+                  const isToday = isSameDay(cell.date, today);
                   const isSelected = isSameDay(cell.date, activeDate);
 
                   return (
@@ -114,14 +116,19 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
                             getCellTone(cell.hours),
                             isFuture && "cursor-not-allowed opacity-30",
                             !isFuture && "hover:opacity-75",
-                            isSelected && "ring-foreground ring-offset-card ring-1 ring-offset-1",
+                            // Today: softer muted ring; selected: stronger foreground ring.
+                            // When both apply (selected is today), selected wins.
+                            isToday && !isSelected && "ring-1 ring-muted-foreground/70 ring-offset-1 ring-offset-card",
+                            isSelected && "ring-1 ring-brand-fuchsia ring-offset-1 ring-offset-card",
                           )}
                         />
                       </TooltipTrigger>
                       <TooltipContent className="flex-col items-start text-xs">
                         <p className="font-medium">{format(cell.date, "EEE, dd MMM, yyyy")}</p>
-                        <p className="text-foreground-muted">
+                        <p className="text-muted-foreground">
                           {cell.hours > 0 ? `Hours logged: ${cell.hours.toFixed(2)}h` : "No time logged"}
+                          {isToday && " · Today"}
+                          {isSelected && !isToday && " · Selected"}
                         </p>
                       </TooltipContent>
                     </Tooltip>

@@ -60,6 +60,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
 
   const handleClearForm = () => {
     setSelectedData(initialDataState);
+    setProjectMilestones([]);
+    setprojectTasks([]);
     setErrors({});
   };
 
@@ -230,7 +232,8 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
             onClick={handleClearForm}
             size="icon"
             type="button"
-            className="ml-2 shrink-0"
+            title="Reset form"
+            className="ml-2 shrink-0 cursor-pointer border-destructive/30 text-destructive/70 hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
           >
             <ListRestart size={16} />
           </Button>

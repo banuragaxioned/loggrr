@@ -492,14 +492,14 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
                 </Button>
               </div>
 
-              {/* Reset — mildly destructive */}
+              {/* Reset — same treatment as classic form */}
               {hasSelection && (
                 <Button
                   variant="outline"
                   size="icon"
                   type="button"
                   onClick={handleClearForm}
-                  className="shrink-0 border-destructive/30 text-destructive/70 hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
+                  className="shrink-0 cursor-pointer border-destructive/30 text-destructive/70 hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
                   title="Reset form"
                 >
                   <ListRestart size={16} />
@@ -629,7 +629,7 @@ const BoardItem = ({ label, active, onClick }: { label: string; active: boolean;
     type="button"
     onClick={onClick}
     className={cn(
-      "flex w-full items-start justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+      "flex w-full cursor-pointer items-start justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
       active ? "bg-accent font-medium text-accent-foreground" : "hover:bg-muted",
     )}
   >

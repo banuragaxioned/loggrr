@@ -15,7 +15,7 @@ import { Card } from "./ui/card";
 import { TimeLogForm } from "./forms/timelogForm";
 import { TimeLogBoard } from "./forms/timelog-board";
 import RecentEntries from "./recent-entries";
-import { useGlobalState } from "@/store/useGlobalStore";
+import { useGlobalState, useGlobalStateHydrated } from "@/store/useGlobalStore";
 import { LayoutGrid, Rows3, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -25,7 +25,7 @@ import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
 import { isTimelogValid } from "@/lib/timelog-validation";
 
-// Shared config for the Classic/Board view switcher (rendered as mobile pills + desktop rail)
+// Shared config for the Classic/Board view switcher (icon toggle in the logger card header)
 const VIEW_TOGGLE_ACTIVE = "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50";
 const VIEW_TOGGLE_INACTIVE = "text-muted-foreground hover:bg-muted";
 
@@ -85,17 +85,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   const [aiResponses, setAiResponses] = useState<Project[]>([]);
   const logBoardView = useGlobalState((state) => state.logBoardView);
   const setLogBoardView = useGlobalState((state) => state.setLogBoardView);
+  const hasHydrated = useGlobalStateHydrated();
+  // Wait for persist rehydration so we don't flash classic → board (or vice versa).
+  const showBoard = hasHydrated && logBoardView;
 
   // This sets the AI input from the local storage
   useEffect(() => {
     setAiInput(localStorage?.getItem("notebook-input") || "");
   }, []);
-
-  // Guard against hydration mismatch: the view preference is rehydrated from
-  // localStorage only on the client, so render the default (classic) until mounted.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const showBoard = mounted && logBoardView;
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
     setRecent(null);
@@ -283,84 +280,88 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
-      <div className="relative col-span-12 md:col-span-8">
-        {/* View switcher — mobile: pill bar above card; desktop: floating icon rail in the left gutter */}
-        <div
-          role="group"
-          aria-label="Logger view"
-          className="mb-2 flex w-full items-center gap-1 rounded-md border bg-background p-0.5 sm:absolute sm:left-0 sm:top-2 sm:z-10 sm:mb-0 sm:w-auto sm:-translate-x-[calc(100%+0.5rem)] sm:flex-col sm:shadow-sm"
-        >
-          {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
-            <Tooltip key={label}>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => setLogBoardView(board)}
-                  aria-label={label}
-                  aria-pressed={showBoard === board}
-                  className={cn(
-                    "relative flex flex-1 items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs transition-colors sm:h-8 sm:w-8 sm:flex-none sm:p-0",
-                    showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
-                  )}
-                >
-                  <Icon size={14} className="sm:size-4" />
-                  <span className="sm:hidden">{label}</span>
-                  {isNew && (
-                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-fuchsia px-1.5 py-0.5 text-[9px] font-semibold leading-none text-white sm:absolute sm:-right-0.5 sm:-top-0.5 sm:h-3 sm:w-3 sm:justify-center sm:gap-0 sm:p-0">
-                      <Sparkles size={9} className="sm:size-2" />
-                      <span className="sm:hidden">New</span>
-                    </span>
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="hidden sm:block">
-                {label}
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
+      <div className="col-span-12 md:col-span-8">
         <Card className="overflow-hidden shadow-none">
-        <div className="flex justify-between gap-2 border-b p-2">
-          <InlineDatePicker
-            date={date}
-            setDate={(newDate: Date) => {
-              router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
-            }}
-            dayTotalTime={dayTotalTime}
-          />
-        </div>
-        {showBoard ? (
-          <TimeLogBoard
-            projects={projects}
+          <div className="flex items-center gap-2 border-b p-2">
+            {/* View switcher — sits in the card header so it never clips outside the content box */}
+            <div
+              role="group"
+              aria-label="Logger view"
+              className={cn(
+                "bg-background flex shrink-0 items-center gap-0.5 rounded-md border p-0.5",
+                !hasHydrated && "pointer-events-none opacity-60",
+              )}
+            >
+              {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
+                <Tooltip key={label}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setLogBoardView(board)}
+                      aria-label={label}
+                      aria-pressed={hasHydrated ? showBoard === board : undefined}
+                      disabled={!hasHydrated}
+                      className={cn(
+                        "relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm transition-colors disabled:cursor-default",
+                        hasHydrated && showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
+                      )}
+                    >
+                      <Icon size={16} />
+                      {isNew && (
+                        <span className="bg-brand-fuchsia absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full text-white">
+                          <Sparkles size={8} />
+                        </span>
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">{label}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+            <div className="min-w-0 flex-1">
+              <InlineDatePicker
+                date={date}
+                setDate={(newDate: Date) => {
+                  router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
+                }}
+                dayTotalTime={dayTotalTime}
+              />
+            </div>
+          </div>
+          {!hasHydrated ? (
+            <div className="min-h-[280px] animate-pulse bg-muted/40" aria-hidden />
+          ) : showBoard ? (
+            <TimeLogBoard
+              projects={projects}
+              edit={edit}
+              recent={recent}
+              submitHandler={submitTimeEntry}
+              draft={draft}
+              onDraftChange={setDraft}
+            />
+          ) : (
+            <TimeLogForm
+              projects={projects}
+              edit={edit}
+              recent={recent}
+              submitHandler={submitTimeEntry}
+              draft={draft}
+              onDraftChange={setDraft}
+            />
+          )}
+          {dayTotalTime && (
+            <p className="mb-2 flex items-center justify-between px-5 font-medium">
+              Total time logged for the day
+              <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
+            </p>
+          )}
+          <TimeEntriesList
+            entries={entries.data}
+            status={entries.status}
+            deleteEntryHandler={deleteTimeEntry}
+            editEntryHandler={editEntryHandler}
             edit={edit}
-            recent={recent}
-            submitHandler={submitTimeEntry}
-            draft={draft}
-            onDraftChange={setDraft}
           />
-        ) : (
-          <TimeLogForm
-            projects={projects}
-            edit={edit}
-            recent={recent}
-            submitHandler={submitTimeEntry}
-            draft={draft}
-            onDraftChange={setDraft}
-          />
-        )}
-        {dayTotalTime && (
-          <p className="mb-2 flex items-center justify-between px-5 font-medium">
-            Total time logged for the day
-            <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
-          </p>
-        )}
-        <TimeEntriesList
-          entries={entries.data}
-          status={entries.status}
-          deleteEntryHandler={deleteTimeEntry}
-          editEntryHandler={editEntryHandler}
-          edit={edit}
-        />
         </Card>
       </div>
       <div className="col-span-12 flex flex-col gap-4 md:col-span-4">
