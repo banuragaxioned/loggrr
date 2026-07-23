@@ -51,7 +51,7 @@ export default function CategoryDataBar({ markerValue, maxValue, title, subtitle
   }, [targetPercent]);
 
   return (
-    <section className="border-border bg-card rounded-2xl border p-4">
+    <section className="border-border bg-card rounded-lg border p-4">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div className="space-y-1">
           <h2 className="text-sm font-medium">{title}</h2>

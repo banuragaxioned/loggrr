@@ -77,7 +77,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
   }
 
   return (
-    <section className="border-border bg-card rounded-2xl border p-4">
+    <section className="border-border bg-card rounded-lg border p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
         <div>
           <h2 className="text-sm font-medium">Heatmap</h2>

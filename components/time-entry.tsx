@@ -38,6 +38,7 @@ export interface RecentEntryProps {
   id: number;
   project?: Project;
   milestone?: Milestone | null;
+  task?: Milestone | null;
   billable?: boolean;
   time?: number;
   comments?: string | null;
@@ -77,7 +78,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   });
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
-  const [recent, setRecent] = useState(null);
+  const [recent, setRecent] = useState<SelectedData | null>(null);
   // Shared in-progress draft so values persist when switching Classic <-> Board views
   const [draft, setDraft] = useState<SelectedData>({});
   const [aiInput, setAiInput] = useState<string>("");
@@ -205,9 +206,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   /*
    * handleRecentClick: The following function adds recent state for adding new entry
    */
-  const handleRecentClick = (selected: any) => {
+  const handleRecentClick = (selected: RecentEntryProps) => {
     setEdit({ obj: {}, isEditing: false, id: null });
-    setRecent({ ...selected, comment: selected.comments, time: (selected.time / 60).toFixed(2) });
+    setRecent({ ...selected, comment: selected.comments, time: ((selected.time ?? 0) / 60).toFixed(2) });
   };
 
   /*
