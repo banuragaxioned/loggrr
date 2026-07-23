@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandGroup, CommandItem, CommandList, CommandSeparator, CommandEmpty } from "./command";
 import { ComboboxOptions } from "@/types";
 import { cn } from "@/lib/utils";
+import { RequiredAsterisk } from "@/components/required-asterisk";
 
 type ComboBoxProps = {
   icon?: React.ReactElement;
@@ -14,6 +15,7 @@ type ComboBoxProps = {
   label: string;
   tabIndex?: number;
   disabled?: boolean;
+  required?: boolean;
   selectedItem: any;
   handleSelect?: (item: string) => void;
   placeholder?: string;
@@ -28,6 +30,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   label,
   tabIndex,
   disabled,
+  required = false,
   selectedItem,
   handleSelect,
   className,
@@ -38,6 +41,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   const [groupedOptions, setGroupedOptions] = useState<any[]>([]);
   const [filteredGroupedOptions, setFilteredGroupedOptions] = useState<any[]>([]);
   const isProjectDropdown = label === "Project";
+  const isMissingRequired = required && !selectedItem?.id;
 
   useEffect(() => {
     if (isProjectDropdown) {
@@ -100,7 +104,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          title={`Select a ${label}`}
+          title={isMissingRequired ? `${label} is required` : `Select a ${label}`}
           variant="outline"
           role="combobox"
           size="sm"
@@ -109,8 +113,13 @@ const ComboBox: React.FC<ComboBoxProps> = ({
           className="flex w-full justify-between"
         >
           {icon}
-          <span className={cn("inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap")}>
-            {selectedItem?.name || label}
+          <span className={cn("inline-flex max-w-[200px] items-center gap-0.5 overflow-hidden text-ellipsis whitespace-nowrap")}>
+            {selectedItem?.name || (
+              <>
+                {label}
+                {required && <RequiredAsterisk />}
+              </>
+            )}
           </span>
           <ChevronDown className="ml-auto h-4 w-4" />
         </Button>

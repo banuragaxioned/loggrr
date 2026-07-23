@@ -23,6 +23,14 @@ import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
 import { cn } from "@/lib/utils";
 import { hoursToDecimal } from "@/lib/helper";
+import {
+  isCategoryRequired,
+  isClassificationRequired,
+  isTaskRequired,
+  isTimelogValid,
+  mergeSelectedIntoOptions,
+} from "@/lib/timelog-validation";
+import { RequiredAsterisk } from "@/components/required-asterisk";
 
 import type { SelectedData } from "./timelogForm";
 
@@ -90,10 +98,13 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
     resetSearches();
   };
 
-  const formValidator = () => {
-    const { project, comment, time } = selectedData || {};
-    return project && comment?.trim().length && time && !errors?.time;
-  };
+  const formValidator = () =>
+    isTimelogValid({
+      ...selectedData,
+      categories: projectMilestones,
+      tasks: projectTasks,
+      timeError: errors?.time,
+    });
 
   const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
@@ -117,8 +128,8 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
 
   const commitTime = (next: number) => {
     const value = Math.max(next, 0);
-    setSelectedData({ ...selectedData, time: hoursToClock(value) });
-    if (value > 0) setErrors({ ...errors, time: false });
+    setSelectedData({ ...selectedData, time: value > 0 ? hoursToClock(value) : "" });
+    setErrors({ ...errors, time: value <= 0 });
   };
 
   /*
@@ -161,22 +172,49 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
   };
 
   /*
-   * milestoneCallback / taskCallback: clicking a selected chip again clears it (both are optional)
+   * milestoneCallback / taskCallback: clicking an active chip clears it when optional.
+   * When classification is required, allow clear only if the other side still satisfies it.
    */
   const milestoneCallback = (selected: Milestone) =>
-    setSelectedData((prev) => ({ ...prev, milestone: prev.milestone?.id === selected.id ? null : selected }));
+    setSelectedData((prev) => {
+      if (prev.milestone?.id === selected.id) {
+        const mustKeep =
+          isClassificationRequired(prev.project, projectMilestones, projectTasks) && !prev.task?.id;
+        if (mustKeep) return prev;
+        return { ...prev, milestone: null };
+      }
+      return { ...prev, milestone: selected };
+    });
 
   const taskCallback = (selected: Milestone) =>
-    setSelectedData((prev) => ({ ...prev, task: prev.task?.id === selected.id ? null : selected }));
+    setSelectedData((prev) => {
+      if (prev.task?.id === selected.id) {
+        const mustKeep =
+          isClassificationRequired(prev.project, projectMilestones, projectTasks) && !prev.milestone?.id;
+        if (mustKeep) return prev;
+        return { ...prev, task: null };
+      }
+      return { ...prev, task: selected };
+    });
 
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
-  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists
+  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists.
+  // Inject archived (or otherwise missing) selections so edit flows stay valid.
   const seedState = (data?: SelectedData | null) => {
     const found = projects.find((project) => project.id === data?.project?.id);
-    setSelectedData(data && Object.keys(data).length ? data : initialDataState);
-    setProjectMilestones(found?.milestone ?? []);
-    setprojectTasks(found?.task ?? []);
+    const nextData =
+      data && Object.keys(data).length
+        ? {
+            ...data,
+            project: data.project
+              ? { ...data.project, billable: data.project.billable ?? found?.billable }
+              : data.project,
+          }
+        : initialDataState;
+    setSelectedData(nextData);
+    setProjectMilestones(mergeSelectedIntoOptions(found?.milestone ?? [], data?.milestone));
+    setprojectTasks(mergeSelectedIntoOptions(found?.task ?? [], data?.task));
     setErrors({});
   };
 
@@ -239,12 +277,38 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
     [projectMilestones, categoryQuery],
   );
   const filteredTasks = useMemo(() => filterByName(projectTasks, taskQuery), [projectTasks, taskQuery]);
+  const categoryRequired = isCategoryRequired(
+    selectedData.project,
+    projectMilestones,
+    projectTasks,
+    selectedData.milestone,
+    selectedData.task,
+  );
+  const taskRequired = isTaskRequired(
+    selectedData.project,
+    projectTasks,
+    projectMilestones,
+    selectedData.milestone,
+    selectedData.task,
+  );
+  const categoryMissing = categoryRequired;
+  const taskMissing = taskRequired;
+  const showCategories = projectMilestones.length > 0;
+  const showTasks = projectTasks.length > 0;
+  const boardColumnCount = 1 + Number(showCategories) + Number(showTasks);
 
   return (
     <div className="p-2">
       <div className="overflow-hidden rounded-xl border">
-        {/* Three cascading columns: Project -> Category -> Task */}
-        <div className="grid grid-cols-1 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {/* Cascading columns: Project -> Category/Task when the selected project has them */}
+        <div
+          className={cn(
+            "grid grid-cols-1 divide-y sm:divide-x sm:divide-y-0",
+            boardColumnCount === 1 && "sm:grid-cols-1",
+            boardColumnCount === 2 && "sm:grid-cols-2",
+            boardColumnCount === 3 && "sm:grid-cols-3",
+          )}
+        >
           {/* Column 1: Projects (grouped by client) */}
           <div className="flex min-w-0 flex-col">
             <SearchableHeader
@@ -277,71 +341,71 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
             </ScrollArea>
           </div>
 
-          {/* Column 2: Categories (milestones) */}
-          <div className="flex min-w-0 flex-col">
-            <SearchableHeader
-              icon={<CategoryIcon size={14} className="shrink-0" />}
-              label="Category"
-              query={categoryQuery}
-              setQuery={setCategoryQuery}
-              open={categorySearchOpen}
-              setOpen={setCategorySearchOpen}
-              disabled={!isProjectSelected || projectMilestones.length === 0}
-            />
-            <ScrollArea className="max-h-[240px] sm:h-[240px]">
-              <div className="p-1.5">
-                {!isProjectSelected ? (
-                  <EmptyState text="Pick a project first" />
-                ) : projectMilestones.length === 0 ? (
-                  <EmptyState text="No categories" />
-                ) : filteredMilestones.length === 0 ? (
-                  <EmptyState text="No matches" />
-                ) : (
-                  filteredMilestones.map((milestone) => (
-                    <BoardItem
-                      key={milestone.id}
-                      label={milestone.name}
-                      active={selectedData?.milestone?.id === milestone.id}
-                      onClick={() => milestoneCallback(milestone)}
-                    />
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-          </div>
+          {/* Column 2: Categories (milestones) — only when the project has any */}
+          {showCategories && (
+            <div className="flex min-w-0 flex-col">
+              <SearchableHeader
+                icon={<CategoryIcon size={14} className="shrink-0" />}
+                label="Category"
+                required={categoryRequired}
+                missingRequired={categoryMissing}
+                query={categoryQuery}
+                setQuery={setCategoryQuery}
+                open={categorySearchOpen}
+                setOpen={setCategorySearchOpen}
+                disabled={!isProjectSelected}
+              />
+              <ScrollArea className="max-h-[240px] sm:h-[240px]">
+                <div className="p-1.5">
+                  {filteredMilestones.length === 0 ? (
+                    <EmptyState text="No matches" />
+                  ) : (
+                    filteredMilestones.map((milestone) => (
+                      <BoardItem
+                        key={milestone.id}
+                        label={milestone.name}
+                        active={selectedData?.milestone?.id === milestone.id}
+                        onClick={() => milestoneCallback(milestone)}
+                      />
+                    ))
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
 
-          {/* Column 3: Tasks */}
-          <div className="flex min-w-0 flex-col">
-            <SearchableHeader
-              icon={<List size={14} className="shrink-0" />}
-              label="Task"
-              query={taskQuery}
-              setQuery={setTaskQuery}
-              open={taskSearchOpen}
-              setOpen={setTaskSearchOpen}
-              disabled={!isProjectSelected || projectTasks.length === 0}
-            />
-            <ScrollArea className="max-h-[240px] sm:h-[240px]">
-              <div className="p-1.5">
-                {!isProjectSelected ? (
-                  <EmptyState text="Pick a project first" />
-                ) : projectTasks.length === 0 ? (
-                  <EmptyState text="No tasks" />
-                ) : filteredTasks.length === 0 ? (
-                  <EmptyState text="No matches" />
-                ) : (
-                  filteredTasks.map((task) => (
-                    <BoardItem
-                      key={task.id}
-                      label={task.name}
-                      active={selectedData?.task?.id === task.id}
-                      onClick={() => taskCallback(task)}
-                    />
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-          </div>
+          {/* Column 3: Tasks — only when the project has any */}
+          {showTasks && (
+            <div className="flex min-w-0 flex-col">
+              <SearchableHeader
+                icon={<List size={14} className="shrink-0" />}
+                label="Task"
+                required={taskRequired}
+                missingRequired={taskMissing}
+                query={taskQuery}
+                setQuery={setTaskQuery}
+                open={taskSearchOpen}
+                setOpen={setTaskSearchOpen}
+                disabled={!isProjectSelected}
+              />
+              <ScrollArea className="max-h-[240px] sm:h-[240px]">
+                <div className="p-1.5">
+                  {filteredTasks.length === 0 ? (
+                    <EmptyState text="No matches" />
+                  ) : (
+                    filteredTasks.map((task) => (
+                      <BoardItem
+                        key={task.id}
+                        label={task.name}
+                        active={selectedData?.task?.id === task.id}
+                        onClick={() => taskCallback(task)}
+                      />
+                    ))
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
         </div>
 
         {/* Compose bar: comment + time + billable + submit */}
@@ -428,14 +492,14 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
                 </Button>
               </div>
 
-              {/* Reset — mildly destructive */}
+              {/* Reset — same treatment as classic form */}
               {hasSelection && (
                 <Button
                   variant="outline"
                   size="icon"
                   type="button"
                   onClick={handleClearForm}
-                  className="shrink-0 border-destructive/30 text-destructive/70 hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
+                  className="shrink-0 cursor-pointer border-destructive/30 text-destructive/70 hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
                   title="Reset form"
                 >
                   <ListRestart size={16} />
@@ -487,6 +551,8 @@ type SearchableHeaderProps = {
   open: boolean;
   setOpen: (value: boolean) => void;
   disabled?: boolean;
+  required?: boolean;
+  missingRequired?: boolean;
 };
 
 const SearchableHeader = ({
@@ -497,6 +563,8 @@ const SearchableHeader = ({
   open,
   setOpen,
   disabled = false,
+  required = false,
+  missingRequired = false,
 }: SearchableHeaderProps) => {
   const canSearch = !disabled;
   const close = () => {
@@ -508,9 +576,16 @@ const SearchableHeader = ({
       className={cn(
         "flex h-9 items-center gap-2 border-b bg-muted/40 px-3 text-xs font-medium text-muted-foreground",
         !open && canSearch && "cursor-text hover:text-foreground",
+        missingRequired && "bg-destructive/5 text-destructive/80",
       )}
       onClick={!open && canSearch ? () => setOpen(true) : undefined}
-      title={!open && canSearch ? `Click to search ${label.toLowerCase()}` : undefined}
+      title={
+        missingRequired
+          ? `${label} is required`
+          : !open && canSearch
+            ? `Click to search ${label.toLowerCase()}`
+            : undefined
+      }
     >
       {icon}
       {open ? (
@@ -529,7 +604,10 @@ const SearchableHeader = ({
         </>
       ) : (
         <>
-          <span>{label}</span>
+          <span className="inline-flex items-center gap-0.5">
+            {label}
+            {required && <RequiredAsterisk />}
+          </span>
           {canSearch && (
             <button
               type="button"
@@ -551,7 +629,7 @@ const BoardItem = ({ label, active, onClick }: { label: string; active: boolean;
     type="button"
     onClick={onClick}
     className={cn(
-      "flex w-full items-start justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+      "flex w-full cursor-pointer items-start justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
       active ? "bg-accent font-medium text-accent-foreground" : "hover:bg-muted",
     )}
   >

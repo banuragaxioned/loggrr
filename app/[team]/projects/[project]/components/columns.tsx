@@ -25,6 +25,15 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ProjectEditComboBox, ProjectSelectOption } from "./project-edit-combobox";
 import { useState } from "react";
+import {
+  getPublishedOptions,
+  isCategoryRequired,
+  isClassificationRequired,
+  isClassificationSatisfied,
+  isTaskRequired,
+  isTimelogValid,
+} from "@/lib/timelog-validation";
+import { RequiredFieldLabel } from "@/components/required-asterisk";
 
 export interface Logged {
   id: number;
@@ -59,6 +68,7 @@ export const getColumns = (
   showTask = true,
   categories: SelectOption[] = [],
   tasks: SelectOption[] = [],
+  isBillable = false,
 ): ColumnDef<Logged>[] => [
   {
     accessorKey: "name",
@@ -118,12 +128,22 @@ export const getColumns = (
     accessorKey: "hours",
     header: () => <span className="inline-block w-20 text-right">Hours</span>,
     cell: ({ row }) => {
-      return <TimeEntryCell row={row} categories={categories} tasks={tasks} />;
+      return <TimeEntryCell row={row} categories={categories} tasks={tasks} isBillable={isBillable} />;
     },
   },
 ];
 
-function TimeEntryCell({ row, categories, tasks }: { row: any; categories: SelectOption[]; tasks: SelectOption[] }) {
+function TimeEntryCell({
+  row,
+  categories,
+  tasks,
+  isBillable,
+}: {
+  row: any;
+  categories: SelectOption[];
+  tasks: SelectOption[];
+  isBillable: boolean;
+}) {
   const { depth, original } = row;
   const params = useParams();
   const router = useRouter();
@@ -135,6 +155,35 @@ function TimeEntryCell({ row, categories, tasks }: { row: any; categories: Selec
   const [milestone, setMilestone] = useState<SelectOption | null>(null);
   const [task, setTask] = useState<SelectOption | null>(null);
   const formatted = `${row.getValue("hours") ?? 0} h`;
+
+  const publishedCategories = getPublishedOptions(categories);
+  const publishedTasks = getPublishedOptions(tasks);
+  const projectRef = { billable: isBillable };
+  const selectedMilestone = milestone?.id ? milestone : null;
+  const selectedTask = task?.id ? task : null;
+  const categoryRequired = isCategoryRequired(
+    projectRef,
+    publishedCategories,
+    publishedTasks,
+    selectedMilestone,
+    selectedTask,
+  );
+  const taskRequired = isTaskRequired(
+    projectRef,
+    publishedTasks,
+    publishedCategories,
+    selectedMilestone,
+    selectedTask,
+  );
+  const canSave = isTimelogValid({
+    project: projectRef,
+    comment: comments,
+    time,
+    milestone: selectedMilestone,
+    task: selectedTask,
+    categories: publishedCategories,
+    tasks: publishedTasks,
+  });
 
   const dropdownSelectHandler = (selected: string, options: SelectOption[], callback: (item: SelectOption) => void) => {
     const found = options.find((option) => option.id === +selected);
@@ -155,6 +204,14 @@ function TimeEntryCell({ row, categories, tasks }: { row: any; categories: Selec
     // Add validation for comments
     if (comments?.trim() === "") {
       toast.error("Comments cannot be empty");
+      return;
+    }
+
+    if (
+      isClassificationRequired(projectRef, publishedCategories, publishedTasks) &&
+      !isClassificationSatisfied(selectedMilestone, selectedTask)
+    ) {
+      toast.error("Select a category or task");
       return;
     }
 
@@ -244,11 +301,14 @@ function TimeEntryCell({ row, categories, tasks }: { row: any; categories: Selec
               <form onSubmit={submitTimeEntry} className="flex flex-col gap-4">
                 {categories.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <Label>Category</Label>
+                    <Label>
+                      <RequiredFieldLabel label="Category" required={categoryRequired} />
+                    </Label>
                     <ProjectEditComboBox
                       icon={<CategoryIcon size={16} />}
                       options={categories}
                       label="Category"
+                      required={categoryRequired}
                       selectedItem={milestone}
                       handleSelect={(selected) => dropdownSelectHandler(selected, categories, setMilestone)}
                       className="w-full max-w-full"
@@ -257,11 +317,14 @@ function TimeEntryCell({ row, categories, tasks }: { row: any; categories: Selec
                 )}
                 {tasks.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <Label>Task</Label>
+                    <Label>
+                      <RequiredFieldLabel label="Task" required={taskRequired} />
+                    </Label>
                     <ProjectEditComboBox
                       icon={<List size={16} />}
                       options={tasks}
                       label="Task"
+                      required={taskRequired}
                       selectedItem={task}
                       handleSelect={(selected) => dropdownSelectHandler(selected, tasks, setTask)}
                       className="w-full max-w-full"
@@ -302,9 +365,15 @@ function TimeEntryCell({ row, categories, tasks }: { row: any; categories: Selec
                   <Button type="button" variant="outline" size="sm" asChild>
                     <DialogClose>Cancel</DialogClose>
                   </Button>
-                  <Button type="submit" size="sm" asChild>
-                    <DialogClose>Save</DialogClose>
-                  </Button>
+                  {canSave ? (
+                    <Button type="submit" size="sm" asChild>
+                      <DialogClose>Save</DialogClose>
+                    </Button>
+                  ) : (
+                    <Button type="submit" size="sm" disabled>
+                      Save
+                    </Button>
+                  )}
                 </DialogFooter>
               </form>
             </DialogContent>

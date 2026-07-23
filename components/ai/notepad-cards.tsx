@@ -10,6 +10,7 @@ import { SelectedData } from "@/components/forms/timelogForm";
 import { cn } from "@/lib/utils";
 import { Project, Milestone } from "@/types";
 import { Button } from "@/components/ui/button";
+import { isCategoryRequired, isTaskRequired, isTimelogValid } from "@/lib/timelog-validation";
 
 const initialDataState = {
   client: undefined,
@@ -47,10 +48,13 @@ const NotepadCards = ({
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
 
-  const formValidator = () => {
-    const { project, comment, time } = selectedData || {};
-    return project && comment?.trim().length && time && !errors?.time;
-  };
+  const formValidator = () =>
+    isTimelogValid({
+      ...selectedData,
+      categories: projectMilestones,
+      tasks: projectTasks,
+      timeError: errors?.time,
+    });
 
   const dropdownSelectHandler = (selected: string, arr: Milestone[], callback: Function) => {
     const foundData = arr.find((obj) => obj.id === +selected);
@@ -64,28 +68,16 @@ const NotepadCards = ({
   };
 
   const projectCallback = (selected: Project) => {
-    setSelectedData({
-      ...selectedData,
-      project: { id: selected.id, name: selected?.name },
-    });
-    setProjectMilestones(() => {
-      const milestone = selected?.milestone;
-      return milestone ? milestone : [];
-    });
-    setprojectTasks(() => {
-      const task = selected?.task;
-      return task ? task : [];
-    });
-    if (selected.id !== selectedData.project?.id) {
-      setSelectedData((prevData) => {
-        return {
-          ...prevData,
-          milestone: undefined,
-          task: undefined,
-          billable: prevData.project?.billable ? true : false,
-        };
-      });
-    }
+    const isDifferentProject = selected.id !== selectedData.project?.id;
+    setSelectedData((prev) => ({
+      ...prev,
+      project: { id: selected.id, name: selected?.name, billable: selected?.billable },
+      milestone: isDifferentProject ? null : prev.milestone,
+      task: isDifferentProject ? null : prev.task,
+      billable: selected?.billable ? true : false,
+    }));
+    setProjectMilestones(selected?.milestone ?? []);
+    setprojectTasks(selected?.task ?? []);
   };
 
   const milestoneCallback = (selected: Milestone) => setSelectedData((prev) => ({ ...prev, milestone: selected }));
@@ -99,7 +91,12 @@ const NotepadCards = ({
 
   useEffect(() => {
     const foundProject = projects.find((project) => project.id === data.project?.id);
-    setSelectedData(data);
+    setSelectedData({
+      ...data,
+      project: data.project
+        ? { ...data.project, billable: data.project.billable ?? foundProject?.billable }
+        : data.project,
+    });
     setProjectMilestones(() => {
       const milestone = foundProject?.milestone;
       return milestone ? milestone : [];
@@ -121,6 +118,21 @@ const NotepadCards = ({
     setAllData(dataToUpdate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedData]);
+
+  const categoryRequired = isCategoryRequired(
+    selectedData.project,
+    projectMilestones,
+    projectTasks,
+    selectedData.milestone,
+    selectedData.task,
+  );
+  const taskRequired = isTaskRequired(
+    selectedData.project,
+    projectTasks,
+    projectMilestones,
+    selectedData.milestone,
+    selectedData.task,
+  );
 
   return (
     <motion.div
@@ -151,24 +163,30 @@ const NotepadCards = ({
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
             className="w-[90%] max-w-full"
           />
-          <ComboBox
-            searchable
-            icon={<CategoryIcon size={17} />}
-            options={projectMilestones}
-            label="Category"
-            selectedItem={selectedData?.milestone}
-            handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-            className="w-[90%] max-w-full"
-          />
-          <ComboBox
-            searchable
-            icon={<List size={16} />}
-            options={projectTasks}
-            label="Task"
-            selectedItem={selectedData?.task}
-            handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            className="w-[90%] max-w-full"
-          />
+          {projectMilestones.length > 0 && (
+            <ComboBox
+              searchable
+              icon={<CategoryIcon size={17} />}
+              options={projectMilestones}
+              label="Category"
+              required={categoryRequired}
+              selectedItem={selectedData?.milestone}
+              handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+              className="w-[90%] max-w-full"
+            />
+          )}
+          {projectTasks.length > 0 && (
+            <ComboBox
+              searchable
+              icon={<List size={16} />}
+              options={projectTasks}
+              label="Task"
+              required={taskRequired}
+              selectedItem={selectedData?.task}
+              handleSelect={(selected) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+              className="w-[90%] max-w-full"
+            />
+          )}
           <Input
             placeholder="Add a comment..."
             value={selectedData.comment ?? ""}
