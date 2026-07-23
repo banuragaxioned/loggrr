@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Edit, Hourglass, Milestone as CategoryIcon, Trash, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
-import { Badge } from "@tremor/react";
-import { Badge as CnBadge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -103,10 +102,15 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
         };
 
         return (
-          <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
+          <Card key={index} className="group border-border flex justify-between rounded-md border p-3 shadow-none">
             <div className="flex items-center justify-start space-x-5">
               <div className="flex gap-2">
-                {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                {item?.budget !== null && item.budget > 0 && (
+                  <Badge variant="secondary">
+                    <Hourglass />
+                    {item.budget}
+                  </Badge>
+                )}
                 <p className="text-sm font-medium">{item?.name}</p>
               </div>
             </div>
@@ -177,9 +181,9 @@ const MilestoneData = ({ milestoneList, team, project }: MilestoneDataProps) => 
                 <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
                   <span>
                     Archived
-                    <CnBadge variant="secondary" className="ml-2">
+                    <Badge variant="secondary" className="ml-2">
                       {archivedMilestones.length}
-                    </CnBadge>
+                    </Badge>
                   </span>
                 </AccordionTrigger>
                 <AccordionContent>{List(archivedMilestones)}</AccordionContent>

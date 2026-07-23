@@ -19,7 +19,6 @@
     "jsx": "react-jsx",
     "incremental": true,
     /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     },

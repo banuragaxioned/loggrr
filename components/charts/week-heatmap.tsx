@@ -95,7 +95,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
         <div className="flex flex-col gap-1">
           {DAY_LABELS.map((label, dayIndex) => (
             <div key={`${label}-${dayIndex}`} className="grid grid-cols-[0.75rem_1fr] items-center gap-2">
-              <span className="text-muted-foreground text-[10px]">{label}</span>
+              <span className="text-foreground/70 text-[10px]">{label}</span>
               <div className="grid grid-cols-7 gap-1">
                 {cells.slice(dayIndex * 7, dayIndex * 7 + 7).map((cell) => {
                   const isFuture = isAfter(cell.date, today);
@@ -112,20 +112,21 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
                           aria-label={`${format(cell.date, "EEE, MMM d")}: ${cell.hours.toFixed(1)}h`}
                           aria-current={isSelected ? "date" : undefined}
                           className={cn(
-                            "h-4 w-full cursor-pointer rounded-sm transition-opacity outline-none focus-visible:ring-0",
+                            "relative h-4 w-full cursor-pointer rounded-sm transition-opacity outline-none focus-visible:ring-0",
                             getCellTone(cell.hours),
                             isFuture && "cursor-not-allowed opacity-30",
                             !isFuture && "hover:opacity-75",
-                            // Today: softer muted ring; selected: stronger foreground ring.
+                            // Today: softer muted ring; selected: fuchsia ring + glow.
                             // When both apply (selected is today), selected wins.
                             isToday && !isSelected && "ring-1 ring-muted-foreground/70 ring-offset-1 ring-offset-card",
-                            isSelected && "ring-1 ring-brand-fuchsia ring-offset-1 ring-offset-card",
+                            isSelected &&
+                              "ring-1 ring-brand-fuchsia ring-offset-1 ring-offset-card shadow-[0_0_8px_2px_hsl(333_90%_53%/0.55)]",
                           )}
                         />
                       </TooltipTrigger>
                       <TooltipContent className="flex-col items-start text-xs">
                         <p className="font-medium">{format(cell.date, "EEE, dd MMM, yyyy")}</p>
-                        <p className="text-muted-foreground">
+                        <p className="text-background/80">
                           {cell.hours > 0 ? `Hours logged: ${cell.hours.toFixed(2)}h` : "No time logged"}
                           {isToday && " · Today"}
                           {isSelected && !isToday && " · Selected"}
@@ -139,7 +140,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
           ))}
           <div className="mt-1 grid grid-cols-[0.75rem_1fr] gap-2">
             <span />
-            <div className="text-muted-foreground flex justify-between text-[10px]">
+            <div className="text-foreground/70 flex justify-between text-[10px]">
               <span>{weekLabels[0]}</span>
               <span>{weekLabels.at(-1)}</span>
             </div>

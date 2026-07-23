@@ -1,10 +1,9 @@
-import { CategoryBar, Flex, Text } from "@tremor/react";
-import { Info } from "lucide-react";
-import { Card } from "@/components/ui/tremor-card";
+"use client";
+
+import { useEffect, useState } from "react";
 
 interface CategoryBarProps {
   values?: number[];
-  colors?: string[]; // waiting for https://github.com/tremorlabs/tremor/pull/836
   markerValue: number;
   title: string;
   subtitle: string;
@@ -12,33 +11,96 @@ interface CategoryBarProps {
   type?: "hours";
 }
 
-export default function CategoryDataBar(input: CategoryBarProps) {
-  const { markerValue, maxValue, title, subtitle, values, type } = input;
-  const percent = markerValue <= maxValue ? (markerValue / maxValue) * 100 : 100;
+const SCALE_LABELS = [0, 25, 50, 75, 100];
+
+/** Sample the rose → amber → emerald track at a 0–100 position. */
+function colorAtPercent(percent: number): string {
+  const stops: Array<{ at: number; color: [number, number, number] }> = [
+    { at: 0, color: [251, 113, 133] }, // rose-400
+    { at: 50, color: [252, 211, 77] }, // amber-300
+    { at: 100, color: [16, 185, 129] }, // emerald-500
+  ];
+
+  const t = Math.min(Math.max(percent, 0), 100);
+  let left = stops[0];
+  let right = stops[stops.length - 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t >= stops[i].at && t <= stops[i + 1].at) {
+      left = stops[i];
+      right = stops[i + 1];
+      break;
+    }
+  }
+
+  const span = right.at - left.at || 1;
+  const mix = (t - left.at) / span;
+  const rgb = left.color.map((channel, i) => Math.round(channel + (right.color[i] - channel) * mix));
+  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+}
+
+export default function CategoryDataBar({ markerValue, maxValue, title, subtitle, type }: CategoryBarProps) {
+  const targetPercent = maxValue > 0 ? Math.min(Math.max((markerValue / maxValue) * 100, 0), 100) : 0;
+  // Defer so the CSS transition runs when the value changes (and on mount).
+  const [percent, setPercent] = useState(0);
+  const unit = type === "hours" ? "h" : "";
+  const markerColor = colorAtPercent(percent);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setPercent(targetPercent));
+    return () => cancelAnimationFrame(id);
+  }, [targetPercent]);
 
   return (
-    <Card className="flex flex-col gap-3 shadow-none">
-      <Flex className="items-center font-semibold">
-        <Text>{title}</Text>
-        <Text className="flex items-center text-xs">
-          <Info className="mx-1" size={14} />
-          {subtitle}
-        </Text>
-      </Flex>
-      <Flex>
-        <Text className="flex items-baseline gap-0.5">
-          <span className="text-primary relative top-0.5 text-3xl font-semibold normal-nums">{markerValue}</span>/
-          <span className="normal-nums">
-            {maxValue} {type === "hours" ? "h" : ""}
+    <section className="border-border bg-card rounded-2xl border p-4">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className="text-sm font-medium">{title}</h2>
+          <p className="text-muted-foreground text-[11px]">{subtitle}</p>
+        </div>
+        <p className="pt-0.5 text-right tabular-nums">
+          <span className="text-foreground text-lg font-semibold">{markerValue}</span>
+          <span className="text-muted-foreground text-sm">
+            /{maxValue}
+            {unit ? ` ${unit}` : ""}
           </span>
-        </Text>
-      </Flex>
-      <CategoryBar
-        values={values ? values : [25, 25, 25, 25]}
-        colors={["rose", "orange", "yellow", "emerald"]}
-        markerValue={percent}
-        showAnimation
-      />
-    </Card>
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-muted-foreground flex justify-between px-0.5 text-[10px] tabular-nums">
+          {SCALE_LABELS.map((label) => (
+            <span key={label}>{label}</span>
+          ))}
+        </div>
+
+        <div className="relative h-4">
+          <div
+            className="absolute inset-x-0 inset-y-[5px] rounded-full bg-gradient-to-r from-rose-400 via-amber-300 to-emerald-500 dark:from-rose-600 dark:via-amber-500 dark:to-emerald-600"
+            role="presentation"
+          />
+
+          {/* Soft glow matching the marker color */}
+          <div
+            className="pointer-events-none absolute top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50 blur-[5px] transition-[left,background-color] duration-500 ease-out"
+            style={{ left: `${percent}%`, backgroundColor: markerColor }}
+            aria-hidden
+          />
+
+          {/* Dot marker — fill matches the track color at this value */}
+          <div
+            className="border-background absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-[left,background-color] duration-500 ease-out"
+            style={{ left: `${percent}%`, backgroundColor: markerColor }}
+            title={`${markerValue}${unit} of ${maxValue}${unit}`}
+            aria-hidden
+          />
+        </div>
+
+        <span className="sr-only">
+          {markerValue}
+          {unit} of {maxValue}
+          {unit} logged ({Math.round(targetPercent)}%)
+        </span>
+      </div>
+    </section>
   );
 }

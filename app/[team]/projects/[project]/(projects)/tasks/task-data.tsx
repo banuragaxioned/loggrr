@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Edit, Trash, Hourglass, ClipboardCheck, Archive, ArchiveRestore } from "lucide-react";
-import { Badge } from "@tremor/react";
-import { Badge as CnBadge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -103,10 +102,15 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
         };
 
         return (
-          <Card key={index} className="group flex justify-between rounded-md border border-border p-3 shadow-none">
+          <Card key={index} className="group border-border flex justify-between rounded-md border p-3 shadow-none">
             <div className="flex items-center justify-start space-x-5">
               <div className="flex gap-2">
-                {item?.budget !== null && item.budget > 0 && <Badge icon={Hourglass}>{item?.budget}</Badge>}
+                {item?.budget !== null && item.budget > 0 && (
+                  <Badge variant="secondary">
+                    <Hourglass />
+                    {item.budget}
+                  </Badge>
+                )}
                 <p className="text-sm font-medium">{item?.name}</p>
               </div>
             </div>
@@ -178,9 +182,9 @@ const TaskData = ({ taskList, team, project }: TaskDataProps) => {
                 <AccordionTrigger className="text-base font-normal tracking-normal hover:no-underline">
                   <span>
                     Archived
-                    <CnBadge variant="secondary" className="ml-2">
+                    <Badge variant="secondary" className="ml-2">
                       {archivedTasks.length}
-                    </CnBadge>
+                    </Badge>
                   </span>
                 </AccordionTrigger>
                 <AccordionContent>{List(archivedTasks)}</AccordionContent>
