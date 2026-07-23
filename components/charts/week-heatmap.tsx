@@ -116,11 +116,10 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
                             getCellTone(cell.hours),
                             isFuture && "cursor-not-allowed opacity-30",
                             !isFuture && "hover:opacity-75",
-                            // Today: softer muted ring; selected: fuchsia ring + glow.
+                            // Today: softer muted ring; selected: fuchsia ring.
                             // When both apply (selected is today), selected wins.
                             isToday && !isSelected && "ring-1 ring-muted-foreground/70 ring-offset-1 ring-offset-card",
-                            isSelected &&
-                              "ring-1 ring-brand-fuchsia ring-offset-1 ring-offset-card shadow-[0_0_8px_2px_hsl(333_90%_53%/0.55)]",
+                            isSelected && "ring-1 ring-brand-fuchsia ring-offset-1 ring-offset-card",
                           )}
                         />
                       </TooltipTrigger>

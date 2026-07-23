@@ -79,13 +79,6 @@ export default function CategoryDataBar({ markerValue, maxValue, title, subtitle
             role="presentation"
           />
 
-          {/* Soft glow matching the marker color */}
-          <div
-            className="pointer-events-none absolute top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50 blur-[5px] transition-[left,background-color] duration-500 ease-out"
-            style={{ left: `${percent}%`, backgroundColor: markerColor }}
-            aria-hidden
-          />
-
           {/* Dot marker — fill matches the track color at this value */}
           <div
             className="border-background absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-[left,background-color] duration-500 ease-out"
