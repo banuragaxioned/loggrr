@@ -5,6 +5,7 @@ import { addDays, endOfWeek, format, isAfter, isSameDay, startOfDay, startOfToda
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { getDayHoursTone } from "@/lib/heatmap-tone";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TimeEntrySum {
@@ -26,19 +27,6 @@ interface WeekHeatmapProps {
 }
 
 const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
-const MAX_HOURS = 7.5;
-
-function getCellTone(hours: number) {
-  if (hours <= 0) return "bg-muted";
-  const level = Math.min(Math.ceil((hours / MAX_HOURS) * 4), 4);
-  const tones = [
-    "bg-emerald-200 dark:bg-emerald-950",
-    "bg-emerald-300 dark:bg-emerald-900",
-    "bg-emerald-500 dark:bg-emerald-700",
-    "bg-emerald-600 dark:bg-emerald-600",
-  ];
-  return tones[level - 1];
-}
 
 export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: WeekHeatmapProps) {
   const router = useRouter();
@@ -113,7 +101,7 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
                           aria-current={isSelected ? "date" : undefined}
                           className={cn(
                             "relative h-4 w-full cursor-pointer rounded-sm transition-opacity outline-none focus-visible:ring-0",
-                            getCellTone(cell.hours),
+                            getDayHoursTone(cell.hours),
                             isFuture && "cursor-not-allowed opacity-30",
                             !isFuture && "hover:opacity-75",
                             // Today: softer muted ring; selected: fuchsia ring.

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { PartyPopper } from "lucide-react";
 
 export default function ThankYou() {
@@ -9,9 +9,11 @@ export default function ThankYou() {
       <h1>Thank you!</h1>
       <p>You have successfully signed up to express your interest in our application.</p>
       <p>We will send you an invitation as soon as possible.</p>
-      <Link href="mailto:loggr@axioned.com" rel="noreferrer" className={buttonVariants({ size: "lg" })}>
-        Get in touch
-      </Link>
+      <Button asChild size="lg">
+        <Link href="mailto:loggr@axioned.com" rel="noreferrer">
+          Get in touch
+        </Link>
+      </Button>
     </div>
   );
 }
