@@ -350,11 +350,11 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
               onDraftChange={setDraft}
             />
           )}
-          {dayTotalTime && (
-            <p className="mb-2 flex items-center justify-between px-5 font-medium">
-              Total time logged for the day
-              <span className="normal-nums">{dayTotalTime.toFixed(2)} h</span>
-            </p>
+          {!!dayTotalTime && (
+            <div className="border-border flex items-center justify-between gap-3 border-t px-4 py-2.5 sm:px-5">
+              <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Day total</p>
+              <span className="text-sm font-semibold tabular-nums">{dayTotalTime.toFixed(2)} h</span>
+            </div>
           )}
           <TimeEntriesList
             entries={entries.data}

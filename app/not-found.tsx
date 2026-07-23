@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function Unavailable() {
   return (
@@ -10,16 +10,16 @@ export default function Unavailable() {
         your page has not appeared again in 5-10 minutes then please contact our support team.
       </p>
       <div className="mt-6 flex justify-center gap-4">
-        <Link
-          href="mailto:loggr@axioned.com"
-          rel="noreferrer"
-          className={buttonVariants({ variant: "outline", size: "sm" })}
-        >
-          Contact
-        </Link>
-        <Link rel="noreferrer" href="/" className={buttonVariants({ variant: "default", size: "sm" })}>
-          Back to home
-        </Link>
+        <Button asChild variant="outline" size="sm">
+          <Link href="mailto:loggr@axioned.com" rel="noreferrer">
+            Contact
+          </Link>
+        </Button>
+        <Button asChild variant="default" size="sm">
+          <Link rel="noreferrer" href="/">
+            Back to home
+          </Link>
+        </Button>
       </div>
     </section>
   );

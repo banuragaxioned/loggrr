@@ -1,5 +1,14 @@
 import { Fragment } from "react";
-import { CalendarClock, Edit, List, ListRestart, MessageSquare, Milestone as CategoryIcon, Trash } from "lucide-react";
+import {
+  CalendarClock,
+  CircleDollarSign,
+  Edit,
+  List,
+  ListRestart,
+  MessageSquare,
+  Milestone as CategoryIcon,
+  Trash,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { getRandomColor } from "@/lib/random-colors";
@@ -8,7 +17,7 @@ import { TimeEntryDataObj } from "@/types";
 import { Skeleton } from "./ui/skeleton";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
-
+import { Badge } from "./ui/badge";
 import { EditReferenceObj } from "./time-entry";
 import { SelectedData } from "./forms/timelogForm";
 import { Button } from "./ui/button";
@@ -22,6 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { toast } from "sonner";
 
 interface TimeEntries {
@@ -35,24 +45,32 @@ interface TimeEntries {
 export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData, projectIndex) => (
-      <li key={entryData.project.id} className="">
-        {/* Project related details  */}
-        <Card className="overflow-hidden rounded-none border-x-0 border-b-0 border-t shadow-none">
-          <div className="flex w-full items-center justify-between px-5 py-2">
-            <p className="flex items-center gap-x-2 pr-1.5 text-sm font-medium">
+      <li key={entryData.project.id}>
+        <Card className="overflow-hidden rounded-none border-x-0 border-t border-b-0 shadow-none">
+          <div className="flex w-full items-center justify-between gap-3 px-5 py-2">
+            <p className="flex min-w-0 items-center gap-2 text-sm font-medium">
               <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
                 style={{ backgroundColor: getRandomColor(entryData.project.id) }}
               >
-                {entryData?.project?.name.charAt(0)}
+                {entryData.project.name.charAt(0)}
               </span>
-              {entryData?.project?.name} - {entryData?.project.client?.name}
+              <span
+                className="min-w-0 truncate"
+                title={`${entryData.project.name} - ${entryData.project.client?.name}`}
+              >
+                {entryData.project.name}
+                {entryData.project.client?.name ? (
+                  <span className="text-muted-foreground text-xs font-normal"> · {entryData.project.client.name}</span>
+                ) : null}
+              </span>
             </p>
-            <span className="shrink-0 text-sm font-semibold normal-nums">{entryData?.total.toFixed(2)} h</span>
+            <span className="shrink-0 text-sm font-semibold tabular-nums">{entryData.total.toFixed(2)} h</span>
           </div>
-          <Separator className="dark:bg-white/20" />
-          {/* Milestones data */}
-          {entryData?.data?.map((data, i) => {
+
+          <Separator />
+
+          {entryData.data.map((data, i) => {
             const projectObj = {
               id: entryData.project.id,
               name: entryData.project.name,
@@ -70,68 +88,101 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             const isEditing = edit.isEditing && edit.id === data.id;
             const isEditable = entryData.project.status !== "ARCHIVED";
             const messageFor = entryData.project.status === "ARCHIVED" ? "Project" : "";
+            const isLastEntry = i === entryData.data.length - 1;
+            const isLastProject = projectIndex === entries.projectsLog!.length - 1;
+            const hasMeta = Boolean(data.milestone?.name || data.task?.name);
 
             return (
-              <Fragment key={i}>
+              <Fragment key={data.id}>
                 <div
                   className={cn(
-                    "group relative box-border flex justify-between border border-transparent bg-secondary px-5 py-2 last:mb-0",
-                    isEditing && "border-muted-foreground",
-                    entries?.projectsLog &&
-                      projectIndex === entries.projectsLog.length - 1 &&
-                      i === entryData?.data.length - 1 &&
-                      "rounded-b-xl",
+                    "group bg-secondary relative flex justify-between gap-3 px-5 py-2",
+                    isEditing && "ring-muted-foreground ring-1 ring-inset",
+                    isLastProject && isLastEntry && "rounded-b-xl",
                   )}
                 >
-                  <div
-                    className={cn(
-                      "flex flex-col justify-between gap-y-4",
-                      !data.milestone && !data.task && "justify-end",
-                    )}
-                  >
-                    <div className="flex flex-col gap-y-2">
-                      {data.milestone?.name && (
-                        <p
-                          className="flex items-center gap-1.5 gap-x-[12px] text-sm font-medium opacity-60"
-                          title="Category"
-                        >
-                          <CategoryIcon size={17} className="shrink-0" /> {data.milestone.name}
-                        </p>
-                      )}
-                      {data.task?.name && (
-                        <p className="flex items-center gap-x-[12px] text-sm font-medium opacity-60" title="Task">
-                          <List size={16} className="shrink-0" /> {data.task.name}
-                        </p>
-                      )}
-                      <p className="flex items-center gap-x-[12px] text-sm opacity-60" title="Comment">
-                        <MessageSquare size={15} className="shrink-0" />
-                        {data?.comments}
-                      </p>
-                    </div>
+                  <div className={cn("flex min-w-0 flex-1 flex-col gap-y-2", !hasMeta && "justify-end")}>
+                    {hasMeta ? (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {data.milestone?.name ? (
+                          <Badge
+                            variant="outline"
+                            className="bg-background border-border inline-flex max-w-full items-center font-normal"
+                            title={`Category: ${data.milestone.name}`}
+                          >
+                            <CategoryIcon size={12} className="mr-1 shrink-0" />
+                            <span className="truncate">{data.milestone.name}</span>
+                          </Badge>
+                        ) : null}
+                        {data.task?.name ? (
+                          <Badge
+                            variant="outline"
+                            className="bg-background border-border inline-flex max-w-full items-center font-normal"
+                            title={`Task: ${data.task.name}`}
+                          >
+                            <List size={12} className="mr-1 shrink-0" />
+                            <span className="truncate">{data.task.name}</span>
+                          </Badge>
+                        ) : null}
+                      </div>
+                    ) : null}
+                    <p
+                      className="text-muted-foreground border-foreground/20 flex items-start gap-1.5 p-0.5 text-[13px] leading-snug"
+                      title={data.comments ?? undefined}
+                    >
+                      <MessageSquare size={12} className="mt-0.5 mr-1 shrink-0 opacity-70" />
+                      <span className="min-w-0 flex-1">
+                        {data.comments?.trim() || <span className="italic opacity-70">No comment added</span>}
+                      </span>
+                    </p>
                   </div>
-                  <div className="flex min-w-[100px] select-none flex-col justify-between text-right">
-                    <div className="mb-1 flex items-center justify-between">
-                      <div className="mr-2 flex justify-end gap-x-1 md:invisible md:group-hover:visible">
-                        <span
-                          onClick={() => {
-                            if (isEditable) {
-                              editEntryHandler(tempObj, data.id);
-                            } else {
-                              toast.message(`${messageFor} archived. No modifications allowed.`);
-                            }
-                          }}
-                          className="cursor-pointer rounded-md border bg-white p-1 hover:opacity-75 dark:bg-black"
-                        >
-                          {isEditing ? <ListRestart size={16} /> : <Edit size={16} />}
-                        </span>
-                        {/* Open a modal on delete click */}
+
+                  <div className="flex min-w-[100px] shrink-0 flex-col justify-between text-right select-none">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <div
+                        className={cn(
+                          "flex items-center gap-1",
+                          "opacity-100 md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100",
+                          isEditing && "md:opacity-100",
+                        )}
+                      >
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="bg-background h-7 w-7"
+                              onClick={() => {
+                                if (isEditable) editEntryHandler(tempObj, data.id);
+                                else toast.message(`${messageFor} archived. No modifications allowed.`);
+                              }}
+                              aria-label={isEditing ? "Cancel edit" : "Edit entry"}
+                            >
+                              {isEditing ? <ListRestart size={14} /> : <Edit size={14} />}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{isEditing ? "Cancel edit" : "Edit"}</TooltipContent>
+                        </Tooltip>
+
                         {isEditable ? (
                           <Dialog>
-                            <DialogTrigger asChild>
-                              <span className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black">
-                                <Trash size={16} />
-                              </span>
-                            </DialogTrigger>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    className="bg-background text-destructive hover:text-destructive h-7 w-7"
+                                    aria-label="Delete entry"
+                                  >
+                                    <Trash size={14} />
+                                  </Button>
+                                </DialogTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>Delete</TooltipContent>
+                            </Tooltip>
                             <DialogContent className="sm:max-w-[425px]">
                               <DialogHeader>
                                 <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
@@ -150,29 +201,36 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             </DialogContent>
                           </Dialog>
                         ) : (
-                          <span
-                            className="cursor-pointer rounded-md border bg-white p-1 text-destructive hover:opacity-75 dark:bg-black"
-                            onClick={() => {
-                              toast.message(`${messageFor} archived. No modifications allowed.`);
-                            }}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="bg-background text-destructive hover:text-destructive h-7 w-7"
+                            aria-label="Delete entry"
+                            onClick={() => toast.message(`${messageFor} archived. No modifications allowed.`)}
                           >
-                            <Trash size={16} />
-                          </span>
+                            <Trash size={14} />
+                          </Button>
                         )}
                       </div>
-                      <span className="shrink-0 text-sm font-semibold normal-nums opacity-60">
-                        {data?.time.toFixed(2)} h
+                      <span className="text-muted-foreground shrink-0 text-sm font-semibold tabular-nums">
+                        {data.time.toFixed(2)} h
                       </span>
                     </div>
-                    {/* Billing Status */}
-                    {data?.billable ? (
-                      <span className="text-sm text-success">Billable</span>
-                    ) : (
-                      <span className="text-sm">Non-Billable</span>
-                    )}
+
+                    {data.billable ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-success ml-auto inline-flex" aria-label="Billable">
+                            <CircleDollarSign size={16} />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>Billable</TooltipContent>
+                      </Tooltip>
+                    ) : null}
                   </div>
                 </div>
-                {i !== entryData?.data.length - 1 && <Separator className="dark:bg-white/20" />}
+                {!isLastEntry ? <Separator /> : null}
               </Fragment>
             );
           })}
@@ -180,15 +238,21 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-2 p-11 text-center">
-      <CalendarClock size={32} />
-      <h2>No Timesheet Entries</h2>
-      <p>You haven&apos;t made any timesheet entries for the selected date.</p>
+    <li className="flex flex-col items-center justify-center space-y-3 px-6 py-14 text-center sm:py-16">
+      <div className="bg-muted flex h-14 w-14 items-center justify-center rounded-full">
+        <CalendarClock size={28} className="text-muted-foreground" />
+      </div>
+      <div className="space-y-1.5">
+        <h2 className="text-foreground text-2xl font-semibold">No timesheet entries</h2>
+        <p className="text-muted-foreground mx-auto max-w-100 text-sm">
+          You haven&apos;t logged any time for the selected date yet.
+        </p>
+      </div>
     </li>
   );
 
   const skeletonLoader = (
-    <div className="p-2">
+    <li className="p-2">
       <div className="mb-2 flex items-center justify-between gap-4">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-6 w-1/4" />
@@ -205,19 +269,21 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
           <Skeleton className="h-6 w-[80px]" />
         </div>
       </div>
-    </div>
+    </li>
   );
 
   return (
-    <ul
-      className={cn(
-        "flex w-full flex-col overflow-y-auto",
-        entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
-      )}
-    >
-      {status === "loading" && skeletonLoader}
-      {status === "success" && renderEntries}
-      {status === "error" && <li className="p-4 text-center text-destructive">Something went wrong</li>}
-    </ul>
+    <TooltipProvider delayDuration={200}>
+      <ul
+        className={cn(
+          "flex w-full flex-col overflow-y-auto",
+          entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
+        )}
+      >
+        {status === "loading" && skeletonLoader}
+        {status === "success" && renderEntries}
+        {status === "error" && <li className="text-destructive p-4 text-center text-sm">Something went wrong</li>}
+      </ul>
+    </TooltipProvider>
   );
 };
