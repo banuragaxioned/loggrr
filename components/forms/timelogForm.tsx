@@ -15,6 +15,7 @@ import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
 import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
+import { isTimelogValid, mergeSelectedIntoOptions, isCategoryRequired, isTaskRequired } from "@/lib/timelog-validation";
 
 export type SelectedData = {
   client?: Milestone;
@@ -62,10 +63,13 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
     setErrors({});
   };
 
-  const formValidator = () => {
-    const { project, comment, time } = selectedData || {};
-    return project && comment?.trim().length && time && !errors?.time;
-  };
+  const formValidator = () =>
+    isTimelogValid({
+      ...selectedData,
+      categories: projectMilestones,
+      tasks: projectTasks,
+      timeError: errors?.time,
+    });
 
   const handleLoggedTimeInput = (time: string) => {
     const numberPattern = new RegExp(/^([1-9]\d*(\.|\:)\d{0,2}|0?(\.|\:)\d*[1-9]\d{0,2}|[1-9]\d{0,2})$/, "g");
@@ -82,32 +86,21 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
   };
 
   /*
-   * projectCallback: function called when project is selected
+   * projectCallback: function called when project is selected.
+   * Always reset category/task when the project changes so required cues reappear.
    */
   const projectCallback = (selected: Project) => {
-    setSelectedData({
-      ...selectedData,
+    const isDifferentProject = selected.id !== selectedData.project?.id;
+    setSelectedData((prev) => ({
+      ...prev,
       client: selected?.client,
       project: { id: selected.id, name: selected?.name, billable: selected?.billable },
-    });
-    setProjectMilestones(() => {
-      const milestone = selected?.milestone;
-      return milestone ? milestone : [];
-    });
-    setprojectTasks(() => {
-      const task = selected?.task;
-      return task ? task : [];
-    });
-    if (selected.id !== selectedData.project?.id) {
-      setSelectedData((prevData) => {
-        return {
-          ...prevData,
-          milestone: undefined,
-          task: undefined,
-          billable: prevData.project?.billable ? true : false,
-        };
-      });
-    }
+      milestone: isDifferentProject ? null : prev.milestone,
+      task: isDifferentProject ? null : prev.task,
+      billable: selected?.billable ? true : false,
+    }));
+    setProjectMilestones(selected?.milestone ?? []);
+    setprojectTasks(selected?.task ?? []);
   };
 
   /*
@@ -128,12 +121,22 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
    */
   const setCommentText = (str: string) => setSelectedData({ ...selectedData, comment: str });
 
-  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists
+  // Seed local state from a SelectedData snapshot, deriving the project's category/task lists.
+  // Inject archived (or otherwise missing) selections so edit flows stay valid.
   const seedState = (data?: SelectedData | null) => {
     const found = projects.find((project) => project.id === data?.project?.id);
-    setSelectedData(data && Object.keys(data).length ? data : initialDataState);
-    setProjectMilestones(found?.milestone ?? []);
-    setprojectTasks(found?.task ?? []);
+    const nextData =
+      data && Object.keys(data).length
+        ? {
+            ...data,
+            project: data.project
+              ? { ...data.project, billable: data.project.billable ?? found?.billable }
+              : data.project,
+          }
+        : initialDataState;
+    setSelectedData(nextData);
+    setProjectMilestones(mergeSelectedIntoOptions(found?.milestone ?? [], data?.milestone));
+    setprojectTasks(mergeSelectedIntoOptions(found?.task ?? [], data?.task));
     setErrors({});
   };
 
@@ -164,6 +167,20 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
   };
 
   const isProjectSelected = selectedData?.project?.id;
+  const categoryRequired = isCategoryRequired(
+    selectedData.project,
+    projectMilestones,
+    projectTasks,
+    selectedData.milestone,
+    selectedData.task,
+  );
+  const taskRequired = isTaskRequired(
+    selectedData.project,
+    projectTasks,
+    projectMilestones,
+    selectedData.milestone,
+    selectedData.task,
+  );
 
   return (
     <div className="p-2">
@@ -179,26 +196,32 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
             selectedItem={selectedData?.project}
             handleSelect={(selected) => dropdownSelectHandler(selected, projects, projectCallback)}
           />
-          <ComboBox
-            tabIndex={2}
-            searchable
-            icon={<CategoryIcon size={16} />}
-            options={projectMilestones}
-            label="Category"
-            selectedItem={selectedData?.milestone}
-            handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-            disabled={!selectedData?.project?.id || !projectMilestones.length}
-          />
-          <ComboBox
-            tabIndex={3}
-            searchable
-            icon={<List size={16} />}
-            options={projectTasks}
-            label="Task"
-            selectedItem={selectedData?.task}
-            handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-            disabled={!selectedData?.project?.id || !projectTasks.length}
-          />
+          {projectMilestones.length > 0 && (
+            <ComboBox
+              tabIndex={2}
+              searchable
+              icon={<CategoryIcon size={16} />}
+              options={projectMilestones}
+              label="Category"
+              required={categoryRequired}
+              selectedItem={selectedData?.milestone}
+              handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+              disabled={!selectedData?.project?.id}
+            />
+          )}
+          {projectTasks.length > 0 && (
+            <ComboBox
+              tabIndex={3}
+              searchable
+              icon={<List size={16} />}
+              options={projectTasks}
+              label="Task"
+              required={taskRequired}
+              selectedItem={selectedData?.task}
+              handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+              disabled={!selectedData?.project?.id}
+            />
+          )}
         </div>
         {(selectedData?.project || selectedData?.task || selectedData?.milestone) && (
           <Button

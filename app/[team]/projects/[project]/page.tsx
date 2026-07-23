@@ -84,7 +84,13 @@ export default async function Page(props: pageProps) {
         startDate={startDate.toISOString()}
         endDate={endDate.toISOString()}
       />
-      <UserDetails userData={memberEntries} showTask={!selectedTask} categories={allCategories} tasks={allTasks} />
+      <UserDetails
+        userData={memberEntries}
+        showTask={!selectedTask}
+        categories={allCategories}
+        tasks={allTasks}
+        isBillable={isBillable}
+      />
     </>
   );
 }

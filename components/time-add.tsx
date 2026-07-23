@@ -28,6 +28,7 @@ import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { hoursToDecimal } from "@/lib/helper";
+import { isCategoryRequired, isTaskRequired, isTimelogValid } from "@/lib/timelog-validation";
 import { useQueryState } from "nuqs";
 
 export type SelectedData = {
@@ -92,10 +93,13 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
     setSelectedData(initialDataState);
   };
 
-  const formValidator = () => {
-    const { project, comment, time } = selectedData || {};
-    return project && comment?.trim().length && time && !errors?.time;
-  };
+  const formValidator = () =>
+    isTimelogValid({
+      ...selectedData,
+      categories: projectMilestones,
+      tasks: projectTasks,
+      timeError: errors?.time,
+    });
 
   /*
    * dropdownSelectHandler: takes ID of selected project and add its data
@@ -106,32 +110,21 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
   };
 
   /*
-   * projectCallback: function called when project is selected
+   * projectCallback: function called when project is selected.
+   * Always reset category/task when the project changes so required cues reappear.
    */
   const projectCallback = (selected: Project) => {
-    setSelectedData({
-      ...selectedData,
+    const isDifferentProject = selected.id !== selectedData.project?.id;
+    setSelectedData((prev) => ({
+      ...prev,
       client: selected?.client,
       project: { id: selected.id, name: selected?.name, billable: selected?.billable },
-    });
-    setProjectMilestones(() => {
-      const milestone = selected?.milestone;
-      return milestone ? milestone : [];
-    });
-    setprojectTasks(() => {
-      const task = selected?.task;
-      return task ? task : [];
-    });
-    if (selected.id !== selectedData.project?.id) {
-      setSelectedData((prevData) => {
-        return {
-          ...prevData,
-          milestone: undefined,
-          task: undefined,
-          billable: prevData.project?.billable ? true : false,
-        };
-      });
-    }
+      milestone: isDifferentProject ? null : prev.milestone,
+      task: isDifferentProject ? null : prev.task,
+      billable: selected?.billable ? true : false,
+    }));
+    setProjectMilestones(selected?.milestone ?? []);
+    setprojectTasks(selected?.task ?? []);
   };
 
   /*
@@ -223,6 +216,21 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
     </Badge>
   ));
 
+  const categoryRequired = isCategoryRequired(
+    selectedData.project,
+    projectMilestones,
+    projectTasks,
+    selectedData.milestone,
+    selectedData.task,
+  );
+  const taskRequired = isTaskRequired(
+    selectedData.project,
+    projectTasks,
+    projectMilestones,
+    selectedData.milestone,
+    selectedData.task,
+  );
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
@@ -261,30 +269,36 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
                   className="w-full max-w-full"
                 />
               </div>
-              <div className="w-full-combo">
-                <ComboBox
-                  searchable
-                  icon={<CategoryIcon size={17} />}
-                  options={projectMilestones}
-                  label="Category"
-                  selectedItem={selectedData?.milestone}
-                  handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
-                  disabled={!selectedData?.project?.id || !projectMilestones.length}
-                  className="w-full max-w-full"
-                />
-              </div>
-              <div className="w-full-combo">
-                <ComboBox
-                  searchable
-                  icon={<List size={16} />}
-                  options={projectTasks}
-                  label="Task"
-                  selectedItem={selectedData?.task}
-                  handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
-                  disabled={!selectedData?.project?.id || !projectTasks.length}
-                  className="w-full max-w-full"
-                />
-              </div>
+              {projectMilestones.length > 0 && (
+                <div className="w-full-combo">
+                  <ComboBox
+                    searchable
+                    icon={<CategoryIcon size={17} />}
+                    options={projectMilestones}
+                    label="Category"
+                    required={categoryRequired}
+                    selectedItem={selectedData?.milestone}
+                    handleSelect={(selected) => dropdownSelectHandler(selected, projectMilestones, milestoneCallback)}
+                    disabled={!selectedData?.project?.id}
+                    className="w-full max-w-full"
+                  />
+                </div>
+              )}
+              {projectTasks.length > 0 && (
+                <div className="w-full-combo">
+                  <ComboBox
+                    searchable
+                    icon={<List size={16} />}
+                    options={projectTasks}
+                    label="Task"
+                    required={taskRequired}
+                    selectedItem={selectedData?.task}
+                    handleSelect={(selected: string) => dropdownSelectHandler(selected, projectTasks, taskCallback)}
+                    disabled={!selectedData?.project?.id}
+                    className="w-full max-w-full"
+                  />
+                </div>
+              )}
               <div className="w-full">
                 <Input
                   type="text"

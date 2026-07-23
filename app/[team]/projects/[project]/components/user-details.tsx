@@ -11,15 +11,17 @@ const UserDetails = ({
   showTask = true,
   categories = [],
   tasks = [],
+  isBillable = false,
 }: {
   userData: unknown[];
   showTask?: boolean;
   categories?: SelectOption[];
   tasks?: SelectOption[];
+  isBillable?: boolean;
 }) => {
   return (
     <div className="mt-4">
-      <DataTable columns={getColumns(showTask, categories, tasks)} data={userData} />
+      <DataTable columns={getColumns(showTask, categories, tasks, isBillable)} data={userData} />
     </div>
   );
 };

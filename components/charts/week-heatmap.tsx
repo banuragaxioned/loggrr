@@ -1,16 +1,11 @@
 "use client";
 
-import React from "react";
-import dynamic from "next/dynamic";
-import { addDays, differenceInDays, endOfWeek, format, isAfter, startOfToday } from "date-fns";
-import { Info } from "lucide-react";
-import { useTheme } from "next-themes";
-import { Flex, Text } from "@tremor/react";
-import { Skeleton } from "../ui/skeleton";
-import { Card } from "@/components/ui/tremor-card";
+import { useMemo } from "react";
+import { addDays, endOfWeek, format, isAfter, isSameDay, startOfDay, startOfToday } from "date-fns";
 import { useRouter } from "next/navigation";
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TimeEntrySum {
   date: Date;
@@ -19,230 +14,131 @@ interface TimeEntrySum {
   };
 }
 
-const WeekHeatmap = ({ sevenWeekTimeEntries }: { sevenWeekTimeEntries: TimeEntrySum[] }) => {
+interface HeatCell {
+  date: Date;
+  hours: number;
+  key: string;
+}
+
+interface WeekHeatmapProps {
+  sevenWeekTimeEntries: TimeEntrySum[];
+  selectedDate?: Date;
+}
+
+const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
+const MAX_HOURS = 7.5;
+
+function getCellTone(hours: number) {
+  if (hours <= 0) return "bg-muted";
+  const level = Math.min(Math.ceil((hours / MAX_HOURS) * 4), 4);
+  const tones = [
+    "bg-emerald-200 dark:bg-emerald-950",
+    "bg-emerald-300 dark:bg-emerald-900",
+    "bg-emerald-500 dark:bg-emerald-700",
+    "bg-emerald-600 dark:bg-emerald-600",
+  ];
+  return tones[level - 1];
+}
+
+export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: WeekHeatmapProps) {
   const router = useRouter();
-  const [data, setData] = React.useState<any>(null);
-  const { theme } = useTheme();
+  const activeDate = selectedDate ?? startOfToday();
 
-  React.useEffect(() => {
-    const getLast7Weeks = () => {
-      const startFrom = endOfWeek(startOfToday());
-      const last49Days = [];
-      for (let i = 0; i < 7 * 7; i++) {
-        last49Days.push(format(addDays(startFrom, -i), "yyyy-MM-dd"));
+  const { cells, weekLabels } = useMemo(() => {
+    const hoursByDate = new Map(
+      sevenWeekTimeEntries.map((entry) => [format(entry.date, "yyyy-MM-dd"), (entry._sum.time ?? 0) / 60]),
+    );
+
+    // endOfWeek is 23:59:59 — normalize to startOfDay so day comparisons work
+    const weekEnd = startOfDay(endOfWeek(startOfToday(), { weekStartsOn: 0 }));
+    const nextCells: HeatCell[] = [];
+    const nextLabels: string[] = [];
+
+    for (let weekOffset = 6; weekOffset >= 0; weekOffset--) {
+      nextLabels.push(format(addDays(weekEnd, -weekOffset * 7 - 6), "MMM d"));
+    }
+
+    for (let day = 0; day < 7; day++) {
+      for (let weekOffset = 6; weekOffset >= 0; weekOffset--) {
+        const weekSunday = addDays(weekEnd, -weekOffset * 7 - 6);
+        const date = addDays(weekSunday, day);
+        const key = format(date, "yyyy-MM-dd");
+        nextCells.push({ date, key, hours: hoursByDate.get(key) ?? 0 });
       }
-      return last49Days;
-    };
+    }
 
-    const fillMissingDates = (rawData: TimeEntrySum[]) => {
-      const allDates = getLast7Weeks();
-      const newData = allDates.map((date) => {
-        const existingData = rawData.find((item) => format(item.date, "yyyy-MM-dd") === date);
-        return existingData ? existingData : { _sum: { time: 0 }, date };
-      });
-      return newData;
-    };
-
-    const filledData = fillMissingDates(sevenWeekTimeEntries);
-
-    const transformedData: { name: string; data: { x: string; y: number; date: string }[] }[] = [];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].reverse();
-
-    // Initialize the transformed data structure
-    dayNames.forEach((day) => {
-      const weekData: { x: string; y: number; date: string }[] = [];
-      for (let i = 1; i <= 7; i++) {
-        weekData.push({ x: `Week ${i}`, y: 0, date: "" });
-      }
-      transformedData.push({ name: day, data: weekData });
-    });
-
-    const weekEnd = endOfWeek(startOfToday());
-    filledData.forEach((entry: any) => {
-      const dayOfWeekFromToday = dayNames.findIndex((item) => item === format(entry.date, "EEE")); // Index based on today's date
-      const diffInDays = differenceInDays(weekEnd, entry.date);
-      const weekIndex = Math.floor(diffInDays / 7);
-
-      if (weekIndex >= 0 && weekIndex < 7 && dayOfWeekFromToday >= 0 && dayOfWeekFromToday < 7) {
-        transformedData[dayOfWeekFromToday].data[weekIndex].y = entry._sum.time / 60 || 0;
-        transformedData[dayOfWeekFromToday].data[weekIndex].date = format(entry.date, "yyyy-MM-dd");
-      }
-    });
-
-    // Final Data to be shown in heatmap
-    const finalData = transformedData.map((item) => ({
-      name: item.name,
-      data: item.data.reverse(),
-    }));
-
-    setData(finalData);
+    return { cells: nextCells, weekLabels: nextLabels };
   }, [sevenWeekTimeEntries]);
 
-  const options = {
-    chart: {
-      toolbar: { show: false },
-      width: "100%",
-      height: "100%",
-      animations: {
-        enabled: true,
-        speed: 100,
-        animateGradually: {
-          enabled: false,
-        },
-        dynamicAnimation: {
-          enabled: false,
-        },
-      },
-      events: {
-        click: (event: any, chartContext: any, { seriesIndex, dataPointIndex, config }: any) => {
-          if (!config?.series?.[seriesIndex]?.data?.[dataPointIndex]) return;
-
-          const { date } = config.series[seriesIndex].data[dataPointIndex];
-          const isClickable = date && !isAfter(date, addDays(startOfToday(), 1));
-          if (date && isClickable) {
-            router.push(`?date=${format(date, "yyyy-MM-dd")}`);
-          }
-        },
-      },
-    },
-    plotOptions: {
-      heatmap: {
-        radius: 8,
-        enableShades: true,
-        shadeIntensity: 1,
-        colorScale: {
-          ranges: [
-            {
-              from: 0,
-              to: 0,
-              name: "empty",
-              color: theme === "dark" ? "#212124" : "#F3F4F6",
-            },
-            {
-              from: 0.01,
-              to: 7.5,
-              name: "hours",
-              color: "#027B55",
-            },
-            {
-              from: 7.5,
-              to: Infinity, // Shows even shades for more than 7.5 hours
-              name: "hours",
-              color: "#027B55",
-            },
-          ],
-          min: 0,
-          max: 7.5,
-        },
-      },
-    },
-    legend: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    grid: {
-      show: false,
-      padding: {
-        right: 20,
-        top: 0,
-        bottom: 0,
-      },
-    },
-    states: {
-      hover: {
-        colors: undefined,
-        filter: {
-          type: "none" as const,
-          value: 0,
-        },
-      },
-      active: {
-        filter: {
-          type: "none" as const,
-          value: 0,
-        },
-      },
-    },
-    stroke: {
-      show: true,
-      width: 4,
-      colors: [theme === "dark" ? "#09090B" : "#ffffff"],
-    },
-    colors: ["#027B55"],
-    xaxis: {
-      labels: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-      axisBorder: {
-        show: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-    yaxis: {
-      labels: {
-        show: true,
-      },
-      axisTicks: {
-        show: false,
-      },
-      axisBorder: {
-        show: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-    tooltip: {
-      enabled: true,
-      custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
-        const { date } = w.config.series[seriesIndex].data[dataPointIndex];
-        const time = series[seriesIndex][dataPointIndex];
-        const isNotClickable = isAfter(date, addDays(startOfToday(), 1));
-
-        return `
-          <div class="p-2 text-xs flex flex-col">
-            ${date ? "<span>" + format(date, "EEE, dd MMM, yyyy") + "</span>" : ""}
-            <span>
-              Hours logged: ${time > 0 ? time.toFixed(2) : time}
-            </span>
-            ${isNotClickable ? "<span class='text-[10px]'>(Not-selectable)</span>" : ""}
-          </div>
-        `;
-      },
-    },
-  };
+  function handleSelect(date: Date) {
+    if (isAfter(date, startOfToday())) return;
+    router.push(`?date=${format(date, "yyyy-MM-dd")}`);
+  }
 
   return (
-    <Card className="flex w-full flex-col pb-1 shadow-none">
-      <Flex className="items-center font-semibold">
-        <Text>Heatmap</Text>
-        <Text className="flex items-center text-xs">
-          <Info className="mx-1" size={16} />
-          last 7 weeks
-        </Text>
-      </Flex>
-      <div className="-mt-2 h-[200px]">
-        {data ? (
-          <div className="-ml-3 h-full w-full">
-            <Chart options={options} series={data} type="heatmap" height="100%" width="110%" />
-          </div>
-        ) : (
-          <div className="flex h-full w-full items-end justify-evenly">
-            {Array.from({ length: 7 }, (_, index) => (
-              <Skeleton key={index} className="mb-4 h-[150px] w-7" />
-            ))}
-          </div>
-        )}
+    <section className="border-border bg-card rounded-2xl border p-4">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div>
+          <h2 className="text-sm font-medium">Heatmap</h2>
+          <p className="text-muted-foreground text-[11px]">Last 7 weeks · tap a day</p>
+        </div>
+        <div className="flex items-center gap-0.5" aria-hidden>
+          <span className="bg-muted size-2" />
+          <span className="size-2 bg-emerald-200" />
+          <span className="size-2 bg-emerald-400" />
+          <span className="size-2 bg-emerald-600" />
+        </div>
       </div>
-    </Card>
-  );
-};
 
-export default WeekHeatmap;
+      <TooltipProvider delayDuration={120} disableHoverableContent>
+        <div className="flex flex-col gap-1">
+          {DAY_LABELS.map((label, dayIndex) => (
+            <div key={`${label}-${dayIndex}`} className="grid grid-cols-[0.75rem_1fr] items-center gap-2">
+              <span className="text-muted-foreground text-[10px]">{label}</span>
+              <div className="grid grid-cols-7 gap-1">
+                {cells.slice(dayIndex * 7, dayIndex * 7 + 7).map((cell) => {
+                  const isFuture = isAfter(cell.date, startOfToday());
+                  const isSelected = isSameDay(cell.date, activeDate);
+
+                  return (
+                    <Tooltip key={cell.key}>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          disabled={isFuture}
+                          onClick={() => handleSelect(cell.date)}
+                          aria-label={`${format(cell.date, "EEE, MMM d")}: ${cell.hours.toFixed(1)}h`}
+                          aria-current={isSelected ? "date" : undefined}
+                          className={cn(
+                            "h-4 w-full cursor-pointer rounded-sm transition-opacity outline-none focus-visible:ring-0",
+                            getCellTone(cell.hours),
+                            isFuture && "cursor-not-allowed opacity-30",
+                            !isFuture && "hover:opacity-75",
+                            isSelected && "ring-foreground ring-offset-card ring-1 ring-offset-1",
+                          )}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent className="flex-col items-start text-xs">
+                        <p className="font-medium">{format(cell.date, "EEE, dd MMM, yyyy")}</p>
+                        <p className="text-foreground-muted">
+                          {cell.hours > 0 ? `Hours logged: ${cell.hours.toFixed(2)}h` : "No time logged"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <div className="mt-1 grid grid-cols-[0.75rem_1fr] gap-2">
+            <span />
+            <div className="text-muted-foreground flex justify-between text-[10px]">
+              <span>{weekLabels[0]}</span>
+              <span>{weekLabels.at(-1)}</span>
+            </div>
+          </div>
+        </div>
+      </TooltipProvider>
+    </section>
+  );
+}

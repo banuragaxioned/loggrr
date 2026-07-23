@@ -23,6 +23,7 @@ import AINotepad from "./ai/notepad";
 import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { generateId } from "ai";
+import { isTimelogValid } from "@/lib/timelog-validation";
 
 // Shared config for the Classic/Board view switcher (rendered as mobile pills + desktop rail)
 const VIEW_TOGGLE_ACTIVE = "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50";
@@ -260,12 +261,14 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   const submitAllTimeEntries = async (e: FormEvent, allAiEntries: SelectedData[]) => {
     try {
       for (const entry of allAiEntries) {
-        const isDataValidated = () => {
-          const { project, comment, time } = entry || {};
-          return project && comment?.trim().length && time && +time;
-        };
+        const found = projects.find((project) => project.id === entry.project?.id);
+        const isDataValidated = isTimelogValid({
+          ...entry,
+          categories: found?.milestone ?? [],
+          tasks: found?.task ?? [],
+        });
 
-        if (isDataValidated()) {
+        if (isDataValidated) {
           setAiResponses((prev) => prev.filter((response) => response.uuid !== entry.uuid));
           await submitTimeEntry(e, null, entry, true);
         }
