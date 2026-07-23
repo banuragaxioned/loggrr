@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { GetSetDateProps } from "@/types";
 
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getDayHoursTone } from "@/lib/heatmap-tone";
 import { getDateString } from "./time-entry";
 import { ClassicDatePicker } from "./date-picker";
@@ -27,30 +26,32 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
   return (
     <div className="flex w-full items-center gap-2">
       <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="outline" size="icon" onClick={() => goToDate(-1)} aria-label="Previous day">
-              <ChevronLeft size={20} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Previous day</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                if (isNextClickable) goToDate(1);
-              }}
-              disabled={!isNextClickable}
-              aria-label="Next day"
-            >
-              <ChevronRight size={20} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Next day</TooltipContent>
-        </Tooltip>
+        <div className="flex items-center">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => goToDate(-1)}
+            aria-label="Previous day"
+            title="Previous day"
+            className="rounded-r-none border-r-0"
+          >
+            <ChevronLeft size={20} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              if (isNextClickable) goToDate(1);
+            }}
+            disabled={!isNextClickable}
+            aria-label="Next day"
+            title="Next day"
+            className="rounded-l-none"
+          >
+            <ChevronRight size={20} />
+          </Button>
+        </div>
+
         <span className="relative text-sm font-medium tracking-tighter">
           <ClassicDatePicker date={date} setDate={setDate}>
             {getDateString(date)}
@@ -75,7 +76,7 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
         className={cn("shrink-0 transition-opacity", showToday ? "opacity-100" : "pointer-events-none opacity-0")}
       >
         <Redo2 size={16} />
-        <span className="ml-2 hidden sm:inline">Today</span>
+        <span className="ml-1 hidden sm:inline">Today</span>
       </Button>
     </div>
   );
