@@ -130,7 +130,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       title={data.comments ?? undefined}
                     >
                       <MessageSquare size={12} className="mt-0.5 mr-1 shrink-0 opacity-70" />
-                      <span className="min-w-0 flex-1">
+                      <span className="min-w-0 flex-1 wrap-break-word whitespace-pre-wrap">
                         {data.comments?.trim() || <span className="italic opacity-70">No comment added</span>}
                       </span>
                     </p>
