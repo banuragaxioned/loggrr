@@ -18,7 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Project, Milestone } from "@/types";
 import { EditReferenceObj } from "../time-entry";
 import { cn } from "@/lib/utils";
@@ -303,8 +302,8 @@ export const TimeLogBoard = ({
   const showCategories = projectMilestones.length > 0;
   const showTasks = projectTasks.length > 0;
   const boardColumnCount = 1 + Number(showCategories) + Number(showTasks);
-  // Fixed list height so columns don't jump when category/task panes appear
-  const columnListClass = "h-[240px]";
+  // Cap list height so long lists scroll; short lists shrink to content (no empty whitespace).
+  const columnListClass = "max-h-[280px] overflow-y-auto";
 
   return (
     <div>
@@ -328,7 +327,7 @@ export const TimeLogBoard = ({
             open={projectSearchOpen}
             setOpen={setProjectSearchOpen}
           />
-          <ScrollArea className={columnListClass}>
+          <div className={columnListClass}>
             <div className="p-1.5">
               {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
               {groupedProjects.map((group, index) => (
@@ -350,7 +349,7 @@ export const TimeLogBoard = ({
                 </div>
               ))}
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         {/* Column 2: Categories (milestones) — only when the project has any */}
@@ -367,7 +366,7 @@ export const TimeLogBoard = ({
               setOpen={setCategorySearchOpen}
               disabled={!isProjectSelected}
             />
-            <ScrollArea className={columnListClass}>
+            <div className={columnListClass}>
               <div className="p-1.5">
                 {filteredMilestones.length === 0 ? (
                   <EmptyState text="No matches" />
@@ -382,7 +381,7 @@ export const TimeLogBoard = ({
                   ))
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </div>
         )}
 
@@ -400,7 +399,7 @@ export const TimeLogBoard = ({
               setOpen={setTaskSearchOpen}
               disabled={!isProjectSelected}
             />
-            <ScrollArea className={columnListClass}>
+            <div className={columnListClass}>
               <div className="p-1.5">
                 {filteredTasks.length === 0 ? (
                   <EmptyState text="No matches" />
@@ -415,7 +414,7 @@ export const TimeLogBoard = ({
                   ))
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </div>
         )}
       </div>

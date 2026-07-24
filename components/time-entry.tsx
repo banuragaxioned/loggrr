@@ -295,7 +295,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   };
 
   const boardNotebook = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2.5">
       <AINotepad
         defaultOpen
         compact
@@ -376,7 +376,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   if (showBoard) {
     return (
       <>
-        <div className="grid w-full grid-cols-12 items-start gap-4">
+        <div className="grid w-full grid-cols-12 items-start gap-2.5">
           <div className="col-span-12 lg:col-span-7">
             <Card className="overflow-hidden shadow-none">
               <div className="flex items-center gap-2 border-b p-2">
@@ -394,8 +394,8 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
             </Card>
           </div>
 
-          <div className="col-span-12 flex min-h-0 flex-col gap-4 lg:col-span-5">
-            <div className="flex min-h-0 flex-col gap-4 lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-7.5rem)]">
+          <div className="col-span-12 flex min-h-0 flex-col gap-2.5 lg:col-span-5">
+            <div className="flex min-h-0 flex-col gap-2.5 lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-7.5rem)]">
               {recentTimeEntries.length > 0 && (
                 <section className="border-border bg-card shrink-0 rounded-lg border p-4">
                   <div className="mb-3">
@@ -430,7 +430,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
               )}
 
               <Card className="flex min-h-0 w-full flex-1 flex-col overflow-hidden shadow-none">
-                <div className="border-border flex shrink-0 items-center justify-between gap-3 border-b px-4 py-2.5 sm:px-5">
+                <div className="border-border flex shrink-0 items-center justify-between gap-2 border-b px-4 py-2.5 sm:px-5">
                   <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Day total</p>
                   <span className="text-sm font-semibold tabular-nums">
                     {dayTotalTime ? `${dayTotalTime.toFixed(2)} h` : "0.00 h"}
@@ -449,7 +449,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   // Classic layout (unchanged structure)
   return (
-    <div className="grid w-full grid-cols-12 items-start gap-4">
+    <div className="grid w-full grid-cols-12 items-start gap-2.5">
       <div className="col-span-12 md:col-span-8">
         <Card className="overflow-hidden shadow-none">
           <div className="flex items-center gap-2 border-b p-2">
@@ -469,7 +469,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
             />
           )}
           {!!dayTotalTime && (
-            <div className="border-border flex items-center justify-between gap-3 border-t px-4 py-2.5 sm:px-5">
+            <div className="border-border flex items-center justify-between gap-2 border-t px-4 py-2.5 sm:px-5">
               <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Day total</p>
               <span className="text-sm font-semibold tabular-nums">{dayTotalTime.toFixed(2)} h</span>
             </div>
@@ -477,7 +477,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
           {entriesList(false)}
         </Card>
       </div>
-      <div className="col-span-12 flex flex-col gap-4 md:col-span-4">
+      <div className="col-span-12 flex flex-col gap-2.5 md:col-span-4">
         <RecentEntries recentTimeEntries={recentTimeEntries} handleRecentClick={handleRecentClick} />
         <AINotepad
           notebookSubmitHandler={notebookSubmitHandler}
