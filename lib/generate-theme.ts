@@ -1,7 +1,7 @@
 /** Shared keys for custom theme persistence and anti-flash injection. */
 export const CUSTOM_THEME_STORAGE_KEY = "loggrr-custom-theme";
 export const CUSTOM_THEME_STYLE_ID = "loggrr-custom-theme-vars";
-export const DEFAULT_CUSTOM_PRIMARY = "#7C3AED";
+export const DEFAULT_CUSTOM_PRIMARY = "#000000";
 
 export interface HslColor {
   h: number;
@@ -116,95 +116,133 @@ function oklchApprox(h: number, chroma: number, lightness: number): string {
   return `oklch(${lightness.toFixed(2)} ${chroma.toFixed(2)} ${Math.round(h)})`;
 }
 
+function isAchromatic(color: HslColor) {
+  return color.s < 8;
+}
+
 /** Build full light/dark semantic tokens from a primary (and optional accent) hex. */
 export function generateThemeFromPrimary(primaryHex: string, accentHex?: string): GeneratedTheme {
-  const primary = hexToHsl(normalizeHex(primaryHex) ?? DEFAULT_CUSTOM_PRIMARY);
+  const normalizedPrimary = normalizeHex(primaryHex) ?? DEFAULT_CUSTOM_PRIMARY;
+  const primary = hexToHsl(normalizedPrimary);
   const accentSource = accentHex ? hexToHsl(normalizeHex(accentHex) ?? primaryHex) : primary;
-  const h = primary.h;
-  const a = accentSource.h;
-  const sat = clamp(primary.s, 35, 90);
+  const neutral = isAchromatic(primary);
+  // Black/gray have no hue — use zinc-like blue-gray channel so UI stays neutral, not red-brown.
+  const h = neutral ? 240 : primary.h;
+  const a = isAchromatic(accentSource) ? h : accentSource.h;
 
-  const lightPrimaryL = clamp(primary.l > 45 ? primary.l - 20 : primary.l, 22, 42);
-  const darkPrimaryL = clamp(primary.l < 55 ? primary.l + 15 : primary.l, 48, 68);
+  // Preserve true black/gray/white — do not force saturation or mid-range lightness.
+  const sat = neutral ? 0 : clamp(primary.s, 35, 90);
+  const lightPrimaryL = neutral
+    ? clamp(primary.l <= 8 ? 9 : primary.l >= 92 ? 12 : primary.l, 0, 20)
+    : clamp(primary.l > 45 ? primary.l - 20 : primary.l, 22, 42);
+  const darkPrimaryL = neutral
+    ? clamp(primary.l <= 20 ? 98 : primary.l, 90, 100)
+    : clamp(primary.l < 55 ? primary.l + 15 : primary.l, 48, 68);
+
   const lightPrimaryHex = hslToHex({ h, s: sat, l: lightPrimaryL });
   const darkPrimaryHex = hslToHex({ h, s: sat, l: darkPrimaryL });
+  const displayPrimaryHex = neutral && primary.l <= 8 ? normalizedPrimary : lightPrimaryHex;
 
   const light: ThemeTokenMap = {
-    "--background": channel(h, Math.min(sat, 40), 98.5),
-    "--foreground": channel(h, Math.min(sat, 40), 10),
+    "--background": channel(h, Math.min(sat, 40), neutral ? 100 : 98.5),
+    "--foreground": channel(h, Math.min(sat, 40), neutral ? 4 : 10),
     "--card": "0 0% 100%",
-    "--card-foreground": channel(h, Math.min(sat, 40), 10),
+    "--card-foreground": channel(h, Math.min(sat, 40), neutral ? 4 : 10),
     "--popover": "0 0% 100%",
-    "--popover-foreground": channel(h, Math.min(sat, 40), 10),
+    "--popover-foreground": channel(h, Math.min(sat, 40), neutral ? 4 : 10),
     "--primary": channel(h, sat, lightPrimaryL),
     "--primary-foreground": readableForeground(lightPrimaryHex),
-    "--secondary": channel(a, Math.min(sat, 45), 94),
-    "--secondary-foreground": channel(h, sat * 0.7, 20),
-    "--muted": channel(h, Math.min(sat, 30), 95),
-    "--muted-foreground": channel(h, 12, 42),
-    "--accent": channel(a, Math.min(sat, 55), 92),
-    "--accent-foreground": channel(h, sat * 0.8, 22),
-    "--border": channel(h, Math.min(sat, 25), 88),
-    "--input": channel(h, Math.min(sat, 25), 88),
-    "--ring": channel(h, sat, clamp(lightPrimaryL + 12, 35, 55)),
-    "--chart-1": oklchApprox(h, 0.18, 0.55),
-    "--chart-2": oklchApprox((h + 40) % 360, 0.14, 0.65),
-    "--chart-3": oklchApprox((h + 80) % 360, 0.12, 0.5),
-    "--chart-4": oklchApprox((h + 140) % 360, 0.1, 0.72),
-    "--chart-5": oklchApprox((h + 200) % 360, 0.1, 0.45),
-    "--sidebar": `oklch(0.98 ${Math.min(sat / 400, 0.03).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-foreground": `oklch(0.22 ${Math.min(sat / 250, 0.05).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-primary": `oklch(0.42 ${Math.min(sat / 200, 0.14).toFixed(3)} ${Math.round(h)})`,
+    "--secondary": channel(a, Math.min(sat, 45), neutral ? 96 : 94),
+    "--secondary-foreground": channel(h, neutral ? 0 : sat * 0.7, 20),
+    "--muted": channel(h, Math.min(sat, 30), neutral ? 96 : 95),
+    "--muted-foreground": channel(h, neutral ? 0 : 12, 42),
+    "--accent": channel(a, Math.min(sat, 55), neutral ? 96 : 92),
+    "--accent-foreground": channel(h, neutral ? 0 : sat * 0.8, 22),
+    "--border": channel(h, Math.min(sat, 25), neutral ? 90 : 88),
+    "--input": channel(h, Math.min(sat, 25), neutral ? 90 : 88),
+    "--ring": channel(h, sat, neutral ? 10 : clamp(lightPrimaryL + 12, 35, 55)),
+    "--chart-1": neutral ? "oklch(0.35 0 0)" : oklchApprox(h, 0.18, 0.55),
+    "--chart-2": neutral ? "oklch(0.55 0 0)" : oklchApprox((h + 40) % 360, 0.14, 0.65),
+    "--chart-3": neutral ? "oklch(0.7 0 0)" : oklchApprox((h + 80) % 360, 0.12, 0.5),
+    "--chart-4": neutral ? "oklch(0.45 0 0)" : oklchApprox((h + 140) % 360, 0.1, 0.72),
+    "--chart-5": neutral ? "oklch(0.25 0 0)" : oklchApprox((h + 200) % 360, 0.1, 0.45),
+    "--sidebar": neutral ? "oklch(0.985 0 0)" : `oklch(0.98 ${Math.min(sat / 400, 0.03).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-foreground": neutral
+      ? "oklch(0.145 0 0)"
+      : `oklch(0.22 ${Math.min(sat / 250, 0.05).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-primary": neutral
+      ? "oklch(0.205 0 0)"
+      : `oklch(0.42 ${Math.min(sat / 200, 0.14).toFixed(3)} ${Math.round(h)})`,
     "--sidebar-primary-foreground": "oklch(0.99 0 0)",
-    "--sidebar-accent": `oklch(0.94 ${Math.min(sat / 300, 0.04).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-accent-foreground": `oklch(0.28 ${Math.min(sat / 220, 0.08).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-border": `oklch(0.9 ${Math.min(sat / 400, 0.03).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-ring": `oklch(0.65 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-accent": neutral
+      ? "oklch(0.97 0 0)"
+      : `oklch(0.94 ${Math.min(sat / 300, 0.04).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-accent-foreground": neutral
+      ? "oklch(0.205 0 0)"
+      : `oklch(0.28 ${Math.min(sat / 220, 0.08).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-border": neutral
+      ? "oklch(0.922 0 0)"
+      : `oklch(0.9 ${Math.min(sat / 400, 0.03).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-ring": neutral
+      ? "oklch(0.708 0 0)"
+      : `oklch(0.65 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
   };
 
   const dark: ThemeTokenMap = {
-    "--background": channel(h, Math.min(sat, 35), 7),
+    "--background": channel(h, Math.min(sat, 35), neutral ? 4 : 7),
     "--foreground": channel(h, Math.min(sat, 30), 96),
-    "--card": channel(h, Math.min(sat, 30), 10),
+    "--card": channel(h, Math.min(sat, 30), neutral ? 4 : 10),
     "--card-foreground": channel(h, Math.min(sat, 30), 96),
-    "--popover": channel(h, Math.min(sat, 30), 10),
+    "--popover": channel(h, Math.min(sat, 30), neutral ? 4 : 10),
     "--popover-foreground": channel(h, Math.min(sat, 30), 96),
     "--primary": channel(h, sat, darkPrimaryL),
     "--primary-foreground": readableForeground(darkPrimaryHex),
     "--secondary": channel(h, Math.min(sat, 25), 16),
     "--secondary-foreground": channel(h, Math.min(sat, 30), 96),
     "--muted": channel(h, Math.min(sat, 22), 15),
-    "--muted-foreground": channel(h, 12, 68),
+    "--muted-foreground": channel(h, neutral ? 0 : 12, 68),
     "--accent": channel(a, Math.min(sat, 28), 18),
     "--accent-foreground": channel(a, Math.min(sat, 50), 88),
     "--border": channel(h, Math.min(sat, 20), 18),
     "--input": channel(h, Math.min(sat, 20), 18),
     "--ring": channel(h, sat, darkPrimaryL),
-    "--chart-1": oklchApprox(h, 0.16, 0.7),
-    "--chart-2": oklchApprox((h + 40) % 360, 0.12, 0.75),
-    "--chart-3": oklchApprox((h + 80) % 360, 0.1, 0.62),
-    "--chart-4": oklchApprox((h + 140) % 360, 0.09, 0.8),
-    "--chart-5": oklchApprox((h + 200) % 360, 0.1, 0.55),
-    "--sidebar": `oklch(0.16 ${Math.min(sat / 350, 0.04).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-foreground": `oklch(0.95 ${Math.min(sat / 500, 0.02).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-primary": `oklch(0.68 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-primary-foreground": `oklch(0.15 ${Math.min(sat / 300, 0.04).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-accent": `oklch(0.24 ${Math.min(sat / 350, 0.04).toFixed(3)} ${Math.round(h)})`,
-    "--sidebar-accent-foreground": `oklch(0.95 ${Math.min(sat / 500, 0.02).toFixed(3)} ${Math.round(h)})`,
+    "--chart-1": neutral ? "oklch(0.87 0 0)" : oklchApprox(h, 0.16, 0.7),
+    "--chart-2": neutral ? "oklch(0.556 0 0)" : oklchApprox((h + 40) % 360, 0.12, 0.75),
+    "--chart-3": neutral ? "oklch(0.439 0 0)" : oklchApprox((h + 80) % 360, 0.1, 0.62),
+    "--chart-4": neutral ? "oklch(0.371 0 0)" : oklchApprox((h + 140) % 360, 0.09, 0.8),
+    "--chart-5": neutral ? "oklch(0.269 0 0)" : oklchApprox((h + 200) % 360, 0.1, 0.55),
+    "--sidebar": neutral ? "oklch(0.205 0 0)" : `oklch(0.16 ${Math.min(sat / 350, 0.04).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-foreground": neutral
+      ? "oklch(0.985 0 0)"
+      : `oklch(0.95 ${Math.min(sat / 500, 0.02).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-primary": neutral
+      ? "oklch(0.488 0.243 264.376)"
+      : `oklch(0.68 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-primary-foreground": neutral
+      ? "oklch(0.985 0 0)"
+      : `oklch(0.15 ${Math.min(sat / 300, 0.04).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-accent": neutral
+      ? "oklch(0.269 0 0)"
+      : `oklch(0.24 ${Math.min(sat / 350, 0.04).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-accent-foreground": neutral
+      ? "oklch(0.985 0 0)"
+      : `oklch(0.95 ${Math.min(sat / 500, 0.02).toFixed(3)} ${Math.round(h)})`,
     "--sidebar-border": "oklch(1 0 0 / 10%)",
-    "--sidebar-ring": `oklch(0.68 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
+    "--sidebar-ring": neutral
+      ? "oklch(0.556 0 0)"
+      : `oklch(0.68 ${Math.min(sat / 180, 0.16).toFixed(3)} ${Math.round(h)})`,
   };
 
   return {
     light,
     dark,
     swatches: [
-      lightPrimaryHex,
-      hslToHex({ h, s: sat, l: 55 }),
-      hslToHex({ h, s: Math.min(sat, 40), l: 90 }),
-      hslToHex({ h, s: Math.min(sat, 30), l: 97 }),
+      displayPrimaryHex,
+      neutral ? "#71717A" : hslToHex({ h, s: sat, l: 55 }),
+      neutral ? "#E4E4E7" : hslToHex({ h, s: Math.min(sat, 40), l: 90 }),
+      neutral ? "#FAFAFA" : hslToHex({ h, s: Math.min(sat, 30), l: 97 }),
     ],
-    loader: lightPrimaryHex,
+    loader: displayPrimaryHex,
   };
 }
 

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { generateThemeFromPrimary, normalizeHex } from "@/lib/generate-theme";
 import { cn } from "@/lib/utils";
 
-const PRESET_SEEDS = ["#7C3AED", "#F31B7C", "#0284C7", "#059669", "#EA580C", "#E11D48", "#0D9488", "#D97706"];
+const PRESET_SEEDS = ["#000000", "#7C3AED", "#F31B7C", "#0284C7", "#059669", "#EA580C", "#E11D48", "#0D9488", "#D97706"];
 
 export function CustomThemePicker() {
   const { theme, customConfig, setCustomConfig, resetCustomConfig } = useColorTheme();
