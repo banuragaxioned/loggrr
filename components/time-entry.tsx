@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import AINotepad from "./ai/notepad";
 import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
+import { getRandomColor } from "@/lib/random-colors";
 import { generateId } from "ai";
 import { isTimelogValid } from "@/lib/timelog-validation";
 
@@ -206,6 +208,16 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   const dayTotalTime = useMemo(() => entries.data.dayTotal, [entries.data]);
 
+  const [notebookSlot, setNotebookSlot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!showBoard) {
+      setNotebookSlot(null);
+      return;
+    }
+    setNotebookSlot(document.getElementById("board-notebook-slot"));
+  }, [showBoard]);
+
   /*
    * handleRecentClick: The following function adds recent state for adding new entry
    */
@@ -282,67 +294,170 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     }
   };
 
+  const boardNotebook = (
+    <div className="flex flex-col gap-4">
+      <AINotepad
+        defaultOpen
+        compact
+        notebookSubmitHandler={notebookSubmitHandler}
+        aiInput={aiInput}
+        setAiInput={setAiInput}
+        aiLoading={aiLoading}
+      />
+      <NotepadResponse
+        aiResponses={aiResponses}
+        setAiResponses={setAiResponses}
+        projects={projects}
+        handleSubmit={submitTimeEntry}
+        handleSubmitAll={submitAllTimeEntries}
+      />
+    </div>
+  );
+
+  const viewToggle = (
+    <div
+      role="group"
+      aria-label="Logger view"
+      className={cn(
+        "bg-background flex shrink-0 items-center gap-0.5 rounded-md border p-0.5",
+        !hasHydrated && "pointer-events-none opacity-60",
+      )}
+    >
+      {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
+        <Tooltip key={label}>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={() => setLogBoardView(board)}
+              aria-label={label}
+              aria-pressed={hasHydrated ? showBoard === board : undefined}
+              disabled={!hasHydrated}
+              className={cn(
+                "relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm transition-colors disabled:cursor-default",
+                hasHydrated && showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
+              )}
+            >
+              <Icon size={16} />
+              {isNew && (
+                <span className="bg-brand-fuchsia absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full text-white">
+                  <Sparkles size={8} />
+                </span>
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{label}</TooltipContent>
+        </Tooltip>
+      ))}
+    </div>
+  );
+
+  const datePicker = (
+    <InlineDatePicker
+      date={date}
+      setDate={(newDate: Date) => {
+        router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
+      }}
+      dayTotalTime={dayTotalTime}
+    />
+  );
+
+  const entriesList = (fillHeight = false) => (
+    <TimeEntriesList
+      entries={entries.data}
+      status={entries.status}
+      deleteEntryHandler={deleteTimeEntry}
+      editEntryHandler={editEntryHandler}
+      edit={edit}
+      fillHeight={fillHeight}
+    />
+  );
+
+  // Recommended B: form+recent | day list | hours+heatmap+notebook (aside)
+  if (showBoard) {
+    return (
+      <>
+        <div className="grid w-full grid-cols-12 items-start gap-4">
+          <div className="col-span-12 lg:col-span-7">
+            <Card className="overflow-hidden shadow-none">
+              <div className="flex items-center gap-2 border-b p-2">
+                {viewToggle}
+                <div className="min-w-0 flex-1">{datePicker}</div>
+              </div>
+              <TimeLogBoard
+                projects={projects}
+                edit={edit}
+                recent={recent}
+                submitHandler={submitTimeEntry}
+                draft={draft}
+                onDraftChange={setDraft}
+              />
+            </Card>
+          </div>
+
+          <div className="col-span-12 flex min-h-0 flex-col gap-4 lg:col-span-5">
+            <div className="flex min-h-0 flex-col gap-4 lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-7.5rem)]">
+              {recentTimeEntries.length > 0 && (
+                <section className="border-border bg-card shrink-0 rounded-lg border p-4">
+                  <div className="mb-3">
+                    <h2 className="text-sm font-medium">Recently used</h2>
+                    <p className="text-muted-foreground text-[11px]">Tap to quick-fill the form</p>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {recentTimeEntries.slice(0, 5).map((entry) => (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        onClick={() => handleRecentClick(entry)}
+                        title={
+                          [entry.project?.client?.name, entry.project?.name, entry.milestone?.name, entry.task?.name]
+                            .filter(Boolean)
+                            .join(" · ") || entry.project?.name
+                        }
+                        className="border-border text-foreground hover:bg-muted inline-flex h-7 max-w-full cursor-pointer items-center gap-1.5 rounded-full border py-0 pl-1 pr-2.5 text-left text-xs leading-none transition-colors"
+                      >
+                        <span
+                          className="flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-medium leading-none text-white"
+                          style={entry.project?.id ? { backgroundColor: getRandomColor(entry.project.id) } : undefined}
+                          aria-hidden
+                        >
+                          {entry.project?.client?.name?.charAt(0) ?? "?"}
+                        </span>
+                        <span className="truncate leading-none">{entry.project?.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <Card className="flex min-h-0 w-full flex-1 flex-col overflow-hidden shadow-none">
+                <div className="border-border flex shrink-0 items-center justify-between gap-3 border-b px-4 py-2.5 sm:px-5">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Day total</p>
+                  <span className="text-sm font-semibold tabular-nums">
+                    {dayTotalTime ? `${dayTotalTime.toFixed(2)} h` : "0.00 h"}
+                  </span>
+                </div>
+                {entriesList(true)}
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {notebookSlot ? createPortal(boardNotebook, notebookSlot) : null}
+      </>
+    );
+  }
+
+  // Classic layout (unchanged structure)
   return (
     <div className="grid w-full grid-cols-12 items-start gap-4">
       <div className="col-span-12 md:col-span-8">
         <Card className="overflow-hidden shadow-none">
           <div className="flex items-center gap-2 border-b p-2">
-            {/* View switcher — sits in the card header so it never clips outside the content box */}
-            <div
-              role="group"
-              aria-label="Logger view"
-              className={cn(
-                "bg-background flex shrink-0 items-center gap-0.5 rounded-md border p-0.5",
-                !hasHydrated && "pointer-events-none opacity-60",
-              )}
-            >
-              {LOGGER_VIEWS.map(({ board, label, Icon, isNew }) => (
-                <Tooltip key={label}>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={() => setLogBoardView(board)}
-                      aria-label={label}
-                      aria-pressed={hasHydrated ? showBoard === board : undefined}
-                      disabled={!hasHydrated}
-                      className={cn(
-                        "relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm transition-colors disabled:cursor-default",
-                        hasHydrated && showBoard === board ? VIEW_TOGGLE_ACTIVE : VIEW_TOGGLE_INACTIVE,
-                      )}
-                    >
-                      <Icon size={16} />
-                      {isNew && (
-                        <span className="bg-brand-fuchsia absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full text-white">
-                          <Sparkles size={8} />
-                        </span>
-                      )}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">{label}</TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-            <div className="min-w-0 flex-1">
-              <InlineDatePicker
-                date={date}
-                setDate={(newDate: Date) => {
-                  router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
-                }}
-                dayTotalTime={dayTotalTime}
-              />
-            </div>
+            {viewToggle}
+            <div className="min-w-0 flex-1">{datePicker}</div>
           </div>
           {!hasHydrated ? (
             <div className="bg-muted/40 min-h-70 animate-pulse" aria-hidden />
-          ) : showBoard ? (
-            <TimeLogBoard
-              projects={projects}
-              edit={edit}
-              recent={recent}
-              submitHandler={submitTimeEntry}
-              draft={draft}
-              onDraftChange={setDraft}
-            />
           ) : (
             <TimeLogForm
               projects={projects}
@@ -359,13 +474,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
               <span className="text-sm font-semibold tabular-nums">{dayTotalTime.toFixed(2)} h</span>
             </div>
           )}
-          <TimeEntriesList
-            entries={entries.data}
-            status={entries.status}
-            deleteEntryHandler={deleteTimeEntry}
-            editEntryHandler={editEntryHandler}
-            edit={edit}
-          />
+          {entriesList(false)}
         </Card>
       </div>
       <div className="col-span-12 flex flex-col gap-4 md:col-span-4">

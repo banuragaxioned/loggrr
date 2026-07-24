@@ -41,32 +41,60 @@ interface TimeEntries {
   deleteEntryHandler: (id: number) => void;
   editEntryHandler: (obj: SelectedData, id: number) => void;
   edit: EditReferenceObj;
+  /** Board right panel: grow and scroll within the available viewport height */
+  fillHeight?: boolean;
 }
 
-export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
+export const TimeEntriesList = ({
+  entries,
+  status,
+  deleteEntryHandler,
+  editEntryHandler,
+  edit,
+  fillHeight = false,
+}: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData, projectIndex) => (
       <li key={entryData.project.id}>
-        <Card className="overflow-hidden rounded-none border-x-0 border-t border-b-0 shadow-none">
-          <div className="flex w-full items-center justify-between gap-3 px-5 py-2">
-            <p className="flex min-w-0 items-center gap-2 text-sm font-medium">
+        <Card
+          className={cn(
+            "overflow-hidden rounded-none border-x-0 border-b-0 shadow-none",
+            // Day total already provides the top rule in board fill-height mode
+            fillHeight && projectIndex === 0 ? "border-t-0" : "border-t",
+          )}
+        >
+          <div
+            className={cn(
+              "flex w-full items-start justify-between gap-2",
+              fillHeight ? "px-3 py-2.5" : "px-5 py-2",
+            )}
+          >
+            <div className="flex min-w-0 flex-1 items-start gap-2">
               <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
+                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
                 style={{ backgroundColor: getRandomColor(entryData.project.id) }}
               >
                 {entryData.project.client?.name?.charAt(0) ?? entryData.project.name.charAt(0)}
               </span>
-              <span
-                className="min-w-0 truncate"
-                title={`${entryData.project.name} - ${entryData.project.client?.name}`}
+              <div
+                className="min-w-0 flex-1"
+                title={
+                  entryData.project.client?.name
+                    ? `${entryData.project.name} · ${entryData.project.client.name}`
+                    : entryData.project.name
+                }
               >
-                {entryData.project.name}
+                <p className="text-sm leading-snug font-medium wrap-break-word">{entryData.project.name}</p>
                 {entryData.project.client?.name ? (
-                  <span className="text-muted-foreground text-xs font-normal"> · {entryData.project.client.name}</span>
+                  <p className="text-muted-foreground text-xs leading-snug wrap-break-word">
+                    {entryData.project.client.name}
+                  </p>
                 ) : null}
-              </span>
-            </p>
-            <span className="shrink-0 text-sm font-semibold tabular-nums">{entryData.total.toFixed(2)} h</span>
+              </div>
+            </div>
+            <span className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
+              {entryData.total.toFixed(2)} h
+            </span>
           </div>
 
           <Separator />
@@ -237,7 +265,12 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-3 border-t px-6 py-14 text-center sm:py-16">
+    <li
+      className={cn(
+        "flex flex-col items-center justify-center space-y-3 px-6 py-14 text-center sm:py-16",
+        fillHeight ? "min-h-0 flex-1" : "border-t",
+      )}
+    >
       <div className="bg-muted flex h-14 w-14 items-center justify-center rounded-full">
         <CalendarClock size={28} className="text-muted-foreground" />
       </div>
@@ -251,7 +284,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
   );
 
   const skeletonLoader = (
-    <li className="border-t p-2">
+    <li className={cn("p-2", !fillHeight && "border-t")}>
       <div className="mb-2 flex items-center justify-between gap-4">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-6 w-1/4" />
@@ -275,7 +308,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
     <ul
       className={cn(
         "flex w-full flex-col overflow-y-auto",
-        entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
+        fillHeight ? "min-h-0 flex-1" : entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
       )}
     >
       {status === "loading" && skeletonLoader}

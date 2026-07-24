@@ -15,6 +15,7 @@ import { GetSetDateProps } from "@/types";
 interface DatePickerProps extends GetSetDateProps {
   children?: React.ReactNode;
   align?: "center" | "start" | "end";
+  className?: string;
 }
 
 export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
@@ -23,7 +24,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={cn("w-[280px] justify-start text-left font-normal", !date && "text-muted-foreground")}
+          className={cn("w-70 justify-start text-left font-normal", !date && "text-muted-foreground")}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -36,7 +37,7 @@ export const DatePicker = ({ date, setDate }: GetSetDateProps) => {
   );
 };
 
-export const ClassicDatePicker = ({ date, setDate, children, align = "center" }: DatePickerProps) => {
+export const ClassicDatePicker = ({ date, setDate, children, align = "center", className }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
   const todaysDate = new Date();
 
@@ -46,7 +47,7 @@ export const ClassicDatePicker = ({ date, setDate, children, align = "center" }:
         <Button
           variant="outline"
           size="sm"
-          className={cn("flex w-full justify-center gap-1.5", children ? "w-[170px]" : "")}
+          className={cn("flex w-full justify-center gap-1.5", children ? "w-42.5" : "", className)}
         >
           <CalendarIcon className="shrink-0" size={16} />
           {date && !children ? format(date, "PPP") : !children && <span className="text-sm">Pick a date</span>}
@@ -151,7 +152,7 @@ export function CalendarDateRangePicker({
               <div className="grid gap-1.5 leading-none">
                 <label
                   htmlFor="terms1"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Set as Ongoing
                 </label>

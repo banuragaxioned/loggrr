@@ -69,7 +69,14 @@ const TIME_CHIPS = [
   { id: 3, title: "+1h", incrementBy: 1 },
 ];
 
-export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onDraftChange }: TimelogBoardProps) => {
+export const TimeLogBoard = ({
+  projects,
+  edit,
+  submitHandler,
+  recent,
+  draft,
+  onDraftChange,
+}: TimelogBoardProps) => {
   const [selectedData, setSelectedData] = useState<SelectedData>(initialDataState);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
@@ -296,6 +303,8 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
   const showCategories = projectMilestones.length > 0;
   const showTasks = projectTasks.length > 0;
   const boardColumnCount = 1 + Number(showCategories) + Number(showTasks);
+  // Fixed list height so columns don't jump when category/task panes appear
+  const columnListClass = "h-[240px]";
 
   return (
     <div>
@@ -319,13 +328,13 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
             open={projectSearchOpen}
             setOpen={setProjectSearchOpen}
           />
-          <ScrollArea className="max-h-[240px] sm:h-[240px]">
+          <ScrollArea className={columnListClass}>
             <div className="p-1.5">
               {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
               {groupedProjects.map((group, index) => (
                 <div key={group.clientId}>
                   <div className="mb-1">
-                    <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <p className="text-muted-foreground px-2 py-1 text-[10px] font-semibold tracking-wide uppercase">
                       {group.clientName}
                     </p>
                     {group.projects.map((project) => (
@@ -358,7 +367,7 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
               setOpen={setCategorySearchOpen}
               disabled={!isProjectSelected}
             />
-            <ScrollArea className="max-h-[240px] sm:h-[240px]">
+            <ScrollArea className={columnListClass}>
               <div className="p-1.5">
                 {filteredMilestones.length === 0 ? (
                   <EmptyState text="No matches" />
@@ -391,7 +400,7 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
               setOpen={setTaskSearchOpen}
               disabled={!isProjectSelected}
             />
-            <ScrollArea className="max-h-[240px] sm:h-[240px]">
+            <ScrollArea className={columnListClass}>
               <div className="p-1.5">
                 {filteredTasks.length === 0 ? (
                   <EmptyState text="No matches" />
@@ -420,11 +429,11 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
       >
         <div className="flex flex-col gap-2 p-3 sm:px-4">
           {/* Row 1: comment input */}
-          <div className="flex min-h-[52px] items-start rounded-md border bg-background px-2 py-2 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
-            <MessageSquare className="mt-1 shrink-0 text-muted-foreground" size={16} />
+          <div className="border-border bg-background focus-within:border-primary focus-within:ring-primary flex min-h-[52px] items-start rounded-md border px-2 py-2 focus-within:ring-1">
+            <MessageSquare className="text-muted-foreground mt-1 shrink-0" size={16} />
             <textarea
               rows={2}
-              className="min-h-[36px] w-full resize-y border-0 bg-transparent px-2 py-0.5 text-sm focus:outline-0 focus:ring-0"
+              className="min-h-[36px] w-full resize-y border-0 bg-transparent px-2 py-0.5 text-sm focus:ring-0 focus:outline-0"
               placeholder="Add a comment..."
               value={selectedData?.comment ?? ""}
               onChange={(e) => setCommentText(e.target.value)}
