@@ -121,11 +121,11 @@ export function CommandMenu(CommandProps: CommandPropType) {
             >
               <SunMedium
                 size="16"
-                className="mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 dark:text-zinc-400"
+                className="mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 dark:text-muted-foreground"
               />
               <Moon
                 size="16"
-                className="absolute mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 dark:text-zinc-400"
+                className="text-muted-foreground absolute mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
               />
               <span>Switch Light/Dark color mode</span>
               <CommandShortcut>Action</CommandShortcut>

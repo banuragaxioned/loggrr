@@ -182,7 +182,7 @@ export const columns: ColumnDef<Logged>[] = [
             <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
               <UserAvatar
                 user={{ name: original.name ?? null, image: original.image ?? null }}
-                className="h-6 w-6 shrink-0 bg-slate-300"
+                className="bg-secondary h-6 w-6 shrink-0"
               />
               <span className="min-w-0 flex-1 truncate">{value}</span>
               <MemberGroups groups={original.groups ?? []} />

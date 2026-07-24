@@ -109,7 +109,7 @@ export function ProjectEditComboBox({
       >
         <Command className="border-border box-border rounded-t-[5px] border">
           <div className="border-border flex w-full items-center rounded-t-[5px] border-b">
-            <Search size={16} className="ml-[10px] text-gray-400" />
+            <Search size={16} className="text-muted-foreground ml-[10px]" />
             <input
               className="bg-popover m-1 box-border h-9 w-full rounded-none border-0 pr-2.5 pl-1.5 text-sm focus:outline-hidden"
               autoFocus

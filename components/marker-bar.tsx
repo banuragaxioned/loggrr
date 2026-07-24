@@ -18,18 +18,18 @@ export function MarkerBar({ value, minValue, maxValue, className }: MarkerBarPro
   // Render the marker bar
   return (
     <div className={className}>
-      <div className="h-2 w-full overflow-hidden rounded-md bg-slate-200">
+      <div className="bg-muted h-2 w-full overflow-hidden rounded-md">
         <div
-          className="absolute left-0 top-0 h-full max-w-full rounded-md bg-[#f43f5e]"
+          className="bg-brand-fuchsia absolute top-0 left-0 h-full max-w-full rounded-md"
           style={{ width: `${maxValue}%` }}
         />
         <div
-          className="absolute left-0 top-0 h-full max-w-full rounded-md bg-[#32ba80]"
+          className="bg-success absolute top-0 left-0 h-full max-w-full rounded-md"
           style={{ width: `${getGreenBarWidth()}%` }}
         />
       </div>
       <div
-        className={`group absolute top-[-5px] h-[18px] w-[6px] rounded-md border border-white bg-slate-400`}
+        className="border-background bg-muted-foreground group absolute top-[-5px] h-[18px] w-[6px] rounded-md border"
         style={{ left: `${value}%` }}
       >
         <p className="invisible absolute top-[-34px] left-0 rounded-md border bg-background px-2.5 py-1 text-sm text-foreground group-hover:visible">{`${value}h`}</p>

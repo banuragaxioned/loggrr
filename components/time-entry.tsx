@@ -28,7 +28,7 @@ import { generateId } from "ai";
 import { isTimelogValid } from "@/lib/timelog-validation";
 
 // Shared config for the Classic/Board view switcher (icon toggle in the logger card header)
-const VIEW_TOGGLE_ACTIVE = "bg-zinc-200 font-medium text-zinc-900 dark:bg-zinc-700 dark:text-zinc-50";
+const VIEW_TOGGLE_ACTIVE = "bg-accent font-medium text-accent-foreground";
 const VIEW_TOGGLE_INACTIVE = "text-muted-foreground hover:bg-muted";
 
 const LOGGER_VIEWS = [
