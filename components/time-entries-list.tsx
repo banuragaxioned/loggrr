@@ -31,8 +31,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+
 import { toast } from "sonner";
+import { CustomTooltip } from "./custom/tooltip";
 
 interface TimeEntries {
   entries: TimeEntryDataObj;
@@ -40,32 +41,60 @@ interface TimeEntries {
   deleteEntryHandler: (id: number) => void;
   editEntryHandler: (obj: SelectedData, id: number) => void;
   edit: EditReferenceObj;
+  /** Board right panel: grow and scroll within the available viewport height */
+  fillHeight?: boolean;
 }
 
-export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntryHandler, edit }: TimeEntries) => {
+export const TimeEntriesList = ({
+  entries,
+  status,
+  deleteEntryHandler,
+  editEntryHandler,
+  edit,
+  fillHeight = false,
+}: TimeEntries) => {
   const renderEntries = Array.isArray(entries.projectsLog) ? (
     entries.projectsLog.map((entryData, projectIndex) => (
       <li key={entryData.project.id}>
-        <Card className="overflow-hidden rounded-none border-x-0 border-t border-b-0 shadow-none">
-          <div className="flex w-full items-center justify-between gap-3 px-5 py-2">
-            <p className="flex min-w-0 items-center gap-2 text-sm font-medium">
+        <Card
+          className={cn(
+            "overflow-hidden rounded-none border-x-0 border-b-0 shadow-none",
+            // Day total already provides the top rule in board fill-height mode
+            fillHeight && projectIndex === 0 ? "border-t-0" : "border-t",
+          )}
+        >
+          <div
+            className={cn(
+              "flex w-full items-start justify-between gap-2",
+              fillHeight ? "px-3 py-2.5" : "px-5 py-2",
+            )}
+          >
+            <div className="flex min-w-0 flex-1 items-start gap-2">
               <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
+                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
                 style={{ backgroundColor: getRandomColor(entryData.project.id) }}
               >
-                {entryData.project.name.charAt(0)}
+                {entryData.project.client?.name?.charAt(0) ?? entryData.project.name.charAt(0)}
               </span>
-              <span
-                className="min-w-0 truncate"
-                title={`${entryData.project.name} - ${entryData.project.client?.name}`}
+              <div
+                className="min-w-0 flex-1"
+                title={
+                  entryData.project.client?.name
+                    ? `${entryData.project.name} · ${entryData.project.client.name}`
+                    : entryData.project.name
+                }
               >
-                {entryData.project.name}
+                <p className="text-sm leading-snug font-medium wrap-break-word">{entryData.project.name}</p>
                 {entryData.project.client?.name ? (
-                  <span className="text-muted-foreground text-xs font-normal"> · {entryData.project.client.name}</span>
+                  <p className="text-muted-foreground text-xs leading-snug wrap-break-word">
+                    {entryData.project.client.name}
+                  </p>
                 ) : null}
-              </span>
-            </p>
-            <span className="shrink-0 text-sm font-semibold tabular-nums">{entryData.total.toFixed(2)} h</span>
+              </div>
+            </div>
+            <span className="shrink-0 pt-0.5 text-sm font-semibold tabular-nums">
+              {entryData.total.toFixed(2)} h
+            </span>
           </div>
 
           <Separator />
@@ -89,7 +118,6 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             const isEditable = entryData.project.status !== "ARCHIVED";
             const messageFor = entryData.project.status === "ARCHIVED" ? "Project" : "";
             const isLastEntry = i === entryData.data.length - 1;
-            const isLastProject = projectIndex === entries.projectsLog!.length - 1;
             const hasMeta = Boolean(data.milestone?.name || data.task?.name);
 
             return (
@@ -98,7 +126,6 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                   className={cn(
                     "group bg-secondary relative flex justify-between gap-3 px-5 py-2",
                     isEditing && "ring-muted-foreground ring-1 ring-inset",
-                    isLastProject && isLastEntry && "rounded-b-xl",
                   )}
                 >
                   <div className={cn("flex min-w-0 flex-1 flex-col gap-y-2", !hasMeta && "justify-end")}>
@@ -131,13 +158,13 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       title={data.comments ?? undefined}
                     >
                       <MessageSquare size={12} className="mt-0.5 mr-1 shrink-0 opacity-70" />
-                      <span className="min-w-0 flex-1">
+                      <span className="min-w-0 flex-1 wrap-break-word whitespace-pre-wrap">
                         {data.comments?.trim() || <span className="italic opacity-70">No comment added</span>}
                       </span>
                     </p>
                   </div>
 
-                  <div className="flex min-w-[100px] shrink-0 flex-col justify-between text-right select-none">
+                  <div className="flex min-w-25 shrink-0 flex-col justify-between text-right select-none">
                     <div className="flex items-center justify-end gap-1.5">
                       <div
                         className={cn(
@@ -146,8 +173,8 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           isEditing && "md:opacity-100",
                         )}
                       >
-                        <Tooltip>
-                          <TooltipTrigger asChild>
+                        <CustomTooltip
+                          trigger={
                             <Button
                               type="button"
                               variant="outline"
@@ -161,14 +188,14 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             >
                               {isEditing ? <ListRestart size={14} /> : <Edit size={14} />}
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>{isEditing ? "Cancel edit" : "Edit"}</TooltipContent>
-                        </Tooltip>
+                          }
+                          content={isEditing ? "Cancel edit" : "Edit"}
+                        />
 
                         {isEditable ? (
                           <Dialog>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                            <CustomTooltip
+                              trigger={
                                 <DialogTrigger asChild>
                                   <Button
                                     type="button"
@@ -180,10 +207,10 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                                     <Trash size={14} />
                                   </Button>
                                 </DialogTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent>Delete</TooltipContent>
-                            </Tooltip>
-                            <DialogContent className="sm:max-w-[425px]">
+                              }
+                              content="Delete"
+                            />
+                            <DialogContent className="sm:max-w-106.25">
                               <DialogHeader>
                                 <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
                                 <DialogDescription>
@@ -218,16 +245,16 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       </span>
                     </div>
 
-                    {data.billable ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                    {data.billable && (
+                      <CustomTooltip
+                        trigger={
                           <span className="text-success ml-auto inline-flex" aria-label="Billable">
                             <CircleDollarSign size={16} />
                           </span>
-                        </TooltipTrigger>
-                        <TooltipContent>Billable</TooltipContent>
-                      </Tooltip>
-                    ) : null}
+                        }
+                        content="Billable"
+                      />
+                    )}
                   </div>
                 </div>
                 {!isLastEntry ? <Separator /> : null}
@@ -238,7 +265,12 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-3 px-6 py-14 text-center sm:py-16">
+    <li
+      className={cn(
+        "flex flex-col items-center justify-center space-y-3 px-6 py-14 text-center sm:py-16",
+        fillHeight ? "min-h-0 flex-1" : "border-t",
+      )}
+    >
       <div className="bg-muted flex h-14 w-14 items-center justify-center rounded-full">
         <CalendarClock size={28} className="text-muted-foreground" />
       </div>
@@ -252,7 +284,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
   );
 
   const skeletonLoader = (
-    <li className="p-2">
+    <li className={cn("p-2", !fillHeight && "border-t")}>
       <div className="mb-2 flex items-center justify-between gap-4">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-6 w-1/4" />
@@ -260,30 +292,28 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       <div className="mb-2 flex flex-col gap-2">
         <div className="flex justify-between">
           <Skeleton className="h-6 w-1/4" />
-          <Skeleton className="h-6 w-[80px]" />
+          <Skeleton className="h-6 w-20" />
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
           <Skeleton className="h-6 w-3/4" />
-          <Skeleton className="h-6 w-[80px]" />
+          <Skeleton className="h-6 w-20" />
         </div>
       </div>
     </li>
   );
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <ul
-        className={cn(
-          "flex w-full flex-col overflow-y-auto",
-          entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
-        )}
-      >
-        {status === "loading" && skeletonLoader}
-        {status === "success" && renderEntries}
-        {status === "error" && <li className="text-destructive p-4 text-center text-sm">Something went wrong</li>}
-      </ul>
-    </TooltipProvider>
+    <ul
+      className={cn(
+        "flex w-full flex-col overflow-y-auto",
+        fillHeight ? "min-h-0 flex-1" : entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
+      )}
+    >
+      {status === "loading" && skeletonLoader}
+      {status === "success" && renderEntries}
+      {status === "error" && <li className="text-destructive p-4 text-center text-sm">Something went wrong</li>}
+    </ul>
   );
 };

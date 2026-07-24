@@ -25,15 +25,27 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
 
   return (
     <div className="flex w-full items-center gap-2">
-      <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
-        <div className="flex items-center">
+      <div className="flex min-w-0 flex-1 items-center justify-center">
+        <div className="flex h-9 items-stretch">
+          <span className="relative text-sm font-medium tracking-tighter">
+            <ClassicDatePicker date={date} setDate={setDate} className="h-full rounded-r-none border-r-0">
+              {getDateString(date)}
+              {dayTotalTime != null && dayTotalTime > 0 ? (
+                <span
+                  aria-hidden
+                  title={`${dayTotalTime.toFixed(2)}h logged`}
+                  className={cn("absolute -top-1 -right-1 size-2.5 rounded-full", getDayHoursTone(dayTotalTime))}
+                />
+              ) : null}
+            </ClassicDatePicker>
+          </span>
           <Button
             variant="outline"
             size="icon"
             onClick={() => goToDate(-1)}
             aria-label="Previous day"
             title="Previous day"
-            className="rounded-r-none border-r-0"
+            className="h-full w-9 shrink-0 rounded-none border-r-0"
           >
             <ChevronLeft size={20} />
           </Button>
@@ -46,24 +58,11 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
             disabled={!isNextClickable}
             aria-label="Next day"
             title="Next day"
-            className="rounded-l-none"
+            className="h-full w-9 shrink-0 rounded-l-none"
           >
             <ChevronRight size={20} />
           </Button>
         </div>
-
-        <span className="relative text-sm font-medium tracking-tighter">
-          <ClassicDatePicker date={date} setDate={setDate}>
-            {getDateString(date)}
-            {dayTotalTime != null && dayTotalTime > 0 ? (
-              <span
-                aria-hidden
-                title={`${dayTotalTime.toFixed(2)}h logged`}
-                className={cn("absolute -top-1 -right-1 size-2.5 rounded-full", getDayHoursTone(dayTotalTime))}
-              />
-            ) : null}
-          </ClassicDatePicker>
-        </span>
       </div>
 
       <Button
@@ -73,7 +72,7 @@ export const InlineDatePicker = ({ date, setDate, dayTotalTime }: InlineDateProp
         title="Go to today"
         tabIndex={showToday ? undefined : -1}
         aria-hidden={!showToday}
-        className={cn("shrink-0 transition-opacity", showToday ? "opacity-100" : "pointer-events-none opacity-0")}
+        className={cn("h-9 shrink-0 transition-opacity", showToday ? "opacity-100" : "pointer-events-none opacity-0")}
       >
         <Redo2 size={16} />
         <span className="ml-1 hidden sm:inline">Today</span>
