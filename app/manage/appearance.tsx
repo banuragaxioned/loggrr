@@ -6,12 +6,15 @@ import { Check, Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useColorTheme } from "@/app/color-theme-provider";
+import { CustomThemePicker } from "@/app/manage/custom-theme-picker";
+import { getCustomThemeMeta } from "@/lib/color-themes";
 import { cn } from "@/lib/utils";
 
 export function Appearance() {
   const { theme: mode, setTheme: setMode } = useTheme();
-  const { theme: colorTheme, setTheme: setColorTheme, themes } = useColorTheme();
+  const { theme: colorTheme, setTheme: setColorTheme, themes, customConfig } = useColorTheme();
   const [mounted, setMounted] = useState(false);
+  const customMeta = getCustomThemeMeta(customConfig);
 
   useEffect(() => setMounted(true), []);
 
@@ -54,7 +57,7 @@ export function Appearance() {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {themes.map((item) => {
+          {[...themes, customMeta].map((item) => {
             const isActive = colorTheme === item.id;
             return (
               <button
@@ -84,7 +87,7 @@ export function Appearance() {
                     <span className="flex gap-0.5">
                       {item.swatches.slice(0, 3).map((swatch) => (
                         <span
-                          key={swatch}
+                          key={`${item.id}-${swatch}`}
                           className="border-border size-2.5 rounded-full border"
                           style={{ backgroundColor: swatch }}
                         />
@@ -98,6 +101,8 @@ export function Appearance() {
           })}
         </div>
       </section>
+
+      <CustomThemePicker />
     </div>
   );
 }

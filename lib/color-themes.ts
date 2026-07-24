@@ -1,3 +1,10 @@
+import {
+  DEFAULT_CUSTOM_PRIMARY,
+  generateThemeFromPrimary,
+  readStoredCustomTheme,
+  type CustomThemeConfig,
+} from "@/lib/generate-theme";
+
 export const COLOR_THEME_STORAGE_KEY = "loggrr-color-theme";
 export const DEFAULT_COLOR_THEME = "zinc" as const;
 
@@ -12,6 +19,7 @@ export const COLOR_THEME_IDS = [
   "teal",
   "amber",
   "slate",
+  "custom",
 ] as const;
 
 export type ColorThemeId = (typeof COLOR_THEME_IDS)[number];
@@ -103,6 +111,28 @@ export function isColorThemeId(value: unknown): value is ColorThemeId {
   return typeof value === "string" && (COLOR_THEME_IDS as readonly string[]).includes(value);
 }
 
-export function getColorTheme(id: ColorThemeId): ColorThemeMeta {
+export function getCustomThemeMeta(config?: CustomThemeConfig): ColorThemeMeta {
+  const resolved = config ?? { primary: DEFAULT_CUSTOM_PRIMARY };
+  const generated = generateThemeFromPrimary(resolved.primary, resolved.accent);
+  return {
+    id: "custom",
+    name: "Custom",
+    description: "Your generated palette",
+    swatches: generated.swatches,
+    loader: generated.loader,
+  };
+}
+
+export function getColorTheme(id: ColorThemeId, customConfig?: CustomThemeConfig): ColorThemeMeta {
+  if (id === "custom") {
+    const config =
+      customConfig ?? (typeof window !== "undefined" ? readStoredCustomTheme() : { primary: DEFAULT_CUSTOM_PRIMARY });
+    return getCustomThemeMeta(config);
+  }
   return COLOR_THEMES.find((theme) => theme.id === id) ?? COLOR_THEMES[0];
+}
+
+/** Preset themes for the grid (excludes custom — shown separately). */
+export function getPresetThemes(): ColorThemeMeta[] {
+  return COLOR_THEMES;
 }
