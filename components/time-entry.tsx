@@ -90,9 +90,10 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
   // Wait for persist rehydration so we don't flash classic → board (or vice versa).
   const showBoard = hasHydrated && logBoardView;
 
-  // This sets the AI input from the local storage
   useEffect(() => {
-    setAiInput(localStorage?.getItem("notebook-input") || "");
+    setTimeout(() => {
+      setAiInput(localStorage?.getItem("notebook-input") || "");
+    }, 0);
   }, []);
 
   const editEntryHandler = (obj: SelectedData, id: number) => {
@@ -197,7 +198,9 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
 
   useEffect(() => {
     if (!edit.isEditing) {
-      getTimeEntries();
+      setTimeout(() => {
+        getTimeEntries();
+      }, 0);
     }
   }, [getTimeEntries, edit.isEditing]);
 
@@ -330,7 +333,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
             </div>
           </div>
           {!hasHydrated ? (
-            <div className="min-h-[280px] animate-pulse bg-muted/40" aria-hidden />
+            <div className="bg-muted/40 min-h-70 animate-pulse" aria-hidden />
           ) : showBoard ? (
             <TimeLogBoard
               projects={projects}

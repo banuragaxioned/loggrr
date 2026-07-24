@@ -322,19 +322,22 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
           <ScrollArea className="max-h-[240px] sm:h-[240px]">
             <div className="p-1.5">
               {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
-              {groupedProjects.map((group) => (
-                <div key={group.clientId} className="mb-1">
-                  <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {group.clientName}
-                  </p>
-                  {group.projects.map((project) => (
-                    <BoardItem
-                      key={project.id}
-                      label={project.name}
-                      active={selectedData?.project?.id === project.id}
-                      onClick={() => projectCallback(project)}
-                    />
-                  ))}
+              {groupedProjects.map((group, index) => (
+                <div key={group.clientId}>
+                  <div className="mb-1">
+                    <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      {group.clientName}
+                    </p>
+                    {group.projects.map((project) => (
+                      <BoardItem
+                        key={project.id}
+                        label={project.name}
+                        active={selectedData?.project?.id === project.id}
+                        onClick={() => projectCallback(project)}
+                      />
+                    ))}
+                  </div>
+                  {index !== groupedProjects.length - 1 && <div className="bg-border/40 my-1 h-px" />}
                 </div>
               ))}
             </div>

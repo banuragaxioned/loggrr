@@ -13,7 +13,7 @@ export function CustomTooltip({ trigger, content, sideOffset, contentClassName }
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-        <TooltipContent className={cn("max-w-[300px]", contentClassName)} sideOffset={sideOffset}>
+        <TooltipContent className={cn("max-w-75", contentClassName)} sideOffset={sideOffset}>
           {typeof content === "string" ? <p>{content}</p> : content}
         </TooltipContent>
       </Tooltip>

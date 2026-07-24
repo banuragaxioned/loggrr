@@ -31,8 +31,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+
 import { toast } from "sonner";
+import { CustomTooltip } from "./custom/tooltip";
 
 interface TimeEntries {
   entries: TimeEntryDataObj;
@@ -53,7 +54,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium text-white"
                 style={{ backgroundColor: getRandomColor(entryData.project.id) }}
               >
-                {entryData.project.name.charAt(0)}
+                {entryData.project.client?.name?.charAt(0) ?? entryData.project.name.charAt(0)}
               </span>
               <span
                 className="min-w-0 truncate"
@@ -89,7 +90,6 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
             const isEditable = entryData.project.status !== "ARCHIVED";
             const messageFor = entryData.project.status === "ARCHIVED" ? "Project" : "";
             const isLastEntry = i === entryData.data.length - 1;
-            const isLastProject = projectIndex === entries.projectsLog!.length - 1;
             const hasMeta = Boolean(data.milestone?.name || data.task?.name);
 
             return (
@@ -98,7 +98,6 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                   className={cn(
                     "group bg-secondary relative flex justify-between gap-3 px-5 py-2",
                     isEditing && "ring-muted-foreground ring-1 ring-inset",
-                    isLastProject && isLastEntry && "rounded-b-xl",
                   )}
                 >
                   <div className={cn("flex min-w-0 flex-1 flex-col gap-y-2", !hasMeta && "justify-end")}>
@@ -137,7 +136,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                     </p>
                   </div>
 
-                  <div className="flex min-w-[100px] shrink-0 flex-col justify-between text-right select-none">
+                  <div className="flex min-w-25 shrink-0 flex-col justify-between text-right select-none">
                     <div className="flex items-center justify-end gap-1.5">
                       <div
                         className={cn(
@@ -146,8 +145,8 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                           isEditing && "md:opacity-100",
                         )}
                       >
-                        <Tooltip>
-                          <TooltipTrigger asChild>
+                        <CustomTooltip
+                          trigger={
                             <Button
                               type="button"
                               variant="outline"
@@ -161,14 +160,14 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                             >
                               {isEditing ? <ListRestart size={14} /> : <Edit size={14} />}
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>{isEditing ? "Cancel edit" : "Edit"}</TooltipContent>
-                        </Tooltip>
+                          }
+                          content={isEditing ? "Cancel edit" : "Edit"}
+                        />
 
                         {isEditable ? (
                           <Dialog>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                            <CustomTooltip
+                              trigger={
                                 <DialogTrigger asChild>
                                   <Button
                                     type="button"
@@ -180,10 +179,10 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                                     <Trash size={14} />
                                   </Button>
                                 </DialogTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent>Delete</TooltipContent>
-                            </Tooltip>
-                            <DialogContent className="sm:max-w-[425px]">
+                              }
+                              content="Delete"
+                            />
+                            <DialogContent className="sm:max-w-106.25">
                               <DialogHeader>
                                 <DialogTitle>Are you sure to delete this time entry?</DialogTitle>
                                 <DialogDescription>
@@ -218,16 +217,16 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
                       </span>
                     </div>
 
-                    {data.billable ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                    {data.billable && (
+                      <CustomTooltip
+                        trigger={
                           <span className="text-success ml-auto inline-flex" aria-label="Billable">
                             <CircleDollarSign size={16} />
                           </span>
-                        </TooltipTrigger>
-                        <TooltipContent>Billable</TooltipContent>
-                      </Tooltip>
-                    ) : null}
+                        }
+                        content="Billable"
+                      />
+                    )}
                   </div>
                 </div>
                 {!isLastEntry ? <Separator /> : null}
@@ -260,30 +259,28 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       <div className="mb-2 flex flex-col gap-2">
         <div className="flex justify-between">
           <Skeleton className="h-6 w-1/4" />
-          <Skeleton className="h-6 w-[80px]" />
+          <Skeleton className="h-6 w-20" />
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
           <Skeleton className="h-6 w-3/4" />
-          <Skeleton className="h-6 w-[80px]" />
+          <Skeleton className="h-6 w-20" />
         </div>
       </div>
     </li>
   );
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <ul
-        className={cn(
-          "flex w-full flex-col overflow-y-auto",
-          entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
-        )}
-      >
-        {status === "loading" && skeletonLoader}
-        {status === "success" && renderEntries}
-        {status === "error" && <li className="text-destructive p-4 text-center text-sm">Something went wrong</li>}
-      </ul>
-    </TooltipProvider>
+    <ul
+      className={cn(
+        "flex w-full flex-col overflow-y-auto",
+        entries.projectsLog?.length && "max-h-none sm:max-h-[calc(100vh-306px)]",
+      )}
+    >
+      {status === "loading" && skeletonLoader}
+      {status === "success" && renderEntries}
+      {status === "error" && <li className="text-destructive p-4 text-center text-sm">Something went wrong</li>}
+    </ul>
   );
 };
