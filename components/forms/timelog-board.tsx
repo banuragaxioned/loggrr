@@ -542,7 +542,7 @@ export const TimeLogBoard = ({
                 )}
 
                 <Button size="sm" type="submit" disabled={!formValidator()} className="shrink-0">
-                  {edit.isEditing ? "Update" : "Submit"}
+                  {edit.isEditing ? "Save" : "Add"}
                 </Button>
               </div>
             </div>

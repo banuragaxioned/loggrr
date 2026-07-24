@@ -308,7 +308,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
                 tabIndex={selectedData?.project && selectedData?.comment && selectedData?.time ? 7 : -1}
                 className="disabled:disabled border disabled:hover:bg-primary"
               >
-                {edit.isEditing ? "Update" : "Submit"}
+                {edit.isEditing ? "Save" : "Add"}
               </Button>
             </span>
           </div>
