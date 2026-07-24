@@ -1,37 +1,21 @@
-// Function to pad a string with leading zeros to ensure it has at least 2 characters
-const padWithZeros = (str: string) => {
-  return str.length < 2 ? `0${str}` : str;
-};
+/** Brand-harmonious palette for project dots and similar accents. */
+const BRAND_PALETTE = [
+  "#201547", // eggplant
+  "#F31B7C", // fuchsia
+  "#C4B5E0", // lilac mid
+  "#C5D92C", // citron
+  "#7C3AED", // violet
+  "#0D9488", // teal
+  "#DB2777", // pink
+  "#6366F1", // indigo
+  "#CA8A04", // gold
+  "#059669", // emerald
+  "#9333EA", // purple
+  "#E11D48", // rose
+];
 
-const customRandom = (seed: number) => {
-  let state = seed;
-  return () => {
-    // Initialize a custom pseudo-random number generator
-    state = (state * 9301 + 49297) % 233280;
-    return state / 233280;
-  };
-};
-
-// Function to get random dark colors
+/** Deterministic color from a stable index (e.g. project id). */
 export const getRandomColor = (index: number) => {
-  // Define the maximum value for each color component (0-255)
-  const maxColorValue = 255;
-
-  // Create a deterministic seed based on the index
-  const seed = index * 9973; // You can choose any prime number as the multiplier
-
-  // Use the seed to initialize a custom pseudo-random number generator
-  const rng = customRandom(seed);
-
-  // Generate random values for red, green, and blue components
-  const red = Math.floor(rng() * maxColorValue * 0.5); // Limit red to 0-127
-  const green = Math.floor(rng() * maxColorValue * 0.5); // Limit green to 0-127
-  const blue = Math.floor(rng() * maxColorValue * 0.5); // Limit blue to 0-127
-
-  // Convert the RGB components to a hexadecimal color representation with leading zeros
-  const darkColor = `#${padWithZeros(red.toString(16))}${padWithZeros(
-    green.toString(16),
-  )}${padWithZeros(blue.toString(16))}`;
-
-  return darkColor;
+  const normalized = Math.abs(Math.trunc(index));
+  return BRAND_PALETTE[normalized % BRAND_PALETTE.length];
 };

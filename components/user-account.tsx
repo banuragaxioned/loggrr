@@ -22,13 +22,13 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <UserAvatar user={{ name: user.name ?? null, image: user.image ?? null }} className="h-8 w-8 bg-slate-300" />
+        <UserAvatar user={{ name: user.name ?? null, image: user.image ?? null }} className="h-8 w-8 bg-secondary" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.name && <p className="font-medium">{user.name}</p>}
-            {user.email && <p className="w-[200px] truncate text-sm text-zinc-600 dark:text-zinc-100">{user.email}</p>}
+            {user.email && <p className="text-muted-foreground w-[200px] truncate text-sm">{user.email}</p>}
           </div>
         </div>
         <DropdownMenuSeparator />

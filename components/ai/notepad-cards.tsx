@@ -218,7 +218,7 @@ const NotepadCards = ({
                   }
                   className={cn(
                     selectedData.billable && "text-success hover:text-success",
-                    !selectedData.billable && "text-slate-400 hover:text-slate-400",
+                    !selectedData.billable && "text-muted-foreground hover:text-muted-foreground",
                   )}
                 >
                   <CircleDollarSign size={20} />

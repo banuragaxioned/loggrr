@@ -149,10 +149,10 @@ export function MobileNavMenu({ userProps, role }: { userProps: UserPropsInterfa
         {/* Avatar area */}
         {status === "authenticated" && (
           <div className="absolute bottom-0 left-0 flex w-full items-center border-t px-3 py-2">
-            <UserAvatar user={{ name: name ?? null, image: image ?? null }} className="h-10 w-10 bg-slate-300" />
+            <UserAvatar user={{ name: name ?? null, image: image ?? null }} className="bg-secondary h-10 w-10" />
             <div className="ml-2">
               <p className="font-medium">{name}</p>
-              <p className="w-[200px] truncate text-sm text-zinc-600 dark:text-zinc-100">{email}</p>
+              <p className="text-muted-foreground w-[200px] truncate text-sm">{email}</p>
             </div>
             {/* CTAs */}
             <div className="ml-auto flex gap-2">

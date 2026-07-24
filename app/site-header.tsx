@@ -38,7 +38,7 @@ export function SiteHeader({ projects }: { projects?: Project[] }) {
   const isAuthPage = pathname.includes("/auth/");
 
   return (
-    <header className="sticky top-0 z-50 mb-4 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60 print:hidden">
+    <header className="bg-background/95 sticky top-0 z-50 mb-4 w-full border-b backdrop-blur-sm supports-backdrop-filter:bg-background/60 print:hidden">
       <div className="container flex h-14 items-center space-x-4">
         {/* Site Logo/Title */}
         <Link href={slug ? `/${slug}` : "/"} aria-label={siteConfig.name}>

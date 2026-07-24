@@ -19,6 +19,11 @@ const COLOR_MAP: Record<string, string> = {
   slate: "#94a3b8",
   zinc: "#71717a",
   emerald: "#10b981",
+  fuchsia: "#F31B7C",
+  eggplant: "#201547",
+  lilac: "#C4B5E0",
+  citron: "#C5D92C",
+  violet: "#7C3AED",
 };
 
 function resolveColor(color: string): string {

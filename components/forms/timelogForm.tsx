@@ -254,7 +254,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
           >
             <div className="ml-2 flex basis-[70%] items-center">
               {!isProjectSelected ? (
-                <Info className="shrink-0 text-gray-500" size={18} />
+                <Info className="text-muted-foreground shrink-0" size={18} />
               ) : (
                 <MessageSquare onClick={() => setOnCommentFocus(true)} className="shrink-0" size={18} />
               )}
@@ -281,7 +281,7 @@ export const TimeLogForm = ({ projects, edit, submitHandler, recent, draft, onDr
                   }
                   className={cn(
                     selectedData.billable && "text-success hover:text-success",
-                    !selectedData.billable && "text-slate-400 hover:text-slate-400",
+                    !selectedData.billable && "text-muted-foreground hover:text-muted-foreground",
                   )}
                 >
                   <CircleDollarSign size={20} />

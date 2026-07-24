@@ -147,7 +147,7 @@ const UserCell = ({ user }: { user: User }) => {
 
   return (
     <Link href={`/${team}/reports/leaves?member=${user.id}`} className="flex items-center gap-x-2">
-      <UserAvatar user={user} className="z-10 mr-2 inline-block h-8 w-8 bg-slate-300" />
+      <UserAvatar user={user} className="bg-secondary z-10 mr-2 inline-block h-8 w-8" />
       <span className="min-w-[150px]">{user.name}</span>
     </Link>
   );

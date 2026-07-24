@@ -95,7 +95,7 @@ function LeaveDetails({ leave, updatedAt }: { leave: LeaveDetailsType; updatedAt
                         data={chartData}
                         category="value"
                         index="name"
-                        colors={isOverused ? ["rose", "slate"] : ["zinc", "emerald"]}
+                        colors={isOverused ? ["rose", "lilac"] : ["lilac", "fuchsia"]}
                         showAnimation
                         variant="pie"
                       />

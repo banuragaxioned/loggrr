@@ -151,7 +151,7 @@ export const columns: ColumnDef<Projects>[] = [
               name: owner,
               image: row.original.ownerImage ?? "",
             }}
-            className="h-6 w-6 shrink-0 bg-slate-300"
+            className="bg-secondary h-6 w-6 shrink-0"
           />
           <span className="truncate text-sm">{owner}</span>
         </div>

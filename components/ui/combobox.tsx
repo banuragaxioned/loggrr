@@ -136,7 +136,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
         <Command className={`${searchable ? "border" : "border-0"} box-border rounded-t-[5px] border-border`}>
           {searchable && (
             <div className="space-between flex w-full items-center rounded-t-[5px] border-b border-border">
-              <Search size={16} className="ml-[10px] text-gray-400" />
+              <Search size={16} className="text-muted-foreground ml-[10px]" />
               <input
                 tabIndex={tabIndex}
                 className={`m-1 box-border h-[36px] rounded-none border-0 border-none border-border bg-popover pl-[5px] pr-[10px] text-[14px] text-popover-foreground placeholder:font-[14px] placeholder:opacity-75 focus:outline-hidden`}

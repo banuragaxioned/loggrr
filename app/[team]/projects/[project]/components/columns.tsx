@@ -98,7 +98,7 @@ export const getColumns = (
             {depth === 0 && (
               <UserAvatar
                 user={{ name: row.original.name ?? null, image: row.original.image ?? null }}
-                className="h-6 w-6 bg-slate-300"
+                className="bg-secondary h-6 w-6"
               />
             )}
             <span className={`${depth === 1 ? "w-[150px]" : "w-full"} line-clamp-1 shrink-0`}>{value}</span>

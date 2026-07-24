@@ -5,7 +5,7 @@
   "tsx": true,
   "tailwind": {
     "css": "app/globals.css",
-    "baseColor": "zinc",
+    "baseColor": "violet",
     "cssVariables": true
   },
   "iconLibrary": "lucide",

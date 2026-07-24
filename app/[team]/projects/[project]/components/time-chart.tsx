@@ -84,7 +84,7 @@ function ChartTooltip({
   const dateLabel = isMonthlyView ? format(new Date(label), "MMMM yyyy") : format(new Date(label), "EEE, dd MMM, yyyy");
 
   return (
-    <div className="border-border bg-primary-foreground rounded-md border p-2 text-xs shadow-xs">
+    <div className="border-border bg-popover rounded-md border p-2 text-xs shadow-xs">
       <p className="label">{dateLabel}</p>
       <p className="desc">Hours logged: {payload[0].value}h</p>
     </div>

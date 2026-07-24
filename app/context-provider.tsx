@@ -4,26 +4,28 @@ import PHProvider from "./analytics";
 import NextTopLoader from "nextjs-toploader";
 import { TailwindIndicator } from "./tailwind-indicator";
 import { ThemeProvider } from "./theme-provider";
+import { ColorThemeProvider, useColorTheme } from "./color-theme-provider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { useTheme } from "next-themes";
 
 const TopLoader = () => {
-  const { theme } = useTheme();
+  const { activeTheme } = useColorTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  return (
-    mounted && (
-      <NextTopLoader showSpinner={false} color={theme === "dark" ? "#fff" : "#000"} height={3} shadow={false} />
-    )
-  );
+  // Zinc dark mode inverts primary to near-white — use a readable loader color.
+  const color =
+    activeTheme.id === "zinc" && resolvedTheme === "dark" ? "#FAFAFA" : activeTheme.loader;
+
+  return mounted && <NextTopLoader showSpinner={false} color={color} height={3} shadow={false} />;
 };
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
@@ -31,13 +33,15 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
     <>
       <PHProvider>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-          <NuqsAdapter>
-            <TopLoader />
-            <TooltipProvider>
-              <SessionProvider>{children}</SessionProvider>
-            </TooltipProvider>
-            <Toaster richColors />
-          </NuqsAdapter>
+          <ColorThemeProvider>
+            <NuqsAdapter>
+              <TopLoader />
+              <TooltipProvider>
+                <SessionProvider>{children}</SessionProvider>
+              </TooltipProvider>
+              <Toaster richColors />
+            </NuqsAdapter>
+          </ColorThemeProvider>
         </ThemeProvider>
       </PHProvider>
       <TailwindIndicator />

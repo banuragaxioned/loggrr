@@ -158,8 +158,8 @@ export function DataTableToolbar<TData>({
         size={18}
         className={cn(
           selectedBilling === "true" && "text-success hover:text-success focus:bg-success/10",
-          selectedBilling === "false" && "text-slate-400",
-          !selectedBilling && "text-black dark:text-white",
+          selectedBilling === "false" && "text-muted-foreground",
+          !selectedBilling && "text-foreground",
         )}
       />
       {generateBillingQuery()?.text}

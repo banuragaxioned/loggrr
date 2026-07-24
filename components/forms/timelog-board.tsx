@@ -533,7 +533,7 @@ export const TimeLogBoard = ({
                       "shrink-0",
                       selectedData.billable
                         ? "border-success bg-success text-white hover:bg-success hover:text-white"
-                        : "text-slate-400 hover:text-slate-400",
+                        : "text-muted-foreground hover:text-muted-foreground",
                     )}
                   >
                     <CircleDollarSign size={18} />
