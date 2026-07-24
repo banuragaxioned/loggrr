@@ -238,7 +238,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
       </li>
     ))
   ) : (
-    <li className="flex flex-col items-center justify-center space-y-3 px-6 py-14 text-center sm:py-16">
+    <li className="flex flex-col items-center justify-center space-y-3 border-t px-6 py-14 text-center sm:py-16">
       <div className="bg-muted flex h-14 w-14 items-center justify-center rounded-full">
         <CalendarClock size={28} className="text-muted-foreground" />
       </div>
@@ -252,7 +252,7 @@ export const TimeEntriesList = ({ entries, status, deleteEntryHandler, editEntry
   );
 
   const skeletonLoader = (
-    <li className="p-2">
+    <li className="border-t p-2">
       <div className="mb-2 flex items-center justify-between gap-4">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-6 w-1/4" />

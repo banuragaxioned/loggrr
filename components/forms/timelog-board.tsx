@@ -298,146 +298,146 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
   const boardColumnCount = 1 + Number(showCategories) + Number(showTasks);
 
   return (
-    <div className="p-2">
-      <div className="overflow-hidden rounded-xl border">
-        {/* Cascading columns: Project -> Category/Task when the selected project has them */}
-        <div
-          className={cn(
-            "grid grid-cols-1 divide-y sm:divide-x sm:divide-y-0",
-            boardColumnCount === 1 && "sm:grid-cols-1",
-            boardColumnCount === 2 && "sm:grid-cols-2",
-            boardColumnCount === 3 && "sm:grid-cols-3",
-          )}
-        >
-          {/* Column 1: Projects (grouped by client) */}
+    <div>
+      {/* Cascading columns: Project -> Category/Task when the selected project has them.
+          No top border here — the parent card header already provides one. */}
+      <div
+        className={cn(
+          "grid grid-cols-1 divide-y sm:divide-x sm:divide-y-0",
+          boardColumnCount === 1 && "sm:grid-cols-1",
+          boardColumnCount === 2 && "sm:grid-cols-2",
+          boardColumnCount === 3 && "sm:grid-cols-3",
+        )}
+      >
+        {/* Column 1: Projects (grouped by client) */}
+        <div className="flex min-w-0 flex-col">
+          <SearchableHeader
+            icon={<Folder size={14} className="shrink-0" />}
+            label="Project"
+            query={projectQuery}
+            setQuery={setProjectQuery}
+            open={projectSearchOpen}
+            setOpen={setProjectSearchOpen}
+          />
+          <ScrollArea className="max-h-[240px] sm:h-[240px]">
+            <div className="p-1.5">
+              {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
+              {groupedProjects.map((group) => (
+                <div key={group.clientId} className="mb-1">
+                  <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {group.clientName}
+                  </p>
+                  {group.projects.map((project) => (
+                    <BoardItem
+                      key={project.id}
+                      label={project.name}
+                      active={selectedData?.project?.id === project.id}
+                      onClick={() => projectCallback(project)}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+
+        {/* Column 2: Categories (milestones) — only when the project has any */}
+        {showCategories && (
           <div className="flex min-w-0 flex-col">
             <SearchableHeader
-              icon={<Folder size={14} className="shrink-0" />}
-              label="Project"
-              query={projectQuery}
-              setQuery={setProjectQuery}
-              open={projectSearchOpen}
-              setOpen={setProjectSearchOpen}
+              icon={<CategoryIcon size={14} className="shrink-0" />}
+              label="Category"
+              required={categoryRequired}
+              missingRequired={categoryMissing}
+              query={categoryQuery}
+              setQuery={setCategoryQuery}
+              open={categorySearchOpen}
+              setOpen={setCategorySearchOpen}
+              disabled={!isProjectSelected}
             />
             <ScrollArea className="max-h-[240px] sm:h-[240px]">
               <div className="p-1.5">
-                {groupedProjects.length === 0 && <EmptyState text="No projects found" />}
-                {groupedProjects.map((group) => (
-                  <div key={group.clientId} className="mb-1">
-                    <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                      {group.clientName}
-                    </p>
-                    {group.projects.map((project) => (
-                      <BoardItem
-                        key={project.id}
-                        label={project.name}
-                        active={selectedData?.project?.id === project.id}
-                        onClick={() => projectCallback(project)}
-                      />
-                    ))}
-                  </div>
-                ))}
+                {filteredMilestones.length === 0 ? (
+                  <EmptyState text="No matches" />
+                ) : (
+                  filteredMilestones.map((milestone) => (
+                    <BoardItem
+                      key={milestone.id}
+                      label={milestone.name}
+                      active={selectedData?.milestone?.id === milestone.id}
+                      onClick={() => milestoneCallback(milestone)}
+                    />
+                  ))
+                )}
               </div>
             </ScrollArea>
           </div>
+        )}
 
-          {/* Column 2: Categories (milestones) — only when the project has any */}
-          {showCategories && (
-            <div className="flex min-w-0 flex-col">
-              <SearchableHeader
-                icon={<CategoryIcon size={14} className="shrink-0" />}
-                label="Category"
-                required={categoryRequired}
-                missingRequired={categoryMissing}
-                query={categoryQuery}
-                setQuery={setCategoryQuery}
-                open={categorySearchOpen}
-                setOpen={setCategorySearchOpen}
-                disabled={!isProjectSelected}
-              />
-              <ScrollArea className="max-h-[240px] sm:h-[240px]">
-                <div className="p-1.5">
-                  {filteredMilestones.length === 0 ? (
-                    <EmptyState text="No matches" />
-                  ) : (
-                    filteredMilestones.map((milestone) => (
-                      <BoardItem
-                        key={milestone.id}
-                        label={milestone.name}
-                        active={selectedData?.milestone?.id === milestone.id}
-                        onClick={() => milestoneCallback(milestone)}
-                      />
-                    ))
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
+        {/* Column 3: Tasks — only when the project has any */}
+        {showTasks && (
+          <div className="flex min-w-0 flex-col">
+            <SearchableHeader
+              icon={<List size={14} className="shrink-0" />}
+              label="Task"
+              required={taskRequired}
+              missingRequired={taskMissing}
+              query={taskQuery}
+              setQuery={setTaskQuery}
+              open={taskSearchOpen}
+              setOpen={setTaskSearchOpen}
+              disabled={!isProjectSelected}
+            />
+            <ScrollArea className="max-h-[240px] sm:h-[240px]">
+              <div className="p-1.5">
+                {filteredTasks.length === 0 ? (
+                  <EmptyState text="No matches" />
+                ) : (
+                  filteredTasks.map((task) => (
+                    <BoardItem
+                      key={task.id}
+                      label={task.name}
+                      active={selectedData?.task?.id === task.id}
+                      onClick={() => taskCallback(task)}
+                    />
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+      </div>
 
-          {/* Column 3: Tasks — only when the project has any */}
-          {showTasks && (
-            <div className="flex min-w-0 flex-col">
-              <SearchableHeader
-                icon={<List size={14} className="shrink-0" />}
-                label="Task"
-                required={taskRequired}
-                missingRequired={taskMissing}
-                query={taskQuery}
-                setQuery={setTaskQuery}
-                open={taskSearchOpen}
-                setOpen={setTaskSearchOpen}
-                disabled={!isProjectSelected}
-              />
-              <ScrollArea className="max-h-[240px] sm:h-[240px]">
-                <div className="p-1.5">
-                  {filteredTasks.length === 0 ? (
-                    <EmptyState text="No matches" />
-                  ) : (
-                    filteredTasks.map((task) => (
-                      <BoardItem
-                        key={task.id}
-                        label={task.name}
-                        active={selectedData?.task?.id === task.id}
-                        onClick={() => taskCallback(task)}
-                      />
-                    ))
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
-        </div>
-
-        {/* Compose bar: comment + time + billable + submit */}
-        <form
-          onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
-          onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
-          autoComplete="off"
-          className="border-t bg-muted/30"
-        >
-          <div className="flex flex-col gap-2 p-2">
-            {/* Row 1: comment box — always editable to reduce friction */}
-            <div className="flex min-h-[52px] items-start rounded-md border bg-background px-2 py-2">
-              <MessageSquare className="mt-1 shrink-0 text-muted-foreground" size={16} />
-              <textarea
-                rows={2}
-                className="min-h-[36px] w-full resize-y border-0 bg-transparent px-2 py-0.5 text-sm focus:outline-0 focus:ring-0"
-                placeholder="Add a comment..."
-                value={selectedData?.comment ?? ""}
-                onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={(e) => {
-                  // Enter submits; Shift+Enter adds a newline.
-                  // Stop propagation so the form-level Enter handler doesn't also fire.
-                  if (e.key === "Enter") {
-                    e.stopPropagation();
-                    if (!e.shiftKey) {
-                      e.preventDefault();
-                      if (formValidator()) submitHandler(e as unknown as FormEvent, handleClearForm, selectedData);
-                    }
+      {/* Compose bar: comment + time + billable + submit */}
+      <form
+        onSubmit={(e) => submitHandler(e, handleClearForm, selectedData)}
+        onKeyDown={(e) => e.key === "Enter" && formValidator() && submitHandler(e, handleClearForm, selectedData)}
+        autoComplete="off"
+        className="border-t"
+      >
+        <div className="flex flex-col gap-2 p-3 sm:px-4">
+          {/* Row 1: comment input */}
+          <div className="flex min-h-[52px] items-start rounded-md border bg-background px-2 py-2 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+            <MessageSquare className="mt-1 shrink-0 text-muted-foreground" size={16} />
+            <textarea
+              rows={2}
+              className="min-h-[36px] w-full resize-y border-0 bg-transparent px-2 py-0.5 text-sm focus:outline-0 focus:ring-0"
+              placeholder="Add a comment..."
+              value={selectedData?.comment ?? ""}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => {
+                // Enter submits; Shift+Enter adds a newline.
+                // Stop propagation so the form-level Enter handler doesn't also fire.
+                if (e.key === "Enter") {
+                  e.stopPropagation();
+                  if (!e.shiftKey) {
+                    e.preventDefault();
+                    if (formValidator()) submitHandler(e as unknown as FormEvent, handleClearForm, selectedData);
                   }
-                }}
-              />
-            </div>
+                }
+              }}
+            />
+          </div>
 
             {/* Row 2: time controls + reset ... billable + submit */}
             <div className="flex flex-wrap items-center gap-2">
@@ -536,7 +536,6 @@ export const TimeLogBoard = ({ projects, edit, submitHandler, recent, draft, onD
             </div>
           </div>
         </form>
-      </div>
     </div>
   );
 };
