@@ -15,7 +15,7 @@ import {
   DEFAULT_COLOR_THEME,
   getColorTheme,
   getPresetThemes,
-  isColorThemeId,
+  resolveColorThemeId,
   type ColorThemeId,
   type ColorThemeMeta,
 } from "@/lib/color-themes";
@@ -52,7 +52,7 @@ export function ColorThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem(COLOR_THEME_STORAGE_KEY);
-    const next = isColorThemeId(stored) ? stored : DEFAULT_COLOR_THEME;
+    const next = resolveColorThemeId(stored);
     const custom = readStoredCustomTheme();
     setCustomConfigState(custom);
 
@@ -62,6 +62,7 @@ export function ColorThemeProvider({ children }: { children: ReactNode }) {
 
     setThemeState(next);
     applyColorTheme(next);
+    if (stored !== next) localStorage.setItem(COLOR_THEME_STORAGE_KEY, next);
   }, []);
 
   const setTheme = useCallback(

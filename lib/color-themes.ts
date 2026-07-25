@@ -8,21 +8,33 @@ import {
 export const COLOR_THEME_STORAGE_KEY = "loggrr-color-theme";
 export const DEFAULT_COLOR_THEME = "zinc" as const;
 
+// Zinc (default) and Brand lead; the rest are alphabetical, with custom last.
 export const COLOR_THEME_IDS = [
   "zinc",
   "brand",
-  "ocean",
+  "copper",
   "forest",
-  "sunset",
-  "rose",
-  "violet",
-  "teal",
-  "amber",
+  "gold",
+  "ocean",
+  "olive",
+  "pink",
   "slate",
+  "teal",
   "custom",
 ] as const;
 
 export type ColorThemeId = (typeof COLOR_THEME_IDS)[number];
+
+/** Map removed palette ids so existing localStorage choices still resolve. */
+const LEGACY_COLOR_THEME_MAP: Record<string, ColorThemeId> = {
+  sunset: "copper",
+  rose: "pink",
+  amber: "gold",
+  indigo: "copper",
+  crimson: "pink",
+  violet: "olive",
+  navy: "gold",
+};
 
 export interface ColorThemeMeta {
   id: ColorThemeId;
@@ -50,11 +62,11 @@ export const COLOR_THEMES: ColorThemeMeta[] = [
     loader: "#F31B7C",
   },
   {
-    id: "ocean",
-    name: "Ocean",
-    description: "Cool sky blues",
-    swatches: ["#0369A1", "#0EA5E9", "#E0F2FE", "#F0F9FF"],
-    loader: "#0284C7",
+    id: "copper",
+    name: "Copper",
+    description: "Warm copper & terracotta",
+    swatches: ["#9A3412", "#EA580C", "#FFEDD5", "#FFF7ED"],
+    loader: "#C2410C",
   },
   {
     id: "forest",
@@ -64,39 +76,32 @@ export const COLOR_THEMES: ColorThemeMeta[] = [
     loader: "#059669",
   },
   {
-    id: "sunset",
-    name: "Sunset",
-    description: "Warm orange & coral",
-    swatches: ["#C2410C", "#F97316", "#FFEDD5", "#FFF7ED"],
-    loader: "#EA580C",
+    id: "gold",
+    name: "Gold",
+    description: "Deep gold & honey",
+    swatches: ["#854D0E", "#CA8A04", "#FEF9C3", "#FEFCE8"],
+    loader: "#A16207",
   },
   {
-    id: "rose",
-    name: "Rose",
-    description: "Soft rose & pink",
-    swatches: ["#9F1239", "#E11D48", "#FFE4E6", "#FFF1F2"],
-    loader: "#E11D48",
+    id: "ocean",
+    name: "Ocean",
+    description: "Cool sky blues",
+    swatches: ["#0369A1", "#0EA5E9", "#E0F2FE", "#F0F9FF"],
+    loader: "#0284C7",
   },
   {
-    id: "violet",
-    name: "Violet",
-    description: "Rich purple",
-    swatches: ["#5B21B6", "#8B5CF6", "#EDE9FE", "#F5F3FF"],
-    loader: "#7C3AED",
+    id: "olive",
+    name: "Olive",
+    description: "Earthy olive green",
+    swatches: ["#3F6212", "#65A30D", "#ECFCCB", "#F7FEE7"],
+    loader: "#4D7C0F",
   },
   {
-    id: "teal",
-    name: "Teal",
-    description: "Teal & cyan",
-    swatches: ["#115E59", "#14B8A6", "#CCFBF1", "#F0FDFA"],
-    loader: "#0D9488",
-  },
-  {
-    id: "amber",
-    name: "Amber",
-    description: "Gold & amber",
-    swatches: ["#92400E", "#F59E0B", "#FEF3C7", "#FFFBEB"],
-    loader: "#D97706",
+    id: "pink",
+    name: "Pink",
+    description: "Soft pink that works in light & dark",
+    swatches: ["#9D174D", "#EC4899", "#FCE7F3", "#FDF2F8"],
+    loader: "#DB2777",
   },
   {
     id: "slate",
@@ -105,10 +110,25 @@ export const COLOR_THEMES: ColorThemeMeta[] = [
     swatches: ["#1E293B", "#64748B", "#E2E8F0", "#F8FAFC"],
     loader: "#334155",
   },
+  {
+    id: "teal",
+    name: "Teal",
+    description: "Teal & cyan",
+    swatches: ["#115E59", "#14B8A6", "#CCFBF1", "#F0FDFA"],
+    loader: "#0D9488",
+  },
 ];
 
 export function isColorThemeId(value: unknown): value is ColorThemeId {
   return typeof value === "string" && (COLOR_THEME_IDS as readonly string[]).includes(value);
+}
+
+export function resolveColorThemeId(value: unknown): ColorThemeId {
+  if (isColorThemeId(value)) return value;
+  if (typeof value === "string" && value in LEGACY_COLOR_THEME_MAP) {
+    return LEGACY_COLOR_THEME_MAP[value];
+  }
+  return DEFAULT_COLOR_THEME;
 }
 
 export function getCustomThemeMeta(config?: CustomThemeConfig): ColorThemeMeta {

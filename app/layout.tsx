@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   ],
 };
 
-const colorThemeInitScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(COLOR_THEME_STORAGE_KEY)});var v=${JSON.stringify([...COLOR_THEME_IDS])};var theme=v.indexOf(t)>=0?t:${JSON.stringify(DEFAULT_COLOR_THEME)};document.documentElement.dataset.theme=theme;if(theme==="custom"){var css=localStorage.getItem(${JSON.stringify(`${CUSTOM_THEME_STORAGE_KEY}-css`)});if(css){var s=document.getElementById(${JSON.stringify(CUSTOM_THEME_STYLE_ID)});if(!s){s=document.createElement("style");s.id=${JSON.stringify(CUSTOM_THEME_STYLE_ID)};document.head.appendChild(s);}s.textContent=css;}}}catch(e){document.documentElement.dataset.theme=${JSON.stringify(DEFAULT_COLOR_THEME)};}})();`;
+const colorThemeInitScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(COLOR_THEME_STORAGE_KEY)});var v=${JSON.stringify([...COLOR_THEME_IDS])};var legacy={sunset:"copper",rose:"pink",amber:"gold",indigo:"copper",crimson:"pink",violet:"olive",navy:"gold"};var theme=v.indexOf(t)>=0?t:(legacy[t]||${JSON.stringify(DEFAULT_COLOR_THEME)});document.documentElement.dataset.theme=theme;if(theme==="custom"){var css=localStorage.getItem(${JSON.stringify(`${CUSTOM_THEME_STORAGE_KEY}-css`)});if(css){var s=document.getElementById(${JSON.stringify(CUSTOM_THEME_STYLE_ID)});if(!s){s=document.createElement("style");s.id=${JSON.stringify(CUSTOM_THEME_STYLE_ID)};document.head.appendChild(s);}s.textContent=css;}}}catch(e){document.documentElement.dataset.theme=${JSON.stringify(DEFAULT_COLOR_THEME)};}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
