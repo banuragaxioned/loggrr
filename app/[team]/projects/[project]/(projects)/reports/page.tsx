@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { startOfMonth } from "date-fns";
 
 import { pageProps } from "@/types";
 import {
@@ -27,9 +28,17 @@ export default async function Page(props: pageProps) {
   }
 
   const projectId = +project;
-  const { startDate, endDate } = getStartandEndDates(searchParams.range, 30);
+  const projectDetails = await getProjectDetailsById(team, projectId);
+  const selectedRange = searchParams.range;
+  const isFixed = projectDetails?.interval === "FIXED";
 
-  const [matrix, allMembers, allCategories, allTasks, projectDetails] = await Promise.all([
+  const { startDate, endDate } = selectedRange
+    ? getStartandEndDates(selectedRange)
+    : isFixed
+      ? { startDate: projectDetails?.createdAt ?? startOfMonth(new Date()), endDate: new Date() }
+      : getStartandEndDates("");
+
+  const [matrix, allMembers, allCategories, allTasks] = await Promise.all([
     getProjectMatrix(
       team,
       projectId,
@@ -43,7 +52,6 @@ export default async function Page(props: pageProps) {
     getMembersNameInTimeEntries(team, projectId),
     getMilestonesInProject(team, projectId),
     getTasksInProject(team, projectId),
-    getProjectDetailsById(team, projectId),
   ]);
   const isBillable = projectDetails?.billable ?? false;
 
@@ -54,6 +62,8 @@ export default async function Page(props: pageProps) {
         allMembers={allMembers}
         allCategories={allCategories}
         allTasks={allTasks}
+        interval={projectDetails?.interval}
+        projectCreatedAt={projectDetails?.createdAt?.toISOString()}
       />
       <ProjectMatrix data={matrix} />
     </div>

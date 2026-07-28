@@ -45,8 +45,14 @@ export function DataTableToolbar({
   const selectedMembers = searchParams.get("members");
   const selectedCategory = searchParams.get("category");
   const selectedTask = searchParams.get("task");
-  const defaultDay = selectedRange ? undefined : 30;
   const selectedProject = pathname.includes("projects") ? pathname.split("/")[3] : null;
+
+  const isFixed = interval === "FIXED";
+  const [start, end] = selectedRange?.split(",") || [];
+  const monthStart = startOfMonth(startOfToday());
+  const fixedStart = projectCreatedAt ? startOfDay(new Date(projectCreatedAt)) : monthStart;
+  const startFrom = (start && startOfDay(new Date(start))) || (isFixed ? fixedStart : monthStart);
+  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
   const peopleFilter = {
     title: "Members",
@@ -81,15 +87,17 @@ export function DataTableToolbar({
   const handleExportClick = async () => {
     try {
       setIsExportLoading(true);
+      // Match Overview/Report defaults when no explicit range is in the URL
+      const rangeForExport =
+        selectedRange ?? `${format(startFrom, "MM-dd-yyyy")},${format(endTo, "MM-dd-yyyy")}`;
       const response = await fetch("/api/team/export", {
         method: "POST",
         body: JSON.stringify({
           slug,
-          selectedRange,
+          selectedRange: rangeForExport,
           selectedBilling,
           selectedMembers,
           selectedProject,
-          defaultDay,
         }),
       });
 
@@ -127,13 +135,6 @@ export function DataTableToolbar({
   const updateDateRange = (range: string) => {
     router.push(pathname + "?" + createQueryString("range", range));
   };
-
-  const isFixed = interval === "FIXED";
-  const [start, end] = selectedRange?.split(",") || [];
-  const monthStart = startOfMonth(startOfToday());
-  const fixedStart = projectCreatedAt ? startOfDay(new Date(projectCreatedAt)) : monthStart;
-  const startFrom = (start && startOfDay(new Date(start))) || (isFixed ? fixedStart : monthStart);
-  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
 
   // Billing status toggle button
   const billingStatusToggleButton = (
