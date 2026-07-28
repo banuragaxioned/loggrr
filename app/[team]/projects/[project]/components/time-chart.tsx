@@ -16,6 +16,10 @@ interface ChartPoint {
   time: number;
 }
 
+function roundHours(value: number) {
+  return Math.round(value * 100) / 100;
+}
+
 type TimeChartProps = {
   timeEntries: { date: Date; time: number }[];
   totalDays: number;
@@ -32,7 +36,7 @@ function buildDailyChartData(
 
   timeEntries.forEach((entry) => {
     const key = format(new Date(entry.date), "yyyy-MM-dd");
-    byDay[key] = (byDay[key] ?? 0) + +getTimeInHours(entry.time);
+    byDay[key] = roundHours((byDay[key] ?? 0) + +getTimeInHours(entry.time));
   });
 
   const days: ChartPoint[] = [];
@@ -54,7 +58,7 @@ function buildMonthlyChartData(
 
   timeEntries.forEach((entry) => {
     const key = format(new Date(entry.date), "yyyy-MM");
-    byMonth[key] = (byMonth[key] ?? 0) + +getTimeInHours(entry.time);
+    byMonth[key] = roundHours((byMonth[key] ?? 0) + +getTimeInHours(entry.time));
   });
 
   const months = eachMonthOfInterval({
@@ -82,11 +86,14 @@ function ChartTooltip({
   if (!active || !payload?.length || !label) return null;
 
   const dateLabel = isMonthlyView ? format(new Date(label), "MMMM yyyy") : format(new Date(label), "EEE, dd MMM, yyyy");
+  const hours = roundHours(payload[0].value);
 
   return (
-    <div className="border-border bg-popover rounded-md border p-2 text-xs shadow-xs">
-      <p className="label">{dateLabel}</p>
-      <p className="desc">Hours logged: {payload[0].value}h</p>
+    <div className="border-border bg-popover rounded-md border px-2.5 py-1.5 text-xs shadow-xs">
+      <p className="font-medium">{dateLabel}</p>
+      <p className="text-muted-foreground">
+        {hours > 0 ? `Hours logged: ${hours.toFixed(2)}h` : "No time logged"}
+      </p>
     </div>
   );
 }
@@ -105,6 +112,8 @@ const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProp
 
     return buildDailyChartData(rangeEnd, totalDays, timeEntries);
   }, [timeEntries, startDate, endDate, totalDays, isMonthlyView]);
+
+  const rangeLabel = `${format(new Date(startDate), "MMM d, yyyy")} – ${format(new Date(endDate), "MMM d, yyyy")}`;
 
   const formatXAxis = (tickItem: string) =>
     isMonthlyView ? format(new Date(tickItem), "MMM yy") : format(new Date(tickItem), "MMM dd");
@@ -128,31 +137,45 @@ const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProp
   }
 
   return (
-    <Card className="p-0 shadow-none select-none">
-      <CardHeader className="mt-2 flex flex-row items-center justify-between px-4 py-2">
-        <p className="font-semibold">{isMonthlyView ? "Month-wise distribution" : "Day-wise distribution"}</p>
-        <p className="flex items-center gap-1.5 text-base leading-none font-semibold tabular-nums">
-          <Clock size={16} className="shrink-0" />
-          <span>
-            {totalTime}
-            <span className="text-sm font-normal">h</span>
-          </span>
+    <Card className="border-border bg-card select-none p-4 shadow-none">
+      <CardHeader className="mb-3 flex flex-row items-start justify-between gap-3 p-0">
+        <div className="space-y-1">
+          <p className="text-sm font-medium">{isMonthlyView ? "Month-wise distribution" : "Day-wise distribution"}</p>
+          <p className="text-muted-foreground text-[11px]">{rangeLabel}</p>
+        </div>
+        <p className="flex items-center gap-1.5 pt-0.5 tabular-nums">
+          <Clock size={14} className="text-muted-foreground shrink-0" />
+          <span className="text-foreground text-lg leading-none font-semibold">{totalTime}</span>
+          <span className="text-muted-foreground text-sm">h</span>
         </p>
       </CardHeader>
-      <div className="flex h-[200px] items-end justify-end py-2 pr-8 sm:h-[300px] md:h-[416px]">
+      <div className="flex h-[200px] items-end outline-none focus-within:outline-none sm:h-[260px] md:h-[300px] [&_*]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart width={500} height={300} data={chartData}>
+          <BarChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 10 }}
+              tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
               tickFormatter={formatXAxis}
               tickLine={false}
               axisLine={false}
               interval={isMonthlyView ? 0 : "preserveStartEnd"}
+              dy={4}
             />
-            <YAxis tick={{ fontSize: 12 }} tickFormatter={formatYAxis} tickLine={false} axisLine={false} />
-            <Tooltip content={<ChartTooltip isMonthlyView={isMonthlyView} />} />
-            <Bar dataKey="time" style={{ fill: "hsl(var(--primary))" }} />
+            <YAxis
+              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+              tickFormatter={formatYAxis}
+              tickLine={false}
+              axisLine={false}
+              width={36}
+            />
+            <Tooltip cursor={false} content={<ChartTooltip isMonthlyView={isMonthlyView} />} />
+            <Bar
+              dataKey="time"
+              fill="hsl(var(--primary))"
+              fillOpacity={0.85}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={isMonthlyView ? 48 : 28}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
