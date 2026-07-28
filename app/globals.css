@@ -913,6 +913,15 @@
     pointer-events: all !important;
   }
 
+  /* Global `* { outline-ring/50 }` shows a focus ring on Recharts SVG when clicked */
+  .recharts-wrapper,
+  .recharts-wrapper *,
+  .recharts-surface,
+  .recharts-surface:focus,
+  .recharts-surface:focus-visible {
+    outline: none !important;
+  }
+
   .w-full-combo {
     @apply relative [&>div[data-radix-popper-content-wrapper]]:absolute! [&>div[data-radix-popper-content-wrapper]]:w-full [&>div[data-radix-popper-content-wrapper]]:max-w-full;
   }
