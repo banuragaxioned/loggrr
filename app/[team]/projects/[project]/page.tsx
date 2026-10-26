@@ -14,8 +14,9 @@ import { pageProps } from "@/types";
 import TimeChart from "./components/time-chart";
 import UserDetails from "./components/user-details";
 import { DataTableToolbar } from "./components/toolbar";
-import { getStartandEndDates } from "@/lib/months";
-import { differenceInDays, startOfMonth } from "date-fns";
+import { getProjectLifetimeRange, getStartandEndDates } from "@/lib/months";
+import { getRequestTodayKey } from "@/server/timezone";
+import { differenceInDays } from "date-fns";
 
 export const metadata: Metadata = {
   title: `Overview`,
@@ -33,11 +34,13 @@ export default async function Page(props: pageProps) {
   const selectedTask = searchParams.task;
   const isFixed = projectDetails?.interval === "FIXED";
 
+  const todayKey = await getRequestTodayKey();
+
   const { startDate, endDate } = selectedRange
     ? getStartandEndDates(selectedRange)
     : isFixed
-      ? { startDate: projectDetails?.createdAt ?? startOfMonth(new Date()), endDate: new Date() }
-      : getStartandEndDates("");
+      ? getProjectLifetimeRange(projectDetails?.createdAt, todayKey)
+      : getStartandEndDates("", undefined, todayKey);
 
   const { timeEntries } = await getMembersTimeEntries(
     team,

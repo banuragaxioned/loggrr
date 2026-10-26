@@ -3,6 +3,7 @@ import { pageProps } from "@/types";
 
 import { getLogged } from "@/server/services/time-entry";
 import { getStartandEndDates } from "@/lib/months";
+import { getRequestTodayKey } from "@/server/timezone";
 import { buildLoggedTreeByGroup, buildLoggedTreeByMember } from "@/lib/logged-transform";
 import { DashboardShell } from "@/components/ui/shell";
 import { DashboardHeader } from "@/components/ui/shell";
@@ -44,7 +45,7 @@ export default async function Page(props: pageProps) {
         .filter((id) => !Number.isNaN(id))
     : [];
   const view = searchParams.view === "groups" ? "groups" : "members";
-  const { startDate, endDate } = getStartandEndDates(selectedRange);
+  const { startDate, endDate } = getStartandEndDates(selectedRange, undefined, await getRequestTodayKey());
   const shouldUseBillableBudgetHours = selectedBilling === "true";
   const {
     data: loggedData,

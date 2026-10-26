@@ -35,11 +35,11 @@ const timeLogSchema = z.object({
 
 export type TimeLog = z.infer<typeof timeLogSchema>;
 
-export async function loggr(input: string) {
+// today: the user's local date ("yyyy-MM-dd"); the server's UTC date can be a day ahead or behind
+export async function loggr(input: string, today: string) {
   if (!input) return { message: "No input provided", status: 400 };
 
   try {
-    const today = new Date().toISOString().split("T")[0];
     const { object } = await generateObject({
       model: openrouter("deepseek/deepseek-v4-flash"),
       schema: timeLogSchema,

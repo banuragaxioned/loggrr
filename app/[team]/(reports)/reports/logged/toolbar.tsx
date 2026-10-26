@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
+import { format, startOfMonth, startOfToday } from "date-fns";
+import { parseRangeDay } from "@/lib/months";
 import {
   Briefcase,
   CircleDollarSign,
@@ -143,8 +144,8 @@ export function DataTableToolbar<TData>({
   };
 
   const [start, end] = selectedRange?.split(",") || [];
-  const startFrom = (start && startOfDay(new Date(start))) || startOfMonth(startOfToday());
-  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
+  const startFrom = parseRangeDay(start) ?? startOfMonth(startOfToday());
+  const endTo = parseRangeDay(end) ?? startOfToday();
 
   // Billing status toggle button
   const billingStatusToggleButton = (

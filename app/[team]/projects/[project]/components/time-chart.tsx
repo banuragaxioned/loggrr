@@ -1,6 +1,6 @@
 "use client";
 
-import { eachMonthOfInterval, endOfMonth, format, startOfDay, startOfMonth, subDays } from "date-fns";
+import { eachMonthOfInterval, endOfMonth, format, startOfMonth, subDays } from "date-fns";
 import React from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Bar, BarChart } from "recharts";
 
@@ -8,6 +8,7 @@ import { Clock } from "lucide-react";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { getTimeInHours } from "@/lib/helper";
+import { dbToDateKey, dbToLocalDate, fromDateKey, toDateKey } from "@/lib/date";
 
 const DAILY_CHART_MAX_DAYS = 31;
 
@@ -35,14 +36,14 @@ function buildDailyChartData(
   const byDay: Record<string, number> = {};
 
   timeEntries.forEach((entry) => {
-    const key = format(new Date(entry.date), "yyyy-MM-dd");
+    const key = dbToDateKey(entry.date);
     byDay[key] = roundHours((byDay[key] ?? 0) + +getTimeInHours(entry.time));
   });
 
   const days: ChartPoint[] = [];
   for (let i = 0; i < totalDays; i++) {
     const currentDate = subDays(rangeEnd, totalDays - 1 - i);
-    const key = format(currentDate, "yyyy-MM-dd");
+    const key = toDateKey(currentDate);
     days.push({ date: key, time: byDay[key] ?? 0 });
   }
 
@@ -57,7 +58,7 @@ function buildMonthlyChartData(
   const byMonth: Record<string, number> = {};
 
   timeEntries.forEach((entry) => {
-    const key = format(new Date(entry.date), "yyyy-MM");
+    const key = dbToDateKey(entry.date).slice(0, 7);
     byMonth[key] = roundHours((byMonth[key] ?? 0) + +getTimeInHours(entry.time));
   });
 
@@ -68,7 +69,7 @@ function buildMonthlyChartData(
 
   return months.map((month) => {
     const key = format(month, "yyyy-MM");
-    return { date: format(month, "yyyy-MM-dd"), time: byMonth[key] ?? 0 };
+    return { date: toDateKey(month), time: byMonth[key] ?? 0 };
   });
 }
 
@@ -85,7 +86,8 @@ function ChartTooltip({
 }) {
   if (!active || !payload?.length || !label) return null;
 
-  const dateLabel = isMonthlyView ? format(new Date(label), "MMMM yyyy") : format(new Date(label), "EEE, dd MMM, yyyy");
+  const labelDate = fromDateKey(label);
+  const dateLabel = isMonthlyView ? format(labelDate, "MMMM yyyy") : format(labelDate, "EEE, dd MMM, yyyy");
   const hours = roundHours(payload[0].value);
 
   return (
@@ -103,8 +105,9 @@ const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProp
   const isMonthlyView = totalDays > DAILY_CHART_MAX_DAYS;
 
   const chartData = React.useMemo(() => {
-    const rangeStart = startOfDay(new Date(startDate));
-    const rangeEnd = startOfDay(new Date(endDate));
+    // Range bounds are UTC-midnight days from the server; read their calendar date, not the local instant
+    const rangeStart = dbToLocalDate(startDate);
+    const rangeEnd = dbToLocalDate(endDate);
 
     if (isMonthlyView) {
       return buildMonthlyChartData(rangeStart, rangeEnd, timeEntries);
@@ -113,10 +116,10 @@ const TimeChart = ({ timeEntries, totalDays, startDate, endDate }: TimeChartProp
     return buildDailyChartData(rangeEnd, totalDays, timeEntries);
   }, [timeEntries, startDate, endDate, totalDays, isMonthlyView]);
 
-  const rangeLabel = `${format(new Date(startDate), "MMM d, yyyy")} – ${format(new Date(endDate), "MMM d, yyyy")}`;
+  const rangeLabel = `${format(dbToLocalDate(startDate), "MMM d, yyyy")} – ${format(dbToLocalDate(endDate), "MMM d, yyyy")}`;
 
   const formatXAxis = (tickItem: string) =>
-    isMonthlyView ? format(new Date(tickItem), "MMM yy") : format(new Date(tickItem), "MMM dd");
+    isMonthlyView ? format(fromDateKey(tickItem), "MMM yy") : format(fromDateKey(tickItem), "MMM dd");
 
   const formatYAxis = (tickItem: number) => `${tickItem}h`;
 

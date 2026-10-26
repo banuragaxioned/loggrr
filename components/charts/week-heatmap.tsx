@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { addDays, endOfWeek, format, isAfter, isSameDay, startOfDay, startOfToday } from "date-fns";
+import { addDays, endOfWeek, format, isAfter, isSameDay, startOfDay } from "date-fns";
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { getDayHoursTone } from "@/lib/heatmap-tone";
+import { dbToDateKey, fromDateKey, toDateKey } from "@/lib/date";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TimeEntrySum {
@@ -23,23 +24,25 @@ interface HeatCell {
 
 interface WeekHeatmapProps {
   sevenWeekTimeEntries: TimeEntrySum[];
-  selectedDate?: Date;
+  selectedDateKey?: string;
+  // Viewer's today ("yyyy-MM-dd") from the server, so SSR and client agree
+  todayKey: string;
 }
 
 const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
-export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: WeekHeatmapProps) {
+export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDateKey, todayKey }: WeekHeatmapProps) {
   const router = useRouter();
-  const today = startOfToday();
-  const activeDate = selectedDate ? startOfDay(selectedDate) : today;
+  const today = fromDateKey(todayKey);
+  const activeDate = selectedDateKey ? fromDateKey(selectedDateKey) : today;
 
   const { cells, weekLabels } = useMemo(() => {
     const hoursByDate = new Map(
-      sevenWeekTimeEntries.map((entry) => [format(entry.date, "yyyy-MM-dd"), (entry._sum.time ?? 0) / 60]),
+      sevenWeekTimeEntries.map((entry) => [dbToDateKey(entry.date), (entry._sum.time ?? 0) / 60]),
     );
 
     // endOfWeek is 23:59:59 — normalize to startOfDay so day comparisons work
-    const weekEnd = startOfDay(endOfWeek(startOfToday(), { weekStartsOn: 0 }));
+    const weekEnd = startOfDay(endOfWeek(fromDateKey(todayKey), { weekStartsOn: 0 }));
     const nextCells: HeatCell[] = [];
     const nextLabels: string[] = [];
 
@@ -51,17 +54,17 @@ export default function WeekHeatmap({ sevenWeekTimeEntries, selectedDate }: Week
       for (let weekOffset = 6; weekOffset >= 0; weekOffset--) {
         const weekSunday = addDays(weekEnd, -weekOffset * 7 - 6);
         const date = addDays(weekSunday, day);
-        const key = format(date, "yyyy-MM-dd");
+        const key = toDateKey(date);
         nextCells.push({ date, key, hours: hoursByDate.get(key) ?? 0 });
       }
     }
 
     return { cells: nextCells, weekLabels: nextLabels };
-  }, [sevenWeekTimeEntries]);
+  }, [sevenWeekTimeEntries, todayKey]);
 
   function handleSelect(date: Date) {
     if (isAfter(date, today)) return;
-    router.push(`?date=${format(date, "yyyy-MM-dd")}`);
+    router.push(`?date=${toDateKey(date)}`);
   }
 
   return (
