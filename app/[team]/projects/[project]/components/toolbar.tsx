@@ -3,7 +3,9 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { format, startOfDay, startOfMonth, startOfToday } from "date-fns";
+import { format, startOfMonth, startOfToday } from "date-fns";
+import { parseRangeDay } from "@/lib/months";
+import { dbToLocalDate } from "@/lib/date";
 import { CircleDollarSign, Download, List, ListRestart, Loader2, Milestone, Users } from "lucide-react";
 import csvDownload from "json-to-csv-export";
 
@@ -50,9 +52,10 @@ export function DataTableToolbar({
   const isFixed = interval === "FIXED";
   const [start, end] = selectedRange?.split(",") || [];
   const monthStart = startOfMonth(startOfToday());
-  const fixedStart = projectCreatedAt ? startOfDay(new Date(projectCreatedAt)) : monthStart;
-  const startFrom = (start && startOfDay(new Date(start))) || (isFixed ? fixedStart : monthStart);
-  const endTo = (end && startOfDay(new Date(end))) || startOfToday();
+  // Same UTC calendar day the server uses for the fixed-project default range
+  const fixedStart = projectCreatedAt ? dbToLocalDate(projectCreatedAt) : monthStart;
+  const startFrom = parseRangeDay(start) ?? (isFixed ? fixedStart : monthStart);
+  const endTo = parseRangeDay(end) ?? startOfToday();
 
   const peopleFilter = {
     title: "Members",

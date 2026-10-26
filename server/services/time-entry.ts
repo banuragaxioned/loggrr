@@ -1,13 +1,15 @@
 import { db } from "@/server/db";
-import { endOfDay, endOfWeek, startOfDay, startOfWeek, subDays, subMonths } from "date-fns";
+import { endOfDay, startOfDay, subDays, subMonths } from "date-fns";
 import { getServerSession } from "next-auth";
 
 import { formatEntryDate, getTimeInHours, stringToBoolean } from "@/lib/helper";
+import { dateKeyToDb } from "@/lib/date";
 import { authOptions } from "../auth";
 
-export const getTimelogLastWeek = async (slug: string, userId: number, date: Date) => {
-  const start = startOfWeek(date, { weekStartsOn: 0 });
-  const end = endOfWeek(date, { weekStartsOn: 0 });
+// startKey/endKey are inclusive "yyyy-MM-dd" days
+export const getTimelogLastWeek = async (slug: string, userId: number, startKey: string, endKey: string) => {
+  const start = dateKeyToDb(startKey);
+  const end = dateKeyToDb(endKey);
 
   const response = await db.timeEntry.aggregate({
     where: {

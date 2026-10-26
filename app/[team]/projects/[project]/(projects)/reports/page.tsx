@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { startOfMonth } from "date-fns";
 
 import { pageProps } from "@/types";
 import {
@@ -9,7 +8,8 @@ import {
   getProjectMatrix,
   getTasksInProject,
 } from "@/server/services/project";
-import { getStartandEndDates } from "@/lib/months";
+import { getProjectLifetimeRange, getStartandEndDates } from "@/lib/months";
+import { getRequestTodayKey } from "@/server/timezone";
 
 import { DataTableToolbar } from "../../components/toolbar";
 import { ProjectMatrix } from "./matrix";
@@ -32,11 +32,13 @@ export default async function Page(props: pageProps) {
   const selectedRange = searchParams.range;
   const isFixed = projectDetails?.interval === "FIXED";
 
+  const todayKey = await getRequestTodayKey();
+
   const { startDate, endDate } = selectedRange
     ? getStartandEndDates(selectedRange)
     : isFixed
-      ? { startDate: projectDetails?.createdAt ?? startOfMonth(new Date()), endDate: new Date() }
-      : getStartandEndDates("");
+      ? getProjectLifetimeRange(projectDetails?.createdAt, todayKey)
+      : getStartandEndDates("", undefined, todayKey);
 
   const [matrix, allMembers, allCategories, allTasks] = await Promise.all([
     getProjectMatrix(

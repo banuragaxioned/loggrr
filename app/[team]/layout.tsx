@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/server/session";
 import { pageProps } from "@/types";
 import { isMember } from "@/server/services/members";
+import { TimezoneSync } from "@/components/timezone-sync";
 
 interface DashboardLayoutProps extends pageProps {
   children?: React.ReactNode;
@@ -37,5 +38,10 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
     );
   }
 
-  return <div className="container">{children}</div>;
+  return (
+    <div className="container">
+      <TimezoneSync />
+      {children}
+    </div>
+  );
 }

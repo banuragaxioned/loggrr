@@ -3,7 +3,6 @@
 import { useState, useEffect, FormEvent, useMemo, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
-import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 
@@ -25,6 +24,7 @@ import NotepadResponse from "./ai/notepad-response";
 import { hoursToDecimal } from "@/lib/helper";
 import { getRandomColor } from "@/lib/random-colors";
 import { generateId } from "ai";
+import { fromDateKey, isDateKey, toDateKey } from "@/lib/date";
 import { isTimelogValid } from "@/lib/timelog-validation";
 
 // Shared config for the Classic/Board view switcher (icon toggle in the logger card header)
@@ -50,7 +50,8 @@ interface TimeEntryProps {
   team: string;
   projects: Project[];
   recentTimeEntries: RecentEntryProps[];
-  initialDate: Date;
+  // Selected day as "yyyy-MM-dd"
+  initialDateKey: string;
 }
 
 export interface EditReferenceObj {
@@ -71,13 +72,16 @@ export const getDateString = (date: Date) => {
   return date?.toLocaleDateString("en-us", { day: "2-digit", month: "short", weekday: "short", year: "numeric" });
 };
 
-export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: TimeEntryProps) => {
+export const TimeEntry = ({ team, projects, recentTimeEntries, initialDateKey }: TimeEntryProps) => {
   const router = useRouter();
-  const [date, setDate] = useQueryState("date", {
-    parse: (value: string) => new Date(value),
-    serialize: (date: Date) => format(date, "yyyy-MM-dd"),
+  const initialDate = useMemo(() => fromDateKey(initialDateKey), [initialDateKey]);
+  // ?date= is a calendar day; parse it as local midnight (new Date("yyyy-MM-dd") would be UTC and shift the day)
+  const [date] = useQueryState("date", {
+    parse: (value: string) => (isDateKey(value) ? fromDateKey(value) : null),
+    serialize: toDateKey,
     defaultValue: initialDate,
   });
+  const dateKey = toDateKey(date);
   const [edit, setEdit] = useState<EditReferenceObj>({ obj: {}, isEditing: false, id: null });
   const [entries, setEntries] = useState<EntryData>({ data: {}, status: "loading" });
   const [recent, setRecent] = useState<SelectedData | null>(null);
@@ -113,7 +117,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
    */
   const getTimeEntries = useCallback(async () => {
     try {
-      const response = await fetch(`/api/team/time-entry?team=${team}&date=${getDateString(date)}`);
+      const response = await fetch(`/api/team/time-entry?team=${team}&date=${dateKey}`);
       const data = await response.json();
       if (Object.keys(data).length > 0) {
         setEntries((prevEntries) => ({ data: { ...prevEntries.data, ...data }, status: "success" }));
@@ -124,7 +128,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
       console.error("Error fetching time entries", error);
       setEntries({ data: {}, status: "error" });
     }
-  }, [team, date]);
+  }, [team, dateKey]);
 
   /*
    * deleteTimeEntry: The following function will return the time entry of the specified id
@@ -158,7 +162,6 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     e.preventDefault();
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task, uuid } = selectedData || {};
-    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date
 
     const dataToSend = {
       team,
@@ -168,7 +171,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
       comments: comment?.trim(),
       billable: billable && project?.billable ? true : false,
       task: task?.id || null,
-      date: dateToStoreInDB,
+      date: dateKey,
     };
 
     try {
@@ -240,6 +243,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
         body: JSON.stringify({
           projects: projects,
           input: userInput,
+          today: toDateKey(new Date()),
         }),
       });
       const data = await response.json();
@@ -355,7 +359,7 @@ export const TimeEntry = ({ team, projects, recentTimeEntries, initialDate }: Ti
     <InlineDatePicker
       date={date}
       setDate={(newDate: Date) => {
-        router.push(`?date=${format(newDate, "yyyy-MM-dd")}`);
+        router.push(`?date=${toDateKey(newDate)}`);
       }}
       dayTotalTime={dayTotalTime}
     />

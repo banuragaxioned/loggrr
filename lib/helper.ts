@@ -72,12 +72,6 @@ export const getTimeInHours = (duration: number) => {
   return hours;
 };
 
-// Get date with Date format, but with 00:00:00 time
-export const cleanDate = (dateInput: Date) => {
-  const justDate = dateInput.toISOString().split("T")[0];
-  return new Date(justDate);
-};
-
 // split array into smaller chunks.
 export const splitIntoChunk = (array: { id: number }[], size: number) => {
   const chunkedData = [];
@@ -127,8 +121,10 @@ export const checkAccess = (
 };
 
 // Get all members time entries grouped by name
+// Entry dates are stored as UTC midnight, so format in UTC to keep the calendar day
 export const formatEntryDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", {
+    timeZone: "UTC",
     weekday: "short",
     day: "2-digit",
     month: "short",

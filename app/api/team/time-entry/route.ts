@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth/next";
 import * as z from "zod";
-import { parse, formatISO } from "date-fns";
+import { parse, isValid } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
 import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { TimeEntryData } from "@/types";
 import { Role } from "@/generated/prisma/browser";
+import { dateKeyToDb, isDateKey, toDateKey } from "@/lib/date";
 
 const commonValidationObj = {
   team: z.string().min(1),
@@ -15,7 +16,7 @@ const commonValidationObj = {
   time: z.number(),
   comments: z.string().min(1),
   billable: z.boolean(),
-  date: z.string().optional(),
+  date: z.string().refine(isDateKey, "Date must be yyyy-MM-dd").optional(),
   task: z.number().or(z.null()),
 };
 
@@ -33,9 +34,13 @@ export async function GET(req: NextRequest) {
 
   if (!date) return NextResponse.json({ error: "No date provided" }, { status: 403 });
 
-  // Searching for time entries based on particular day
-  const parsedDate = parse(date, "EEE, MMM dd, yyyy", new Date());
-  const isoDateString = `${formatISO(parsedDate, { representation: "date" })}T00:00:00.000Z`;
+  // Searching for time entries based on particular day ("yyyy-MM-dd"; legacy clients send "EEE, MMM dd, yyyy")
+  const legacyDate = parse(date, "EEE, MMM dd, yyyy", new Date());
+  const dateKey = isDateKey(date) ? date : isValid(legacyDate) ? toDateKey(legacyDate) : null;
+
+  if (!dateKey) return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+
+  const dayStart = dateKeyToDb(dateKey);
 
   try {
     const session = await getServerSession(authOptions);
@@ -58,7 +63,8 @@ export async function GET(req: NextRequest) {
           slug: team ? team : "",
         },
         date: {
-          equals: isoDateString,
+          gte: dayStart,
+          lt: new Date(dayStart.getTime() + 24 * 60 * 60 * 1000),
         },
       },
       select: {
@@ -187,7 +193,7 @@ export async function POST(req: NextRequest) {
         billable: body.billable,
         userId: user.id,
         projectId: body.project,
-        date: new Date(body.date),
+        date: dateKeyToDb(body.date),
         taskId: normalizeFkId(body.task),
         workspaceId: user.workspaces.filter((workspace) => workspace.slug === body.team)[0].id,
       },
@@ -247,7 +253,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const date = body.date ? new Date(body.date) : undefined;
+    const date = body.date ? dateKeyToDb(body.date) : undefined;
 
     const query = await db.timeEntry.update({
       where: {

@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { CalendarPlus, Folder, List, Milestone as CategoryIcon, Minus, Plus } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { startOfToday } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +30,7 @@ import { Label } from "./ui/label";
 import { hoursToDecimal } from "@/lib/helper";
 import { isCategoryRequired, isTaskRequired, isTimelogValid } from "@/lib/timelog-validation";
 import { useQueryState } from "nuqs";
+import { fromDateKey, isDateKey, toDateKey } from "@/lib/date";
 
 export type SelectedData = {
   client?: Milestone;
@@ -74,8 +75,7 @@ const TIME_CHIPS = [
 ];
 
 export function TimeAdd({ projects }: { projects?: Project[] }) {
-  const searchParams = useSearchParams();
-  const initialDate = searchParams.get("date") ? new Date(searchParams.get("date") as string) : new Date();
+  const [initialDate] = useState(startOfToday);
   const { team } = useParams();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -84,8 +84,9 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
   const [projectTasks, setprojectTasks] = useState<Milestone[]>([]);
   const [errors, setErrors] = useState<ErrorsObj>({});
   const [date, setDate] = useQueryState("date", {
-    parse: (value: string) => new Date(value),
-    serialize: (date: Date) => format(date, "yyyy-MM-dd"),
+    // Local midnight, not new Date("yyyy-MM-dd") (UTC), so the day doesn't shift west of UTC
+    parse: (value: string) => (isDateKey(value) ? fromDateKey(value) : null),
+    serialize: toDateKey,
     defaultValue: initialDate,
   });
 
@@ -177,7 +178,7 @@ export function TimeAdd({ projects }: { projects?: Project[] }) {
   const submitTimeEntry = async () => {
     if (!selectedData) return;
     const { project, milestone, time, comment, billable, task } = selectedData || {};
-    const dateToStoreInDB = format(date, "yyyy-MM-dd"); // Extracts only the date; // Extracts only the date
+    const dateToStoreInDB = toDateKey(date);
     const dataToSend = {
       team,
       project: project?.id,

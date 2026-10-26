@@ -6,6 +6,8 @@ import { sendEmail } from "@/lib/email";
 import LeavesEmail from "@/emails/leaves-email";
 import { Leaves } from "@/components/forms/leaveForm";
 import { format } from "date-fns";
+import { fromDateKey } from "@/lib/date";
+import { getRequestTodayKey } from "@/server/timezone";
 
 export interface LeavesData {
   name: string;
@@ -75,8 +77,8 @@ export async function POST(req: NextRequest) {
       name: string;
     }[] = [];
 
-    const today = new Date();
-    const day = format(today, "dd MMMM yyyy");
+    // Sender's local today, not the server's
+    const day = format(fromDateKey(await getRequestTodayKey()), "dd MMMM yyyy");
     const subject = `Your Leaves Status till ${day}`;
 
     // Use Promise.allSettled to handle async operations properly

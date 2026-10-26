@@ -6,6 +6,8 @@ import { authOptions } from "@/server/auth";
 import { db } from "@/server/db";
 import { getTimeInHours, stringToBoolean } from "@/lib/helper";
 import { getStartandEndDates } from "@/lib/months";
+import { getRequestTodayKey } from "@/server/timezone";
+import { dbToLocalDate } from "@/lib/date";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const { slug, selectedRange, selectedBilling, selectedClients, selectedMembers, selectedGroups, selectedProject, defaultDay } =
       data;
-    const { startDate, endDate } = getStartandEndDates(selectedRange, defaultDay);
+    const { startDate, endDate } = getStartandEndDates(selectedRange, defaultDay, await getRequestTodayKey());
     const isBillable = stringToBoolean(selectedBilling);
     const start = startOfDay(startDate);
     const end = endOfDay(endDate);
@@ -139,7 +141,7 @@ export async function POST(req: NextRequest) {
         user: sanitize(entry.user.name ?? " "),
         milestone: sanitize(entry.milestone?.name ?? " "),
         task: sanitize(entry.task?.name ?? " "),
-        date: format(new Date(entry.date), "dd/MM/yyyy"),
+        date: format(dbToLocalDate(entry.date), "dd/MM/yyyy"),
         comments: sanitize(entry.comments ?? " "),
         timeLogged: getTimeInHours(entry.time),
         billingType: entry.billable ? "Billable" : "Non billable",
