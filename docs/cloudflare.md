@@ -26,6 +26,10 @@ The production domain remains on Vercel until the trial is accepted.
 - Each Worker request gets a Prisma client and Postgres pool. Connections are
   closed after use (`maxUses: 1`) to prevent reuse across Worker requests. The
   Node runtime retains its existing development singleton and connection pooling.
+- SMTP uses Nodemailer's documented `getSocket` hook with a hostname-based Node
+  socket. Its default connection setup fails against SES from Workers, while
+  the supplied socket completes TLS and authentication. Transports are created
+  and closed per send; TLS certificate validation remains enabled.
 - The Worker is placed in `aws:eu-central-1`, matching the configured Neon region.
 - The official OpenNext setup supplies an R2 incremental cache, the self-reference
   service binding, Cloudflare Images, and immutable static asset headers.
@@ -127,6 +131,7 @@ domain. The Vercel deployment remains available during the trial.
 - [Cloudflare OpenNext guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)
 - [OpenNext setup](https://opennext.js.org/cloudflare/get-started)
 - [OpenNext databases](https://opennext.js.org/cloudflare/howtos/db)
+- [Nodemailer socket connections](https://nodemailer.com/extras/smtp-connection)
 - [Prisma generator runtime](https://www.prisma.io/docs/orm/v7/prisma-schema/overview/generators)
 - [Cloudflare build branches](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/)
 - [Cloudflare build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)

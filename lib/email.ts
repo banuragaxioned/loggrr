@@ -1,7 +1,7 @@
 "use server";
 
 import type { ReactElement } from "react";
-import nodemailer from "nodemailer";
+import { createMailTransport } from "@/lib/smtp";
 import { env } from "@/env.mjs";
 import { render } from "@react-email/render";
 
@@ -11,28 +11,25 @@ interface EmailPayload {
   html: ReactElement;
 }
 
-const transporter = nodemailer.createTransport({
-  host: env.EMAIL_HOST,
-  port: Number(env.EMAIL_PORT),
-  secure: false,
-  auth: {
-    user: env.EMAIL_USER,
-    pass: env.EMAIL_PASSWORD,
-  },
-});
-
 export async function sendEmail(payload: EmailPayload) {
+  const transporter = createMailTransport({
+    host: env.EMAIL_HOST,
+    port: Number(env.EMAIL_PORT),
+    auth: { user: env.EMAIL_USER, pass: env.EMAIL_PASSWORD },
+  });
   try {
-    const htmlContent = render(payload.html);
+    const htmlContent = await render(payload.html);
 
     await transporter.sendMail({
       ...payload,
       from: env.EMAIL_FROM,
-      html: await htmlContent,
+      html: htmlContent,
     });
     return { success: true };
   } catch (error) {
     console.error("Error sending email:", error);
     return { success: false, error: "Failed to send email" };
+  } finally {
+    transporter.close();
   }
 }
