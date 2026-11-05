@@ -20,8 +20,10 @@ Create an Application in Dokploy and connect the GitHub repository:
 | Preview deployments | Disabled |
 
 Use Nixpacks 1.41.0 or newer for Node 24 support. The committed configuration
-installs Bun 1.3.14, runs the regular `build` script with Prisma's Node generator,
-and starts Next.js under Node 24. Leave Dokploy's command overrides empty.
+reads Node from `package.json`'s `engines.node` and installs the Bun version
+from its `packageManager` field. Nixpacks' Node provider does not read
+`.tool-versions`. It runs the regular `build` script with Prisma's Node generator
+and starts Next.js under Node. Leave Dokploy's command overrides empty.
 Do not use the Cloudflare build or deploy commands for this application.
 
 ## Environment

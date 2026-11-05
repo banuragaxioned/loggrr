@@ -1,18 +1,17 @@
 providers = ["node"]
 
 [variables]
-NIXPACKS_NODE_VERSION = "24"
 NODE_ENV = "production"
 NEXT_TELEMETRY_DISABLED = "1"
 
-[phases.setup]
-nixPkgs = ["nodejs_24", "openssl"]
-
+# Nixpacks detects Node from engines.node, but does not install the Bun version
+# declared in packageManager. Bootstrap that version and put it on PATH.
 [phases.install]
-cmds = ["npm install --prefix /opt/loggrr-bun bun@1.3.14", "/opt/loggrr-bun/node_modules/.bin/bun install --frozen-lockfile"]
+cmds = ['''npm install --prefix /opt/loggrr-tools "$(node -p "require('./package.json').packageManager")"''', "bun install --frozen-lockfile"]
+paths = ["/opt/loggrr-tools/node_modules/.bin"]
 
 [phases.build]
-cmds = ["/opt/loggrr-bun/node_modules/.bin/bun run build"]
+cmds = ["bun run build"]
 
 [start]
 cmd = "node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port 3000"
