@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate --generator client",
     "start": "next start",
     "dev": "next dev",
     "turbo": "next dev --turbo",
-    "build": "next build",
+    "build": "prisma generate --generator client && next build",
     "push": "bunx prisma db push",
     "seed": "NODE_ENV=development prisma db seed",
     "reset": "bunx prisma db push --force-reset",

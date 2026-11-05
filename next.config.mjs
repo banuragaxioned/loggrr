@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 // @ts-check
@@ -12,24 +11,6 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  webpack(config) {
-    if (process.env.LOGGRR_BUILD_TARGET === "cloudflare") {
-      // Leave precompiled Wasm imports for Wrangler, as required by Workers.
-      config.externals.push(
-        /**
-         * @param {{ context?: string, request?: string }} data
-         * @param {(error?: Error | null, result?: string) => void} callback
-         */
-        ({ context, request }, callback) => {
-          if (request?.endsWith(".wasm?module")) {
-            return callback(null, `module ${resolve(context ?? process.cwd(), request)}`);
-          }
-          callback();
-        },
-      );
-    }
-    return config;
-  },
   images: {
     remotePatterns: [
       {
@@ -37,6 +18,10 @@ const config = {
         hostname: "lh3.googleusercontent.com",
       },
     ],
+  },
+  // Prisma CLI and local database tooling are build dependencies, not app runtime.
+  outputFileTracingExcludes: {
+    "/*": ["node_modules/**/prisma/build/**", "node_modules/**/@prisma/dev/**", "node_modules/**/@electric-sql/**"],
   },
   serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "pg"],
   async redirects() {
@@ -54,9 +39,6 @@ const config = {
     ];
   },
 };
-
-// Keep the existing Turbopack development and Node/Vercel build path.
-if (process.env.LOGGRR_BUILD_TARGET !== "cloudflare") delete config.webpack;
 
 export default config;
 

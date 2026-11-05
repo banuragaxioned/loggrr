@@ -13,10 +13,14 @@ The production domain remains on Vercel until the trial is accepted.
   does not officially support the Node middleware used by `proxy.ts`. Next.js 16
   warns that the middleware filename is deprecated; this is intentional until
   OpenNext officially supports Node middleware.
-- The Cloudflare build uses Next.js Webpack because the current Turbopack Wasm
-  loader traces too broadly and exceeds the Worker bundle size limit.
-- Prisma generates for the Cloudflare runtime so its query compiler is imported
-  as a WebAssembly module instead of compiled dynamically at runtime.
+- Both platforms use the standard Next.js Turbopack build. Prisma CLI and local
+  database tooling are excluded from deployment tracing using Next.js
+  `outputFileTracingExcludes`; there is no custom Webpack or Wasm loader.
+- Build commands select exactly one Prisma generator: `client` for Node/Vercel
+  and `cloudflareClient` for Workers. They intentionally write the same generated
+  import path, so application code stays platform-independent. Do not run both
+  generators together. The Worker compiler is imported as a precompiled Wasm
+  module; Vercel uses the Node compiler without the Worker Wasm loader.
 - Prisma's pg adapter and `pg` remain external to Next.js so OpenNext can
   resolve the `pg-cloudflare` socket implementation using its workerd condition.
 - Each Worker request gets a Prisma client and Postgres pool. Connections are
