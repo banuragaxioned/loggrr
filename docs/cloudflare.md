@@ -73,6 +73,13 @@ upload. Store application credentials with Wrangler secrets or the dashboard;
 never put their values in the committed Wrangler configuration. Upload only
 variables used by the application, not unrelated old credentials from `.env`.
 
+Only `DATABASE_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_SECRET`,
+`EMAIL_PASSWORD`, and `OPENROUTER_API_KEY` are secrets. Keep `NODE_ENV`, the
+Google client ID, SMTP sender/host/port/username, application URLs, and public
+PostHog configuration as plain variables in `wrangler.jsonc`. Apply the same
+classification to Workers Builds environment settings. The SES SMTP username
+is an access key identifier; its password is the secret.
+
 After validation, deploy with `bunx opennextjs-cloudflare deploy`. For subsequent
 local builds and deployments, `bun run deploy:cloudflare` performs both steps;
 export the public application URL as above first. Wrangler's `vars` configure
