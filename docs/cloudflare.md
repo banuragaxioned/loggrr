@@ -26,14 +26,14 @@ The production domain remains on Vercel until the trial is accepted.
 - Each Worker request gets a Prisma client and Postgres pool. Connections are
   closed after use (`maxUses: 1`) to prevent reuse across Worker requests. The
   Node runtime retains its existing development singleton and connection pooling.
-- SMTP uses Nodemailer's documented `getSocket` hook with a hostname-based Node
-  socket. Its default connection setup fails against SES from Workers, while
-  the supplied socket completes TLS and authentication. Transports are created
-  and closed per send; TLS certificate validation remains enabled.
+- SMTP uses the `emailjs` package with the existing SES credentials on port 465
+  (TLS from connection start). Clients are created and closed per send. Its
+  STARTTLS path on port 587 stalls in Workers, so use port 465 for this deployment.
+  TLS certificate validation remains enabled; no custom socket hook is needed.
 - The Worker is placed in `aws:eu-central-1`, matching the configured Neon region.
 - The official OpenNext setup supplies an R2 incremental cache, the self-reference
   service binding, Cloudflare Images, and immutable static asset headers.
-- Logs and traces are enabled. Version preview URLs are disabled. There is no
+- Workers logs, invocation logs, and traces are disabled after trial verification. Version preview URLs are disabled. There is no
   Worker Previews configuration.
 
 ## Local checks
@@ -76,18 +76,23 @@ variables used by the application, not unrelated old credentials from `.env`.
 Only `DATABASE_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_SECRET`,
 `EMAIL_PASSWORD`, and `OPENROUTER_API_KEY` are secrets. Keep `NODE_ENV`, the
 Google client ID, SMTP sender/host/port/username, application URLs, and public
-PostHog configuration as plain variables in `wrangler.jsonc`. Apply the same
+PostHog configuration as plain variables in the Cloudflare dashboard. `keep_vars: true` preserves
+those dashboard values on deployment; the Wrangler config contains no app
+environment values. Apply the same
 classification to Workers Builds environment settings. The SES SMTP username
 is an access key identifier; its password is the secret.
 
 After validation, deploy with `bunx opennextjs-cloudflare deploy`. For subsequent
 local builds and deployments, `bun run deploy:cloudflare` performs both steps;
-export the public application URL as above first. Wrangler's `vars` configure
-runtime values, not Next.js client-side build values.
+export the public application URL as above first. The ignored
+`.env.cloudflare.production.local` file supplies local build values when loaded
+into the process environment. Dashboard runtime variables are retained during
+deployments; they do not supply Next.js client-side build values.
 
 ## Workers Builds settings
 
-Connect `banuragaxioned/loggrr` to Worker `loggrr` in the Axioned dashboard:
+The Worker is connected to `banuragaxioned/loggrr` in the Axioned dashboard.
+Keep these Workers Builds settings:
 
 | Setting           | Value                                    |
 | ----------------- | ---------------------------------------- |
@@ -138,7 +143,7 @@ domain. The Vercel deployment remains available during the trial.
 - [Cloudflare OpenNext guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)
 - [OpenNext setup](https://opennext.js.org/cloudflare/get-started)
 - [OpenNext databases](https://opennext.js.org/cloudflare/howtos/db)
-- [Nodemailer socket connections](https://nodemailer.com/extras/smtp-connection)
+- [emailjs SMTP client](https://github.com/eleith/emailjs)
 - [Prisma generator runtime](https://www.prisma.io/docs/orm/v7/prisma-schema/overview/generators)
 - [Cloudflare build branches](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/)
 - [Cloudflare build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)

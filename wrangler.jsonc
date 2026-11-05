@@ -30,22 +30,15 @@
     "binding": "IMAGES",
   },
   "observability": {
-    "enabled": true,
+    "enabled": false,
+    "logs": {
+      "enabled": false,
+      "invocation_logs": false,
+    },
     "traces": {
-      "enabled": true,
+      "enabled": false,
     },
   },
   "account_id": "9b8d8be0814b997413c7fd610e884fd0",
-  "vars": {
-    "NEXTAUTH_URL": "https://loggrr.axioned.workers.dev",
-    "NEXT_PUBLIC_APP_URL": "https://loggrr.axioned.workers.dev",
-    "NODE_ENV": "production",
-    "GOOGLE_CLIENT_ID": "472681797458-plh1nl99mpnr9fohe85l06rcak1dsdjm.apps.googleusercontent.com",
-    "EMAIL_FROM": "loggr@axioned.com",
-    "EMAIL_HOST": "email-smtp.ap-south-1.amazonaws.com",
-    "EMAIL_PORT": "587",
-    "EMAIL_USER": "AKIAUHJZM72YH62KUNHJ",
-    "NEXT_PUBLIC_POSTHOG_HOST": "https://app.posthog.com",
-    "NEXT_PUBLIC_POSTHOG_KEY": "phc_gDPvH5mHQzgJBZ2yqEdbZ84aFOfq7Nd8GYL3vPZC9VH"
-  },
+  "keep_vars": true,
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import type { ReactElement } from "react";
-import { createMailTransport } from "@/lib/smtp";
+import { SMTPClient } from "emailjs";
 import { env } from "@/env.mjs";
 import { render } from "@react-email/render";
 
@@ -12,24 +12,30 @@ interface EmailPayload {
 }
 
 export async function sendEmail(payload: EmailPayload) {
-  const transporter = createMailTransport({
+  const port = Number(env.EMAIL_PORT);
+  const client = new SMTPClient({
     host: env.EMAIL_HOST,
-    port: Number(env.EMAIL_PORT),
-    auth: { user: env.EMAIL_USER, pass: env.EMAIL_PASSWORD },
+    port,
+    user: env.EMAIL_USER,
+    password: env.EMAIL_PASSWORD,
+    ssl: port === 465,
+    tls: port !== 465,
+    timeout: 15_000,
   });
   try {
     const htmlContent = await render(payload.html);
 
-    await transporter.sendMail({
-      ...payload,
+    await client.sendAsync({
+      to: payload.to,
+      subject: payload.subject,
       from: env.EMAIL_FROM,
-      html: htmlContent,
+      attachment: [{ data: htmlContent, alternative: true }],
     });
     return { success: true };
   } catch (error) {
     console.error("Error sending email:", error);
     return { success: false, error: "Failed to send email" };
   } finally {
-    transporter.close();
+    client.smtp.close();
   }
 }
