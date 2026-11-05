@@ -1,3 +1,6 @@
+import { resolve } from "node:path";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
 // @ts-check
 
 /**
@@ -9,6 +12,24 @@
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  webpack(config) {
+    if (process.env.LOGGRR_BUILD_TARGET === "cloudflare") {
+      // Leave precompiled Wasm imports for Wrangler, as required by Workers.
+      config.externals.push(
+        /**
+         * @param {{ context?: string, request?: string }} data
+         * @param {(error?: Error | null, result?: string) => void} callback
+         */
+        ({ context, request }, callback) => {
+          if (request?.endsWith(".wasm?module")) {
+            return callback(null, `module ${resolve(context ?? process.cwd(), request)}`);
+          }
+          callback();
+        },
+      );
+    }
+    return config;
+  },
   images: {
     remotePatterns: [
       {
@@ -34,4 +55,9 @@ const config = {
   },
 };
 
+// Keep the existing Turbopack development and Node/Vercel build path.
+if (process.env.LOGGRR_BUILD_TARGET !== "cloudflare") delete config.webpack;
+
 export default config;
+
+initOpenNextCloudflareForDev();

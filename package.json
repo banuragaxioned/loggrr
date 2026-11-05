@@ -22,7 +22,12 @@
     "format": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "analyze": "ANALYZE=true bun run build",
-    "email": "email dev"
+    "email": "email dev",
+    "build:cloudflare": "opennextjs-cloudflare build",
+    "preview:cloudflare": "bun run build:cloudflare && opennextjs-cloudflare preview",
+    "deploy:cloudflare": "bun run build:cloudflare && opennextjs-cloudflare deploy",
+    "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts --include-runtime=false",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/error-message": "^2.0.1",
@@ -85,6 +90,7 @@
     "zustand": "^5.0.16"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.16",
     "@react-email/ui": "6.11.3",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/js-cookie": "^3.0.6",
@@ -110,7 +116,8 @@
     "tailwindcss-animate": "^1.0.7",
     "taze": "^19.17.2",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.157.0"
   },
   "browserslist": [
     "defaults"

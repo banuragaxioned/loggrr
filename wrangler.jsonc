@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "loggrr",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-05",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "keep_names": false,
+  "placement": {
+    "region": "aws:eu-central-1",
+  },
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "loggrr",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "loggrr-cache",
+    },
+  ],
+  "images": {
+    "binding": "IMAGES",
+  },
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+    },
+  },
+  "account_id": "9b8d8be0814b997413c7fd610e884fd0",
+  "vars": {
+    "NEXTAUTH_URL": "https://loggrr.axioned.workers.dev",
+    "NEXT_PUBLIC_APP_URL": "https://loggrr.axioned.workers.dev",
+  },
+}
