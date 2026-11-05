@@ -37,5 +37,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next", ".open-next", ".wrangler", "eslint.config.mjs"]
+  "exclude": ["node_modules", ".next", ".open-next", ".wrangler", "cloudflare-env.d.ts", "eslint.config.mjs"]
 }
