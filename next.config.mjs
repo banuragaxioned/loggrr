@@ -38,7 +38,7 @@ const config = {
       },
     ],
   },
-  serverExternalPackages: ["@prisma/client"],
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "pg"],
   async redirects() {
     return [
       {

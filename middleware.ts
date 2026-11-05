@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { parse } from "./lib/middleware/utils";
 
 export default withAuth(
-  function proxy(req) {
+  function middleware(req) {
     const { key } = parse(req);
   },
   {
@@ -18,6 +18,7 @@ export default withAuth(
   },
 );
 
+// OpenNext supports Edge middleware; Node middleware (proxy.ts) is experimental.
 export const config = {
   matcher: [
     /*

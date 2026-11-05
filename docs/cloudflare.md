@@ -9,10 +9,16 @@ The production domain remains on Vercel until the trial is accepted.
 - OpenNext adapts the existing Next.js application, including NextAuth v4.
   The vinext compatibility scan identifies NextAuth v4 as unsupported, so the
   migration does not change authentication providers or account data.
+- The JWT auth gate uses `middleware.ts` with the Edge runtime because OpenNext
+  does not officially support the Node middleware used by `proxy.ts`. Next.js 16
+  warns that the middleware filename is deprecated; this is intentional until
+  OpenNext officially supports Node middleware.
 - The Cloudflare build uses Next.js Webpack because the current Turbopack Wasm
   loader traces too broadly and exceeds the Worker bundle size limit.
 - Prisma generates for the Cloudflare runtime so its query compiler is imported
   as a WebAssembly module instead of compiled dynamically at runtime.
+- Prisma's pg adapter and `pg` remain external to Next.js so OpenNext can
+  resolve the `pg-cloudflare` socket implementation using its workerd condition.
 - Each Worker request gets a Prisma client and Postgres pool. Connections are
   closed after use (`maxUses: 1`) to prevent reuse across Worker requests. The
   Node runtime retains its existing development singleton and connection pooling.
