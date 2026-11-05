@@ -1,0 +1,14 @@
+.git
+node_modules
+.next
+.open-next
+.wrangler
+.vercel
+generated
+cloudflare-env.d.ts
+*.tsbuildinfo
+.env*
+!.env.example
+.dev.vars*
+.agents
+.codex

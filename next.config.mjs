@@ -1,3 +1,5 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
 // @ts-check
 
 /**
@@ -17,7 +19,11 @@ const config = {
       },
     ],
   },
-  serverExternalPackages: ["@prisma/client"],
+  // Prisma CLI and local database tooling are build dependencies, not app runtime.
+  outputFileTracingExcludes: {
+    "/*": ["node_modules/**/prisma/build/**", "node_modules/**/@prisma/dev/**", "node_modules/**/@electric-sql/**"],
+  },
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg", "pg"],
   async redirects() {
     return [
       {
@@ -35,3 +41,5 @@ const config = {
 };
 
 export default config;
+
+initOpenNextCloudflareForDev();

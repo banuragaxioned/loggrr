@@ -1,6 +1,13 @@
+// Build commands select exactly one generator for their deployment runtime.
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+}
+
+generator cloudflareClient {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  runtime  = "cloudflare"
 }
 
 datasource db {

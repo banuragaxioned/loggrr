@@ -1,0 +1,149 @@
+# Cloudflare migration trial
+
+Loggrr uses the OpenNext Cloudflare adapter on the `migrate/cloudflare-workers`
+branch. The trial targets the Axioned account and `https://loggrr.axioned.workers.dev`.
+The production domain remains on Vercel until the trial is accepted.
+
+## Runtime
+
+- OpenNext adapts the existing Next.js application, including NextAuth v4.
+  The vinext compatibility scan identifies NextAuth v4 as unsupported, so the
+  migration does not change authentication providers or account data.
+- The JWT auth gate uses `middleware.ts` with the Edge runtime because OpenNext
+  does not officially support the Node middleware used by `proxy.ts`. Next.js 16
+  warns that the middleware filename is deprecated; this is intentional until
+  OpenNext officially supports Node middleware.
+- Both platforms use the standard Next.js Turbopack build. Prisma CLI and local
+  database tooling are excluded from deployment tracing using Next.js
+  `outputFileTracingExcludes`; there is no custom Webpack or Wasm loader.
+- Build commands select exactly one Prisma generator: `client` for Node/Vercel
+  and `cloudflareClient` for Workers. They intentionally write the same generated
+  import path, so application code stays platform-independent. Do not run both
+  generators together. The Worker compiler is imported as a precompiled Wasm
+  module; Vercel uses the Node compiler without the Worker Wasm loader.
+- Prisma's pg adapter and `pg` remain external to Next.js so OpenNext can
+  resolve the `pg-cloudflare` socket implementation using its workerd condition.
+- Each Worker request gets a Prisma client and Postgres pool. Connections are
+  closed after use (`maxUses: 1`) to prevent reuse across Worker requests. The
+  Node runtime retains its existing development singleton and connection pooling.
+- SMTP uses the `emailjs` package with the existing SES credentials on port 465
+  (TLS from connection start). Clients are created and closed per send. Its
+  STARTTLS path on port 587 stalls in Workers, so use port 465 for this deployment.
+  TLS certificate validation remains enabled; no custom socket hook is needed.
+- The Worker is placed in `aws:eu-central-1`, matching the configured Neon region.
+- The official OpenNext setup supplies an R2 incremental cache, the self-reference
+  service binding, Cloudflare Images, and immutable static asset headers.
+- Workers logs, invocation logs, and traces are disabled after trial verification. Version preview URLs are disabled. There is no
+  Worker Previews configuration.
+
+## Local checks
+
+Use the repository's Bun version from `package.json`. Install dependencies with
+`bun install --frozen-lockfile`; `postinstall` generates Prisma without changing
+any database schema. A valid `DATABASE_URL` is required even for generation
+because `prisma.config.ts` validates it.
+
+Keep runtime credentials in an ignored `.dev.vars` file, using `.env.example` as
+an inventory. Set `NEXTAUTH_URL=http://localhost:8787` for local sign-in.
+
+```sh
+bun run cf:typegen
+bun run typecheck
+bun run preview:cloudflare
+```
+
+`preview:cloudflare` serves the built application locally in workerd. It does not
+create a Cloudflare branch preview. Binding type generation excludes Workers
+runtime globals so Next.js browser types remain unchanged.
+
+## Build and deploy
+
+The Cloudflare origin must also be present during the build because Next.js
+inlines public environment variables:
+
+```sh
+NEXT_PUBLIC_APP_URL=https://loggrr.axioned.workers.dev \
+NEXTAUTH_URL=https://loggrr.axioned.workers.dev \
+bun run build:cloudflare
+bunx wrangler deploy --dry-run
+```
+
+Create the `loggrr-cache` R2 bucket in the Axioned account before the first
+upload. Store application credentials with Wrangler secrets or the dashboard;
+never put their values in the committed Wrangler configuration. Upload only
+variables used by the application, not unrelated old credentials from `.env`.
+
+Only `DATABASE_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_SECRET`,
+`EMAIL_PASSWORD`, and `OPENROUTER_API_KEY` are secrets. Keep `NODE_ENV`, the
+Google client ID, SMTP sender/host/port/username, application URLs, and public
+PostHog configuration as plain variables in the Cloudflare dashboard. `keep_vars: true` preserves
+those dashboard values on deployment; the Wrangler config contains no app
+environment values. Apply the same
+classification to Workers Builds environment settings. The SES SMTP username
+is an access key identifier; its password is the secret.
+
+After validation, deploy with `bunx opennextjs-cloudflare deploy`. For subsequent
+local builds and deployments, `bun run deploy:cloudflare` performs both steps;
+export the public application URL as above first. The ignored
+`.env.cloudflare.production.local` file supplies local build values when loaded
+into the process environment. Dashboard runtime variables are retained during
+deployments; they do not supply Next.js client-side build values.
+
+## Workers Builds settings
+
+The Worker is connected to `banuragaxioned/loggrr` in the Axioned dashboard.
+Keep these Workers Builds settings:
+
+| Setting           | Value                                    |
+| ----------------- | ---------------------------------------- |
+| Root directory    | `/`                                      |
+| Deployment branch | `migrate/cloudflare-workers`             |
+| Preview builds    | Disabled                                 |
+| Build command     | `bun run build:cloudflare`               |
+| Deploy command    | `bunx opennextjs-cloudflare deploy`      |
+| Bun version       | Use the version pinned in `package.json` |
+| Node version      | Use the major pinned in `package.json`   |
+
+Set `NEXT_PUBLIC_APP_URL` and `NEXTAUTH_URL` to the workers.dev origin in the
+build environment. Also supply the variables required by `env.mjs` and
+`prisma.config.ts` at build time. Store sensitive values as build secrets as
+well as Worker runtime secrets where required; runtime secrets alone do not
+provide environment validation values during a clean build.
+
+`preview_urls: false` disables version preview URLs. The separate **Enable
+Preview Builds** checkbox in Workers Builds must remain unchecked too.
+Connecting the Git repository is separate from deploying with Wrangler.
+
+## Acceptance before merge
+
+Verify the landing and sign-in pages, static assets, unauthorized redirects,
+authenticated sessions, dashboard, projects, logged reports, and time-entry reads.
+Repeat and overlap authenticated requests to exercise request isolation.
+
+A signed test session can verify authenticated reads without writing accounts,
+verification tokens, or time entries. It does not verify Google OAuth or email
+transport. Test those interactively before accepting the migration. Google must
+allow this callback URL:
+
+```text
+https://loggrr.axioned.workers.dev/api/auth/callback/google
+```
+
+Do not remove the existing production callback. Review email links to ensure
+they use the trial origin. Normal sign-in can update account data or send mail;
+use the intended database and credentials for that check.
+
+After acceptance, merge and change the Workers Builds deployment branch to
+`main`. Domain mapping is a separate later step: update the configured runtime
+and build origins, rebuild, register the final OAuth callback, and then move the
+domain. The Vercel deployment remains available during the trial.
+
+## Sources
+
+- [Cloudflare OpenNext guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)
+- [OpenNext setup](https://opennext.js.org/cloudflare/get-started)
+- [OpenNext databases](https://opennext.js.org/cloudflare/howtos/db)
+- [emailjs SMTP client](https://github.com/eleith/emailjs)
+- [Prisma generator runtime](https://www.prisma.io/docs/orm/v7/prisma-schema/overview/generators)
+- [Cloudflare build branches](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/)
+- [Cloudflare build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)

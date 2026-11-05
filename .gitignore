@@ -54,3 +54,12 @@ certificates
 
 # Prisma generated client
 /generated
+
+# Cloudflare Workers
+/.open-next/
+/.wrangler/
+.dev.vars*
+!.dev.vars.example
+
+# Generated Worker bindings (regenerate with bun run cf:typegen)
+/cloudflare-env.d.ts
